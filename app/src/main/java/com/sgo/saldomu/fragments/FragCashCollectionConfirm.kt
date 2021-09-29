@@ -163,7 +163,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                                 DefineValue.ERROR_0066 -> {
                                     Timber.d("isi response maintenance:$response")
                                     val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                    alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                    alertDialogMaintenance.showDialogMaintenance(activity)
                                 }
                                 else -> {
                                     Timber.d("Error confirmTokenC2R:$response")
@@ -239,7 +239,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                                 DefineValue.ERROR_0066 -> {
                                     Timber.d("isi response maintenance:$response")
                                     val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                    alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                    alertDialogMaintenance.showDialogMaintenance(activity)
                                 }
                                 else -> {
                                     Timber.d("Error resendTokenC2R:$response")
@@ -294,7 +294,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                             } else if (code == DefineValue.ERROR_0066) {
                                 Timber.d("isi response maintenance:$response")
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                alertDialogMaintenance.showDialogMaintenance(activity)
                             } else {
                                 Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
                             }
@@ -391,7 +391,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                             } else if (code == DefineValue.ERROR_0066) {
                                 Timber.d("isi response maintenance:$response")
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                alertDialogMaintenance.showDialogMaintenance(activity)
                             } else {
                                 if (isPIN!!) {
                                     Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
@@ -467,7 +467,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                             } else if (code == DefineValue.ERROR_0066) {
                                 Timber.d("isi response maintenance:$`object`")
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                alertDialogMaintenance.showDialogMaintenance(activity)
                             } else {
                                 val msg = model.error_message
                                 showDialog(msg)

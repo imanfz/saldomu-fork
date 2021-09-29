@@ -57,7 +57,7 @@ public class BBSJoinAgentInput extends Fragment {
     private ProgressBar progBarComm;
     private EditText etAgentCode;
     private Spinner spComm;
-    private String userID, accessKey;
+    private String userID;
     private ActionListener actionListener;
 
 
@@ -94,7 +94,6 @@ public class BBSJoinAgentInput extends Fragment {
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         listDataComm = new ArrayList<>();
         listComm = new ArrayList<>();
@@ -114,13 +113,10 @@ public class BBSJoinAgentInput extends Fragment {
         progBarComm = v.findViewById(R.id.loading_progres_comm);
         etAgentCode = v.findViewById(R.id.bbsjoinagent_value_agent_code);
         CheckBox cbAgentCode = v.findViewById(R.id.agent_code_generate);
-        cbAgentCode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                etAgentCode.setEnabled(!isChecked);
-                if (isChecked)
-                    etAgentCode.setText("");
-            }
+        cbAgentCode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            etAgentCode.setEnabled(!isChecked);
+            if (isChecked)
+                etAgentCode.setText("");
         });
         Button btnSubmit = v.findViewById(R.id.btn_submit);
         btnSubmit.setOnClickListener(submitListener);
@@ -133,12 +129,9 @@ public class BBSJoinAgentInput extends Fragment {
         spComm.setAdapter(adapterDataComm);
     }
 
-    Button.OnClickListener submitListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (inputValidation()) {
-                CallSentJoinAgent();
-            }
+    Button.OnClickListener submitListener = v -> {
+        if (inputValidation()) {
+            CallSentJoinAgent();
         }
     };
 
@@ -169,7 +162,7 @@ public class BBSJoinAgentInput extends Fragment {
     }
 
     public boolean inputValidation() {
-        Timber.d("isi listDataComm = " + String.valueOf(listDataComm.size()));
+        Timber.d("isi listDataComm = %s", String.valueOf(listDataComm.size()));
         if (etAgentCode.isEnabled()) {
             if (etAgentCode.getText().toString().length() == 0) {
                 etAgentCode.requestFocus();
@@ -180,7 +173,7 @@ public class BBSJoinAgentInput extends Fragment {
         return listComm.size() != 0;
     }
 
-    private void CommunityUIRefresh() {
+    private void communityUIRefresh() {
         if (listComm.size() < 1) {
             Toast.makeText(getActivity(), R.string.joinagentbbs_toast_empty_comm, Toast.LENGTH_LONG).show();
             actionListener.onCommunityEmpty();
@@ -204,7 +197,7 @@ public class BBSJoinAgentInput extends Fragment {
             params.put(WebParams.SCHEME_CODE, DefineValue.BBS);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userID);
-            Timber.d("isi params retreiveComm:" + params.toString());
+            Timber.d("isi params retreiveComm:%s", params.toString());
 
             progBarComm.setVisibility(View.VISIBLE);
 
@@ -216,33 +209,23 @@ public class BBSJoinAgentInput extends Fragment {
                             BBSJoinAgentCommModel model = gson.fromJson(object, BBSJoinAgentCommModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             adapterDataComm.clear();
                             listComm.clear();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-//                                JSONArray comm = response.optJSONArray(WebParams.COMMUNITY);
                                 if (model.getCommunity().size() > 0) {
 
                                     listComm.addAll(model.getCommunity());
 
-//                                    BBSCommModel bbsComm;
                                     for (int i = 0; i < model.getCommunity().size(); i++) {
-//                                        bbsComm = new BBSCommModel(comm.getJSONObject(i).optString(WebParams.COMM_ID),
-//                                                comm.getJSONObject(i).optString(WebParams.COMM_CODE),
-//                                                comm.getJSONObject(i).optString(WebParams.COMM_NAME),
-//                                                comm.getJSONObject(i).optString(WebParams.API_KEY),
-//                                                comm.getJSONObject(i).optString(WebParams.MEMBER_CODE),
-//                                                comm.getJSONObject(i).optString(WebParams.CALLBACK_URL));
-//                                        listDataComm.add(bbsComm);
-
                                         adapterDataComm.add(model.getCommunity().get(i).getComm_name());
                                     }
                                 }
 
                                 adapterDataComm.notifyDataSetChanged();
-                                CommunityUIRefresh();
+                                communityUIRefresh();
                             } else {
-                                code = model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                                 actionListener.onCommunityEmpty();
                             }
 
@@ -260,7 +243,7 @@ public class BBSJoinAgentInput extends Fragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient: " + e.getMessage());
+            Timber.d("httpclient: %s", e.getMessage());
         }
     }
 
@@ -272,7 +255,7 @@ public class BBSJoinAgentInput extends Fragment {
             params.put(WebParams.CUST_ID, userID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userID);
-            Timber.d("isi params sent Joint Agent:" + params.toString());
+            Timber.d("isi params sent Joint Agent:%s", params.toString());
 
             progdialog.show();
 
@@ -284,22 +267,16 @@ public class BBSJoinAgentInput extends Fragment {
                             BBSJoinAgentModel model = gson.fromJson(object, BBSJoinAgentModel.class);
 
                             String code = model.getError_code();
-
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 String commCodeMsg = getString(R.string.community) + " : " + commName;
                                 String memberCodeMsg = getString(R.string.agent_name) + " : " + model.getMember_code();
                                 String msg = getString(R.string.bbsjoinagent_dialog_msg_success, commCodeMsg, memberCodeMsg);
                                 Dialog dialog = DefinedDialog.MessageDialog(getContext(),
-                                        getString(R.string.bbsjoinagent_dialog_title_success), msg, new DefinedDialog.DialogButtonListener() {
-                                            @Override
-                                            public void onClickButton(View v, boolean isLongClick) {
-                                                actionListener.onFinishProcess();
-                                            }
-                                        });
+                                        getString(R.string.bbsjoinagent_dialog_title_success), msg, (DefinedDialog.DialogButtonListener) () -> actionListener.onFinishProcess());
                                 dialog.show();
                             } else {
-                                code = model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -315,7 +292,7 @@ public class BBSJoinAgentInput extends Fragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient: " + e.getMessage());
+            Timber.d("httpclient: %s", e.getMessage());
         }
     }
 }

@@ -70,8 +70,8 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
         //shopId      = "003";
 
         progdialog = new ProgressDialog(BbsMerchantSetupHourActivity.this);
-        memberId = getIntent().getStringExtra("memberId");
-        shopId = getIntent().getStringExtra("shopId");
+        memberId = getIntent().getStringExtra(DefineValue.MEMBER_ID);
+        shopId = getIntent().getStringExtra(DefineValue.SHOP_ID);
         setupOpenHour = new SetupOpenHour();
 
         initializeToolbar();
@@ -320,7 +320,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
         @Override
         public void onClick(View v) {
             if (InetHandler.isNetworkAvailable(getApplicationContext())) {
-                Boolean hasError = false;
+                boolean hasError = false;
                 String errorMessage = "";
 
                 if (!tbOpen24Hours.isChecked()) {
@@ -351,17 +351,6 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
                             errorMessage = getString(R.string.err_empty_closed_dates);
                         }
                     }
-                    /*if ( selectedPos == 0 ) {
-                        if ( selectedDays.size() == 0 ) {
-                            hasError = true;
-                            errorMessage = getString(R.string.err_empty_closed_days);
-                        }
-                    } else {
-                        if ( selectedDate.size() == 0 ) {
-                            hasError = true;
-                            errorMessage = getString(R.string.err_empty_closed_dates);
-                        }
-                    }*/
                 }
 
                 if (!hasError) {
@@ -443,7 +432,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
                             } else if (selectedPos == 2) {
                                 ArrayList<String> tempData = new ArrayList<>();
                                 for (int x = 0; x < selectedDate.size(); x++) {
-                                    String idx = String.valueOf(Integer.valueOf(selectedDate.get(x)) + 1);
+                                    String idx = String.valueOf(Integer.parseInt(selectedDate.get(x)) + 1);
                                     tempData.add(idx);
                                 }
 
@@ -467,16 +456,14 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
                                     public void onResponses(JSONObject response) {
                                         try {
                                             String code = response.getString(WebParams.ERROR_CODE);
+                                            String message = response.getString(WebParams.ERROR_MESSAGE);
                                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                                 Intent intent = new Intent(getApplicationContext(), BbsMerchantCommunityList.class);
                                                 startActivity(intent);
                                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                                String message = response.getString(WebParams.ERROR_MESSAGE);
-                                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                                //test.showDialoginActivity(getApplication(),message);
+                                                AlertDialogLogout.getInstance().showDialoginActivity(BbsMerchantSetupHourActivity.this, message);
                                             } else {
-                                                code = response.getString(WebParams.ERROR_MESSAGE);
-                                                Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                                             }
                                         } catch (JSONException e) {
                                             e.printStackTrace();

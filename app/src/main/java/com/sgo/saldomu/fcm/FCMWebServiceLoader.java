@@ -31,9 +31,7 @@ public class FCMWebServiceLoader {
     private Context mContext;
     private LoaderListener loaderListener;
     private SecurePreferences sp;
-    private String token, tokenEncrypted;
-    final private static String AGENT_TOPIC = "agent";
-    final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;
+    private String token;
 
     public interface LoaderListener {
         void onSuccessLoader();

@@ -3,7 +3,6 @@ package com.sgo.saldomu.activities;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -53,10 +52,10 @@ import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.interfaces.ObjListeners;
-import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import org.json.JSONArray;
@@ -76,20 +75,19 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private SecurePreferences sp;
-    String txId, memberPhone, shopId, categoryName, amount, cancelFee, urlProfilePicture;
+    String txId, memberPhone, categoryName, amount, cancelFee, urlProfilePicture;
     SupportMapFragment mapFrag;
     private GoogleApiClient googleApiClient;
     private Location lastLocation;
     private LocationRequest mLocationRequest;
-    Double memberLatitude, memberLongitude, agentLatitude, agentLongitude, benefLatitude, benefLongitude;
-    ShopDetail shopDetail;
+    Double memberLatitude, memberLongitude, agentLatitude, agentLongitude;
     private GoogleMap globalMap;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvETA, tvAcctLabel, tvAcctName;
-    Boolean isFirstLoad = true, isRunning = false, isInquiryRoute = false;
+    TextView tvMemberName, tvAmount, tvETA, tvAcctLabel, tvAcctName;
+    Boolean isInquiryRoute = false;
     int distanceBetween = 0;
     String gcmId, emoMemberId;
     MaterialRippleLayout btnCall, btnCancel;
-    ProgressDialog progdialog, progdialog2;
+    ProgressDialog progDialog;
     Intent intentData;
     ImageView ivPhoto;
 
@@ -100,7 +98,6 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     private Runnable runnable2 = new Runnable() {
         @Override
         public void run() {
-            isRunning = true;
 
             if (isInquiryRoute && DefineValue.MIN_DISTANCE_ALMOST_ARRIVE > distanceBetween) {
                 showToast();
@@ -218,24 +215,12 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                         alertDialog.setMessage(newCancelMessage);
 
                         alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        //dialog.dismiss();
-
-                                        progdialog2 = DefinedDialog.CreateProgressDialog(BbsMapViewByMemberActivity.this, "");
-                                        cancelTransactionMember();
-
-
-                                    }
+                                (dialog, which) -> {
+                                    progDialog = DefinedDialog.CreateProgressDialog(BbsMapViewByMemberActivity.this, "");
+                                    cancelTransactionMember();
                                 });
                         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-
-
-                                    }
-                                });
+                                (dialog, which) -> dialog.dismiss());
                         alertDialog.show();
 
 
@@ -291,19 +276,9 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
             globalMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
-            MarkerOptions markerOptions = new MarkerOptions()
-                    .position(latLng)
-                    //.title("")
-                    //.icon(BitmapDescriptorFactory.fromResource(R.drawable.house));
-                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_person, 90, 90)));
-            //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            Marker marker = globalMap.addMarker(markerOptions);
-
             LatLng targetLatLng = new LatLng(memberLatitude, memberLongitude);
             MarkerOptions markerTargetOptions = new MarkerOptions()
                     .position(targetLatLng)
-                    //.title("")
-                    //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
                     .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.search_location, 70, 90)));
             globalMap.addMarker(markerTargetOptions);
 
@@ -371,19 +346,14 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
             builder.setMessage(getString(R.string.alertbox_gps_warning))
                     .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                    .setPositiveButton(R.string.yes, (dialog, id) -> {
 
-                            Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivityForResult(ilocation, 1);
-
-                        }
+                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(ilocation, 1);
                     })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                            dialog.cancel();
-                            startActivity(new Intent(getApplicationContext(), MainPage.class));
-                        }
+                    .setNegativeButton(R.string.no, (dialog, id) -> {
+                        dialog.cancel();
+                        startActivity(new Intent(getApplicationContext(), MainPage.class));
                     });
             final android.app.AlertDialog alert = builder.create();
             alert.show();
@@ -444,20 +414,16 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Timber.d("onConnected Started");
-        startLocationUpdate();
 
         try {
             lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
 
-            if (lastLocation == null) {
-
-            } else {
-
+            if (lastLocation != null) {
                 memberLatitude = lastLocation.getLatitude();
                 memberLongitude = lastLocation.getLongitude();
                 setMapCamera();
-                Timber.d("Location Found" + lastLocation.toString());
+                Timber.d("Location Found %s", lastLocation.toString());
                 updateLocationMember();
             }
         } catch (SecurityException se) {
@@ -496,21 +462,10 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     }
 
     private void updateLocationMember() {
-
-        //temporary only
-//        tvMemberName.setText("NAMA AGEN");
-//        tvShop.setText("NAMA TOKO");
-//        tvCategoryName.setText(categoryName);
-//        tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(amount) );
-//
-//        setMapCamera();
-
         if (sp.getString(DefineValue.USERID_PHONE, "").equals(""))
             return;
 
-        //progdialog              = DefinedDialog.CreateProgressDialog(this, "");
         String extraSignature = txId;
-//        + memberLatitude + memberLongitude;
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_LOCATION_MEMBER,
                 extraSignature);
 
@@ -520,8 +475,6 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.TX_ID, txId);
-        //params.put(WebParams.SHOP_ID, shopId);
-        //params.put(WebParams.MEMBER_ID, memberId);
 
         params.put(WebParams.KEY_PHONE, userPhoneID);
         params.put(WebParams.KEY_VALUE, gcmId);
@@ -535,9 +488,8 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                     @Override
                     public void onResponses(JSONObject response) {
                         try {
-                            isRunning = false;
                             String code = response.getString(WebParams.ERROR_CODE);
-
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
 
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
@@ -548,13 +500,11 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                                 tvMemberName.setText(response.getString(WebParams.SHOP_NAME));
                                 memberPhone = NoHPFormat.formatTo08(response.getString(WebParams.SHOP_PHONE));
                                 urlProfilePicture = response.getString(WebParams.PROFILE_PICTURE);
-                                if (urlProfilePicture != null && urlProfilePicture.isEmpty()) {
+                                if (urlProfilePicture.isEmpty()) {
                                     GlideManager.sharedInstance().initializeGlide(BbsMapViewByMemberActivity.this, R.drawable.user_unknown_menu, roundedImage, ivPhoto);
                                 } else {
                                     GlideManager.sharedInstance().initializeGlide(BbsMapViewByMemberActivity.this, urlProfilePicture, roundedImage, ivPhoto);
                                 }
-                                //tvShop.setText(response.getString(WebParams.SHOP_NAME));
-//                                tvCategoryName.setText(categoryName);
                                 tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(amount));
 
                                 if (response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA)) {
@@ -568,57 +518,16 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                                 setMapCamera();
                                 handler.postDelayed(runnable2, timeDelayed);
 
-                    /*
-                    //remove redirection to rating page
-                    } else if ( code.equals("9999") ) {
-
-                        SecurePreferences.Editor mEditor = sp.edit();
-                        mEditor.putString(DefineValue.BBS_MODULE, DefineValue.BBS_REVIEW);
-                        mEditor.putString(DefineValue.URL_PROFILE_PICTURE, response.getString(WebParams.PROFILE_PICTURE));
-                        mEditor.putString(DefineValue.CATEGORY_NAME, categoryName);
-                        mEditor.putString(DefineValue.AMOUNT, amount);
-                        mEditor.putString(DefineValue.BBS_TX_ID, txId);
-                        mEditor.putString(DefineValue.BBS_SHOP_NAME, response.getString(WebParams.SHOP_NAME));
-                        mEditor.putString(DefineValue.BBS_MAXIMUM_RATING, response.getString(WebParams.MAXIMUM_RATING));
-                        mEditor.putString(DefineValue.BBS_DEFAULT_RATING, response.getString(WebParams.DEFAULT_RATING));
-                        mEditor.apply();
-
-                        sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
-
-                        Intent tempIntent = new Intent(getApplicationContext(), BBSActivity.class);
-                        Bundle tempBundle = new Bundle();
-                        tempBundle.putInt(DefineValue.INDEX, BBSActivity.BBSRATINGBYMEMBER);
-                        tempBundle.putString(DefineValue.BBS_TX_ID, txId);
-                        tempBundle.putString(DefineValue.CATEGORY_NAME, categoryName);
-                        tempBundle.putString(DefineValue.AMOUNT, amount);
-                        tempBundle.putString(DefineValue.URL_PROFILE_PICTURE, response.getString(WebParams.PROFILE_PICTURE));
-                        tempBundle.putString(DefineValue.BBS_SHOP_NAME, response.getString(WebParams.SHOP_NAME));
-                        tempBundle.putString(DefineValue.BBS_MAXIMUM_RATING, response.getString(WebParams.MAXIMUM_RATING));
-                        tempBundle.putString(DefineValue.BBS_DEFAULT_RATING, response.getString(WebParams.DEFAULT_RATING));
-                        tempIntent.putExtras(tempBundle);
-                        startActivity(tempIntent);
-                        finish();
-*/
-
                             } else if (code.equals("0001") || code.equals("0012") || code.equals("0003") || code.equals("0005")) {
-
                                 sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
                                 finish();
-
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = response.getString(WebParams.ERROR_MESSAGE);
-                                Toast.makeText(BbsMapViewByMemberActivity.this, message, Toast.LENGTH_SHORT).show();
-                                finish();
+                                AlertDialogLogout.getInstance().showDialoginActivity(BbsMapViewByMemberActivity.this, message);
                             } else {
-                                //progdialog.dismiss();
-                                code = response.getString(WebParams.ERROR_MESSAGE);
-                                Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                                 handler.postDelayed(runnable2, timeDelayed);
-                                //startActivity(new Intent(getApplicationContext(), MainPage.class));
                             }
-
                         } catch (JSONException e) {
-                            //Timber.d(String.valueOf(e.printStackTrace()));
                             e.printStackTrace();
                         }
                     }
@@ -630,107 +539,8 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
                     @Override
                     public void onComplete() {
-
-                        isRunning = false;
                     }
                 });
-    }
-
-    /**
-     * Starting the location updates
-     */
-    protected void startLocationUpdate() {
-        try {
-            PendingResult<Status> statusPendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
-                    googleApiClient, mLocationRequest, this);
-        } catch (SecurityException se) {
-            se.printStackTrace();
-        }
-    }
-
-    private void confirmTransactionMember() {
-
-//        RequestParams params = new RequestParams();
-//        UUID rcUUID = UUID.randomUUID();
-//        String dtime = DateTimeFormat.getCurrentDateTime();
-//
-//        params.put(WebParams.RC_UUID, rcUUID);
-//        params.put(WebParams.RC_DATETIME, dtime);
-//        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-//        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-//        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-//        params.put(WebParams.TX_ID, txId);
-//        params.put(WebParams.KEY_VALUE, gcmId);
-//        params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
-//
-//        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-//                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
-//
-//        params.put(WebParams.SIGNATURE, signature);
-//
-//        MyApiClient.confirmTransactionMember(getApplicationContext(), params, new JsonHttpResponseHandler() {
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//
-//                try {
-//
-//                    if ( progdialog2.isShowing())
-//                        progdialog2.dismiss();
-//
-//                    String code = response.getString(WebParams.ERROR_CODE);
-//                    if (code.equals(WebParams.SUCCESS_CODE)) {
-//
-//                        handler.removeCallbacks(runnable2);
-//
-//                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
-//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                        startActivity(intent);
-//                        finish();
-//                    } else {
-//                        Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
-//                    }
-//
-//                    handler.removeCallbacks(runnable2);
-//
-//                    Intent intent = new Intent(getApplicationContext(), MainPage.class);
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    startActivity(intent);
-//                    finish();
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//                super.onFailure(statusCode, headers, responseString, throwable);
-//                ifFailure(throwable);
-//            }
-//
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-//                super.onFailure(statusCode, headers, throwable, errorResponse);
-//                ifFailure(throwable);
-//            }
-//
-//            private void ifFailure(Throwable throwable) {
-//                //llHeaderProgress.setVisibility(View.GONE);
-//                //pbHeaderProgress.setVisibility(View.GONE);
-//                if ( progdialog2.isShowing())
-//                    progdialog2.dismiss();
-//
-//                if (MyApiClient.PROD_FAILURE_FLAG)
-//                    Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-//                else
-//                    Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-//
-//                Timber.w("Error Koneksi login:" + throwable.toString());
-//
-//            }
-//
-//        });
-
     }
 
     private void cancelTransactionMember() {
@@ -781,7 +591,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                     @Override
                     public void onComplete() {
 
-                        progdialog2.dismiss();
+                        progDialog.dismiss();
                     }
                 });
     }
@@ -815,20 +625,16 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                 final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
                 builder.setMessage(getString(R.string.alertbox_gps_warning))
                         .setCancelable(false)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        .setPositiveButton(R.string.yes, (dialog, id) -> {
 
-                                Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivityForResult(ilocation, 1);
+                            Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivityForResult(ilocation, 1);
 
-                            }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                                dialog.cancel();
-                                startActivity(new Intent(getApplicationContext(), MainPage.class));
-                                finish();
-                            }
+                        .setNegativeButton(R.string.no, (dialog, id) -> {
+                            dialog.cancel();
+                            startActivity(new Intent(getApplicationContext(), MainPage.class));
+                            finish();
                         });
                 final android.app.AlertDialog alert = builder.create();
                 alert.show();
@@ -868,7 +674,6 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
     private class GoogleMapRouteDirectionTask extends AsyncTask<Void, Void, Integer> {
 
-        private ArrayList<ShopDetail> dataDetails = new ArrayList<>();
         private Double dataCurrentLatitude;
         private Double dataCurrentLongitude;
         private Double targetLatitude;
@@ -936,47 +741,13 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                             JSONObject distance = steps.getJSONObject("distance");
                             JSONObject duration = steps.getJSONObject("duration");
 
-                            String parsedDistance = distance.getString("text");
                             distanceBetween = distance.getInt("value");
 
                             isInquiryRoute = true;
-                    /*if ( DefineValue.MIN_DISTANCE_ALMOST_ARRIVE > iDistance ) {
-
-
-
-                    }*/
 
                             final String parseDuration = duration.getString("text");
 
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    tvETA.setText(getString(R.string.estimated_time_arrived, parseDuration));
-                                }
-                            });
-
-
-                            JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
-                            String points = overviewPolyline.getString("points");
-
-                            //encodedPoints = points;
-
-                            JSONArray directions = steps.getJSONArray("steps");
-
-                            if (directions.length() > 0) {
-                                JSONObject toDirection = directions.getJSONObject(0);
-                                //htmlDirections = toDirection.getString("html_instructions");
-
-                        /*JSONArray toDistanceArray = toDirection.getJSONArray("distance");
-                        JSONObject toDistanceObject = toDistanceArray.getJSONObject(0);
-                        String toDistanceString = toDistanceObject.getString("text");
-
-                        htmlDirections += " ( " + toDistanceString + " ) ";
-                        //tvDirection.setText(Html.fromHtml(toDirection.getString("html_instructions")));
-                        */
-                            }
-
-
+                            runOnUiThread(() -> tvETA.setText(getString(R.string.estimated_time_arrived, parseDuration)));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1045,18 +816,12 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(newCancelMessage)
                 .setCancelable(false)
-                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                .setPositiveButton(getString(R.string.yes), (dialog, id) -> {
 
-                        progdialog2 = DefinedDialog.CreateProgressDialog(BbsMapViewByMemberActivity.this, "");
-                        cancelTransactionMember();
-                    }
+                    progDialog = DefinedDialog.CreateProgressDialog(BbsMapViewByMemberActivity.this, "");
+                    cancelTransactionMember();
                 })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.dismiss();
-                    }
-                })
+                .setNegativeButton(getString(R.string.no), (dialog, id) -> dialog.dismiss())
         ;
         final AlertDialog alert = builder.create();
         alert.show();

@@ -23,38 +23,34 @@ import java.util.ArrayList;
 public class ListSettingAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
-    private ArrayList<String> menu = new ArrayList<>();
-    private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
+    private ArrayList<String> menu;
     private String shopId, memberId, agentName, category, memberType, shopName, commName, province, district, address, flagApprove, stepApprove;
 
-    public ListSettingAdapter(Context context, ArrayList<String> menu, String flagApprove, ArrayList<ShopDetail> shopDetails )
-    {
-        this.context        = context;
-        this.menu           = menu;
-        this.shopDetails    = shopDetails;
-        this.flagApprove    = flagApprove;
+    public ListSettingAdapter(Context context, ArrayList<String> menu, String flagApprove) {
+        this.context = context;
+        this.menu = menu;
+        this.flagApprove = flagApprove;
 
-        if ( shopDetails.size() > 0 ) {
-            ShopDetail shopDetail   = shopDetails.get(0);
+        if (shopDetails.size() > 0) {
+            ShopDetail shopDetail = shopDetails.get(0);
 
-            this.shopId             = shopDetail.getShopId();
-            this.memberId           = shopDetail.getMemberId();
-            this.agentName          = shopDetail.getMemberName();
-            this.category           = "";
-            this.memberType         = shopDetail.getMemberType();
-            this.shopName           = shopDetail.getShopName();
-            this.commName           = shopDetail.getCommName();
-            this.province           = shopDetail.getShopProvince();
-            this.district           = shopDetail.getShopDistrict();
-            this.address            = shopDetail.getShopFirstAddress();
-            this.stepApprove        = shopDetail.getStepApprove();
+            this.shopId = shopDetail.getShopId();
+            this.memberId = shopDetail.getMemberId();
+            this.agentName = shopDetail.getMemberName();
+            this.category = "";
+            this.memberType = shopDetail.getMemberType();
+            this.shopName = shopDetail.getShopName();
+            this.commName = shopDetail.getCommName();
+            this.province = shopDetail.getShopProvince();
+            this.district = shopDetail.getShopDistrict();
+            this.address = shopDetail.getShopFirstAddress();
+            this.stepApprove = shopDetail.getStepApprove();
 
         }
-        inflater            = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    class ViewHolder
-    {
+    class ViewHolder {
         TextView tvListName;
     }
 
@@ -78,12 +74,12 @@ public class ListSettingAdapter extends BaseAdapter {
         View rootView = convertView;
         ListSettingAdapter.ViewHolder holder;
 
-        if(rootView == null) {
+        if (rootView == null) {
             //viewHolder = new BbsMerchantCommunityListAdapter.ViewHolder();
-            rootView                = inflater.inflate(R.layout.list_setting_adapter, null);
+            rootView = inflater.inflate(R.layout.list_setting_adapter, null);
 
-            holder                  = new ListSettingAdapter.ViewHolder();
-            holder.tvListName       = (TextView) rootView.findViewById(R.id.tvListName);
+            holder = new ListSettingAdapter.ViewHolder();
+            holder.tvListName = (TextView) rootView.findViewById(R.id.tvListName);
 
 
             rootView.setTag(holder);
@@ -93,20 +89,20 @@ public class ListSettingAdapter extends BaseAdapter {
 
         holder.tvListName.setText(menu.get(position));
 
-        if ( position > 1 ) {
+        if (position > 1) {
 
         }
 
         holder.tvListName.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                if ( stepApprove.equals(DefineValue.STRING_NO) ) {
-                    if ( position == 2 ) {
+                if (stepApprove.equals(DefineValue.STRING_NO)) {
+                    if (position == 2) {
                         Intent intent = new Intent(context.getApplicationContext(), BbsMemberLocationActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("memberId", memberId);
-                        intent.putExtra("shopId", shopId);
-                        intent.putExtra("shopName", shopName);
+                        intent.putExtra(DefineValue.MEMBER_ID, memberId);
+                        intent.putExtra(DefineValue.SHOP_ID, shopId);
+                        intent.putExtra(DefineValue.SHOP_NAME, shopName);
                         intent.putExtra("memberType", memberType);
                         intent.putExtra("memberName", agentName);
                         intent.putExtra("commName", commName);
@@ -115,34 +111,33 @@ public class ListSettingAdapter extends BaseAdapter {
                         intent.putExtra("address", address);
                         intent.putExtra("category", category);
                         inflater.getContext().startActivity(intent);
-                    } else if ( position == 3 ) {
+                    } else if (position == 3) {
                         Intent intent = new Intent(context.getApplicationContext(), BbsSetupShopClosedActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("memberId", memberId);
-                        intent.putExtra("shopId", shopId);
-                        intent.putExtra("flagApprove", flagApprove);
+                        intent.putExtra(DefineValue.MEMBER_ID, memberId);
+                        intent.putExtra(DefineValue.SHOP_ID, shopId);
+                        intent.putExtra(DefineValue.FLAG_APPROVE, flagApprove);
                         inflater.getContext().startActivity(intent);
                     }
                 } else {
-                    if ( position == 2 ) {
+                    if (position == 2) {
                         Intent intent = new Intent(context.getApplicationContext(), BbsSetupShopClosedActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("memberId", memberId);
-                        intent.putExtra("shopId", shopId);
-                        intent.putExtra("flagApprove", flagApprove);
+                        intent.putExtra(DefineValue.MEMBER_ID, memberId);
+                        intent.putExtra(DefineValue.SHOP_ID, shopId);
+                        intent.putExtra(DefineValue.FLAG_APPROVE, flagApprove);
                         inflater.getContext().startActivity(intent);
                     }
                 }
 
-                if ( position == 0 ) {
+                if (position == 0) {
 
-                } else if ( position == 1 ) {
+                } else if (position == 1) {
 
-                } else if ( position == 2 ) {
+                } else if (position == 2) {
 
 
-                } else if ( position == 3 ) {
-
+                } else if (position == 3) {
 
 
                 }

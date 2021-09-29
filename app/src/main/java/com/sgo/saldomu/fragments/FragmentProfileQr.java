@@ -176,7 +176,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
         isUpgradeAgent = sp.getBoolean(DefineValue.IS_UPGRADE_AGENT, false);
         is_agent = sp.getBoolean(DefineValue.IS_AGENT, false);
-        reject_npwp = sp.getString(DefineValue.REJECT_NPWP, "N");
+        reject_npwp = sp.getString(DefineValue.REJECT_NPWP, DefineValue.STRING_NO);
     }
 
     private void initLayout() {
@@ -201,8 +201,8 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         } else
             tv_lvl_member_value.setText(getLvl());
 
-        isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
-        if (isDormant.equalsIgnoreCase("Y"))
+        isDormant = sp.getString(DefineValue.IS_DORMANT, DefineValue.STRING_NO);
+        if (isDormant.equalsIgnoreCase(DefineValue.STRING_YES))
             tv_dormant_value.setVisibility(View.VISIBLE);
         else
             tv_dormant_value.setVisibility(View.GONE);
@@ -224,7 +224,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         }
 
         btn_upgrade.setOnClickListener(v -> {
-            if (isDormant.equalsIgnoreCase("Y"))
+            if (isDormant.equalsIgnoreCase(DefineValue.STRING_YES))
                 dialogDormant();
             else
                 checkIsLv1();
@@ -302,7 +302,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 //                        this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
         final Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), this.getString(R.string.upgrade_dialog_finish_title),
                 this.getString(R.string.level_dialog_waiting),
-                (v, isLongClick) -> {
+                () -> {
 
                 }
         );
@@ -320,11 +320,11 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
             builder1.setMessage(R.string.message_upgrade_member);
             builder1.setCancelable(true);
             builder1.setPositiveButton(
-                    "Yes",
+                    R.string.yes,
                     (dialog, id) -> switchViewUpgradeVerified());
 
             builder1.setNegativeButton(
-                    "No",
+                    R.string.no,
                     (dialog, id) -> dialog.dismiss());
 
             androidx.appcompat.app.AlertDialog alert11 = builder1.create();
@@ -456,7 +456,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                     } else if (error_code.equals(DefineValue.ERROR_0066)) {
                         Timber.d("isi response maintenance:" + object.toString());
                         AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                        alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                        alertDialogMaintenance.showDialogMaintenance(getActivity());
                     } else {
                         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                         alert.setTitle("Upload Image");
@@ -515,10 +515,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     private void dialogDormant() {
         Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getActivity().getString(R.string.title_dialog_dormant),
                 getActivity().getString(R.string.message_dialog_dormant),
-                new DefinedDialog.DialogButtonListener() {
-                    @Override
-                    public void onClickButton(View v, boolean isLongClick) {
-                    }
+                () -> {
                 }
         );
         dialognya.show();

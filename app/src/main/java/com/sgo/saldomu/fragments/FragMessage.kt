@@ -208,7 +208,7 @@ class FragMessage : BaseFragment() {
                         } else if (code == DefineValue.ERROR_0066) {
                             Timber.d("isi response maintenance:%s", jsonObject.toString())
                             val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                            alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                            alertDialogMaintenance.showDialogMaintenance(activity)
                         } else {
                             if (code == "0003") {
 //                                Toast.makeText(activity, getString(R.string.notifications_empty), Toast.LENGTH_LONG).show()

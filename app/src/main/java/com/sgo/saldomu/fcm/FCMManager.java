@@ -135,12 +135,12 @@ public class FCMManager {
                         try {
                             JSONArray jsonOptions = new JSONArray(msg.getString("options"));
 
-                            bundleNextLogin.putString("memberId", jsonOptions.getJSONObject(0).getString("member_id"));
-                            bundleNextLogin.putString("shopId", jsonOptions.getJSONObject(0).getString("shop_id"));
-                            bundleNextLogin.putString("shopName", jsonOptions.getJSONObject(0).getString("shop_name"));
-                            bundleNextLogin.putString("memberType", jsonOptions.getJSONObject(0).getString("member_type"));
-                            bundleNextLogin.putString("memberName", jsonOptions.getJSONObject(0).getString("member_name"));
-                            bundleNextLogin.putString("commName", jsonOptions.getJSONObject(0).getString("comm_name"));
+                            bundleNextLogin.putString(DefineValue.MEMBER_ID, jsonOptions.getJSONObject(0).getString(WebParams.MEMBER_ID));
+                            bundleNextLogin.putString(DefineValue.SHOP_ID, jsonOptions.getJSONObject(0).getString(WebParams.SHOP_ID));
+                            bundleNextLogin.putString(DefineValue.SHOP_NAME, jsonOptions.getJSONObject(0).getString(WebParams.SHOP_NAME));
+                            bundleNextLogin.putString(DefineValue.MEMBER_TYPE, jsonOptions.getJSONObject(0).getString(WebParams.MEMBER_TYPE));
+                            bundleNextLogin.putString(DefineValue.MEMBER_NAME, jsonOptions.getJSONObject(0).getString(WebParams.MEMBER_NAME));
+                            bundleNextLogin.putString(DefineValue.COMM_NAME, jsonOptions.getJSONObject(0).getString(WebParams.COMM_NAME));
 
                             bundleNextLogin.putString("province", jsonOptions.getJSONObject(0).getString("province"));
                             bundleNextLogin.putString("district", jsonOptions.getJSONObject(0).getString("district"));
@@ -180,9 +180,8 @@ public class FCMManager {
                         try {
                             JSONArray jsonOptions = new JSONArray(msg.getString("options"));
 
-                            String keyCode = jsonOptions.getJSONObject(0).getString("key_code");
                             String keyAmount = jsonOptions.getJSONObject(0).getString("amount");
-                            String categoryName = jsonOptions.getJSONObject(0).getString("category_name");
+                            String categoryName = jsonOptions.getJSONObject(0).getString(WebParams.CATEGORY);
                             String categoryId = jsonOptions.getJSONObject(0).getString("category_id");
                             Double benefLatitude = Double.valueOf(jsonOptions.getJSONObject(0).getString("benef_latitude"));
                             Double benefLongitude = Double.valueOf(jsonOptions.getJSONObject(0).getString("benef_longitude"));
@@ -238,7 +237,7 @@ public class FCMManager {
                             JSONArray jsonOptions = new JSONArray(msg.getString("options"));
 
                             bundleNextLogin.putString(DefineValue.BBS_TX_ID, jsonOptions.getJSONObject(0).getString("tx_id"));
-                            bundleNextLogin.putString(DefineValue.CATEGORY_NAME, jsonOptions.getJSONObject(0).getString("category_name"));
+                            bundleNextLogin.putString(DefineValue.CATEGORY_NAME, jsonOptions.getJSONObject(0).getString(WebParams.CATEGORY));
                             bundleNextLogin.putString(DefineValue.AMOUNT, jsonOptions.getJSONObject(0).getString("amount"));
 
                             i.putExtras(bundleNextLogin);
@@ -396,7 +395,7 @@ public class FCMManager {
                             JSONArray jsonOptions = new JSONArray(msg.getString("options"));
                             String txId = jsonOptions.getJSONObject(0).getString("tx_id");
                             bundleNextLogin.putString(DefineValue.TX_ID, txId);
-                            bundleNextLogin.putString(DefineValue.IS_INAPP, "Y");
+                            bundleNextLogin.putString(DefineValue.IS_INAPP, DefineValue.STRING_YES);
 
                             i = new Intent(mContext, SourceOfFundActivity.class);
                             i.putExtras(bundleNextLogin);

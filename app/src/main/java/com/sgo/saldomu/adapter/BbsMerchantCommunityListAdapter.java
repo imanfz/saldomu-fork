@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BbsMemberLocationActivity;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.entityRealm.MerchantCommunityList;
 
 import java.util.ArrayList;
@@ -27,18 +28,15 @@ public class BbsMerchantCommunityListAdapter extends BaseAdapter {
     private ArrayList<MerchantCommunityList> merchantCommunityListModel;
     private Context context;
     private LayoutInflater inflater;
-    private Realm myRealm;
 
-    public BbsMerchantCommunityListAdapter(Context context, ArrayList<MerchantCommunityList> merchantCommunityListModel)
-    {
+    public BbsMerchantCommunityListAdapter(Context context, ArrayList<MerchantCommunityList> merchantCommunityListModel) {
         this.context = context;
         this.merchantCommunityListModel = merchantCommunityListModel;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     }
 
-    class ViewHolder
-    {
+    static class ViewHolder {
         TextView tvMemberName, tvShopName, tvCommName, tvAddress;
         ImageView ivRegister;
     }
@@ -59,27 +57,23 @@ public class BbsMerchantCommunityListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent)
-    {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         View rootView = convertView;
         //BbsMerchantCommunityListAdapter.ViewHolder viewHolder;
         ViewHolder holder;
-        if(rootView == null)
-        {
+        if (rootView == null) {
             //viewHolder = new BbsMerchantCommunityListAdapter.ViewHolder();
 
             rootView = inflater.inflate(R.layout.inflate_community_list_item, null);
             holder = new ViewHolder();
-            holder.tvMemberName  = (TextView) rootView.findViewById(R.id.tvMemberName);
-            holder.tvShopName  = (TextView) rootView.findViewById(R.id.tvShopName);
-            holder.ivRegister       = (ImageView) rootView.findViewById(R.id.ivRegister);
-            holder.tvCommName   = (TextView) rootView.findViewById(R.id.tvCommName);
-            holder.tvAddress   = (TextView) rootView.findViewById(R.id.tvAddress);
+            holder.tvMemberName = (TextView) rootView.findViewById(R.id.tvMemberName);
+            holder.tvShopName = (TextView) rootView.findViewById(R.id.tvShopName);
+            holder.ivRegister = (ImageView) rootView.findViewById(R.id.ivRegister);
+            holder.tvCommName = (TextView) rootView.findViewById(R.id.tvCommName);
+            holder.tvAddress = (TextView) rootView.findViewById(R.id.tvAddress);
             rootView.setTag(holder);
-        }
-        else
-        {
+        } else {
             holder = (ViewHolder) rootView.getTag();
         }
 
@@ -89,21 +83,20 @@ public class BbsMerchantCommunityListAdapter extends BaseAdapter {
         holder.tvMemberName.setText(context.getString(R.string.member_name) + " : " + merchantCommunityList.getMemberName());
         holder.tvShopName.setText(context.getString(R.string.shop_name) + " : " + merchantCommunityList.getShopName());
         holder.tvCommName.setText(context.getString(R.string.community) + " : " + merchantCommunityList.getCommName());
-        holder.tvAddress.setText(context.getString(R.string.myprofile_text_address) + " : " + merchantCommunityList.getAddress1() + ", " + merchantCommunityList.getDistrict() + ", "+ merchantCommunityList.getProvince() );
+        holder.tvAddress.setText(context.getString(R.string.myprofile_text_address) + " : " + merchantCommunityList.getAddress1() + ", " + merchantCommunityList.getDistrict() + ", " + merchantCommunityList.getProvince());
 
         holder.ivRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 MerchantCommunityList merchantCommunityList = (MerchantCommunityList) getItem(position);
-                Intent intent=new Intent(context, BbsMemberLocationActivity.class);
-                intent.putExtra("memberId", merchantCommunityList.getMemberId());
-                intent.putExtra("shopId", merchantCommunityList.getShopId());
-                intent.putExtra("shopName", merchantCommunityList.getShopName());
+                Intent intent = new Intent(context, BbsMemberLocationActivity.class);
+                intent.putExtra(DefineValue.MEMBER_ID, merchantCommunityList.getMemberId());
+                intent.putExtra(DefineValue.SHOP_ID, merchantCommunityList.getShopId());
+                intent.putExtra(DefineValue.SHOP_NAME, merchantCommunityList.getShopName());
                 context.startActivity(intent);
             }
         });
-
 
         return rootView;
     }

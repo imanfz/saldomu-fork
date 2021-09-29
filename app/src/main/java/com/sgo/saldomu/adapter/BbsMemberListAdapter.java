@@ -17,6 +17,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsMerchantSetupHourActivity;
 import com.sgo.saldomu.activities.BbsRegisterOpenClosedShopActivity;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.models.ShopDetail;
 
 import java.util.ArrayList;
@@ -25,24 +26,17 @@ public class BbsMemberListAdapter extends BaseAdapter {
     private ArrayList<ShopDetail> shopDetails;
     private Context context;
     private LayoutInflater inflater;
-    private String memberType;
 
-    public BbsMemberListAdapter(Context context, ArrayList<ShopDetail> shopDetails)
-    {
+    public BbsMemberListAdapter(Context context, ArrayList<ShopDetail> shopDetails) {
         this.context = context;
         this.shopDetails = shopDetails;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    class ViewHolder
-    {
+    static class ViewHolder {
         TextView tvShopName, tvCommName, tvMemberName, tvMemberCode;
         ImageView ivLocation, ivOpenHour, ivTutupManual;
         int position;
-
-        public int getPosition() {
-            return position;
-        }
 
         public void setPosition(int position) {
             this.position = position;
@@ -69,25 +63,25 @@ public class BbsMemberListAdapter extends BaseAdapter {
         View rootView = convertView;
         BbsMemberListAdapter.ViewHolder holder;
 
-        if(rootView == null) {
+        if (rootView == null) {
             //viewHolder = new BbsMerchantCommunityListAdapter.ViewHolder();
-            rootView                = inflater.inflate(R.layout.bbs_member_list_adapter, null);
+            rootView = inflater.inflate(R.layout.bbs_member_list_adapter, null);
 
-            holder                  = new BbsMemberListAdapter.ViewHolder();
-            holder.tvShopName       = (TextView) rootView.findViewById(R.id.text_shop_name);
-            holder.tvCommName       = (TextView) rootView.findViewById(R.id.text_comm_name);
-            holder.tvMemberName     = (TextView) rootView.findViewById(R.id.text_member_name);
-            holder.tvMemberCode     = (TextView) rootView.findViewById(R.id.text_member_code);
-            holder.ivLocation       = (ImageView) rootView.findViewById(R.id.ivLocation);
-            holder.ivTutupManual    = (ImageView) rootView.findViewById(R.id.ivTutupManual);
-            holder.ivOpenHour       = (ImageView) rootView.findViewById(R.id.ivOpenHour);
+            holder = new ViewHolder();
+            holder.tvShopName = (TextView) rootView.findViewById(R.id.text_shop_name);
+            holder.tvCommName = (TextView) rootView.findViewById(R.id.text_comm_name);
+            holder.tvMemberName = (TextView) rootView.findViewById(R.id.text_member_name);
+            holder.tvMemberCode = (TextView) rootView.findViewById(R.id.text_member_code);
+            holder.ivLocation = (ImageView) rootView.findViewById(R.id.ivLocation);
+            holder.ivTutupManual = (ImageView) rootView.findViewById(R.id.ivTutupManual);
+            holder.ivOpenHour = (ImageView) rootView.findViewById(R.id.ivOpenHour);
 
             rootView.setTag(holder);
         } else {
             holder = (BbsMemberListAdapter.ViewHolder) rootView.getTag();
         }
 
-        ShopDetail shopDetail   = (ShopDetail) getItem(position);
+        ShopDetail shopDetail = (ShopDetail) getItem(position);
         holder.tvShopName.setText(shopDetail.getShopName());
         holder.tvCommName.setText(shopDetail.getCommName());
         holder.tvMemberName.setText(shopDetail.getMemberName());
@@ -100,9 +94,9 @@ public class BbsMemberListAdapter extends BaseAdapter {
 
 
                 Intent intent = new Intent(context.getApplicationContext(), BbsMemberLocationActivity.class);
-                intent.putExtra("memberId", tempDetail.getMemberId());
-                intent.putExtra("shopId", tempDetail.getShopId());
-                intent.putExtra("shopName", tempDetail.getShopName());
+                intent.putExtra(DefineValue.MEMBER_ID, tempDetail.getMemberId());
+                intent.putExtra(DefineValue.SHOP_ID, tempDetail.getShopId());
+                intent.putExtra(DefineValue.SHOP_NAME, tempDetail.getShopName());
                 intent.putExtra("memberType", tempDetail.getMemberType());
                 context.startActivity(intent);
 
@@ -115,8 +109,8 @@ public class BbsMemberListAdapter extends BaseAdapter {
                 ShopDetail tempDetail = (ShopDetail) getItem(position);
 
                 Intent intent = new Intent(context.getApplicationContext(), BbsRegisterOpenClosedShopActivity.class);
-                intent.putExtra("memberId", tempDetail.getMemberId());
-                intent.putExtra("shopId", tempDetail.getShopId());
+                intent.putExtra(DefineValue.MEMBER_ID, tempDetail.getMemberId());
+                intent.putExtra(DefineValue.SHOP_ID, tempDetail.getShopId());
                 context.startActivity(intent);
 
             }
@@ -126,8 +120,8 @@ public class BbsMemberListAdapter extends BaseAdapter {
             public void onClick(View v) {
                 ShopDetail tempDetail = (ShopDetail) getItem(position);
                 Intent intent = new Intent(context.getApplicationContext(), BbsMerchantSetupHourActivity.class);
-                intent.putExtra("memberId", tempDetail.getMemberId());
-                intent.putExtra("shopId", tempDetail.getShopId());
+                intent.putExtra(DefineValue.MEMBER_ID, tempDetail.getMemberId());
+                intent.putExtra(DefineValue.SHOP_ID, tempDetail.getShopId());
                 context.startActivity(intent);
 
             }

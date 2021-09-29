@@ -20,7 +20,6 @@ import com.viewpagerindicator.TabPageIndicator;
 
 public class ContactActivity extends BaseActivity {
     private ContactTabAdapter currentAdapternya;
-    SecurePreferences sp;
     private View currentView;
     private InformationDialog dialogI;
 
@@ -47,7 +46,7 @@ public class ContactActivity extends BaseActivity {
 
             tabs = findViewById(R.id.contact_tabs);
             pager = findViewById(R.id.contact_pager);
-            adapternya = new ContactTabAdapter(getSupportFragmentManager(), this, titles);
+            adapternya = new ContactTabAdapter(getSupportFragmentManager(), titles);
 //            setTargetFragment(this, 0);
             pager.setAdapter(adapternya);
             pager.setPageMargin(pageMargin);

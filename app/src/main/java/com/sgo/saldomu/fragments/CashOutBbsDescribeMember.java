@@ -70,27 +70,24 @@ import java.util.HashMap;
 
 import timber.log.Timber;
 
-public class Cashoutbbs_describ_member extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
+public class CashOutBbsDescribeMember extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
     public final static String TAG = "com.sgo.saldomu.fragments.Cashoutbbs_describ_member";
     View v;
-    //    layout_button_transaction;
-    String authType, amount, fee, total, ccyId, txId, created, comm_code,
+    String amount, fee, total, ccyId, txId, created, comm_code,
             product_name, product_code, bank_code, bank_name, callback_url, api_key, comm_id, otp_member;
     private String product_h2h;
-    TextView tvAgent, tvAmount, tvFee, tvTotal, tvCode, tvTxId, tvCreated, tvAlert, tvBankProduct, tvAdditionalFee;
-    LinearLayout layoutOTP, layoutNoEmpty, layoutButton;
+    TextView tvAgent, tvAmount, tvFee, tvTotal, tvTxId, tvCreated, tvAlert, tvBankProduct, tvAdditionalFee;
+    LinearLayout layoutOTP, layoutNoEmpty;
     RelativeLayout layoutEmpty;
     EditText tokenValue;
     Button btnOk, btnCancel, btnResend;
     int pin_attempt = -1;
     boolean isPIN = true, isOTP = false;
-    int start = 0;
     Handler handlerWS;
     Runnable runnableWS;
     ProgressDialog progdialog;
     ProgressBar loading;
     private int max_token_resend = 3;
-    //    private Button btn_proses_transaction;
     int failed = 0;
 
     @Override
@@ -122,15 +119,8 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
             }
         }
 
-//        authType = sp.getString(DefineValue.AUTHENTICATION_TYPE, "");
-
-//        isPIN = authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_PIN);
-//        isOTP = authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP);
-
         layoutEmpty = v.findViewById(R.id.bbscashoutmember_empty_layout);
         layoutNoEmpty = v.findViewById(R.id.bbscashoutmember_layout);
-//        layoutCode = (LinearLayout) v.findViewById(R.id.bbscashoutmember_code_layout);
-        layoutButton = v.findViewById(R.id.bbscashoutmember_bottom_layout);
         tvTxId = v.findViewById(R.id.bbscashoutmember_tx_id_value);
         tvCreated = v.findViewById(R.id.bbscashoutmember_created_value);
         tvAgent = v.findViewById(R.id.bbscashoutmember_agent_value);
@@ -138,7 +128,6 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
         tvFee = v.findViewById(R.id.bbscashoutmember_fee_value);
         tvAdditionalFee = v.findViewById(R.id.bbscashoutmember_additionalfee);
         tvTotal = v.findViewById(R.id.bbscashoutmember_total_value);
-        tvCode = v.findViewById(R.id.bbscashoutmember_code);
         tvBankProduct = v.findViewById(R.id.bbscashoutmember_bank_product_value);
         loading = v.findViewById(R.id.prgLoading);
         tvAlert = v.findViewById(R.id.text_alert);
@@ -166,7 +155,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
             @Override
             public void onClick(View v) {
                 if (InetHandler.isNetworkAvailable(getActivity())) {
-                    if (getProduct_h2h().equalsIgnoreCase("Y")) {
+                    if (getProduct_h2h().equalsIgnoreCase(DefineValue.STRING_YES)) {
                         if (isPIN) {
                             Intent i = new Intent(getActivity(), InsertPIN.class);
                             if (pin_attempt != -1 && pin_attempt < 2)
@@ -179,7 +168,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                         } else {
                             Toast.makeText(getActivity(), "Authentication type kosong", Toast.LENGTH_LONG).show();
                         }
-                    } else if (getProduct_h2h().equalsIgnoreCase("N")) {
+                    } else if (getProduct_h2h().equalsIgnoreCase(DefineValue.STRING_NO)) {
                         changeToSGOPlus(txId, product_code, product_name, bank_code, amount, fee, total, bank_name);
                     }
 //                    else
@@ -247,11 +236,8 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
         @Override
         public void onClick(View view) {
             if (InetHandler.isNetworkAvailable(getActivity())) {
-                if (authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
-                    if (max_token_resend != 0)
-                        sentResendToken(txId);
-
-                }
+                if (max_token_resend != 0)
+                    sentResendToken(txId);
             } else
                 DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
 
@@ -347,8 +333,8 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }else {
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                } else {
                                     Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                                     handlerWS.postDelayed(runnableWS, 60000);
                                 }
@@ -381,7 +367,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
     }
 
     private void setPayment(String _product_h2h) {
-        if (_product_h2h.equalsIgnoreCase("Y")) {
+        if (_product_h2h.equalsIgnoreCase(DefineValue.STRING_YES)) {
             if (isOTP) {
                 layoutOTP.setVisibility(View.VISIBLE);
                 btnResend = v.findViewById(R.id.btn_resend_token);
@@ -473,8 +459,8 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                            }else {
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                            } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 getActivity().finish();
                             }
@@ -531,8 +517,8 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                            }else {
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                            } else {
                                 code = model.getError_message();
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
                             }
@@ -589,8 +575,8 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                            }else {
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                            } else {
                                 code = model.getError_message();
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
                             }
@@ -669,8 +655,8 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + object.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }else {
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                } else {
                                     String msg = model.getError_message();
 //                            if(code.equals("0003")){
 //                                showReportBillerDialog(userName, DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),
@@ -791,10 +777,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
         dialog.show();
     }
 
-    public void setMemberOTP(String otp) {
-//        layoutCode.setVisibility(View.VISIBLE);
-//        layoutButton.setVisibility(View.GONE);
-//        tvCode.setText(otp);
+    public void setMemberOTP() {
         sentListMemberATC();
     }
 

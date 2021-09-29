@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -88,19 +87,17 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     private GoogleApiClient googleApiClient;
     private Location lastLocation;
     private LocationRequest mLocationRequest;
-    ProgressDialog progdialog, progdialog2;
-    Double memberLatitude, memberLongitude, agentLatitude, agentLongitude, benefLatitude, benefLongitude;
+    ProgressDialog progdialog;
+    Double agentLatitude, agentLongitude, benefLatitude, benefLongitude;
     ShopDetail shopDetail;
     private GoogleMap globalMap;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvDurasi, tvBbsNote, tvAcctLabel, tvAcctName;
-    Boolean isFirstLoad = true, isRunning = false, isInquiryRoute = false;
+    TextView tvCategoryName, tvMemberName, tvAmount, tvDurasi, tvBbsNote, tvAcctLabel, tvAcctName;
+    Boolean isInquiryRoute = false;
     int distanceBetween = 0;
     List<Polyline> lines;
     Polyline line;
     String encodedPoints = "";
-    String htmlDirections = "";
     //TextToSpeech textToSpeech;
-    Boolean isTTSActive = true;
     Button btnTibaDiLokasi, btnCancel, btnGetDirection;
     private int timeDelayed = 30000;
     Intent intentData;
@@ -110,12 +107,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     private Runnable runnable2 = new Runnable() {
         @Override
         public void run() {
-            isRunning = true;
-
-            if (isInquiryRoute && DefineValue.MIN_DISTANCE_ALMOST_ARRIVE > distanceBetween) {
-                //Toast.makeText(getApplicationContext(), getString(R.string.bbs_agent_almost_arrive), Toast.LENGTH_LONG).show();
-            }
-
             updateLocationAgent();
             handler.postDelayed(this, timeDelayed);
         }
@@ -211,7 +202,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         btnTibaDiLokasi.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
-                        progdialog2 = DefinedDialog.CreateProgressDialog(BbsMapViewByAgentActivity.this, "");
+                        progdialog = DefinedDialog.CreateProgressDialog(BbsMapViewByAgentActivity.this, "");
 
                         confirmTransactionByAgent();
                     }
@@ -263,24 +254,11 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
             globalMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
-            MarkerOptions markerOptions = new MarkerOptions()
-                    .position(latLng)
-                    //.title("")
-                    //.icon(BitmapDescriptorFactory.fromResource(R.drawable.house));
-                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_person, 90, 90)));
-            //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            Marker marker = globalMap.addMarker(markerOptions);
-
             LatLng targetLatLng = new LatLng(benefLatitude, benefLongitude);
             MarkerOptions markerTargetOptions = new MarkerOptions()
                     .position(targetLatLng)
-                    //.title("")
-                    //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
                     .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.search_location, 70, 90)));
             globalMap.addMarker(markerTargetOptions);
-
-            ///if ( isFirstLoad ) {
-            //isFirstLoad = false;
 
             //add camera position and configuration
             CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -313,24 +291,13 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         agentLatitude = lastLocation.getLatitude();
         agentLongitude = lastLocation.getLongitude();
 
-        /*if ( progdialog != null ) {
-            if ( progdialog.isShowing() ) progdialog.dismiss();
-        }
-
-        if ( !isRunning ) {
-            handler.removeCallbacks(runnable2);
-            updateLocationAgent();
-            handler.postDelayed(runnable2, timeDelayed);
-        }*/
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-        } else {
+        if (!EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             // Ask for one permission
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
                     RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -340,19 +307,15 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
             final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
             builder.setMessage(getString(R.string.alertbox_gps_warning))
                     .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                    .setPositiveButton(R.string.yes, (dialog, id) -> {
 
-                            Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivityForResult(ilocation, 1);
+                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(ilocation, 1);
 
-                        }
                     })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                            dialog.cancel();
-                            startActivity(new Intent(getApplicationContext(), MainPage.class));
-                        }
+                    .setNegativeButton(R.string.no, (dialog, id) -> {
+                        dialog.cancel();
+                        startActivity(new Intent(getApplicationContext(), MainPage.class));
                     });
             final android.app.AlertDialog alert = builder.create();
             alert.show();
@@ -413,7 +376,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Timber.d("onConnected Started");
-        startLocationUpdate();
 
         try {
             lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
@@ -495,7 +457,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                     @Override
                     public void onResponses(JSONObject response) {
                         try {
-                            isRunning = false;
                             String code = response.getString(WebParams.ERROR_CODE);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
@@ -505,11 +466,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                 shopDetail.setKeyCode(response.getString(DefineValue.KEY_CODE));
                                 shopDetail.setKeyName(response.getString(DefineValue.KEY_NAME));
                                 shopDetail.setCategoryName(response.getString(DefineValue.CATEGORY_NAME));
-                                //shopDetail.setKeyProvince(response.getString(DefineValue.KEY_PROVINCE));
-                                //shopDetail.setKeyDistrict(response.getString(DefineValue.KEY_DISTRICT));
-                                //shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
-                                //shopDetail.setAmount(response.getString(DefineValue.KEY_AMOUNT));
-                                //shopDetail.setCcyId(response.getString(DefineValue.KEY_CCY));
 
                                 if (response.getString(WebParams.BBS_NOTE) != null) {
                                     tvBbsNote.setText(response.getString(WebParams.BBS_NOTE));
@@ -523,12 +479,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                     tvAcctLabel.setText(getString(R.string.bbs_setor_ke));
                                 } else if (response.getString(WebParams.SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
                                     btnCancel.setVisibility(View.VISIBLE);
-                                    btnCancel.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            cancelDGI();
-                                        }
-                                    });
+                                    btnCancel.setOnClickListener(view -> cancelDGI());
                                 } else {
                                     tvAcctLabel.setText(getString(R.string.bbs_tarik_dari));
                                 }
@@ -570,9 +521,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                     handler.postDelayed(runnable2, timeDelayed);
                                 }
                             } else {
-                                //if ( progdialog.isShowing())
-                                //progdialog.dismiss();
-
                                 code = response.getString(WebParams.ERROR_MESSAGE);
 //                                Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
                                 InterfaceManager.showConfirmDialog(BbsMapViewByAgentActivity.this, code,
@@ -603,18 +551,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
     }
 
-    /**
-     * Starting the location updates
-     */
-    protected void startLocationUpdate() {
-        try {
-            PendingResult<Status> statusPendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
-                    googleApiClient, mLocationRequest, this);
-        } catch (SecurityException se) {
-            se.printStackTrace();
-        }
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -629,19 +565,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         return true;
     }
 
-    /*@Override
-    public void onInit(int Text2SpeechCurrentStatus) {
-
-        if ( isTTSActive && Text2SpeechCurrentStatus == TextToSpeech.SUCCESS) {
-
-            textToSpeech.setLanguage(Locale.getDefault());
-            TextToSpeechFunction();
-        }
-    }*/
-
     private class GoogleMapRouteDirectionTask extends AsyncTask<Void, Void, Integer> {
 
-        private ArrayList<ShopDetail> dataDetails = new ArrayList<>();
         private Double dataCurrentLatitude;
         private Double dataCurrentLongitude;
         private Double targetLatitude;
@@ -658,10 +583,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
 
-            /*if ( isTTSActive && !htmlDirections.equals("") ) {
-                //tvDirection.setText(Html.fromHtml(htmlDirections));
-                TextToSpeechFunction();
-            }*/
             setPolyline();
         }
 
@@ -670,10 +591,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
             HashMap<String, Object> query = MyApiClient.googleDestination();
             query.put("origin", dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString());
-//            query.put("sensor", "false");
-//            query.put("units", "metric");
-//            query.put("mode", DefineValue.GMAP_MODE);
-//            query.put("language", Locale.getDefault().getLanguage());
             query.put("destination", targetLatitude.toString() + "," + targetLongitude.toString());
 
             String nextParams = "origin=" + dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString();
@@ -682,15 +599,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
             nextParams += "&mode=" + DefineValue.GMAP_MODE;
             nextParams += "&language=" + Locale.getDefault().getLanguage();
 
-//            RequestParams rqParams = new RequestParams();
-//            rqParams.put("origin", agentLatitude.toString()+","+agentLongitude.toString());
-//            rqParams.put("sensor", "false");
-//            rqParams.put("units", "metric");
-//            rqParams.put("mode", DefineValue.GMAP_MODE);
-//            rqParams.put("language", Locale.getDefault().getLanguage() );
-            String tempParams = nextParams;
-            tempParams += "&destination=" + targetLatitude.toString() + "," + targetLongitude.toString();
-
             getGoogleMapRoute(query, 0);
             return null;
         }
@@ -698,20 +606,18 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     }
 
     public void getGoogleMapRoute(
-//            String tempParams
             HashMap<String, Object> query, final int idx) {
 
         RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE, query,
-//                        + "?" + tempParams,
                 new ObjListeners() {
                     @Override
                     public void onResponses(JSONObject response) {
                         try {
 
                             JSONArray array = response.getJSONArray("routes");
-                            JSONObject routes = array.getJSONObject(0);
+                            JSONObject routes = array.getJSONObject(idx);
                             JSONArray legs = routes.getJSONArray("legs");
-                            JSONObject steps = legs.getJSONObject(0);
+                            JSONObject steps = legs.getJSONObject(idx);
                             JSONObject distance = steps.getJSONObject("distance");
                             JSONObject duration = steps.getJSONObject("duration");
 
@@ -719,38 +625,14 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
                             isInquiryRoute = true;
 
-                            String parsedDistance = distance.getString("text");
-
-                            int iDistance = distance.getInt("value");
-
-
                             final String parseDuration = duration.getString("text");
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    tvDurasi.setText(parseDuration);
-                                }
-                            });
+                            runOnUiThread(() -> tvDurasi.setText(parseDuration));
 
                             JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
-                            String points = overviewPolyline.getString("points");
 
-                            encodedPoints = points;
+                            encodedPoints = overviewPolyline.getString("points");
 
                             JSONArray directions = steps.getJSONArray("steps");
-
-                            if (directions.length() > 0) {
-                                JSONObject toDirection = directions.getJSONObject(0);
-                                htmlDirections = toDirection.getString("html_instructions");
-
-                        /*JSONArray toDistanceArray = toDirection.getJSONArray("distance");
-                        JSONObject toDistanceObject = toDistanceArray.getJSONObject(0);
-                        String toDistanceString = toDistanceObject.getString("text");
-
-                        htmlDirections += " ( " + toDistanceString + " ) ";
-                        //tvDirection.setText(Html.fromHtml(toDirection.getString("html_instructions")));
-                        */
-                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -849,20 +731,16 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(getString(R.string.alertbox_gps_warning))
                         .setCancelable(false)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        .setPositiveButton(R.string.yes, (dialog, id) -> {
 
-                                Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivityForResult(ilocation, 1);
+                            Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivityForResult(ilocation, 1);
 
-                            }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                                dialog.cancel();
-                                startActivity(new Intent(getApplicationContext(), MainPage.class));
-                                finish();
-                            }
+                        .setNegativeButton(R.string.no, (dialog, id) -> {
+                            dialog.cancel();
+                            startActivity(new Intent(getApplicationContext(), MainPage.class));
+                            finish();
                         });
                 final AlertDialog alert = builder.create();
                 alert.show();
@@ -876,10 +754,10 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     }
 
     private void confirmTransactionByAgent() {
-        if (progdialog2 == null)
-            progdialog2 = DefinedDialog.CreateProgressDialog(this, "");
+        if (progdialog == null)
+            progdialog = DefinedDialog.CreateProgressDialog(this, "");
         else
-            progdialog2.show();
+            progdialog.show();
         String extraSignature = txId;
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TRANSACTION_BY_AGENT,
                 extraSignature);
@@ -1002,18 +880,18 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
                     @Override
                     public void onComplete() {
-                        if (progdialog2.isShowing())
-                            progdialog2.dismiss();
+                        if (progdialog.isShowing())
+                            progdialog.dismiss();
                     }
                 });
     }
 
 
     public void cancelDGI() {
-        if (progdialog2 == null)
-            progdialog2 = DefinedDialog.CreateProgressDialog(this, "");
+        if (progdialog == null)
+            progdialog = DefinedDialog.CreateProgressDialog(this, "");
         else
-            progdialog2.show();
+            progdialog.show();
         String extraSignature = txId;
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CANCEL_TRANSACTION_DGI,
                 extraSignature);
@@ -1021,7 +899,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.TX_ID, txId);
         params.put(WebParams.USER_ID, userPhoneID);
-        Timber.d("params cancel transaction DGI : " + params.toString());
+        Timber.d("params cancel transaction DGI : %s", params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CANCEL_TRANSACTION_DGI, params,
                 new ObjListeners() {
@@ -1033,22 +911,20 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
                             String code = response.getString(WebParams.ERROR_CODE);
                             String error_message = response.getString(WebParams.ERROR_MESSAGE);
-                            Timber.d("response cancel transaction DGI : " + response.toString());
+                            Timber.d("response cancel transaction DGI : %s", response.toString());
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-
                                 finish();
-
                             }  else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
                                 alertDialogUpdateApp.showDialogUpdate(BbsMapViewByAgentActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + response.toString());
+                                Timber.d("isi response maintenance:%s", response.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(BbsMapViewByAgentActivity.this, model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(BbsMapViewByAgentActivity.this);
                             }else {
-                                Toast.makeText(BbsMapViewByAgentActivity.this, response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
+                                Toast.makeText(BbsMapViewByAgentActivity.this, error_message, Toast.LENGTH_LONG).show();
                             }
 
                             handler.removeCallbacks(runnable2);
@@ -1065,8 +941,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
                     @Override
                     public void onComplete() {
-                        if (progdialog2.isShowing())
-                            progdialog2.dismiss();
+                        if (progdialog.isShowing())
+                            progdialog.dismiss();
                     }
                 });
     }
@@ -1075,7 +951,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     public void onBackPressed() {
         disabledBackPressed();
 
-        return;
     }
 
     private void disabledBackPressed() {
@@ -1084,11 +959,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.alert_message_disabled_agent_approval_backpressed))
                 .setCancelable(false)
-                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.dismiss();
-                    }
-                })
+                .setPositiveButton(getString(R.string.yes), (dialog, id) -> dialog.dismiss())
         ;
         final AlertDialog alert = builder.create();
         alert.show();

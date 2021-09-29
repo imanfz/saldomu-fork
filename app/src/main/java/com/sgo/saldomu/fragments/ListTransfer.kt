@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.CashoutActivity
-import com.sgo.saldomu.activities.MainPage
 import com.sgo.saldomu.activities.PayFriendsActivity
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
@@ -54,7 +53,7 @@ class ListTransfer : BaseFragment() {
     private fun dialogCantCashout() {
         val dialog = DefinedDialog.MessageDialog(activity, this.getString(R.string.alertbox_title_information),
                 this.getString(R.string.cashout_dialog_message)
-        ) { _, _ -> }
+        ) { }
 
         dialog.setCanceledOnTouchOutside(false)
         dialog.setCancelable(false)

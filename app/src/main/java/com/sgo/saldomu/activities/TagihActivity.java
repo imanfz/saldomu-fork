@@ -22,7 +22,7 @@ public class TagihActivity extends BaseActivity {
     FragmentManager fragmentManager;
     Fragment mContent;
     Fragment newFragment = null;
-    private String memberCode,commCode,commName,anchorName, txIdPG;
+    private String memberCode, commCode, commName, anchorName, txIdPG;
 
     @Override
     protected int getLayoutResource() {
@@ -56,7 +56,7 @@ public class TagihActivity extends BaseActivity {
 
             newFragment = new FragTagihInput();
             bundle.putBoolean(DefineValue.IS_SEARCH_DGI, is_search);
-            if (memberCode != null || commCode != null || commName!=null || anchorName!=null) {
+            if (memberCode != null || commCode != null || commName != null || anchorName != null) {
                 bundle.putString(DefineValue.MEMBER_CODE_PG, memberCode);
                 bundle.putString(DefineValue.COMM_CODE_DGI, commCode);
                 bundle.putString(DefineValue.COMM_NAME_PG, commName);

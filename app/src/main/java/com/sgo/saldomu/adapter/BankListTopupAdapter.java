@@ -33,7 +33,7 @@ public class BankListTopupAdapter extends RecyclerView.Adapter<BankListTopupAdap
         void onClick(ArrayList<listBankModel> bankData);
     }
 
-    public BankListTopupAdapter(Context _context, BankDataTopUp temp_other_atm, List<BankHeaderTopUp> listDataHeader, OnClick listener){
+    public BankListTopupAdapter(Context _context, List<BankHeaderTopUp> listDataHeader, OnClick listener){
         context = _context;
         this.listDataHeader = listDataHeader;
         this.listener = listener;

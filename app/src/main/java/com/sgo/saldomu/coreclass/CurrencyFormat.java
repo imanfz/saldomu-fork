@@ -41,34 +41,8 @@ public class CurrencyFormat {
         return format(temp);
     }
 
-    public static String format1(String number) {
-        if (number == null)
-            return "";
-
-        if (number.contains(symbols) || number.isEmpty())
-            return number;
-        double temp = Double.valueOf(number);
-        return format(temp);
-    }
-
     public static String format(int number) {
         double temp = (double) number;
         return format(temp);
     }
-
-    public static String format1(int number) {
-        double temp = (double) number;
-        return format(temp);
-    }
-
-    public static String deleteDecimal(String number) {
-        if (!number.isEmpty()) {
-            double temp1 = Double.valueOf(number);
-            if (temp1 == (long) temp1)
-                return String.valueOf((int) temp1);
-        }
-        return number;
-    }
-
-
 }

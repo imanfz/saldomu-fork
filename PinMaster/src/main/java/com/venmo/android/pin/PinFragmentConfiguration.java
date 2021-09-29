@@ -18,11 +18,6 @@ public class PinFragmentConfiguration {
         mPinSaver = new DefaultSaver(c);
     }
 
-    public PinFragmentConfiguration(Validator validator, PinSaver saver) {
-        mValidator = validator;
-        mPinSaver = saver;
-    }
-
     @SuppressWarnings("unused")
     public PinFragmentConfiguration validator(Validator validator) {
         mValidator = validator;

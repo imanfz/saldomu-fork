@@ -4,17 +4,18 @@ package com.sgo.saldomu.coreclass;/*
 
 public class WebParams {
 
-    public static String SUCCESS_CODE= "0000";
+    public static String SUCCESS_CODE = "0000";
     public static String SATU = "1";
-    public static String LOGOUT_CODE= "0404";
+    public static String LOGOUT_CODE = "0404";
 
-    public static String ERROR_CODE= "error_code";
-    public static String ERROR_MESSAGE= "error_message";
-    public static String MESSAGE= "message";
-    public static String DATE_TIME= "datetime";
+    public static String ERROR_CODE = "error_code";
+    public static String ERROR_MESSAGE = "error_message";
+    public static String ERROR_MSG = "error_msg";
+    public static String MESSAGE = "message";
+    public static String DATE_TIME = "datetime";
 
-    public static String COMM_ID= "comm_id";
-    public static String COMM_ID_SCADM= "comm_id_scadm";
+    public static String COMM_ID = "comm_id";
+    public static String COMM_ID_SCADM = "comm_id_scadm";
     public static String CUST_NAME = "cust_name";
     public static String CUST_ID = "cust_id";
     public static String CUST_TYPE = "cust_type";
@@ -36,9 +37,9 @@ public class WebParams {
     public static String PASSWORD = "password";
     public static String FLAG_LOGIN = "flag_login";
     public static String USER_NAME = "user_name";
-    public static String COMMUNITY= "community";
-    public static String BUSS_SCHEME_NAME= "buss_scheme_name";
-    public static String BUSS_SCHEME_CODE= "buss_scheme_code";
+    public static String COMMUNITY = "community";
+    public static String BUSS_SCHEME_NAME = "buss_scheme_name";
+    public static String BUSS_SCHEME_CODE = "buss_scheme_code";
     public static String COMM_NAME = "comm_name";
     public static String CALLBACK_URL = "callback_url";
 
@@ -68,7 +69,7 @@ public class WebParams {
     public static String PAYMENT_REMARK = "payment_remark";
     public static String PAYMENT_BANK = "payment_bank";
     public static String PAYMENT_PHONE = "payment_phone";
-    public static String PAYMENT_NAME= "payment_name";
+    public static String PAYMENT_NAME = "payment_name";
     public static String PRODUCT_H2H = "product_h2h";
     public static String PRODUCT_DISPLAY = "product_display";
 
@@ -160,7 +161,7 @@ public class WebParams {
 
     public static String FEE = "fee";
     public static String TOTAL = "total";
-	public static String DESC = "desc";
+    public static String DESC = "desc";
     public static String REQUEST_ID = "request_id";
     public static String SEND_TO = "send_to";
     public static String DATA_CONTACT = "data_contact";
@@ -181,10 +182,11 @@ public class WebParams {
     public static String GROUP_NAME = "group_name";
     public static String GROUP_DESC = "group_desc";
     public static String OWNER_ID = "owner_id";
-    public static String CREATED= "created";
+    public static String CREATED = "created";
     public static String CREATED_DATE = "created_date";
-    public static String UPDATED_DATE ="updated_date";
+    public static String UPDATED_DATE = "updated_date";
 
+    public static String MEMBER = "member";
     public static String MEMBERS = "members";
     public static String APP_ID = "app_id";
     public static String ACTIVE = "active";
@@ -221,8 +223,8 @@ public class WebParams {
     public static String TO_PROFILE_PICTURE = "to_profile_picture";
     public static String REPLY = "reply";
 
-    public static String NO_DATA_CODE= "0003";
-	public static String TRX_ID = "trx_id";
+    public static String NO_DATA_CODE = "0003";
+    public static String TRX_ID = "trx_id";
     public static String TX_TYPE = "tx_type";
     public static String STATUS = "status";
     public static String UNREAD = "unread";
@@ -230,7 +232,7 @@ public class WebParams {
     public static String PRIVACY = "privacy";
     public static String DATA_MAPPER = "data_mapper";
 
-	public static String AUTHENTICATION_TYPE = "authentication_type";
+    public static String AUTHENTICATION_TYPE = "authentication_type";
     public static String AUTH_TYPE = "auth_type";
 
     public static String LENGTH_AUTH = "length_auth";
@@ -240,31 +242,31 @@ public class WebParams {
     public static String PERIOD_LIMIT = "period_limit";
     public static String NEXT_RESET = "next_reset";
 
-    public static String PAGE= "page";
-    public static String DATE_FROM= "date_from";
-    public static String DATE_TO= "date_to";
-    public static String REPORT_DATA= "report_data";
-    public static String TYPE= "type";
-    public static String REMARK= "remark";
-    public static String DETAIL= "detail";
-    public static String NEXT= "next";
+    public static String PAGE = "page";
+    public static String DATE_FROM = "date_from";
+    public static String DATE_TO = "date_to";
+    public static String REPORT_DATA = "report_data";
+    public static String TYPE = "type";
+    public static String REMARK = "remark";
+    public static String DETAIL = "detail";
+    public static String NEXT = "next";
 
-    public static String MIN_PWD= "min_pwd";
-    public static String MAX_PWD= "max_pwd";
+    public static String MIN_PWD = "min_pwd";
+    public static String MAX_PWD = "max_pwd";
 
-    public static String BILLER_PARENT_COMM_ID= "biller_parent_comm_id";
-    public static String BILLER_PARENT_COMM_CODE= "biller_parent_comm_code";
-    public static String BILLER_PARENT_API_KEY= "biller_parent_api_key";
+    public static String BILLER_PARENT_COMM_ID = "biller_parent_comm_id";
+    public static String BILLER_PARENT_COMM_CODE = "biller_parent_comm_code";
+    public static String BILLER_PARENT_API_KEY = "biller_parent_api_key";
 
-	public static String PROMO_DATA= "promo_data";
-	public static String PROMO_CODE= "promo_codes";
+    public static String PROMO_DATA = "promo_data";
+    public static String PROMO_CODE = "promo_codes";
     public static String NAME = "name";
     public static String BANNER_PIC = "banner_pic";
     public static String TARGET_URL = "target_url";
     public static String ATM_TOPUP_DATA = "atm_topup_data";
     public static String NO_VA = "no_va";
 
-	public static String APP_DATA = "app_data";
+    public static String APP_DATA = "app_data";
     public static String PACKAGE_NAME = "package_name";
     public static String PACKAGE_VERSION = "package_version";
 
@@ -283,7 +285,7 @@ public class WebParams {
     public static String MAX_MEMBER_TRANSFER = "max_member_transfer";
     public static String ADMIN_FEE = "admin_fee";
     public static String TX_FEE = "tx_fee";
-    public static String ADMINFEE ="ADMIN FEE";
+    public static String ADMINFEE = "ADMIN FEE";
 
     public static String ACCOUNT_DATA = "account_data";
     public static String ACCOUNT_NO = "account_no";
@@ -296,7 +298,7 @@ public class WebParams {
     public static String COMM_ID_PULSA = "comm_id_pulsa";
     public static String MEMBER_DAP = "member_dap";
     public static String CATALOG_ID = "catalog_id";
-	public static String VALIDATE_ID = "validate_id";
+    public static String VALIDATE_ID = "validate_id";
     public static String GENDER = "gender";
     public static String LANGUAGE = "language";
     public static String LOCATION = "location";
@@ -307,8 +309,8 @@ public class WebParams {
     public static String SOCIAL_SIGNATURE = "social_signature";
     public static String RECIPIENT_NAME = "recipient_name";
 
-	public static String RC_UUID = "rc_uuid";
-	public static String RQ_UUID = "rq_uuid";
+    public static String RC_UUID = "rc_uuid";
+    public static String RQ_UUID = "rq_uuid";
     public static String RC_DTIME = "rc_dtime";
     public static String RQ_DTIME = "rq_datetime";
     public static String SIGNATURE = "signature";
@@ -320,7 +322,7 @@ public class WebParams {
 
     public static String TO_ALIAS = "to_alias";
 
-	public static String REASON = "reason";
+    public static String REASON = "reason";
     public static String PASS = "pass";
     public static String CONF_PASS = "conf_pass";
     public static String PIN = "pin";
@@ -341,7 +343,7 @@ public class WebParams {
     public static String MEMBER_LEVEL = "member_level";
     public static String IS_REGISTERED = "is_registered";
 
-	public static String BANK_CASHOUT = "bank_cashout";
+    public static String BANK_CASHOUT = "bank_cashout";
     public static String USER_IS_SYNCED = "user_is_synced";
 
     public static String FROM_USER_ID = "from_user_id";
@@ -357,7 +359,7 @@ public class WebParams {
     public static String IS_REGISTER = "is_register";
     public static String ALLOW_MEMBER_LEVEL = "allow_member_level";
     public static String CAN_TRANSFER = "can_transfer";
-	public static String IS_MEMBER_TEMP = "is_member_temp";
+    public static String IS_MEMBER_TEMP = "is_member_temp";
     public static String DEV_MODEL = "dev_model";
     public static String MAC_ADDR = "mac_addr";
     public static String BANK_GATEWAY = "bank_gateway";
@@ -380,71 +382,71 @@ public class WebParams {
     public static String DISABLE = "disable";
     public static String IS_AUTO = "is_auto";
 
-    public static String RC_DATETIME    = "rc_datetime";
-    public static String FLAG_APPROVE   = "flag_approve";
-    public static String SHOP_ID        = "shop_id";
-    public static String VILLAGE       = "village";
-    public static String DISTRICT       = "district";
-    public static String PROVINCE       = "province";
-    public static String LATITUDE       = "latitude";
-    public static String LONGITUDE      = "longitude";
-    public static String RADIUS         = "radius";
-    public static String CATEGORY       = "category";
-    public static String ZIP_CODE       = "zipcode";
-    public static String FLAG_ALL_DAY   = "flag_all_day";
-    public static String FLAG_CLOSED_TYPE   = "flag_closed_type";
-    public static String OPEN_START_HOUR_SUN    = "open_start_hour_sun";
-    public static String OPEN_END_HOUR_SUN      = "open_end_hour_sun";
-    public static String OPEN_START_HOUR_MON    = "open_start_hour_mon";
-    public static String OPEN_END_HOUR_MON      = "open_end_hour_mon";
-    public static String OPEN_START_HOUR_TUE    = "open_start_hour_tue";
-    public static String OPEN_END_HOUR_TUE      = "open_end_hour_tue";
-    public static String OPEN_START_HOUR_WED    = "open_start_hour_wed";
-    public static String OPEN_END_HOUR_WED      = "open_end_hour_wed";
-    public static String OPEN_START_HOUR_THU    = "open_start_hour_thu";
-    public static String OPEN_END_HOUR_THU      = "open_end_hour_thu";
-    public static String OPEN_START_HOUR_FRI    = "open_start_hour_fri";
-    public static String OPEN_END_HOUR_FRI      = "open_end_hour_fri";
-    public static String OPEN_START_HOUR_SAT    = "open_start_hour_sat";
-    public static String OPEN_END_HOUR_SAT      = "open_end_hour_sat";
-    public static String CLOSED_VALUE           = "closed_value";
-    public static String SHOP_REMARK            = "shop_remark";
-    public static String SHOP_STATUS            = "shop_status";
-    public static String SHOP_START_OPEN_HOUR   = "shop_start_open_hour";
-    public static String SHOP_END_OPEN_HOUR     = "shop_end_open_hour";
-    public static String SHOP_DATE              = "shop_date";
-    public static String SHOP_START_DATE        = "shop_start_date";
-    public static String SHOP_END_DATE          = "shop_end_date";
+    public static String RC_DATETIME = "rc_datetime";
+    public static String FLAG_APPROVE = "flag_approve";
+    public static String SHOP_ID = "shop_id";
+    public static String VILLAGE = "village";
+    public static String DISTRICT = "district";
+    public static String PROVINCE = "province";
+    public static String LATITUDE = "latitude";
+    public static String LONGITUDE = "longitude";
+    public static String RADIUS = "radius";
+    public static String CATEGORY = "category";
+    public static String ZIP_CODE = "zipcode";
+    public static String FLAG_ALL_DAY = "flag_all_day";
+    public static String FLAG_CLOSED_TYPE = "flag_closed_type";
+    public static String OPEN_START_HOUR_SUN = "open_start_hour_sun";
+    public static String OPEN_END_HOUR_SUN = "open_end_hour_sun";
+    public static String OPEN_START_HOUR_MON = "open_start_hour_mon";
+    public static String OPEN_END_HOUR_MON = "open_end_hour_mon";
+    public static String OPEN_START_HOUR_TUE = "open_start_hour_tue";
+    public static String OPEN_END_HOUR_TUE = "open_end_hour_tue";
+    public static String OPEN_START_HOUR_WED = "open_start_hour_wed";
+    public static String OPEN_END_HOUR_WED = "open_end_hour_wed";
+    public static String OPEN_START_HOUR_THU = "open_start_hour_thu";
+    public static String OPEN_END_HOUR_THU = "open_end_hour_thu";
+    public static String OPEN_START_HOUR_FRI = "open_start_hour_fri";
+    public static String OPEN_END_HOUR_FRI = "open_end_hour_fri";
+    public static String OPEN_START_HOUR_SAT = "open_start_hour_sat";
+    public static String OPEN_END_HOUR_SAT = "open_end_hour_sat";
+    public static String CLOSED_VALUE = "closed_value";
+    public static String SHOP_REMARK = "shop_remark";
+    public static String SHOP_STATUS = "shop_status";
+    public static String SHOP_START_OPEN_HOUR = "shop_start_open_hour";
+    public static String SHOP_END_OPEN_HOUR = "shop_end_open_hour";
+    public static String SHOP_DATE = "shop_date";
+    public static String SHOP_START_DATE = "shop_start_date";
+    public static String SHOP_END_DATE = "shop_end_date";
 
     public static String TX_AMOUNT = "tx_amount";
-    public static String SCHEME_CODE= "scheme_code";
-    public static String SOURCE_PRODUCT_CODE= "source_product_code";
-    public static String BENEF_PRODUCT_CODE= "benef_product_code";
-    public static String SOURCE_PRODUCT_TYPE= "source_product_type";
-    public static String BENEF_PRODUCT_TYPE= "benef_product_type";
-    public static String BENEF_PRODUCT_VALUE_CODE= "benef_product_value_code";
-    public static String BENEF_PRODUCT_VALUE_NAME= "benef_product_value_name";
-    public static String BENEF_PRODUCT_VALUE_TOKEN= "benef_product_value_token";
-    public static String BENEF_ACCT_CITY= "benef_acct_city";
-    public static String BANK_ACCOUNT= "bank_account";
-    public static String BENEF_ACCT_TYPE= "benef_acct_type";
-    public static String BENEF_BANK_CODE= "benef_bank_code";
-    public static String BENEF_PRODUCT_VALUE_CITY= "benef_product_value_city";
-    public static String TX_PRODUCT_CODE= "tx_product_code";
-    public static String TX_BANK_CODE= "tx_bank_code";
-    public static String TX_BANK_NAME= "tx_bank_name";
-    public static String TX_PRODUCT_NAME= "tx_product_name";
-    public static String SOURCE_BANK_NAME= "source_bank_name";
-    public static String SOURCE_ACCT_NO= "source_acct_no";
-    public static String SOURCE_ACCT_NAME= "source_acct_name";
-    public static String BENEF_BANK_NAME= "benef_bank_name";
-    public static String BENEF_ACCT_NO= "benef_acct_no";
-    public static String BENEF_ACCT_NAME= "benef_acct_name";
-    public static String SOURCE_PRODUCT_VALUE= "source_product_value";
-    public static String FEE_AMOUNT= "fee_amount";
-    public static String RECEIVER_ID= "receiver_id";
-    public static String BENEF_CITY_CODE= "benef_city_code";
-    public static String BENEF_CITY_NAME= "benef_city_name";
+    public static String SCHEME_CODE = "scheme_code";
+    public static String SOURCE_PRODUCT_CODE = "source_product_code";
+    public static String BENEF_PRODUCT_CODE = "benef_product_code";
+    public static String SOURCE_PRODUCT_TYPE = "source_product_type";
+    public static String BENEF_PRODUCT_TYPE = "benef_product_type";
+    public static String BENEF_PRODUCT_VALUE_CODE = "benef_product_value_code";
+    public static String BENEF_PRODUCT_VALUE_NAME = "benef_product_value_name";
+    public static String BENEF_PRODUCT_VALUE_TOKEN = "benef_product_value_token";
+    public static String BENEF_ACCT_CITY = "benef_acct_city";
+    public static String BANK_ACCOUNT = "bank_account";
+    public static String BENEF_ACCT_TYPE = "benef_acct_type";
+    public static String BENEF_BANK_CODE = "benef_bank_code";
+    public static String BENEF_PRODUCT_VALUE_CITY = "benef_product_value_city";
+    public static String TX_PRODUCT_CODE = "tx_product_code";
+    public static String TX_BANK_CODE = "tx_bank_code";
+    public static String TX_BANK_NAME = "tx_bank_name";
+    public static String TX_PRODUCT_NAME = "tx_product_name";
+    public static String SOURCE_BANK_NAME = "source_bank_name";
+    public static String SOURCE_ACCT_NO = "source_acct_no";
+    public static String SOURCE_ACCT_NAME = "source_acct_name";
+    public static String BENEF_BANK_NAME = "benef_bank_name";
+    public static String BENEF_ACCT_NO = "benef_acct_no";
+    public static String BENEF_ACCT_NAME = "benef_acct_name";
+    public static String SOURCE_PRODUCT_VALUE = "source_product_value";
+    public static String FEE_AMOUNT = "fee_amount";
+    public static String RECEIVER_ID = "receiver_id";
+    public static String BENEF_CITY_CODE = "benef_city_code";
+    public static String BENEF_CITY_NAME = "benef_city_name";
     public static String COMM_TYPE = "comm_type";
     public static String IS_AGENT = "is_agent";
     public static String BBS_MOBILITY = "mobility";
@@ -452,42 +454,42 @@ public class WebParams {
     public static String BBS_NAME = "bbs_name";
     public static String FLAG_PROCESS = "flag_process";
 
-    public static String KEY_CCY        = "key_ccy";
-    public static String KEY_VALUE      = "key_value";
-    public static String KEY_AMOUNT     = "key_amount";
-    public static String KEY_CODE       = "key_code";
-    public static String KEY_NAME       = "key_name";
-    public static String KEY_ADDRESS    = "key_address";
-    public static String KEY_DISTRICT   = "key_district";
-    public static String KEY_PROVINCE   = "key_province";
-    public static String KEY_COUNTRY    = "key_country";
-    public static String KEY_LATITUDE   = "key_latitude";
-    public static String KEY_LONGITUDE  = "key_longitude";
-    public static String KEY_EMAIL      = "key_email";
-    public static String KEY_PHONE      = "key_phone";
-    public static String SHOP_LATITUDE  = "shop_latitude";
+    public static String KEY_CCY = "key_ccy";
+    public static String KEY_VALUE = "key_value";
+    public static String KEY_AMOUNT = "key_amount";
+    public static String KEY_CODE = "key_code";
+    public static String KEY_NAME = "key_name";
+    public static String KEY_ADDRESS = "key_address";
+    public static String KEY_DISTRICT = "key_district";
+    public static String KEY_PROVINCE = "key_province";
+    public static String KEY_COUNTRY = "key_country";
+    public static String KEY_LATITUDE = "key_latitude";
+    public static String KEY_LONGITUDE = "key_longitude";
+    public static String KEY_EMAIL = "key_email";
+    public static String KEY_PHONE = "key_phone";
+    public static String SHOP_LATITUDE = "shop_latitude";
     public static String SHOP_LONGITUDE = "shop_longitude";
-    public static String SHOP_NAME      = "shop_name";
-    public static String SHOP_PHONE     = "shop_phone";
-    public static String MEMBER_TYPE    = "member_type";
+    public static String SHOP_NAME = "shop_name";
+    public static String SHOP_PHONE = "shop_phone";
+    public static String MEMBER_TYPE = "member_type";
     public static String PERIOD_MONTH = "period_month";
-    public static String BBS_CITY   = "bbs_city";
-    public static String CITY   = "city";
-    public static String COMM_SOURCE= "comm_source";
-    public static String GCM_ID     = "gcm_id";
-    public static String DEVICE_NAME= "device_name";
-    public static String DEVICE_OS  = "device_os";
+    public static String BBS_CITY = "bbs_city";
+    public static String CITY = "city";
+    public static String COMM_SOURCE = "comm_source";
+    public static String GCM_ID = "gcm_id";
+    public static String DEVICE_NAME = "device_name";
+    public static String DEVICE_OS = "device_os";
     public static String DEVICE_API = "device_api";
-    public static String LAST_LAT   = "last_lat";
-    public static String LAST_LONG  = "last_long";
-    public static String DEVICE_MEMORY= "device_memory";
-    public static String DEVICE_ID  = "device_id";
-    public static String PIN_CODE   = "pin_code";
-    public static String TIMEZONE   = "timezone";
-    public static String APP_TYPE   = "app_type";
-    public static String UID   = "uid";
-    public static String SYNC_CODE   = "sync_code";
-    public static String COMM_BENEF= "comm_benef";
+    public static String LAST_LAT = "last_lat";
+    public static String LAST_LONG = "last_long";
+    public static String DEVICE_MEMORY = "device_memory";
+    public static String DEVICE_ID = "device_id";
+    public static String PIN_CODE = "pin_code";
+    public static String TIMEZONE = "timezone";
+    public static String APP_TYPE = "app_type";
+    public static String UID = "uid";
+    public static String SYNC_CODE = "sync_code";
+    public static String COMM_BENEF = "comm_benef";
 
     public static String IS_TABUNG = "is_tabung";
     public static String CASHOUT_TYPE = "cashout_type";
@@ -506,7 +508,7 @@ public class WebParams {
     public static String CANCEL_FEE = "cancel_fee_amount";
     public static String COUNT_TRX = "count_trx";
     public static String TOTAL_TRX = "total_trx";
-    public static String INPROGRESS_CODE= "0099";
+    public static String INPROGRESS_CODE = "0099";
     public static String FLAG_NEW_FLOW = "flag_new_flow";
 
     public static String REGIS_FROM = "regis_from";
@@ -523,19 +525,19 @@ public class WebParams {
 
     public static String MAXIMUM_RATING = "maximum_rating";
     public static String DEFAULT_RATING = "default_rating";
-    public static String RATING         = "rating";
-    public static String PROFILE_PICTURE    = "profile_picture";
-    public static String OFFSET    = "offset";
+    public static String RATING = "rating";
+    public static String PROFILE_PICTURE = "profile_picture";
+    public static String OFFSET = "offset";
     public static String TX_REMARKS = "tx_remarks";
-    public static String MEMBER_MAX_RATING  = "member_max_rating";
-    public static String BUSS_SCHEME_TITLE  = "buss_scheme_title";
-    public static String TX_DESCRIPTION  = "tx_description";
-    public static String TRANSFER_DATA  = "transfer_data";
-    public static String TRANSFER_TO  = "transfer_to";
-    public static String BANK  = "bank";
-    public static String ORDER_ID  = "order_id";
-    public static String REFERAL_NO  = "referral_no";
-    public static String LKD_PRODUCT_CODE  = "lkd_product_code";
+    public static String MEMBER_MAX_RATING = "member_max_rating";
+    public static String BUSS_SCHEME_TITLE = "buss_scheme_title";
+    public static String TX_DESCRIPTION = "tx_description";
+    public static String TRANSFER_DATA = "transfer_data";
+    public static String TRANSFER_TO = "transfer_to";
+    public static String BANK = "bank";
+    public static String ORDER_ID = "order_id";
+    public static String REFERAL_NO = "referral_no";
+    public static String LKD_PRODUCT_CODE = "lkd_product_code";
     public static String SOURCE_OF_FUND = "source_of_fund";
     public static String IS_POS = "is_pos";
 
@@ -564,12 +566,12 @@ public class WebParams {
     public static String PHONE_NO = "phone_no";
     public static String KODE_OTP = "kode_otp";
     public static String COMM_CODE_DGI = "comm_code_dgi";
-    public static String DGI_MEMBER_NAME= "dgi_member_name";
-    public static String DGI_ANCHOR_NAME= "dgi_anchor_name";
-    public static String DGI_COMM_NAME= "dgi_comm_name";
-    public static String AGENT_SCHEME_CODES= "agent_scheme_codes";
-    public static String IS_MEMBER_SHOP_DGI= "is_member_shop_dgi";
-    public static String NEXT_VISIT_DATE= "next_visit_date";
+    public static String DGI_MEMBER_NAME = "dgi_member_name";
+    public static String DGI_ANCHOR_NAME = "dgi_anchor_name";
+    public static String DGI_COMM_NAME = "dgi_comm_name";
+    public static String AGENT_SCHEME_CODES = "agent_scheme_codes";
+    public static String IS_MEMBER_SHOP_DGI = "is_member_shop_dgi";
+    public static String NEXT_VISIT_DATE = "next_visit_date";
     public static String AGENT_TYPE = "agent_type";
 
     public static String MEMBER_ID_GOWORLD = "member_id_goworld";
@@ -699,7 +701,7 @@ public class WebParams {
     public static String PROMO = "promo";
     public static String ACTION_CODE = "action_code";
     public static String PARTNER_CODE_ESPAY = "partner_code_espay";
-    public static String PARTNER= "partner";
+    public static String PARTNER = "partner";
     public static String PO_NO = "po_no";
     public static String CODE = "code";
     public static String QTY = "qty";
@@ -739,4 +741,13 @@ public class WebParams {
     public static String INDICATOR_TYPE = "indicator_type";
     public static String URL = "url";
     public static String otp = "OTP";
+    public static String TOTAL_INVOICE = "total_invoice";
+    public static String COMM_CODE_TAGIH = "comm_code_tagih";
+    public static String INVOICES_SUCCESS = "invoices_success";
+    public static String INVOICES_FAILED = "invoices_failed";
+    public static String DOC_REF_NO = "doc_ref_no";
+    public static String ADDRESS1 = "address1";
+    public static String STEP_APPROVE = "step_approve";
+    public static String MEMBER_CODE_KEYIN = "member_code_keyin";
+    public static String SHOP_CLOSED = "shop_closed";
 }

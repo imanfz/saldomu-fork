@@ -1,6 +1,5 @@
 package com.sgo.saldomu.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,10 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.BbsMemberLocationActivity
-import com.sgo.saldomu.activities.CanvasserGoodReceiptActivity
 import com.sgo.saldomu.activities.CanvasserInvoiceActivity
-import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -110,7 +106,7 @@ class FragInpInvCode : BaseFragment() {
                                     DefineValue.ERROR_0066 -> {
                                         Timber.d("isi response maintenance:$response")
                                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                        alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                        alertDialogMaintenance.showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         Timber.d("isi error inquiry doc list:$response")

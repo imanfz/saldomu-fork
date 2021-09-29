@@ -1,16 +1,13 @@
 package com.sgo.saldomu.fragments
 
-import android.annotation.TargetApi
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,7 +27,6 @@ import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.ListPOModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.frag_input_store_code.*
 import kotlinx.android.synthetic.main.frag_list_po.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -144,7 +140,7 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
                                     DefineValue.ERROR_0066 -> {
                                         Timber.d("isi response maintenance:$response")
                                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                        alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                        alertDialogMaintenance.showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         Timber.d("isi error generate url bat:$response")

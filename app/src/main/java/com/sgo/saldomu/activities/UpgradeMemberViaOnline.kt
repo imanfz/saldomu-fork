@@ -19,7 +19,6 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.sgo.saldomu.Beans.CustomAdapterModel
-import com.sgo.saldomu.CameraViewActivity
 import com.sgo.saldomu.R
 import com.sgo.saldomu.adapter.BankCashoutAdapter
 import com.sgo.saldomu.adapter.CustomAutoCompleteAdapter
@@ -61,15 +60,13 @@ import java.util.*
 
 class UpgradeMemberViaOnline : BaseActivity() {
 
-    internal lateinit var locList: MutableList<CustomAdapterModel>
-    internal lateinit var locLists: MutableList<String>
-    internal lateinit var adapter: CustomAutoCompleteAdapter
-    internal lateinit var adapters: ArrayAdapter<String>
+    private lateinit var locList: MutableList<CustomAdapterModel>
+    private lateinit var locLists: MutableList<String>
+    private lateinit var adapter: CustomAutoCompleteAdapter
+    private lateinit var adapters: ArrayAdapter<String>
     private var dedate: String? = null
-    private var date_dob: String? = null
     private lateinit var dobFormat: DateFormat
     private lateinit var fromFormat: DateFormat
-    internal lateinit var cb_termsncond: CheckBox
     internal lateinit var bankAdapter: BankCashoutAdapter
     internal var listBankCashOut: List<BankCashoutModel> = ArrayList()
     private var bankCode = ""
@@ -112,24 +109,24 @@ class UpgradeMemberViaOnline : BaseActivity() {
 
     public override fun onSaveInstanceState(savedInstanceState: Bundle) {
         super.onSaveInstanceState(savedInstanceState)
-        savedInstanceState.putBoolean("isVerifiedMember", true)
+        savedInstanceState.putBoolean(DefineValue.IS_VERIFIED_MEMBER, true)
         if (ktp != null) {
-            savedInstanceState.putSerializable("KTP", ktp)
+            savedInstanceState.putSerializable(DefineValue.KTP, ktp)
         }
         if (selfie != null) {
-            savedInstanceState.putSerializable("selfieKtp", selfie)
+            savedInstanceState.putSerializable(DefineValue.SELFIE_KTP, selfie)
         }
         if (ttd != null) {
-            savedInstanceState.putSerializable("TTD", ttd)
+            savedInstanceState.putSerializable(DefineValue.TTD, ttd)
         }
 
     }
 
     public override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        ktp = savedInstanceState.getSerializable("KTP") as File
-        selfie = savedInstanceState.getSerializable("selfieKtp") as File
-        ttd = savedInstanceState.getSerializable("TTD") as File
+        ktp = savedInstanceState.getSerializable(DefineValue.KTP) as File
+        selfie = savedInstanceState.getSerializable(DefineValue.SELFIE_KTP) as File
+        ttd = savedInstanceState.getSerializable(DefineValue.TTD) as File
 
         if (ktp != null) {
             Timber.d("ktp :$ktp")
@@ -225,9 +222,9 @@ class UpgradeMemberViaOnline : BaseActivity() {
                 .getSignature(MyApiClient.LINK_EXEC_CUST, sp.getString(DefineValue.MEMBER_ID, ""))
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.MEMBER_ID] = memberIDLogin
-        params[WebParams.IS_REGISTER] = "Y"
+        params[WebParams.IS_REGISTER] = DefineValue.STRING_YES
         params[WebParams.CUST_ID] = sp.getString(DefineValue.CUST_ID, "")
-        params[WebParams.CUST_ID_TYPE] = "KTP"
+        params[WebParams.CUST_ID_TYPE] = DefineValue.KTP
         params[WebParams.CUST_ID_NUMBER] = nik_edit_text.text.toString()
         params[WebParams.CUST_NAME] = fullname_edit_text.text.toString()
         params[WebParams.MOTHER_NAME] = mothersname_edit_text.text.toString()
@@ -250,7 +247,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
         params[WebParams.BANK_CODE] = bankCode
         params[WebParams.SOURCE_ACCT_NO] = bank_acc_no.text.toString()
         params[WebParams.CUST_CONTACT_EMAIL] = value_email.text.toString()
-        params[WebParams.FROM_AGENT] = "N"
+        params[WebParams.FROM_AGENT] = DefineValue.STRING_NO
 
         Timber.d("isi param exec cust :$params")
 
@@ -274,7 +271,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
                 } else if (code == DefineValue.ERROR_0066) {
                     Timber.d("isi response maintenance:$response")
                     val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                    alertDialogMaintenance.showDialogMaintenance(this@UpgradeMemberViaOnline, model.error_message)
+                    alertDialogMaintenance.showDialogMaintenance(this@UpgradeMemberViaOnline)
                 } else {
                     val msg = model.error_message
                     Toast.makeText(this@UpgradeMemberViaOnline, msg, Toast.LENGTH_LONG).show()
@@ -296,7 +293,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
     private fun dialogSuccessUploadPhoto() {
         val dialog = DefinedDialog.MessageDialog(this@UpgradeMemberViaOnline, this.getString(R.string.upgrade_member),
                 this.getString(R.string.success_upgrade_member_via_agent)
-        ) { v, isLongClick ->
+        ) {
             finish()
             val i = Intent(applicationContext, MainPage::class.java)
             startActivityForResult(i, MainPage.REQUEST_FINISH)
@@ -580,27 +577,27 @@ class UpgradeMemberViaOnline : BaseActivity() {
         value_email.isEnabled = false
         getBankCashout()
 
-        reject_KTP = sp.getString(DefineValue.REJECT_KTP, "N")
-        reject_selfie = sp.getString(DefineValue.REJECT_FOTO, "N")
-        reject_ttd = sp.getString(DefineValue.REJECT_TTD, "N")
+        reject_KTP = sp.getString(DefineValue.REJECT_KTP, DefineValue.STRING_NO)
+        reject_selfie = sp.getString(DefineValue.REJECT_FOTO, DefineValue.STRING_NO)
+        reject_ttd = sp.getString(DefineValue.REJECT_TTD, DefineValue.STRING_NO)
         respon_reject_ktp = sp.getString(DefineValue.REMARK_KTP, "")
         respon_reject_selfie = sp.getString(DefineValue.REMARK_FOTO, "")
         respon_reject_ttd = sp.getString(DefineValue.REMARK_TTD, "")
 
-        if (reject_KTP == "Y" || reject_selfie == "Y" || reject_ttd == "Y") {
-            if (reject_KTP == "Y") {
+        if (reject_KTP == DefineValue.STRING_YES || reject_selfie == DefineValue.STRING_YES || reject_ttd == DefineValue.STRING_YES) {
+            if (reject_KTP == DefineValue.STRING_YES) {
                 camera_ktp.isEnabled = true
                 tv_respon_reject_ktp.text = "Alasan : $respon_reject_ktp"
             } else
                 layout_foto_ktp.visibility = View.GONE
 
-            if (reject_selfie == "Y") {
+            if (reject_selfie == DefineValue.STRING_YES) {
                 camera_ktp.isEnabled = true
                 tv_respon_reject_selfie.text = "Alasan : $respon_reject_selfie"
             } else
                 layout_selfie.visibility = View.GONE
 
-            if (reject_ttd == "Y") {
+            if (reject_ttd == DefineValue.STRING_YES) {
                 camera_ttd.isEnabled = true
                 tv_respon_reject_ttd.text = "Alasan : $respon_reject_ttd"
             } else
@@ -691,7 +688,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
             set_result_photo?.let {
 //                if (set_result_photo == RESULT_CAMERA_KTP || set_result_photo == RESULT_CAMERA_TTD) {
 //
-////                                    CameraActivity.openCertificateCamera(MyProfileNewActivity.this, CameraActivity.TYPE_COMPANY_PORTRAIT);
+//                                    CameraActivity.openCertificateCamera(MyProfileNewActivity.this, CameraActivity.TYPE_COMPANY_PORTRAIT);
 //                    val i = Intent(this, CameraViewActivity::class.java)
 //                    startActivityForResult(i, set_result_photo!!)
 //                } else
@@ -851,7 +848,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
                 error_code == DefineValue.ERROR_0066 -> {
                     Timber.d("isi response maintenance:$`object`")
                     val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                    alertDialogMaintenance.showDialogMaintenance(this@UpgradeMemberViaOnline, model.error_message)
+                    alertDialogMaintenance.showDialogMaintenance(this@UpgradeMemberViaOnline)
                 }
                 else -> {
                     Toast.makeText(this@UpgradeMemberViaOnline, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show()
@@ -860,8 +857,8 @@ class UpgradeMemberViaOnline : BaseActivity() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             android.R.id.home -> {
                 finish()
                 return true

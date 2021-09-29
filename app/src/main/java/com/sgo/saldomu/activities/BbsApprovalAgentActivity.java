@@ -58,14 +58,12 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
     private SecurePreferences sp;
     ProgressDialog progdialog, progdialog2;
-    String flagApprove, customerId, title, gcmId, flagTxStatus, txId, memberId, shopId;
+    String customerId, title, gcmId, flagTxStatus, txId, memberId, shopId;
     ShopDetail shopDetail;
     List<ShopDetail> shopDetails;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvCountTrx, tvTotalTrx;
+    TextView tvCategoryName, tvMemberName, tvAmount, tvCountTrx, tvTotalTrx;
     RelativeLayout rlApproval;
-    Spinner spPilihan;
-    ArrayAdapter<String> SpinnerAdapter;
-    Button btnApprove, btnReject;
+    Button btnApprove;
     int itemId;
     Double currentLatitude, currentLongitude;
     private GoogleApiClient googleApiClient;
@@ -78,8 +76,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
         try {
             if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                if(checkPlayServices())
-                {
+                if (checkPlayServices()) {
                     buildGoogleApiClient();
                     createLocationRequest();
                 }
@@ -91,24 +88,19 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                         GlobalSetting.RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
             }
 
-            if ( !GlobalSetting.isLocationEnabled(this) )
-            {
+            if (!GlobalSetting.isLocationEnabled(this)) {
                 final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
                 builder.setMessage(getString(R.string.alertbox_gps_warning))
                         .setCancelable(false)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        .setPositiveButton(R.string.yes, (dialog, id) -> {
 
-                                Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivityForResult(ilocation, 1);
+                            Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivityForResult(ilocation, 1);
 
-                            }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                                dialog.cancel();
-                                startActivity(new Intent(getApplicationContext(), MainPage.class));
-                            }
+                        .setNegativeButton(R.string.no, (dialog, id) -> {
+                            dialog.cancel();
+                            startActivity(new Intent(getApplicationContext(), MainPage.class));
                         });
                 final android.app.AlertDialog alert = builder.create();
                 alert.show();
@@ -119,25 +111,23 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         }
 
 
-
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        title                   = getString(R.string.menu_item_title_trx_agent);
+        title = getString(R.string.menu_item_title_trx_agent);
         initializeToolbar();
 
-        gcmId                   = "";
-        flagTxStatus            = "";
-        txId                    = "";
-        flagApprove             = DefineValue.STRING_NO;
-        customerId              = sp.getString(DefineValue.USERID_PHONE, "");
+        gcmId = "";
+        flagTxStatus = "";
+        txId = "";
+        customerId = sp.getString(DefineValue.USERID_PHONE, "");
 
-        btnApprove              = (Button) findViewById(R.id.btnApprove);
+        btnApprove = (Button) findViewById(R.id.btnApprove);
         //btnReject               = (Button) findViewById(R.id.btnReject);
-        tvCategoryName          = (TextView) findViewById(R.id.tvCategoryName);
-        tvMemberName            = (TextView) findViewById(R.id.tvMemberName);
-        tvAmount                = (TextView) findViewById(R.id.tvAmount);
-        tvCountTrx              = (TextView) findViewById(R.id.tvCountTrx);
-        tvTotalTrx              = (TextView) findViewById(R.id.tvTotalTrx);
+        tvCategoryName = (TextView) findViewById(R.id.tvCategoryName);
+        tvMemberName = (TextView) findViewById(R.id.tvMemberName);
+        tvAmount = (TextView) findViewById(R.id.tvAmount);
+        tvCountTrx = (TextView) findViewById(R.id.tvCountTrx);
+        tvTotalTrx = (TextView) findViewById(R.id.tvTotalTrx);
         //tvShop                  = (TextView) findViewById(R.id.tvShop);
         //spPilihan               = (Spinner) findViewById(R.id.spPilihan);
 
@@ -145,33 +135,21 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         //spPilihan.setVisibility(View.GONE);
         btnApprove.setEnabled(false);
 
-        rlApproval              = (RelativeLayout) findViewById(R.id.rlApproval);
+        rlApproval = (RelativeLayout) findViewById(R.id.rlApproval);
         rlApproval.setVisibility(View.GONE);
 
-        shopDetail              = new ShopDetail();
-        shopDetails             = new ArrayList<>();
+        shopDetail = new ShopDetail();
+        shopDetails = new ArrayList<>();
 
 
-
-        if ( !sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+        if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
             //is member
             Intent i = new Intent(this, MainPage.class);
             startActivity(i);
             finish();
         }
 
-        /*if ( shopDetails.size() > 1 ) {
-            String[] arrayItems = new String[shopDetails.size()];
-            for(int x = 0; x < shopDetails.size(); x++) {
-                arrayItems[x] = shopDetails.get(x).getMemberName();
-            }
-
-            SpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, arrayItems);
-            spPilihan.setAdapter(SpinnerAdapter);
-
-        }*/
-
-        progdialog              = DefinedDialog.CreateProgressDialog(this, "");
+        progdialog = DefinedDialog.CreateProgressDialog(this, "");
 
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRANSACTION_AGENT);
 
@@ -222,127 +200,10 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
                                 tvCountTrx.setText(response.getString(WebParams.COUNT_TRX));
                                 tvTotalTrx.setText(DefineValue.IDR + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_TRX)));
-                                if ( progdialog.isShowing())
+                                if (progdialog.isShowing())
                                     progdialog.dismiss();
 
-                        /*
-                        RequestParams params2    = new RequestParams();
-
-                        UUID rcUUID2             = UUID.randomUUID();
-                        String  dtime2           = DateTimeFormat.getCurrentDateTime();
-
-                        params2.put(WebParams.RC_UUID, rcUUID2);
-                        params2.put(WebParams.RC_DATETIME, dtime2);
-                        params2.put(WebParams.APP_ID, BuildConfig.AppID);
-                        params2.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-                        params2.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-                        params2.put(WebParams.CUSTOMER_ID, customerId);
-                        params2.put(WebParams.FLAG_APPROVE, flagApprove);
-
-                        String signature2 = HashMessage.SHA1(HashMessage.MD5(rcUUID2 + dtime2 + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + customerId + BuildConfig.AppID + flagApprove));
-
-                        params2.put(WebParams.SIGNATURE, signature2);
-
-                        MyApiClient.getMemberShopList(getApplication(), params2, new JsonHttpResponseHandler() {
-                            @Override
-                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                progdialog.dismiss();
-
-                                try {
-
-                                    String code = response.getString(WebParams.ERROR_CODE);
-                                    if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                                        rlApproval.setVisibility(View.VISIBLE);
-
-                                        JSONArray members = response.getJSONArray("member");
-                                        for (int i = 0; i < members.length(); i++) {
-                                            JSONObject object       = members.getJSONObject(i);
-
-                                            ShopDetail shopDetail2   = new ShopDetail();
-                                            shopDetail2.setMemberId(object.getString("member_id"));
-                                            shopDetail2.setShopId(object.getString("shop_id"));
-                                            shopDetail2.setMemberCode(object.getString("member_code"));
-                                            shopDetail2.setMemberName(object.getString("member_name"));
-                                            shopDetail2.setMemberType(object.getString("member_type"));
-                                            shopDetail2.setCommName(object.getString("comm_name"));
-                                            shopDetail2.setCommCode(object.getString("comm_code"));
-                                            shopDetail2.setShopAddress(object.getString("address1"));
-                                            shopDetail2.setShopDistrict(object.getString("district"));
-                                            shopDetail2.setShopProvince(object.getString("province"));
-                                            shopDetail2.setShopCountry(object.getString("country"));
-
-                                            shopDetails.add(shopDetail2);
-                                        }
-
-                                        if ( shopDetails.size() > 1 ) {
-                                            String[] arrayItems = new String[shopDetails.size()];
-
-                                            for(int x = 0; x < shopDetails.size(); x++) {
-                                                arrayItems[x] = shopDetails.get(x).getMemberName();
-                                            }
-
-                                            SpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, arrayItems);
-                                            spPilihan.setAdapter(SpinnerAdapter);
-
-                                            spPilihan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-                                                @Override
-                                                public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-
-
-                                                }
-
-                                                @Override
-                                                public void onNothingSelected(AdapterView<?> arg0) {
-
-                                                }
-                                            });
-
-                                        }
-
-                                    } else if ( code.equals(WebParams.LOGOUT_CODE) ) {
-
-                                    } else {
-                                        code = response.getString(WebParams.ERROR_MESSAGE);
-                                        Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                                super.onFailure(statusCode, headers, responseString, throwable);
-                                ifFailure(throwable);
-                            }
-
-                            @Override
-                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                super.onFailure(statusCode, headers, throwable, errorResponse);
-                                ifFailure(throwable);
-                            }
-
-                            private void ifFailure(Throwable throwable) {
-                                if (MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else
-                                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                                progdialog.dismiss();
-                                Timber.w("Error Koneksi login:" + throwable.toString());
-
-                            }
-
-                        });
-                        */
-
                             } else {
-
-
-                                code = response.getString(WebParams.ERROR_MESSAGE);
-                                //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
 
                                 rlApproval.setVisibility(View.GONE);
 
@@ -350,12 +211,10 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                                 alertDialog.setTitle(getString(R.string.alertbox_title_information));
                                 alertDialog.setMessage(getString(R.string.alertbox_message_information));
                                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                                finish();
+                                        (dialog, which) -> {
+                                            dialog.dismiss();
+                                            finish();
 
-                                            }
                                         });
                                 alertDialog.show();
                             }
@@ -366,109 +225,30 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
                     @Override
                     public void onError(Throwable throwable) {
-                        if ( progdialog.isShowing())
+                        if (progdialog.isShowing())
                             progdialog.dismiss();
                     }
 
                     @Override
                     public void onComplete() {
-                        if ( progdialog.isShowing())
-                        progdialog.dismiss();
+                        if (progdialog.isShowing())
+                            progdialog.dismiss();
                     }
                 });
 
-        //rlApproval.setVisibility(View.VISIBLE);
-
-        /*
-        tvCategoryName.setText(shopDetail.getCategoryName());
-        tvMemberName.setText(shopDetail.getKeyName());
-        tvAmount.setText(shopDetail.getCcyId()+" "+ CurrencyFormat.format(shopDetail.getAmount()));
-
-        if ( shopDetails.size() == 1 ) {
-            tvShop.setVisibility(View.VISIBLE);
-            spPilihan.setVisibility(View.GONE);
-            shopDetails.get(0).getMemberName();
-            tvShop.setText(shopDetails.get(0).getMemberName());
-        } else {
-            tvShop.setVisibility(View.GONE);
-            spPilihan.setVisibility(View.VISIBLE);
-        }
-        */
-
         btnApprove.setOnClickListener(
-            new View.OnClickListener() {
-                public void onClick(View v) {
-                    progdialog2              = DefinedDialog.CreateProgressDialog(BbsApprovalAgentActivity.this, "");
+                v -> {
+                    progdialog2 = DefinedDialog.CreateProgressDialog(BbsApprovalAgentActivity.this, "");
                     flagTxStatus = DefineValue.STRING_ACCEPT;
-
-                    if ( shopDetails.size() > 1 ) {
-                        itemId  = spPilihan.getSelectedItemPosition();
-
-                    } else {
-                        itemId = 0;
-                    }
-
-                    if ( shopDetails.size() > 0 ) {
+                    itemId = 0;
+                    if (shopDetails.size() > 0) {
                         shopId = shopDetails.get(itemId).getShopId();
                         memberId = shopDetails.get(itemId).getMemberId();
                         gcmId = "";
-
                         updateTrxAgent();
                     }
                 }
-            }
         );
-
-        /*
-        btnReject.setOnClickListener(
-            new View.OnClickListener() {
-                public void onClick(View v) {
-                    AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsApprovalAgentActivity.this).create();
-                    alertDialog.setTitle(getString(R.string.alertbox_title_information));
-
-
-                    alertDialog.setMessage(getString(R.string.message_notif_cancel_trx_by_agent));
-
-
-
-                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    progdialog2              = DefinedDialog.CreateProgressDialog(getContext(), "");
-                                    flagTxStatus = DefineValue.STRING_CANCEL;
-
-                                    if ( shopDetails.size() > 1 ) {
-                                        itemId  = spPilihan.getSelectedItemPosition();
-
-                                    } else {
-                                        itemId = 0;
-                                    }
-
-                                    if ( shopDetails.size() > 0 ) {
-                                        shopId = shopDetails.get(itemId).getShopId();
-                                        memberId = shopDetails.get(itemId).getMemberId();
-                                        updateTrxAgent();
-                                    }
-
-                                }
-                            });
-                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-
-
-
-                                }
-                            });
-                    alertDialog.show();
-                }
-            }
-        );
-        */
-
-
     }
 
     @Override
@@ -495,10 +275,6 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
     }
 
     private void updateTrxAgent() {
-
-
-        //startActivity(new Intent(getApplicationContext(), BbsMapViewByAgentActivity.class));
-
         String extraSignature = txId + memberId + shopId + flagTxStatus;
         HashMap<String, Object> params3 = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_APPROVAL_TRX_AGENT, extraSignature);
 
@@ -511,7 +287,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         params3.put(WebParams.TX_STATUS, flagTxStatus);
         params3.put(WebParams.USER_ID, userPhoneID);
 
-        if ( flagTxStatus.equals(DefineValue.STRING_ACCEPT) ) {
+        if (flagTxStatus.equals(DefineValue.STRING_ACCEPT)) {
             params3.put(WebParams.KEY_VALUE, gcmId);
             params3.put(WebParams.LATITUDE, currentLatitude);
             params3.put(WebParams.LONGITUDE, currentLongitude);
@@ -527,7 +303,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                if ( flagTxStatus.equals(DefineValue.STRING_ACCEPT) ) {
+                                if (flagTxStatus.equals(DefineValue.STRING_ACCEPT)) {
                                     SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
                                     SecurePreferences.Editor mEditor = prefs.edit();
                                     mEditor.putString(DefineValue.BBS_MEMBER_ID, memberId);
@@ -586,12 +362,12 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         try {
             lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
 
-            if ( lastLocation == null ){
+            if (lastLocation == null) {
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
             } else {
 
-                currentLatitude     = lastLocation.getLatitude();
-                currentLongitude    = lastLocation.getLongitude();
+                currentLatitude = lastLocation.getLatitude();
+                currentLongitude = lastLocation.getLongitude();
                 btnApprove.setEnabled(true);
                 Timber.d("Location Found" + lastLocation.toString());
                 googleApiClient.disconnect();
@@ -599,7 +375,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         } catch (SecurityException se) {
             se.printStackTrace();
         }
-        if (bundle!=null) {
+        if (bundle != null) {
             Timber.d(bundle.toString());
         }
     }
@@ -632,8 +408,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
     }
 
-    private boolean checkPlayServices()
-    {
+    private boolean checkPlayServices() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(this);
         if (result != ConnectionResult.SUCCESS) {
@@ -655,8 +430,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         mLocationRequest.setSmallestDisplacement(DefineValue.DISPLACEMENT);
     }
 
-    protected synchronized void buildGoogleApiClient()
-    {
+    protected synchronized void buildGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -694,8 +468,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
-        if(checkPlayServices())
-        {
+        if (checkPlayServices()) {
             buildGoogleApiClient();
             createLocationRequest();
         }
@@ -720,11 +493,9 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                     alertDialog.setTitle(getString(R.string.alertbox_title_warning));
                     alertDialog.setMessage(getString(R.string.alertbox_message_warning));
                     alertDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    finish();
-                                }
+                            (dialog, which) -> {
+                                dialog.dismiss();
+                                finish();
                             });
                     alertDialog.show();
                 }

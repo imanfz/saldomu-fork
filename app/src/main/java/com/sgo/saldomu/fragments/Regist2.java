@@ -140,8 +140,8 @@ public class Regist2 extends BaseFragment {
             params.put(WebParams.CUST_EMAIL, emailValid);
             params.put(WebParams.EMAIL_TOKEN, token);
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
-            params.put(WebParams.IS_SMS, "Y");
-            params.put(WebParams.IS_EMAIL, "N");
+            params.put(WebParams.IS_SMS, DefineValue.STRING_YES);
+            params.put(WebParams.IS_EMAIL, DefineValue.STRING_NO);
 
             Timber.d("isi params reg2:" + params.toString());
 
@@ -152,10 +152,10 @@ public class Regist2 extends BaseFragment {
                             RegModel model = getGson().fromJson(object, RegModel.class);
 
                             String code = model.getError_code();
-
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 String flag_process = model.getFlag_process();
-                                if (flag_process.equals("N")) {
+                                if (flag_process.equals(DefineValue.STRING_NO)) {
                                     namaValid = model.getCust_name();
                                     emailValid = model.getCust_email();
                                     noHPValid = model.getCust_phone();
@@ -166,9 +166,7 @@ public class Regist2 extends BaseFragment {
                                     check();
                                 }
                             } else {
-                                code = model.getError_message();
-
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -185,7 +183,7 @@ public class Regist2 extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -206,7 +204,7 @@ public class Regist2 extends BaseFragment {
             params.put(WebParams.CONF_PASS, RSA.opensslEncrypt(uuid, dateTime, noHPValid, confPass, subStringLink));
             params.put(WebParams.CUST_ID, noHPValid);
 
-            Timber.d("params create pass:" + params.toString());
+            Timber.d("params create pass:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
@@ -220,9 +218,9 @@ public class Regist2 extends BaseFragment {
 
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 memberID = model.getMember_id();
-                                flag_change_pwd = "N";
+                                flag_change_pwd = DefineValue.STRING_NO;
                                 check();
-                            } else if(code.equals("0301")){
+                            } else if (code.equals("0301")) {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                 builder.setTitle(getActivity().getResources().getString(R.string.logout)).setMessage(model.getError_message())
                                         .setCancelable(false)
@@ -232,11 +230,11 @@ public class Regist2 extends BaseFragment {
                                                 dialog.dismiss();
                                             }
                                         });
-                            }else {
-
+                            } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
                                 i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 switchActivityPIN(i);
                             }
                         }
@@ -277,7 +275,7 @@ public class Regist2 extends BaseFragment {
             params.put(WebParams.PIN, RSA.opensslEncrypt(uuid, dateTime, noHPValid, pin, subStringLink));
             params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(uuid, dateTime, noHPValid, confirmPin, subStringLink));
 
-            Timber.d("params create pin:" + params.toString());
+            Timber.d("params create pin:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
@@ -289,11 +287,10 @@ public class Regist2 extends BaseFragment {
                             String message = model.getError_message();
 
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-                                flag_change_pin = "N";
+                                flag_change_pin = DefineValue.STRING_NO;
                                 check();
                             } else {
-
-                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(getActivity(), CreatePIN.class);
                                 i.putExtra(DefineValue.REGISTRATION, true);
                                 switchActivity(i);
@@ -310,20 +307,22 @@ public class Regist2 extends BaseFragment {
                             if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
-                    } );
+                    });
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
     }
 
     private void check() {
-        if (flag_change_pwd.equals("Y")) {
+        if (flag_change_pwd.equals(DefineValue.STRING_YES)) {
             Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
             i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             switchActivityPIN(i);
-        } else if (flag_change_pin.equals("Y")) {
+        } else if (flag_change_pin.equals(DefineValue.STRING_YES)) {
             Intent i = new Intent(getActivity(), CreatePIN.class);
             i.putExtra(DefineValue.REGISTRATION, true);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             switchActivityPIN(i);
         } else showDialog();
     }
@@ -374,25 +373,17 @@ public class Regist2 extends BaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Timber.d("isi regist 2 requestCode:" + String.valueOf(requestCode));
+        Timber.d("isi regist 2 requestCode:%s", String.valueOf(requestCode));
         if (requestCode == LoginActivity.ACTIVITY_RESULT) {
-            Timber.d("isi regist 2 resultcode:" + String.valueOf(resultCode));
+            Timber.d("isi regist 2 resultcode:%s", String.valueOf(resultCode));
             if (resultCode == LoginActivity.RESULT_PIN) {
-                Timber.d("isi regist 2 authtype:" + authType);
+                Timber.d("isi regist 2 authtype:%s", authType);
 
                 pass = data.getStringExtra(DefineValue.NEW_PASSWORD);
                 confPass = data.getStringExtra(DefineValue.CONFIRM_PASSWORD);
 
-//                Intent i = new Intent(getActivity(), CreatePIN.class);
-//                i.putExtra(DefineValue.REGISTRATION, true);
-//                switchActivityPIN(i);
-
                 sendCreatePass();
             } else if (resultCode == LoginActivity.RESULT_FINISHING) {
-//                if(authType.equals(DefineValue.AUTH_TYPE_OTP)){
-//                    pass = data.getStringExtra(DefineValue.NEW_PASSWORD);
-//                    confPass = data.getStringExtra(DefineValue.CONFIRM_PASSWORD);
-//                }
                 sendCreatePin(data);
             }
         }

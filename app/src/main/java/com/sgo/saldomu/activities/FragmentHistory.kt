@@ -107,7 +107,7 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
                     WebParams.ERROR_0066 ->  {
                         Timber.d("isi response maintenance:$jsonObject")
                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                        alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                        alertDialogMaintenance.showDialogMaintenance(activity)
                     }
                 }
             }
@@ -217,7 +217,7 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
                             }
                             WebParams.ERROR_0066 -> {
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                alertDialogMaintenance.showDialogMaintenance(activity)
                             }
                             else -> {
                                 val msg = model.error_message

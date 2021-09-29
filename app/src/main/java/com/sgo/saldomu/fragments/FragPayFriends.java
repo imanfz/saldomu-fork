@@ -95,11 +95,9 @@ public class FragPayFriends extends BaseFragment {
     private EditText etMessage;
     private ImageButton btnScanQR;
     private List<String> listName;
-    private CheckBox saveCheckBox;
 
     private static final int RC_READ_CONTACTS = 14;
 
-    private int privacy;
     private int max_member_trans;
 
     private Bundle bundle;
@@ -152,7 +150,7 @@ public class FragPayFriends extends BaseFragment {
 
         } else {
             ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{ Manifest.permission.READ_CONTACTS},
+                    new String[]{Manifest.permission.READ_CONTACTS},
                     RC_READ_CONTACTS);
         }
 
@@ -469,23 +467,24 @@ public class FragPayFriends extends BaseFragment {
             params.put(WebParams.DATA, _data);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
-            params.put(WebParams.PRIVACY, privacy);
+            params.put(WebParams.PRIVACY, "");
             if (isNotification) {
                 params.put(WebParams.REQUEST_ID, bundle.getString(DefineValue.REQUEST_ID));
                 params.put(WebParams.TRX_ID, bundle.getString(DefineValue.TRX));
             }
 
-            Timber.d("isi params sent req token p2p:" + params.toString());
+            Timber.d("isi params sent req token p2p:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(url, params,
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
-                                Timber.d("isi response sent req token p2p:" + object.toString());
+                                Timber.d("isi response sent req token p2p:%s", object.toString());
                                 SentDataPayfriendModel model = getGson().fromJson(object, SentDataPayfriendModel.class);
 
                                 String code = model.getError_code();
+                                String message = model.getError_message();
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     int isFailed = 0;
                                     String msg = "";
@@ -502,30 +501,23 @@ public class FragPayFriends extends BaseFragment {
                                     } else
                                         Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    String message = model.getError_message();
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(ErrorDefinition.WRONG_PIN_P2P)) {
-                                    code = model.getError_message();
-                                    showDialogError(code);
+                                    showDialogError(message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + object.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    Timber.d("isi response maintenance:%s", object.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
-                                    String code_msg = model.getError_message();
-                                    ;
                                     if (code.equals(ErrorDefinition.ERROR_CODE_DUPLICATED_RECIPIENT)) {
                                         phoneRetv.requestFocus();
                                         phoneRetv.setError(getString(R.string.payfriends_recipients_duplicate_validation));
                                     } else if (code.equals(ErrorDefinition.ERROR_CODE_LESS_BALANCE)) {
 
-                                        String message_dialog = "\"" + code_msg + "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
+                                        String message_dialog = "\"" + message + "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
 
                                         AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
                                                 message_dialog, getString(R.string.ok), getString(R.string.cancel), false);
@@ -540,12 +532,10 @@ public class FragPayFriends extends BaseFragment {
                                         dialog_frag.setTargetFragment(FragPayFriends.this, 0);
                                         dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
                                     } else {
-
-                                        Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                     }
 
                                 }
-
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -564,18 +554,13 @@ public class FragPayFriends extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
     private void showDialogError(String message) {
         Dialog mdialog = DefinedDialog.MessageDialog(getActivity(), getString(R.string.blocked_pin_title), message,
-                new DefinedDialog.DialogButtonListener() {
-                    @Override
-                    public void onClickButton(View v, boolean isLongClick) {
-
-                    }
-                });
+                () -> {  });
         mdialog.show();
     }
 
@@ -618,8 +603,6 @@ public class FragPayFriends extends BaseFragment {
                     i.putExtra(WebParams.CUSTOMER_ID, phoneNumberString);
 
                     switchActivity(i);
-
-
                 }
             });
 
@@ -701,12 +684,6 @@ public class FragPayFriends extends BaseFragment {
 
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
-
-//        Picasso mPic;
-//        if(MyApiClient.PROD_FLAG_ADDRESS)
-//            mPic = MyPicasso.getUnsafeImageLoader(getActivity());
-//        else
-//            mPic= Picasso.with(getActivity());
 
         if (_url_profpic != null && _url_profpic.isEmpty()) {
             GlideManager.sharedInstance().initializeGlide(getActivity(), R.drawable.user_unknown_menu, roundedImage, imgProfile);

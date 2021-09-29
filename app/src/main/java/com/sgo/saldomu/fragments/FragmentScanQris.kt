@@ -33,7 +33,7 @@ import org.json.JSONObject
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 
-class FragmentScan : BaseFragment(), ZXingScannerView.ResultHandler {
+class FragmentScanQris : BaseFragment(), ZXingScannerView.ResultHandler {
 
     private var mScannerView: ZXingScannerView? = null
 
@@ -120,7 +120,7 @@ class FragmentScan : BaseFragment(), ZXingScannerView.ResultHandler {
             } else {
                 val dialog = DefinedDialog.MessageDialog(activity, getString(R.string.alertbox_title_information),
                         getString(R.string.cashout_dialog_message)
-                ) { v: View?, isLongClick: Boolean -> }
+                ) { }
                 dialog.show()
             }
         } else
@@ -174,7 +174,7 @@ class FragmentScan : BaseFragment(), ZXingScannerView.ResultHandler {
                                 AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                             }
                             DefineValue.ERROR_0066 -> {
-                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                             }
                             else -> {
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()

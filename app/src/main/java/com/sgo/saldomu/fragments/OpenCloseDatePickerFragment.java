@@ -19,24 +19,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OpenCloseDatePickerFragment.OpenCloseDatePickerListener} interface
- * to handle interaction events.
- * Use the {@link OpenCloseDatePickerFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class OpenCloseDatePickerFragment extends DialogFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     public static final String TAG = "OpenCloseDatePicker";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private OpenCloseDatePickerListener dpl;
     ArrayList<String> selectedDates = new ArrayList<>();
     ArrayList<Date> listDates = new ArrayList<>();
@@ -44,16 +29,14 @@ public class OpenCloseDatePickerFragment extends DialogFragment {
     SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 
     public interface OpenCloseDatePickerListener {
-        public void onOkDatePickerClick(ArrayList<String> selectedDates, ArrayList<Date> listDates);
-        public void onCancelDatePickerClick();
+        void onOkDatePickerClick(ArrayList<String> selectedDates, ArrayList<Date> listDates);
+
+        void onCancelDatePickerClick();
     }
 
     public OpenCloseDatePickerFragment() {
         // Required empty public constructor
     }
-
-
-    OpenCloseDatePickerListener mListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,30 +55,13 @@ public class OpenCloseDatePickerFragment extends DialogFragment {
         }
     }
 
-
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment OpenCloseDatePickerFragment.
+     * The system calls this only when creating the layout in a dialog.
      */
-    // TODO: Rename and change types and number of parameters
-    public static OpenCloseDatePickerFragment newInstance(String param1, String param2) {
-        OpenCloseDatePickerFragment fragment = new OpenCloseDatePickerFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    /** The system calls this only when creating the layout in a dialog. */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        Dialog dialog   = super.onCreateDialog(savedInstanceState);
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.setTitle(getString(R.string.choose_date));
 
         return dialog;
@@ -108,8 +74,8 @@ public class OpenCloseDatePickerFragment extends DialogFragment {
 
         final CalendarPickerView calendar_view = (CalendarPickerView) v.findViewById(R.id.calendar_view);
 
-        btnYes          = (Button) v.findViewById(R.id.btnYes);
-        btnNo           = (Button) v.findViewById(R.id.btnNo);
+        btnYes = (Button) v.findViewById(R.id.btnYes);
+        btnNo = (Button) v.findViewById(R.id.btnNo);
 
 
         //getting current
@@ -119,9 +85,9 @@ public class OpenCloseDatePickerFragment extends DialogFragment {
 
         //add one year to calendar from todays date
 
-        if ( selectedDates.size() > 0 ) {
+        if (selectedDates.size() > 0) {
             ArrayList<Date> tempDates = new ArrayList<>();
-            for(int j = 0; j < selectedDates.size(); j++) {
+            for (int j = 0; j < selectedDates.size(); j++) {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 try {
                     Date d = dateFormat.parse(selectedDates.get(j));
@@ -142,11 +108,11 @@ public class OpenCloseDatePickerFragment extends DialogFragment {
             @Override
             public void onDateSelected(Date date) {
                 String fDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
-                selectedDates.add(fDate.toString());
+                selectedDates.add(fDate);
 
                 try {
-                    listDates.add(sf.parse(fDate.toString()));
-                } catch(ParseException e) {
+                    listDates.add(sf.parse(fDate));
+                } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
@@ -156,17 +122,17 @@ public class OpenCloseDatePickerFragment extends DialogFragment {
                 String fDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
                 String tempDate;
 
-                listDates   = new ArrayList<Date>();
+                listDates = new ArrayList<Date>();
 
-                for(int i = 0; i < selectedDates.size(); i++) {
+                for (int i = 0; i < selectedDates.size(); i++) {
                     tempDate = selectedDates.get(i);
 
-                    if ( fDate.equals(tempDate) ) {
+                    if (fDate.equals(tempDate)) {
                         selectedDates.remove(selectedDates.get(i));
                     } else {
                         try {
                             listDates.add(sf.parse(tempDate));
-                        } catch(ParseException e) {
+                        } catch (ParseException e) {
                             e.printStackTrace();
                         }
                     }
@@ -197,12 +163,4 @@ public class OpenCloseDatePickerFragment extends DialogFragment {
 
         return v;
     }
-
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
 }

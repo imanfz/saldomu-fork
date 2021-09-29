@@ -28,28 +28,26 @@ import timber.log.Timber;
  */
 public class NotificationHandler {
 
-    private SecurePreferences sp=null;
-    private Context mContext = null;
+    private SecurePreferences sp;
+    private Context mContext;
     private String userID;
-    private String accessKey;
 
     public NotificationHandler(Context dContext, SecurePreferences mSp) {
         mContext = dContext;
         sp = mSp;
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        userID = sp.getString(DefineValue.USERID_PHONE, "");
     }
 
-    public void sentRetrieveNotif(){
-        try{
-            if(!sp.getString(DefineValue.USERID_PHONE,"").isEmpty()) {
+    public void sentRetrieveNotif() {
+        try {
+            if (!sp.getString(DefineValue.USERID_PHONE, "").isEmpty()) {
                 HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_NOTIF_RETRIEVE);
                 params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
                 params.put(WebParams.MEMBER_ID, userID);
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
                 params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
 
-                Timber.d("isi params Retrieve Notif Handler:" + params.toString());
+                Timber.d("isi params Retrieve Notif Handler:%s", params.toString());
 
                 RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_NOTIF_RETRIEVE, params,
                         new ResponseListener() {
@@ -59,8 +57,8 @@ public class NotificationHandler {
                                     Gson gson = new Gson();
                                     NotifModel model = gson.fromJson(object, NotifModel.class);
 
-                                    String code = model.getError_message();
-
+                                    String code = model.getError_code();
+                                    String message = model.getError_message();
                                     if (code.equals(WebParams.SUCCESS_CODE) || code.equals(ErrorDefinition.NO_TRANSACTION)) {
                                         JSONArray mArrayData = new JSONArray(gson.toJson(model.getData_user_notif()));
                                         int idx = 0;
@@ -78,12 +76,10 @@ public class NotificationHandler {
                                         setNotifCount(String.valueOf(idx));
                                         //setNotifCount(response.getString(WebParams.UNREAD));
                                     } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                        String message = model.getError_message();
                                         setLogout(message);
                                     } else {
-                                        code = model.getError_code() + ":" + model.getError_message();
                                         //Toast.makeText(mContext, code, Toast.LENGTH_LONG).show();
-                                        Timber.d("error Notification handler:" + code);
+                                        Timber.d("error Notification handler:" + code + ":" + message);
                                     }
 
                                 } catch (JSONException e) {
@@ -102,14 +98,14 @@ public class NotificationHandler {
                             public void onComplete() {
 
                             }
-                        } );
+                        });
             }
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
-    private void setNotifCount(String _count){
+    private void setNotifCount(String _count) {
         if (mContext == null)
             return;
 
@@ -117,13 +113,12 @@ public class NotificationHandler {
         fca.setNotifAmount(_count);
     }
 
-    private void setLogout(String _message){
+    private void setLogout(String _message) {
         Timber.w("masuk setLogout");
         if (mContext == null)
             return;
 
         MainPage fca = (MainPage) mContext;
-        AlertDialogLogout test = AlertDialogLogout.getInstance();
-        test.showDialoginMain(fca, _message);
+        AlertDialogLogout.getInstance().showDialoginMain(fca, _message);
     }
 }

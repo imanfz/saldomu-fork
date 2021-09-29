@@ -55,7 +55,7 @@ public class BalanceService extends Service {
     };
 
     public void runBalance(){
-        if(!isServiceDestroyed()) {
+        if(isServiceDestroyed()) {
             mBl.getDataBalance(true,new OnLoadDataListener() {
                 @Override
                 public void onSuccess(Object deData) {
@@ -79,7 +79,7 @@ public class BalanceService extends Service {
     private Runnable callNotif = new Runnable() {
         @Override
         public void run() {
-            if(!isServiceDestroyed()) {
+            if(isServiceDestroyed()) {
                 Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                 SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
                 NotificationHandler mNH = new NotificationHandler(mainPageContext, sp);
@@ -104,11 +104,6 @@ public class BalanceService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Timber.i("Masuk onBind Service");
-        Bundle extras=intent.getExtras();
-
-//        if (extras!=null) {
-//            messenger=(Messenger)extras.get(DefineValue.DATA);
-//        }
         return testBinder;
     }
 

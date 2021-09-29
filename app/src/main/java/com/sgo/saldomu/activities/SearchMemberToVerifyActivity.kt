@@ -142,7 +142,7 @@ class SearchMemberToVerifyActivity : BaseActivity() {
                             } else if (code == DefineValue.ERROR_0066) run {
                                 Timber.d("isi response maintenance:$response")
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(this@SearchMemberToVerifyActivity, model.error_message)
+                                alertDialogMaintenance.showDialogMaintenance(this@SearchMemberToVerifyActivity)
                             }else {
                                 code = model.error_message
                                 Toast.makeText(this@SearchMemberToVerifyActivity, code, Toast.LENGTH_LONG).show()

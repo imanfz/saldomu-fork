@@ -39,11 +39,10 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
     private LayoutInflater mInflater;
     private OnItemClickListener mOnItemClick;
     private Context mContext;
-    private boolean rejectSuccess;
 
     @Override
     public void onItemSelected(boolean success) {
-        rejectSuccess = success;
+
     }
 
     public interface OnItemClickListener {

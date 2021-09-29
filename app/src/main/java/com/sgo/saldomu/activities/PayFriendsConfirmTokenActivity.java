@@ -36,7 +36,6 @@ public class PayFriendsConfirmTokenActivity extends BaseActivity {
             }
 
             SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-            String _memberID = sp.getString(DefineValue.MEMBER_ID, "");
 
             Intent intent    = getIntent();
             Bundle args = new Bundle();
@@ -54,50 +53,6 @@ public class PayFriendsConfirmTokenActivity extends BaseActivity {
             fragmentTransaction.add(R.id.payfriends_confirm_token_content, newFragment,"payfriendconfirmtoken");
             fragmentTransaction.commit();
             setResult(MainPage.RESULT_NORMAL);
-        }
-    }
-
-    public void togglerBroadcastReceiver(Boolean _on, BroadcastReceiver _myreceiver){
-        Timber.wtf("masuk turnOnBR");
-        if(_on){
-            IntentFilter filter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
-            registerReceiver(_myreceiver,filter);
-            filter.setPriority(999);
-            filter.addCategory("android.intent.category.DEFAULT");
-        }
-        else unregisterReceiver(_myreceiver);
-
-    }
-
-    public void switchContent(Fragment mFragment,String fragName,Boolean isBackstack) {
-
-        if(isBackstack){
-            Timber.d("backstack");
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.payfriends_confirm_token_content, mFragment, fragName)
-                    .addToBackStack(null)
-                    .commit();
-        }
-        else {
-            Timber.d("bukan backstack");
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.payfriends_confirm_token_content, mFragment, fragName)
-                    .commit();
-
-        }
-        setActionBarTitle(fragName);
-    }
-
-    public void switchActivity(Intent mIntent, int j) {
-        switch (j){
-            case MainPage.ACTIVITY_RESULT:
-                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                startActivityForResult(mIntent,MainPage.REQUEST_FINISH);
-                break;
-            case 2:
-                break;
         }
     }
 

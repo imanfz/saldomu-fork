@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -78,20 +79,14 @@ public class FragListInvoiceTagih extends BaseFragment {
 
     // declare view objects
     RecyclerView listMenu;
-    ProgressBar prgLoading;
-    TextView lbl_header;
-    TableLayout tabel_footer;
-    TableRow row_phone;
     TextView lbl_total_pay_amount;
-    RelativeLayout contentLayout;
     LinearLayout searchLayout;
-    Button btnDone;
-    Button btnReset;
+    Button btnDone, btnCheck, btnReset;
     private AutoCompleteTextView search;
     Spinner sp_payment_type, sp_phone_number, sp_payment_method;
     String mobile_phone, paymentCode, paymentName, ccy_id, buyer_fee, seller_fee, commission_fee, min_amount, max_amount, noId;
-    String callback_url, paymentMethod, buss_scheme_code, doc_no, doc_id, remain_amount, amount, due_date, bank_code, bank_name;
-    String notes, cust_id, tx_favorite_type, product_type, anchorId;
+    String paymentMethod, buss_scheme_code, doc_no, doc_id, remain_amount, amount, due_date, bank_code, bank_name;
+    String notes, cust_id, anchorId;
     private ArrayList<MobilePhoneModel> mobilePhoneModelArrayList = new ArrayList<>();
     private ArrayList<bank_biller_model> bankBillerModelArrayList = new ArrayList<>();
     private ArrayList<PaymentTypeDGIModel> paymentTypeDGIModelArrayList = new ArrayList<>();
@@ -104,12 +99,10 @@ public class FragListInvoiceTagih extends BaseFragment {
     ArrayList<String> paymentTypeArr = new ArrayList<>();
     ArrayList<String> paymentMethodArr = new ArrayList<>();
     ArrayList<String> paymentMethodArrBG = new ArrayList<>();
-    String partialPayment, memberCode, commCodeTagih, paymentRemark, txIdPG, paymentType;
+    String partialPayment, memberCode, commCodeTagih, paymentRemark, txIdPG;
     InvoiceDGIAdapter invoiceDGIAdapter;
     Bundle bundle1 = new Bundle();
     int total;
-    List<BankCashoutModel> listBankCashOut = new ArrayList<>();
-    BankCashoutAdapter adapter;
     boolean isSearchVissible = false;
     boolean isFav = false;
 
@@ -138,20 +131,15 @@ public class FragListInvoiceTagih extends BaseFragment {
                 isFav = true;
                 notes = bundle.getString(DefineValue.NOTES, "");
                 cust_id = bundle.getString(DefineValue.CUST_ID, "");
-                tx_favorite_type = bundle.getString(DefineValue.TX_FAVORITE_TYPE, "");
-                product_type = bundle.getString(DefineValue.PRODUCT_TYPE, "");
                 anchorId = bundle.getString(DefineValue.ANCHOR_ID, "");
             }
         }
 
-        prgLoading = view.findViewById(R.id.prgLoading);
-        contentLayout = view.findViewById(R.id.content);
         listMenu = view.findViewById(R.id.listMenu);
-        tabel_footer = view.findViewById(R.id.tabel_footer);
-        row_phone = view.findViewById(R.id.row_phone);
         lbl_total_pay_amount = view.findViewById(R.id.lbl_total_pay_amount);
 
         btnDone = view.findViewById(R.id.btn_done);
+        btnCheck = view.findViewById(R.id.btn_check);
         btnReset = view.findViewById(R.id.btnReset);
         sp_payment_type = view.findViewById(R.id.cbo_payment_type);
         sp_payment_method = view.findViewById(R.id.sp_metode_pembayaran);
@@ -171,11 +159,7 @@ public class FragListInvoiceTagih extends BaseFragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.equals("")) {
 
-                } else {
-//                    invoiceDGIAdapter.getFilter().filter(charSequence);
-                }
             }
 
             @Override
@@ -184,43 +168,35 @@ public class FragListInvoiceTagih extends BaseFragment {
             }
         });
 
-        btnReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resetData();
+        btnReset.setOnClickListener(view -> resetData());
+
+        btnDone.setOnClickListener(v -> {
+            if (lbl_total_pay_amount.getText().toString().equalsIgnoreCase("0")) {
+                Toast.makeText(getActivity(), "Tidak ada invoice yang dibayarkan", Toast.LENGTH_SHORT).show();
+            } else {
+                PaymentRemarkDialog dialog = PaymentRemarkDialog.newDialog(new PaymentRemarkDialog.onTap() {
+                    @Override
+                    public void onOK(String msg, String s, String dedate) {
+                        paymentRemark = msg;
+                        if (s.isEmpty()) {
+                            noId = "";
+                        } else
+                            noId = s;
+
+                        if (dedate.isEmpty()) {
+                            due_date = "";
+                        } else
+                            due_date = dedate;
+
+                        checkOutPayment(msg, noId, due_date);
+                        bundle.putString(DefineValue.REMARK, paymentRemark);
+                    }
+                }, paymentCode);
+                dialog.show(getFragmentManager(), "paymentremark dialog");
             }
         });
 
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (lbl_total_pay_amount.getText().toString().equalsIgnoreCase("0")) {
-                    Toast.makeText(getActivity(), "Tidak ada invoice yang dibayarkan", Toast.LENGTH_SHORT).show();
-                } else {
-                    PaymentRemarkDialog dialog = PaymentRemarkDialog.newDialog(new PaymentRemarkDialog.onTap() {
-                        @Override
-                        public void onOK(String msg, String s, String dedate) {
-                            paymentRemark = msg;
-                            if (s.isEmpty()) {
-                                noId = "";
-                            } else
-                                noId = s;
-
-                            if (dedate.isEmpty())
-                            {
-                                due_date = "";
-                            }else
-                                due_date = dedate;
-
-                            checkOutPayment(msg, noId, due_date);
-                            bundle.putString(DefineValue.REMARK, paymentRemark);
-                        }
-                    }, paymentCode);
-                    dialog.show(getFragmentManager(), "paymentremark dialog");
-                }
-            }
-        });
-
+        btnCheck.setVisibility(View.GONE);
         parseResponse();
     }
 
@@ -238,7 +214,6 @@ public class FragListInvoiceTagih extends BaseFragment {
         menu.findItem(R.id.settings).setVisible(false);
         menu.findItem(R.id.search).setVisible(true);
         menu.findItem(R.id.cancel).setVisible(true);
-        menu.findItem(R.id.scan).setVisible(true);
     }
 
     @Override
@@ -260,20 +235,16 @@ public class FragListInvoiceTagih extends BaseFragment {
             newFrag.setArguments(bundle2);
             TagihActivity ftf = (TagihActivity) getActivity();
             ftf.switchContent(newFrag, getString(R.string.cancel_transaction), true);
-        } else if (item.getItemId() == R.id.scan) {
-            Fragment newFrag = new FragmentScanDGI();
-            TagihActivity ftf = (TagihActivity) getActivity();
-            ftf.switchContent(newFrag, getString(R.string.scan), true);
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void initializeRecyclerview() {
-        invoiceDGIAdapter = new InvoiceDGIAdapter(invoiceDGIModelArrayList, getActivity(),
+        invoiceDGIAdapter = new InvoiceDGIAdapter(invoiceDGIModelArrayList,
                 this::showInputDialog);
         listMenu.setAdapter(invoiceDGIAdapter);
         listMenu.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        listMenu.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.row_divider),
+        listMenu.addItemDecoration(new DividerItemDecoration(ResourcesCompat.getDrawable(getResources(), R.drawable.row_divider, null),
                 false, false));
     }
 
@@ -381,7 +352,6 @@ public class FragListInvoiceTagih extends BaseFragment {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     try {
-                        paymentType = mArrayPaymentType.getJSONObject(position).getString(WebParams.PAYMENT_NAME);
                         paymentCode = mArrayPaymentType.getJSONObject(position).getString(WebParams.PAYMENT_CODE);
                         if (paymentCode.equalsIgnoreCase("BG") || paymentCode.equalsIgnoreCase("TS")) {
                             getBankCashout();
@@ -557,8 +527,7 @@ public class FragListInvoiceTagih extends BaseFragment {
         bundle1.putString(DefineValue.PRODUCT_CODE, "SCASH");
         bundle1.putString(DefineValue.REMARK, remark);
         bundle1.putString(DefineValue.MOBILE_PHONE, phone_no);
-        if (isFav==true)
-        {
+        if (isFav == true) {
             bundle1.putBoolean(DefineValue.IS_FAVORITE, true);
             bundle1.putString(DefineValue.CUST_ID, cust_id);
             bundle1.putString(DefineValue.NOTES, notes);
@@ -594,6 +563,7 @@ public class FragListInvoiceTagih extends BaseFragment {
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 Log.e("getBankCashout", object.get("bank_cashout").toString());
                                 try {
@@ -629,21 +599,16 @@ public class FragListInvoiceTagih extends BaseFragment {
                                 }
 
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                code = model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -658,10 +623,9 @@ public class FragListInvoiceTagih extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
-
 
 
 }

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.fragments.AgentListFragment;
 import com.sgo.saldomu.fragments.AgentMapFragment;
 import com.sgo.saldomu.models.ShopDetail;
@@ -19,9 +20,8 @@ import java.util.ArrayList;
  */
 
 public class TabSearchAgentAdapter extends FragmentPagerAdapter {
-    private Context context;
     private String[] menuItems;
-    private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
+    private ArrayList<ShopDetail> shopDetails;
     private FragmentManager fm;
     private Double currentLatitude;
     private Double currentLongitude;
@@ -32,7 +32,6 @@ public class TabSearchAgentAdapter extends FragmentPagerAdapter {
                                  Double currentLatitude, Double currentLongitude, String mobility, String completeAddress) {
         super(fm);
         this.fm = fm;
-        this.context = context;
         this.menuItems = menuItems;
         this.shopDetails = shopDetails;
         this.currentLatitude = currentLatitude;
@@ -54,12 +53,12 @@ public class TabSearchAgentAdapter extends FragmentPagerAdapter {
             case 0:
                 Bundle args = new Bundle();
                 if ( currentLatitude != null )
-                    args.putDouble("currentLatitude", currentLatitude);
+                    args.putDouble(DefineValue.CURRENT_LATITUDE, currentLatitude);
 
                 if ( currentLongitude != null )
-                    args.putDouble("currentLongitude", currentLongitude);
+                    args.putDouble(DefineValue.CURRENT_LONGITUDE, currentLongitude);
 
-                args.putString("mobility", mobility);
+                args.putString(DefineValue.BBS_AGENT_MOBILITY, mobility);
                 args.putString("completeAddress", completeAddress);
                 fragment = new AgentMapFragment();
                 fragment.setArguments(args);
@@ -71,7 +70,7 @@ public class TabSearchAgentAdapter extends FragmentPagerAdapter {
                 break;
             case 1:
                 Bundle args2 = new Bundle();
-                args2.putString("mobility", mobility);
+                args2.putString(DefineValue.BBS_AGENT_MOBILITY, mobility);
                 fragment = new AgentListFragment();
                 fragment.setArguments(args2);
 
@@ -83,7 +82,7 @@ public class TabSearchAgentAdapter extends FragmentPagerAdapter {
     }
 
     public void OnLocationClickListener(int position, ArrayList<ShopDetail> shopDetails) {
-        mOnListAgentItemClickMap.OnIconLocationClickListener(position, shopDetails);
+        mOnListAgentItemClickMap.OnIconLocationClickListener(position);
     }
 
     @Override

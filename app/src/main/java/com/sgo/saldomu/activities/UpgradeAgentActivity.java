@@ -100,8 +100,8 @@ public class UpgradeAgentActivity extends BaseActivity {
         pickAndCameraUtil = new PickAndCameraUtil(this);
 
         is_agent = sp.getBoolean(DefineValue.IS_AGENT, false);
-        reject_siup = sp.getString(DefineValue.REJECT_SIUP, "N");
-        reject_npwp = sp.getString(DefineValue.REJECT_NPWP, "N");
+        reject_siup = sp.getString(DefineValue.REJECT_SIUP, DefineValue.STRING_NO);
+        reject_npwp = sp.getString(DefineValue.REJECT_NPWP, DefineValue.STRING_NO);
         remark_siup = sp.getString(DefineValue.REMARK_SIUP, "");
         remark_npwp = sp.getString(DefineValue.REMARK_NPWP, "");
 
@@ -158,13 +158,13 @@ public class UpgradeAgentActivity extends BaseActivity {
             }
         });
 
-        if (reject_siup.equalsIgnoreCase("Y") || reject_npwp.equalsIgnoreCase("Y")) {
-            if (reject_siup.equalsIgnoreCase("Y")) {
+        if (reject_siup.equalsIgnoreCase(DefineValue.STRING_YES) || reject_npwp.equalsIgnoreCase(DefineValue.STRING_YES)) {
+            if (reject_siup.equalsIgnoreCase(DefineValue.STRING_YES)) {
                 cameraSIUP.setEnabled(true);
                 tv_reject_siup.setText("Alasan : " + remark_siup);
             } else layout_siup.setVisibility(View.GONE);
 
-            if (reject_npwp.equalsIgnoreCase("Y")) {
+            if (reject_npwp.equalsIgnoreCase(DefineValue.STRING_YES)) {
                 cameraNPWP.setEnabled(true);
                 tv_reject_npwp.setText("Alasan : " + remark_npwp);
             } else layout_npwp.setVisibility(View.GONE);
@@ -203,95 +203,17 @@ public class UpgradeAgentActivity extends BaseActivity {
         }
     };
 
-//    private void getHelpList() {
-//        try {
-//            showProgressDialog();
-//
-//            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
-//            params.put(WebParams.USER_ID, userPhoneID);
-//            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-//            Timber.d("isi params help list:" + params.toString());
-//
-//
-//            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_USER_CONTACT_INSERT, params,
-//                    new ObjListeners() {
-//                        @Override
-//                        public void onResponses(JSONObject response) {
-//                            try {
-//                                jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
-//                                String code = response.getString(WebParams.ERROR_CODE);
-//                                String message = response.getString(WebParams.ERROR_MESSAGE);
-//
-//                                if (code.equals(WebParams.SUCCESS_CODE)) {
-//                                    Timber.d("isi params help list:" + response.toString());
-//
-//                                    contactCenter = response.getString(WebParams.CONTACT_DATA);
-//
-//                                    SecurePreferences.Editor mEditor = sp.edit();
-//                                    mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
-//                                    mEditor.apply();
-//
-//                                    try {
-//                                        JSONArray arrayContact = new JSONArray(contactCenter);
-//                                        for (int i = 0; i < arrayContact.length(); i++) {
-//                                            if (i == 0) {
-//                                                listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
-//                                                listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
-//                                            }
-//                                        }
-//                                    } catch (JSONException e) {
-//                                        e.printStackTrace();
-//                                    }
-//
-//                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
-//                                    Timber.d("isi response autologout:" + response.toString());
-//                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-//                                    test.showDialoginActivity(UpgradeAgentActivity.this, message);
-//                                } else if (code.equals(DefineValue.ERROR_9333)) {
-//                                    Timber.d("isi response app data:" + model.getApp_data());
-//                                    final AppDataModel appModel = model.getApp_data();
-//                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-//                                    alertDialogUpdateApp.showDialogUpdate(UpgradeAgentActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
-//                                } else if (code.equals(DefineValue.ERROR_0066)) {
-//                                    Timber.d("isi response maintenance:" + response.toString());
-//                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-//                                    alertDialogMaintenance.showDialogMaintenance(UpgradeAgentActivity.this, model.getError_message());
-//                                }else {
-//                                    Timber.d("isi error help list:" + response.toString());
-//                                    Toast.makeText(UpgradeAgentActivity.this, message, Toast.LENGTH_LONG).show();
-//                                }
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable throwable) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onComplete() {
-//                            dismissProgressDialog();
-//                        }
-//                    });
-//        } catch (Exception e) {
-//            Timber.d("httpclient:" + e.getMessage());
-//        }
-//    }
-
     public Boolean validationPhoto() {
         if (et_mothersName.getText().toString().length() == 0) {
             et_mothersName.requestFocus();
             et_mothersName.setError(this.getString(R.string.validation_text_birth_mother));
             return false;
-        } else if (layout_siup.getVisibility() == View.VISIBLE || reject_siup.equalsIgnoreCase("Y")) {
+        } else if (layout_siup.getVisibility() == View.VISIBLE || reject_siup.equalsIgnoreCase(DefineValue.STRING_YES)) {
             if (siup == null) {
                 DefinedDialog.showErrorDialog(UpgradeAgentActivity.this, "Foto SIUP/Surat Keterangan RT/RW tidak boleh kosong!");
                 return false;
             }
-        } else if (reject_npwp.equalsIgnoreCase("Y")) {
+        } else if (reject_npwp.equalsIgnoreCase(DefineValue.STRING_YES)) {
             if (npwp == null) {
                 DefinedDialog.showErrorDialog(UpgradeAgentActivity.this, "Foto NPWP tidak boleh kosong!");
                 return false;
@@ -465,7 +387,7 @@ public class UpgradeAgentActivity extends BaseActivity {
                         } else if (error_code.equals(DefineValue.ERROR_0066)) {
                             Timber.d("isi response maintenance:" + object.toString());
                             AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                            alertDialogMaintenance.showDialogMaintenance(UpgradeAgentActivity.this, model.getError_message());
+                            alertDialogMaintenance.showDialogMaintenance(UpgradeAgentActivity.this);
                         }else {
 
                             Timber.d("Masuk failure");
@@ -542,7 +464,7 @@ public class UpgradeAgentActivity extends BaseActivity {
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(UpgradeAgentActivity.this, model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(UpgradeAgentActivity.this);
                                 }else {
                                     code = response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(UpgradeAgentActivity.this, code, Toast.LENGTH_LONG).show();
@@ -572,17 +494,9 @@ public class UpgradeAgentActivity extends BaseActivity {
     }
 
     private void DialogSuccessUploadPhoto() {
-//        Dialog dialognya = DefinedDialog.MessageDialog(UpgradeAgentActivity.this, this.getString(R.string.upgrade_agent_dialog_finish_title),
-//                this.getString(R.string.level_dialog_finish_message) + listAddress + "\n" +
-//                        this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
         Dialog dialognya = DefinedDialog.MessageDialog(UpgradeAgentActivity.this, this.getString(R.string.upgrade_agent_dialog_finish_title),
                 this.getString(R.string.level_dialog_waiting),
-                new DefinedDialog.DialogButtonListener() {
-                    @Override
-                    public void onClickButton(View v, boolean isLongClick) {
-                        finish();
-                    }
-                }
+                () -> finish()
         );
 
         dialognya.setCanceledOnTouchOutside(false);

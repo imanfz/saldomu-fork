@@ -65,10 +65,6 @@ public class NavDrawMainMenuAdapter extends ArrayAdapter<navdrawmainmenuModel> {
     return rowView;
   }
 
-  public int getSelectedItem() {
-    return mSelectedItem;
-  }
-
   public void setSelectedItem(int selectedItem) {
     if(!mModelArrayList.get(selectedItem).isGroupHeader())mSelectedItem = selectedItem;
   }

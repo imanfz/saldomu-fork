@@ -20,9 +20,6 @@ public class DenomItemOrderListConfirmAdapter extends RecyclerView.Adapter<Denom
 
     Context context;
     ArrayList<DenomOrderListModel> itemList;
-    boolean isFragConfirm;
-
-
 
     public DenomItemOrderListConfirmAdapter(Context _context, ArrayList<DenomOrderListModel> itemList){
         this.context = _context;

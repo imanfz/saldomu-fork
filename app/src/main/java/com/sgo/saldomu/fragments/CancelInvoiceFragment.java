@@ -55,13 +55,11 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
     String memberCode, commCode;
-    String reason;
     Double latitude, longitude;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
 
-    private String date_visit;
     private ArrayList<InvoiceDGI> invoiceDGIModelArrayList;
     private ArrayList<Invoice> selectedCancelInvoice = new ArrayList<>();
     private ArrayList<String> reasonCodeArrayList = new ArrayList<>();
@@ -71,7 +69,6 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
     RecyclerView recycler_view;
     Button cancelButton;
     View view;
-
 
     @Nullable
     @Override
@@ -252,7 +249,7 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + response.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                                 dismissProgressDialog();

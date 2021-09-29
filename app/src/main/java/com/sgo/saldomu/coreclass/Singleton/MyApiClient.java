@@ -19,8 +19,6 @@ public class MyApiClient {
 
     private static MyApiClient singleton = null;
     private Context mContext;
-    //    public static final String idService = "dev.api.mobile";
-//    public static final String passService = "590@dev.api.mobile!";
     private SecurePreferences sp;
 
     private Context getmContext() {
@@ -328,6 +326,7 @@ public class MyApiClient {
     public static String LINK_DELETE_FAVORITE;
     public static String LINK_GENERATE_URL;
     public static String LINK_REQ_FIRST_OTP;
+    public static String LINK_NEW_INVOICE;
 
 
     public void InitializeAddress(){
@@ -529,6 +528,7 @@ public class MyApiClient {
         LINK_SET_MEMBER_LOC = headaddressfinal + "invoice/Setmemberlocation/Invoke";
         LINK_CANCEL_VISIT_DGI = headaddressfinal + "invoice/Canceltrxv2/Invoke";
         LINK_REQ_FIRST_OTP = headaddressfinal + "invoice/ReqFirstOTP/Invoke";
+        LINK_NEW_INVOICE = headaddressfinal + "invoice/NewInvoice/Invoke";
 
         //OTP
         LINK_GET_OTP = headaddressfinal + "VerifySIMCardByOTP/Retrieve";
@@ -685,10 +685,6 @@ public class MyApiClient {
     public static String LINK_UPDATE_FEEDBACK = headaodaddressfinal + "Transaction/Updatefeedback";
     public static String LINK_CANCEL_SEARCH_AGENT = headaodaddressfinal + "Transaction/Cancelsearchagent";
 
-
-    private static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
-    public static String FLAG_OTP = "N";
-    public static Boolean FLAG_SIG = true;
     public static String COMM_ID_DEV = "EMOSALDOMU1500439694RS6DD"; //dev
     public static String COMM_ID_TAGIH_DEV = "TAGIHSALDO1540982049APLC2"; //dev tagih
     public static String COMM_ID_PULSA_DEV = "DAPMSCADM1458816850U9KR7"; //dev pulsa agent

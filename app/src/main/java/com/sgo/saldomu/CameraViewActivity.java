@@ -42,12 +42,7 @@ public class CameraViewActivity extends AppCompatActivity {
         ((FrameLayout) findViewById(R.id.frameLayout)).addView(preview);
 
         buttonSnap = findViewById(R.id.take_picture);
-        buttonSnap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                camera.takePicture(null, null, mPicture);
-            }
-        });
+        buttonSnap.setOnClickListener(v -> camera.takePicture(null, null, mPicture));
     }
 
     public static Camera getCameraInstance() {

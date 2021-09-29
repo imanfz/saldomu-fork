@@ -39,14 +39,12 @@ import in.srain.cube.views.ptr.PtrHandler;
  */
 public class FragMainPage extends Fragment {
 
-
     private MainFragmentAdapter currentAdapternya;
     private PtrFrameLayout currentPtrFrame;
     private SecurePreferences sp;
     private View currentView;
     private boolean isAgent;
     ViewPager pager;
-    LevelClass levelClass;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,7 +58,6 @@ public class FragMainPage extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        levelClass = new LevelClass(getActivity(),sp);
         isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
@@ -68,13 +65,8 @@ public class FragMainPage extends Fragment {
         TitlePageIndicator tabs;
         getActivity().invalidateOptionsMenu();
         final List<BaseFragmentMainPage> mList = new ArrayList<>();
-//        mList.add(new Home());
 
-//        mList.add(new FragHomeAgent());
         mList.add(new FragHomeNew());
-//        mList.add(new MyHistory());
-//        mList.add(new TimeLine());
-//        mList.add(new Group());
 
         tabs = (TitlePageIndicator)getCurrentView().findViewById(R.id.main_tabs);
         pager = (ViewPager) getCurrentView().findViewById(R.id.main_pager);
@@ -116,8 +108,6 @@ public class FragMainPage extends Fragment {
 
             @Override
             public void onPageSelected(int i) {
-//                updateFab(i);
-                ToggleFAB(!(i==1));
             }
 
             @Override
@@ -160,9 +150,6 @@ public class FragMainPage extends Fragment {
         });
 
         tabs.setVisibility(View.GONE);
-
-
-        ToggleFAB(false);
     }
 
     public void showDialogNotAgent()
@@ -194,15 +181,6 @@ public class FragMainPage extends Fragment {
         ft.commitAllowingStateLoss();
     }
 
-    public Fragment getFragment(int position){
-        return getCurrentAdapternya().getItem(position);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
-
     private MainFragmentAdapter getCurrentAdapternya() {
         return currentAdapternya;
     }
@@ -225,43 +203,5 @@ public class FragMainPage extends Fragment {
 
     private void setCurrentView(View currentView) {
         this.currentView = currentView;
-    }
-
-
-    private int getStatusBarColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return getActivity().getWindow().getStatusBarColor();
-        }
-        return 0;
-    }
-
-    private void setStatusBarColor(int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getActivity().getWindow().setStatusBarColor(color);
-        }
-    }
-
-
-    private void switchMenu(int idx_menu,Bundle data){
-        if (getActivity() == null)
-            return;
-
-        MainPage fca = (MainPage) getActivity();
-            fca.switchMenu(idx_menu, data);
-    }
-
-    private void ToggleFAB(Boolean isShow){
-        if (getActivity() == null)
-            return;
-
-//        if(getActivity() instanceof MainPage) {
-//            MainPage fca = (MainPage) getActivity();
-//            if(fca.materialSheetFab != null) {
-//                if (isShow)
-//                    fca.materialSheetFab.showFab();
-//                else
-//                    fca.materialSheetFab.hideSheetThenFab();
-//            }
-//        }
     }
 }

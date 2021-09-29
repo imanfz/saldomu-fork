@@ -74,26 +74,24 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     public final static String TAG = "com.sgo.saldomu.fragments.BBSCashInConfirm";
     private static final int MAX_TOKEN_RESENT = 3;
 
-    private TextView tvTitle;
     private View v, cityLayout, layout_btn_resend, layout_OTP, layoutTCASH;
     private TextView tvSourceAcct, tvBankBenef, tvBenefCity, tvAmount, tvNoBenefAcct,
-            tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination, tvNomor, tvOTP, tvAdditionalFee, tvbenefname;
+            tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination, tvNomor, tvOTP, tvbenefname;
     private TableRow tbNameBenef;
     private EditText tokenValue, noHpTCASH;
     private Button btnSubmit, btnResend, btnBack;
     private String comm_code, tx_product_code, source_product_type,
             benef_city, source_product_h2h, api_key, callback_url, tx_bank_code, tx_bank_name, tx_product_name,
             fee, tx_id, amount, share_type, comm_id, benef_product_name, name_benef, no_benef,
-            no_hp_benef, remark, source_product_name, total_amount, transaksi, benef_product_code, tx_status, addditionalFee;
+            no_hp_benef, remark, source_product_name, total_amount, transaksi, benef_product_code;
     private int max_token_resend = MAX_TOKEN_RESENT;
-    private boolean isSMS = false, isIB = false, isPIN = false, TCASH_hp_validation = false, isTCASH = false, validasiNomor = false,
-            isMandiriLKD = false, MandiriLKD_validation = false, code_success = false;
+    private boolean isSMS = false, isIB = false, isPIN = false, TCASH_hp_validation = false, isTCASH = false,
+            isMandiriLKD = false, mandiriLKDValidation = false;
     private int attempt;
     private int failed;
     private SMSclass smSclass;
     private ActionListener actionListener;
     private Boolean finishTransaction = false, retryToken = false, isAgentLKD = false;
-    ArrayList<String> name = new ArrayList<String>();
     private Switch favoriteSwitch;
     private EditText notesEditText;
     private String value_pin;
@@ -136,11 +134,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
         isAgentLKD = sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.LKD));
 
-//        CircleStepView mCircleStepView = v.findViewById(R.id.circle_step_view);
-//        mCircleStepView.setTextBelowCircle("", "", getString(R.string.konfirmasi_agen));
-//        mCircleStepView.setCurrentCircleIndex(2, false);
-//
-//        tvTitle = v.findViewById(R.id.tv_title);
         cityLayout = v.findViewById(R.id.benef_city_layout);
         tvSourceAcct = v.findViewById(R.id.bbscashin_confirm_value_source_acct);
         tvBankBenef = v.findViewById(R.id.bbscashin_confirm_value_benef_acct);
@@ -164,7 +157,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         tbNameBenef = v.findViewById(R.id.tb_name_benef);
         tvNomor = v.findViewById(R.id.tv_no_tcash);
         tvOTP = v.findViewById(R.id.tv_otp);
-//        tvAdditionalFee = v.findViewById(R.id.bbscashin_confirm_additionalFee);
         favoriteSwitch = v.findViewById(R.id.favorite_switch);
         notesEditText = v.findViewById(R.id.notes_edit_text);
         tvbenefname = v.findViewById(R.id.tvbenefname);
@@ -200,9 +192,8 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             remark = bundle.getString(DefineValue.REMARK);
             source_product_name = bundle.getString(DefineValue.SOURCE_ACCT);
             TCASH_hp_validation = bundle.getBoolean(DefineValue.TCASH_HP_VALIDATION);
-            MandiriLKD_validation = bundle.getBoolean(DefineValue.MANDIRI_LKD_VALIDATION);
-            code_success = bundle.getBoolean(DefineValue.CODE_SUCCESS);
-//            addditionalFee = bundle.getString(DefineValue.ADDITIONAL_FEE, "0");
+            mandiriLKDValidation = bundle.getBoolean(DefineValue.MANDIRI_LKD_VALIDATION);
+
             String benef_product_type = bundle.getString(DefineValue.TYPE_BENEF, "");
 
             if (!bundle.containsKey(DefineValue.MAX_RESEND))
@@ -247,7 +238,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             tvNoHp.setText(no_hp_benef);
             tvRemark.setText(remark);
             tvSourceAcct.setText(source_product_name);
-            if (source_product_h2h.equalsIgnoreCase("N")) {
+            if (source_product_h2h.equalsIgnoreCase(DefineValue.STRING_NO)) {
                 isIB = true;
                 layout_OTP.setVisibility(View.GONE);
                 layout_btn_resend.setVisibility(View.GONE);
@@ -258,7 +249,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                 } else if (benef_product_type.equalsIgnoreCase("ACCT")) {
                     cityLayout.setVisibility(View.VISIBLE);
                 }
-            } else if (source_product_h2h.equalsIgnoreCase("Y")) {
+            } else if (source_product_h2h.equalsIgnoreCase(DefineValue.STRING_YES)) {
                 if (source_product_type.equalsIgnoreCase("EMO") && !tx_product_code.equalsIgnoreCase("TCASH") && !tx_product_code.equalsIgnoreCase("MANDIRILKD")) {
                     isPIN = true;
                     new UtilsLoader(getActivity(), sp).getFailedPIN(userPhoneID, new OnLoadDataListener() { //get pin attempt
@@ -304,7 +295,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                 } else if (tx_product_code.equalsIgnoreCase("MANDIRILKD")) {
                     isMandiriLKD = true;
                     layout_btn_resend.setVisibility(View.GONE);
-                    if (MandiriLKD_validation && noHpTCASH != null) {
+                    if (mandiriLKDValidation && noHpTCASH != null) {
                         layoutTCASH.setVisibility(View.VISIBLE);
                         tvNomor.setText("No. Rekening Agen");
                         layout_OTP.setVisibility(View.GONE);
@@ -440,22 +431,18 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                                 tvOTP.setText("Kode OTP TCASH");
                             }
                             layout_btn_resend.setVisibility(View.GONE);
-                            validasiNomor = true;
                         }
 
                     } else sentInsertTransTopup(tokenValue.getText().toString());
 
-                    btnSubmit.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (inputValidation()) {
-                                if (retryToken) {
-                                    sentRetryToken();
-                                } else
-                                    sentInsertTransTopup(tokenValue.getText().toString());
-                                btnSubmit.setEnabled(true);
+                    btnSubmit.setOnClickListener(v -> {
+                        if (inputValidation()) {
+                            if (retryToken) {
+                                sentRetryToken();
+                            } else
+                                sentInsertTransTopup(tokenValue.getText().toString());
+                            btnSubmit.setEnabled(true);
 
-                            }
                         }
                     });
                 } else btnSubmit.setEnabled(true);
@@ -558,7 +545,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 String message = model.getError_message();
                                 if (isPIN) {
@@ -670,7 +657,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 code = model.getError_message();
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
@@ -747,7 +734,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 String msg = model.getError_message();
                                 showDialog(msg);
@@ -826,7 +813,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 String code_msg = model.getError_message();
 
@@ -1007,9 +994,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
     public final void insertTokenEdit(String _kode_otp, String _member_kode) {
         Timber.d("isi _kode_otp, _member_kode, member kode session:" + _kode_otp + " / " + _member_kode + " / " + sp.getString(DefineValue.MEMBER_CODE, ""));
-//        if(_member_kode.equals(sp.getString(CoreApp.MEMBER_CODE,""))){
         tokenValue.setText(_kode_otp);
-//        }
     }
 
     private void changeToSGOPlus(String _tx_id, String _product_code, String _product_name, String _bank_code,
@@ -1072,10 +1057,9 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getActivity().finish();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            getActivity().finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -1087,7 +1071,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
     public void setToStatus(String _tx_status) {
         finishTransaction = true;
-        tx_status = _tx_status;
     }
 
     public void setToRetryTokenEspay() {
@@ -1155,7 +1138,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + response.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }

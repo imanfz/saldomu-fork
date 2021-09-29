@@ -79,7 +79,7 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
     List<Polyline> lines;
     Polyline line;
     String encodedPoints = "";
-    String htmlDirections   = "";
+    String htmlDirections = "";
     TextToSpeech textToSpeech;
     private GoogleApiClient googleApiClient;
     private LocationRequest mLocationRequest;
@@ -98,24 +98,23 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
         textToSpeech = new TextToSpeech(BbsMapNavigationActivity.this, BbsMapNavigationActivity.this);
         textToSpeech.setLanguage(Locale.getDefault());
 
-        lines                   = new ArrayList<>();
-        tvDirection             = findViewById(R.id.tvDirection);
-        Intent receiveIntent    = this.getIntent();
-        targetLatitude          = receiveIntent.getDoubleExtra("targetLatitude", 0);
-        targetLongitude         = receiveIntent.getDoubleExtra("targetLongitude", 0);
-        currentLatitude         = receiveIntent.getDoubleExtra("currentLatitude", 0);
-        currentLongitude        = receiveIntent.getDoubleExtra("currentLongitude", 0);
-        mobility                = receiveIntent.getStringExtra("mobility");
+        lines = new ArrayList<>();
+        tvDirection = findViewById(R.id.tvDirection);
+        Intent receiveIntent = this.getIntent();
+        targetLatitude = receiveIntent.getDoubleExtra("targetLatitude", 0);
+        targetLongitude = receiveIntent.getDoubleExtra("targetLongitude", 0);
+        currentLatitude = receiveIntent.getDoubleExtra(DefineValue.CURRENT_LATITUDE, 0);
+        currentLongitude = receiveIntent.getDoubleExtra(DefineValue.CURRENT_LONGITUDE, 0);
+        mobility = receiveIntent.getStringExtra(DefineValue.BBS_AGENT_MOBILITY);
 
         //tvDirection.setText(Html.fromHtml("<h2>Title</h2><p>Description here</p>"));
-        updateLocationIntent    = new Intent(this, UpdateLocationService.class);
+        updateLocationIntent = new Intent(this, UpdateLocationService.class);
         startService(updateLocationIntent);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver, new IntentFilter("UpdateLocationIntent"));
 
-        if(checkPlayServices())
-        {
+        if (checkPlayServices()) {
             buildGoogleApiClient();
             createLocationRequest();
             googleApiClient.connect();
@@ -150,11 +149,10 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            currentLatitude     = intent.getDoubleExtra("latitude", 0);
-            currentLongitude    = intent.getDoubleExtra("longitude", 0);
+            currentLatitude = intent.getDoubleExtra(DefineValue.LATITUDE, 0);
+            currentLongitude = intent.getDoubleExtra(DefineValue.LONGITUDE, 0);
 
-
-            if ( globalMap != null ) {
+            if (globalMap != null) {
                 //mapFrag.getView().setVisibility(View.VISIBLE);
                 setMapCamera();
             }
@@ -168,13 +166,11 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         //listener ketika button back di action bar diklik
-        if(id == android.R.id.home)
-        {
+        if (id == android.R.id.home) {
             //kembali ke activity sebelumnya
             onBackPressed();
         }
@@ -182,8 +178,7 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
         return super.onOptionsItemSelected(item);
     }
 
-    public void initializeToolbar(String title)
-    {
+    public void initializeToolbar(String title) {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(title);
     }
@@ -197,15 +192,14 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
     public void onMapReady(GoogleMap googleMap) {
         globalMap = googleMap;
 
-        if ( globalMap != null ) {
+        if (globalMap != null) {
             mapFrag.getView().setVisibility(View.VISIBLE);
             setMapCamera();
         }
     }
 
-    private void setMapCamera()
-    {
-        if ( currentLongitude != 0 && currentLatitude != 0 ) {
+    private void setMapCamera() {
+        if (currentLongitude != 0 && currentLatitude != 0) {
             globalMap.clear();
 
             new GoogleMapRouteDirectionTask(targetLatitude, targetLongitude, currentLatitude, currentLongitude).execute();
@@ -222,12 +216,10 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
                     .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.ic_directions_car_black, 70, 90)));
             //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 
-            Marker marker = globalMap.addMarker(markerOptions);
-
             LatLng targetLatLng = new LatLng(targetLatitude, targetLongitude);
-            MarkerOptions markerTargetOptions = null;
+            MarkerOptions markerTargetOptions;
 
-            if ( mobility.equals(DefineValue.STRING_YES) ) {
+            if (mobility.equals(DefineValue.STRING_YES)) {
                 markerTargetOptions = new MarkerOptions()
                         .position(targetLatLng)
                         //.title("")
@@ -266,28 +258,8 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
         }
     }
 
-    public void onPause(){
-        /*if(mTextToSpeech !=null){
-            mTextToSpeech.stop();
-            mTextToSpeech.shutdown();
-        }*/
-        super.onPause();
-    }
-
-    private void setTargetMarker()
-    {
-
-        if (targetLatitude != 0 && targetLongitude != 0) {
-
-            LatLng latLng = new LatLng(currentLatitude, currentLongitude);
-
-
-        }
-    }
-
     //for resize icon
-    public Bitmap resizeMapIcons(int image, int width, int height)
-    {
+    public Bitmap resizeMapIcons(int image, int width, int height) {
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), image);
         return Bitmap.createScaledBitmap(imageBitmap, width, height, false);
     }
@@ -308,17 +280,13 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
         try {
             lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
-            if ( lastLocation == null ){
-
-            } else {
-
+            if (lastLocation != null) {
 
                 currentLatitude = lastLocation.getLatitude();
                 currentLongitude = lastLocation.getLongitude();
                 setMapCamera();
 
-                Timber.d("Location Found" + lastLocation.toString());
-
+                Timber.d("Location Found%s", lastLocation.toString());
             }
         } catch (SecurityException se) {
             se.printStackTrace();
@@ -339,7 +307,7 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
     public void onLocationChanged(Location location) {
         lastLocation = location;
 
-        if ( lastLocation.getLatitude() != currentLatitude || lastLocation.getLongitude() != currentLongitude ) {
+        if (lastLocation.getLatitude() != currentLatitude || lastLocation.getLongitude() != currentLongitude) {
             currentLatitude = lastLocation.getLatitude();
             currentLongitude = lastLocation.getLongitude();
             setMapCamera();
@@ -347,17 +315,14 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
 
     }
 
-
     private class GoogleMapRouteDirectionTask extends AsyncTask<Void, Void, Integer> {
 
-        private ArrayList<ShopDetail> dataDetails = new ArrayList<>();
         private Double dataCurrentLatitude;
         private Double dataCurrentLongitude;
         private Double targetLatitude;
         private Double targetLongitude;
 
-        public GoogleMapRouteDirectionTask(Double targetLatitude, Double targetLongitude, Double currentLatitude, Double currentLongitude)
-        {
+        public GoogleMapRouteDirectionTask(Double targetLatitude, Double targetLongitude, Double currentLatitude, Double currentLongitude) {
             this.targetLatitude = targetLatitude;
             this.targetLongitude = targetLongitude;
             dataCurrentLatitude = currentLatitude;
@@ -368,7 +333,7 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
 
-            if ( !htmlDirections.equals("") ) {
+            if (!htmlDirections.equals("")) {
                 tvDirection.setText(Html.fromHtml(htmlDirections));
                 TextToSpeechFunction();
             }
@@ -378,26 +343,15 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
         @Override
         protected Integer doInBackground(Void... params) {
 
-            String nextParams = "origin="+dataCurrentLatitude.toString()+","+dataCurrentLongitude.toString();
+            String nextParams = "origin=" + dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString();
             nextParams += "&sensor=false";
             nextParams += "&units=metric";
-            nextParams += "&mode="+DefineValue.GMAP_MODE;
-            nextParams += "&language="+Locale.getDefault().getLanguage();
-
-//            RequestParams rqParams = new RequestParams();
-//            rqParams.put("origin", dataCurrentLatitude.toString()+","+dataCurrentLongitude.toString());
-//            rqParams.put("sensor", "false");
-//            rqParams.put("units", "metric");
-//            rqParams.put("mode", DefineValue.GMAP_MODE);
-//            rqParams.put("language", Locale.getDefault().getLanguage() );
-
-
-            String tempParams = nextParams;
-            tempParams += "&destination=" + targetLatitude.toString() + "," + targetLongitude.toString();
+            nextParams += "&mode=" + DefineValue.GMAP_MODE;
+            nextParams += "&language=" + Locale.getDefault().getLanguage();
 
             HashMap<String, Object> query = MyApiClient.googleDestination();
             query.put("destination", targetLatitude.toString() + "," + targetLongitude.toString());
-            query.put("origin", dataCurrentLatitude.toString()+","+dataCurrentLongitude.toString());
+            query.put("origin", dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString());
 
             getGoogleMapRoute(query, 0);
             return null;
@@ -405,9 +359,7 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
 
     }
 
-    public void getGoogleMapRoute(HashMap<String, Object> query
-//            String tempParams
-            , final int idx) {
+    public void getGoogleMapRoute(HashMap<String, Object> query, final int idx) {
 
         RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE, query,
 //                        + "?" + tempParams,
@@ -417,9 +369,9 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
                         try {
 
                             JSONArray array = response.getJSONArray("routes");
-                            JSONObject routes = array.getJSONObject(0);
+                            JSONObject routes = array.getJSONObject(idx);
                             JSONArray legs = routes.getJSONArray("legs");
-                            JSONObject steps = legs.getJSONObject(0);
+                            JSONObject steps = legs.getJSONObject(idx);
                             JSONObject distance = steps.getJSONObject("distance");
                             String parsedDistance = distance.getString("text");
 
@@ -430,19 +382,17 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
 
                             JSONArray directions = steps.getJSONArray("steps");
 
-                            if ( directions.length() > 0 ) {
-                                JSONObject toDirection = directions.getJSONObject(0);
+                            if (directions.length() > 0) {
+                                JSONObject toDirection = directions.getJSONObject(idx);
                                 htmlDirections = toDirection.getString("html_instructions");
 
                                 JSONArray toDistanceArray = toDirection.getJSONArray("distance");
-                                JSONObject toDistanceObject = toDistanceArray.getJSONObject(0);
+                                JSONObject toDistanceObject = toDistanceArray.getJSONObject(idx);
                                 String toDistanceString = toDistanceObject.getString("text");
 
                                 htmlDirections += " ( " + toDistanceString + " ) ";
                                 //tvDirection.setText(Html.fromHtml(toDirection.getString("html_instructions")));
                             }
-
-
 
 
                         } catch (JSONException e) {
@@ -466,9 +416,9 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
     public void setPolyline() {
         List<LatLng> list = new ArrayList<>();
 
-        if ( !encodedPoints.equals("") && globalMap != null) {
+        if (!encodedPoints.equals("") && globalMap != null) {
 
-            if ( lines.size() > 0 ) {
+            if (lines.size() > 0) {
                 Polyline dataLine = lines.get(0);
                 dataLine.remove();
 
@@ -514,17 +464,16 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
             int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
             lng += dlng;
 
-            LatLng p = new LatLng( (((double) lat / 1E5)),
-                    (((double) lng / 1E5) ));
+            LatLng p = new LatLng((((double) lat / 1E5)),
+                    (((double) lng / 1E5)));
             poly.add(p);
         }
 
         return poly;
     }
 
-    public void TextToSpeechFunction()
-    {
-        if ( !htmlDirections.equals("") ) {
+    public void TextToSpeechFunction() {
+        if (!htmlDirections.equals("")) {
             textToSpeech.speak(android.text.Html.fromHtml(htmlDirections).toString(), TextToSpeech.QUEUE_FLUSH, null);
         }
     }
@@ -535,14 +484,12 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
     }
 
 
-
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
 
-        switch(requestCode) {
+        switch (requestCode) {
             case RC_LOCATION_PERM:
-                if(checkPlayServices())
-                {
+                if (checkPlayServices()) {
                     buildGoogleApiClient();
                     createLocationRequest();
                 }
@@ -560,8 +507,7 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
         mLocationRequest.setSmallestDisplacement(DefineValue.DISPLACEMENT);
     }
 
-    protected synchronized void buildGoogleApiClient()
-    {
+    protected synchronized void buildGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -585,11 +531,9 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
                     alertDialog.setTitle(getString(R.string.alertbox_title_warning));
                     alertDialog.setMessage(getString(R.string.alertbox_message_warning));
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    finish();
-                                }
+                            (dialog, which) -> {
+                                dialog.dismiss();
+                                finish();
                             });
                     alertDialog.show();
                 }
@@ -613,8 +557,7 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
         }
     }
 
-    private boolean checkPlayServices()
-    {
+    private boolean checkPlayServices() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(this);
         if (result != ConnectionResult.SUCCESS) {
@@ -627,8 +570,6 @@ public class BbsMapNavigationActivity extends BaseActivity implements OnMapReady
 
         return true;
     }
-
-
 
 
 }

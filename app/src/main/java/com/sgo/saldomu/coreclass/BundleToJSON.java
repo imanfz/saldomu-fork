@@ -20,7 +20,6 @@ public class BundleToJSON {
         JSONObject jsonObject = new JSONObject();
 
         for (String key : bundle.keySet()) {
-            Object obj = bundle.get(key);
             try {
                 jsonObject.put(key, wrap(bundle.get(key)));
             } catch (JSONException e) {

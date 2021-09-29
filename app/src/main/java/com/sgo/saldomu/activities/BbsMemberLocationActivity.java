@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -32,11 +31,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.GeoDataClient;
-import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -56,7 +52,6 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.entityRealm.MerchantCommunityList;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -84,38 +79,32 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
-    String memberId, memberDefaultAddress, countryName, provinceName, districtName, shopId, shopName, address, memberType, agentName, commName, postalCode, isMobility, emoMemberId;
+    String memberId, memberDefaultAddress, countryName, provinceName, districtName, shopId, shopName, address, memberType, agentName, commName, postalCode, isMobility;
     Realm myRealm;
     TextView tvDetailMemberName, tvCommName, tvAddress, tvDistrict, tvProvince;
     private GoogleMap mMap;
-    MapView mapView;
     Double selectedLat, selectedLong;
     Double defaultLat, defaultLong;
     Button btnSubmit, btnLokasiGPS;
-    ProgressDialog progdialog, progdialog2;
+    ProgressDialog progDialog, progDialog2;
     SecurePreferences sp;
-    MerchantCommunityList memberDetail;
     GooglePlacesAutoCompleteArrayAdapter googlePlacesAutoCompleteBbsArrayAdapter;
-    List<Address> addressList = null;
     CustomAutoCompleteTextViewWithRadioButton locationSearch;
     String searchLocationString;
     private int REQUEST_CODE_RECOVER_PLAY_SERVICES = 200;
     private GoogleApiClient googleApiClient;
     Location lastLocation;
     private LocationRequest mLocationRequest;
-    String newDistrictName, newProvinceName;
+    String newDistrictName;
     private static final int RC_GPS_REQUEST = 1;
-
-    private GeoDataClient mGeoDataClient;
-    private PlaceDetectionClient mPlaceDetectionClient;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        memberId = getIntent().getStringExtra("memberId");
-        shopId = getIntent().getStringExtra("shopId");
-        shopName = getIntent().getStringExtra("shopName");
+        memberId = getIntent().getStringExtra(DefineValue.MEMBER_ID);
+        shopId = getIntent().getStringExtra(DefineValue.SHOP_ID);
+        shopName = getIntent().getStringExtra(DefineValue.SHOP_NAME);
         memberType = getIntent().getStringExtra("memberType");
         agentName = getIntent().getStringExtra("memberName");
         commName = getIntent().getStringExtra("commName");
@@ -126,32 +115,20 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        if (sp.contains(DefineValue.MEMBER_ID)) {
-            emoMemberId = sp.getString(DefineValue.MEMBER_ID, "");
-        } else {
-            emoMemberId = "";
-        }
-
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-
         if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             if (!GlobalSetting.isLocationEnabled(this)) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(getString(R.string.alertbox_gps_warning))
                         .setCancelable(false)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        .setPositiveButton(R.string.yes, (dialog, id) -> {
 
-                                Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivityForResult(ilocation, RC_GPS_REQUEST);
+                            Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivityForResult(ilocation, RC_GPS_REQUEST);
 
-                            }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                                dialog.cancel();
-                                startActivity(new Intent(getApplicationContext(), MainPage.class));
-                            }
+                        .setNegativeButton(R.string.no, (dialog, id) -> {
+                            dialog.cancel();
+                            startActivity(new Intent(getApplicationContext(), MainPage.class));
                         });
                 final AlertDialog alert = builder.create();
                 alert.show();
@@ -248,7 +225,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         }
     };
 
-    void proceed(){
+    void proceed() {
         Boolean hasError = false;
         if (isMobility.equals(DefineValue.STRING_YES)) {
             if (selectedLat == null) {
@@ -264,7 +241,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
         if (!hasError) {
 
-            progdialog = DefinedDialog.CreateProgressDialog(BbsMemberLocationActivity.this, "");
+            progDialog = DefinedDialog.CreateProgressDialog(BbsMemberLocationActivity.this, "");
 
             String extraSignature = memberId + shopId + selectedLat + selectedLong;
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_MEMBER_LOCATION,
@@ -292,8 +269,8 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                         public void onResponses(JSONObject response) {
                             try {
 
-                                String code = response.getString(
-                                        WebParams.ERROR_CODE);
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     //myRealm.beginTransaction();
 
@@ -335,16 +312,11 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                     }
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    progdialog.dismiss();
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    //test.showDialoginActivity(getActi,message);
+                                    progDialog.dismiss();
+                                    AlertDialogLogout.getInstance().showDialoginActivity(BbsMemberLocationActivity.this, message);
                                 } else {
-
-
-                                    progdialog.dismiss();
-                                    code = response.getString(WebParams.ERROR_MESSAGE);
-                                    Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                                    progDialog.dismiss();
+                                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -353,12 +325,12 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
                         @Override
                         public void onError(Throwable throwable) {
-                            progdialog.dismiss();
+                            progDialog.dismiss();
                         }
 
                         @Override
                         public void onComplete() {
-                            progdialog.dismiss();
+                            progDialog.dismiss();
                         }
                     });
         }
@@ -387,24 +359,21 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
                         try {
                             String code = response.getString(WebParams.ERROR_CODE);
+                            String message = response.getString(WebParams.ERROR_CODE);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                 SecurePreferences.Editor mEditor = sp.edit();
                                 mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, DefineValue.STRING_YES);
                                 mEditor.apply();
 
-                                //bundle.putInt(DefineValue.INDEX, MainPage.LI);
                                 Intent intent = new Intent(BbsMemberLocationActivity.this, MainPage.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
 
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = response.getString(WebParams.ERROR_MESSAGE);
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                //test.showDialoginActivity(getApplication(),message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(BbsMemberLocationActivity.this, message);
                             } else {
-                                code = response.getString(WebParams.ERROR_MESSAGE);
-                                Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -418,15 +387,15 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
                     @Override
                     public void onComplete() {
-                        if (progdialog.isShowing())
-                            progdialog.dismiss();
+                        if (progDialog.isShowing())
+                            progDialog.dismiss();
                     }
                 });
     }
 
     public void setAdministrativeName(final boolean proceed) {
 
-        progdialog = DefinedDialog.CreateProgressDialog(BbsMemberLocationActivity.this, "");
+        progDialog = DefinedDialog.CreateProgressDialog(BbsMemberLocationActivity.this, "");
 
         HashMap<String, Object> query = MyApiClient.getInstance().googleQuery();
         query.put("latlng", selectedLat + "," + selectedLong);
@@ -475,12 +444,12 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
                     @Override
                     public void onError(Throwable throwable) {
-                        progdialog.dismiss();
+                        progDialog.dismiss();
                     }
 
                     @Override
                     public void onComplete() {
-                        progdialog.dismiss();
+                        progDialog.dismiss();
 
                     }
                 });
@@ -554,69 +523,9 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
     }
 
-    public void onMapSearch(View view) {
-
-        locationSearch = findViewById(R.id.editText);
-        locationSearch.setAdapter(googlePlacesAutoCompleteBbsArrayAdapter);
-        locationSearch.setOnItemClickListener(this);
-        locationSearch.setOnEditorActionListener(this);
-
-        String location = locationSearch.getText().toString();
-        List<Address> addressList = null;
-        Double latitude = defaultLat;
-        Double longitude = defaultLong;
-        mMap.clear();
-
-        //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-        ((InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(locationSearch.getWindowToken(), 0);
-
-        if (!location.equals("")) {
-            Geocoder geocoder = new Geocoder(this);
-            try {
-                addressList = geocoder.getFromLocationName(location, 1);
-
-                if (addressList.size() > 0) {
-                    Address address = addressList.get(0);
-                    latitude = address.getLatitude();
-                    longitude = address.getLongitude();
-                    selectedLat = latitude;
-                    selectedLong = longitude;
-
-                    LatLng latLng = new LatLng(latitude, longitude);
-                    mMap.addMarker(new MarkerOptions().position(latLng).title(location));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                    mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-
-                    setAdministrativeName(false);
-                } else {
-                    LatLng latLng = new LatLng(latitude, longitude);
-                    mMap.addMarker(new MarkerOptions().position(latLng).title(location));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                    mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-
-                LatLng latLng = new LatLng(latitude, longitude);
-                mMap.addMarker(new MarkerOptions().position(latLng).title(location));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-            }
-
-
-        } else {
-            Toast.makeText(getApplicationContext(), getString(R.string.err_empty_merchant_address), Toast.LENGTH_LONG).show();
-        }
-    }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        List<Address> addressList = null;
-        Double latitude = defaultLat, longitude = defaultLong;
 
         LatLng latLng;
         CameraPosition cameraPosition;
@@ -774,8 +683,6 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     addressArray.add(singleAddress.getAddressLine(i));
                 }
 
-                String fullAddress = TextUtils.join(System.getProperty("line.separator"), addressArray);
-
                 //changeMap(singleAddress.getLatitude(), singleAddress.getLongitude());
                 selectedLat = singleAddress.getLatitude();
                 selectedLong = singleAddress.getLongitude();
@@ -864,19 +771,13 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getString(R.string.alertbox_gps_warning))
                     .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                            startActivityForResult(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), RC_GPS_REQUEST);
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                            dialog.cancel();
-                            Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            finish();
-                        }
+                    .setPositiveButton(R.string.yes, (dialog, id) -> startActivityForResult(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), RC_GPS_REQUEST))
+                    .setNegativeButton(R.string.no, (dialog, id) -> {
+                        dialog.cancel();
+                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
                     });
             final AlertDialog alert = builder.create();
             alert.show();
@@ -901,14 +802,12 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             alertDialog.setTitle(getString(R.string.alertbox_title_warning));
             alertDialog.setMessage(getString(R.string.alertbox_message_warning));
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            finish();
-                        }
+                    (dialog, which) -> {
+                        dialog.dismiss();
+                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
                     });
             alertDialog.show();
         }
@@ -1031,11 +930,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(getString(R.string.alertbox_set_agent_location_warning))
                         .setCancelable(false)
-                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                            public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                                dialog.dismiss();
-                            }
-                        })
+                        .setPositiveButton(getString(R.string.yes), (dialog, id) -> dialog.dismiss())
                 ;
                 final AlertDialog alert = builder.create();
                 alert.show();
@@ -1046,20 +941,12 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     }
 
     private void searchLocationByDistrictProvince() {
-        progdialog2 = DefinedDialog.CreateProgressDialog(this, "");
-
-        String query = "";
-        try {
-            query = URLEncoder.encode(districtName + ", " + provinceName, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        progDialog2 = DefinedDialog.CreateProgressDialog(this, "");
 
         HashMap<String, Object> _query = MyApiClient.getInstance().googleQuery();
         _query.put("address", districtName + ", " + provinceName);
 
         RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE, _query,
-//                        +"&address="+ query,
                 new ObjListeners() {
                     @Override
                     public void onResponses(JSONObject response) {
@@ -1132,8 +1019,8 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
                     @Override
                     public void onComplete() {
-                        if (progdialog2.isShowing())
-                            progdialog2.dismiss();
+                        if (progDialog2.isShowing())
+                            progDialog2.dismiss();
                     }
                 });
     }
@@ -1163,20 +1050,12 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         }
 
         if (isMobility.equals(DefineValue.STRING_NO)) {
-            progdialog = DefinedDialog.CreateProgressDialog(this, "");
-
-            String query = "";
-            try {
-                query = URLEncoder.encode(memberDefaultAddress, "utf-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            progDialog = DefinedDialog.CreateProgressDialog(this, "");
 
             HashMap<String, Object> _query = MyApiClient.getInstance().googleQuery();
             _query.put("address", memberDefaultAddress);
 
             RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE, _query,
-//                            +"&address="+ query,
                     new ObjListeners() {
                         @Override
                         public void onResponses(JSONObject response) {
@@ -1220,12 +1099,6 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
 
                                 } else {
-                            /*try {
-                                defaultLat = lastLocation.getLatitude();
-                                defaultLong = lastLocation.getLongitude();
-                            } catch ( Exception e ) {
-                                e.printStackTrace();
-                            }*/
                                     searchLocationByDistrictProvince();
                                 }
 
@@ -1247,14 +1120,10 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
                         @Override
                         public void onComplete() {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
+                            if (progDialog.isShowing())
+                                progDialog.dismiss();
                         }
                     });
-        } else {
-
         }
-
-
     }
 }

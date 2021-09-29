@@ -54,7 +54,7 @@ public class BankListAdapter extends RecyclerView.Adapter<BankListAdapter.BankVi
         return bankList.size();
     }
 
-    class BankViewHolder extends RecyclerView.ViewHolder{
+    static class BankViewHolder extends RecyclerView.ViewHolder{
         private TextView txtBank;
         private ImageView imgBank;
         private LinearLayout layout;

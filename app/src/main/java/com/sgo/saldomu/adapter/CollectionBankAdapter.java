@@ -35,27 +35,23 @@ public class CollectionBankAdapter extends ArrayAdapter<String> {
         View row = convertView;
         ListHolder holder;
 
-        if(row == null)
-        {
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+        if (row == null) {
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             row = inflater.inflate(layoutResourceId, parent, false);
 
             holder = new ListHolder();
-            holder.txtTitle = (TextView)row.findViewById(R.id.txtTitleList);
+            holder.txtTitle = (TextView) row.findViewById(R.id.txtTitleList);
 
             row.setTag(holder);
-        }
-        else
-        {
-            holder = (ListHolder)row.getTag();
+        } else {
+            holder = (ListHolder) row.getTag();
         }
         holder.txtTitle.setText(data.get(position));
 
         return row;
     }
 
-    class ListHolder
-    {
-        TextView txtTitle,iconArrow;
+    static class ListHolder {
+        TextView txtTitle;
     }
 }

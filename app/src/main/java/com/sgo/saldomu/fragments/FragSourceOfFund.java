@@ -54,11 +54,11 @@ import timber.log.Timber;
 public class FragSourceOfFund extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback
 {
     private SecurePreferences sp;
-    private String memberId, userid, txId, comm_name, payment_remark, amount, admin_fee, total_amount, orderNo,
+    private String memberId, txId, comm_name, payment_remark, amount, admin_fee, total_amount, orderNo,
             merchantCode, commCode, productCode, commId, isInAPP;
     private TextView tv_commName, tv_txId, tv_paymentRemark, tv_amount, tv_fee, tv_total;
     private Button btnProses, btnCancel;
-    private int attempt = 0, failed = 0;
+    private int attempt = 0;
 
     @Nullable
     @Override
@@ -82,14 +82,13 @@ public class FragSourceOfFund extends BaseFragment implements ReportBillerDialog
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         memberId = sp.getString(DefineValue.MEMBER_ID, "");
-        userid = sp.getString(DefineValue.USERID_PHONE, "");
 
         Bundle bundle = getArguments();
         if (bundle != null) {
             txId = bundle.getString(DefineValue.TX_ID, "");
-            isInAPP = bundle.getString(DefineValue.IS_INAPP, "N");
+            isInAPP = bundle.getString(DefineValue.IS_INAPP, DefineValue.STRING_NO);
 
-            if (isInAPP.equals("Y")){
+            if (isInAPP.equals(DefineValue.STRING_YES)){
                 Handler handler = new Handler();
                 Runnable runnable = new Runnable() {
                     @Override
@@ -178,7 +177,7 @@ public class FragSourceOfFund extends BaseFragment implements ReportBillerDialog
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             }else {
                                 String msg = model.getError_message();
                                 Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
@@ -237,7 +236,7 @@ public class FragSourceOfFund extends BaseFragment implements ReportBillerDialog
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 String msg = model.getError_message();
                                 Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
@@ -284,29 +283,22 @@ public class FragSourceOfFund extends BaseFragment implements ReportBillerDialog
 
                                 jsonModel model = getGson().fromJson(response.toString(), InqSOFModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                String error_message = response.getString(WebParams.ERROR_MESSAGE);
-                                Timber.d("isi response pay Inquiry SOF: " + response.toString());
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                Timber.d("isi response pay Inquiry SOF: %s", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     sentInquiry();
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 }else {
-                                    Timber.d("Error pay Inquiry SOF:" + response.toString());
-                                    code = response.getString(WebParams.ERROR_MESSAGE);
-
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -325,7 +317,7 @@ public class FragSourceOfFund extends BaseFragment implements ReportBillerDialog
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient pay Inquiry SOF:" + e.getMessage());
+            Timber.d("httpclient pay Inquiry SOF:%s", e.getMessage());
         }
     }
 
@@ -351,30 +343,24 @@ public class FragSourceOfFund extends BaseFragment implements ReportBillerDialog
                             try {
                                 jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                String error_message = response.getString(WebParams.ERROR_MESSAGE);
-                                Timber.d("isi response InquiryTrx SOF: " + response.toString());
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                Timber.d("isi response InquiryTrx SOF: %s", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     dismissProgressDialog();
                                     CallPINinput(attempt);
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 }else {
-                                    Timber.d("Error resendTokenSOF:" + response.toString());
-                                    code = response.getString(WebParams.ERROR_MESSAGE);
-
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                    Timber.d("Error resendTokenSOF:%s", response.toString());
+                                    Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -475,7 +461,7 @@ public class FragSourceOfFund extends BaseFragment implements ReportBillerDialog
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 } else {
                                     code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -539,27 +525,21 @@ public class FragSourceOfFund extends BaseFragment implements ReportBillerDialog
                             try {
                                 dismissProgressDialog();
                                 jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
-                                Timber.d("isi response sent get Trx Status:" + response.toString());
+                                Timber.d("isi response sent get Trx Status:%s", response.toString());
                                 String code = response.getString(WebParams.ERROR_CODE);
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
                                 if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
                                     showReportBillerDialog(response);
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }else {
-                                    String msg = response.getString(WebParams.ERROR_MESSAGE);
-//                                    showDialogUpdate(msg);
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 }
 
                             } catch (JSONException e) {

@@ -11,10 +11,6 @@ public class navdrawmainmenuModel {
 
     private boolean isGroupHeader = false;
 
-    public navdrawmainmenuModel(String title) {
-        setUpData(0,0,title,true,-1);
-    }
-
     public navdrawmainmenuModel(int _indexImage, int _indexImageSelected,String title, int itemId) {
         setUpData(_indexImage,_indexImageSelected,title,false,itemId);
     }

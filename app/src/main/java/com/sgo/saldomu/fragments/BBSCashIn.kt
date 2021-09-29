@@ -559,7 +559,7 @@ class BBSCashIn : BaseFragment() {
                             }
                         })
                         if (isSimExist) smsDialog!!.show(fragmentManager!!, "")
-                    } else if (source_product_h2h.equals("Y", ignoreCase = true) && source_product_type.equals(DefineValue.EMO, ignoreCase = true)) {
+                    } else if (source_product_h2h.equals(DefineValue.STRING_YES, ignoreCase = true) && source_product_type.equals(DefineValue.EMO, ignoreCase = true)) {
                         if (code == WebParams.SUCCESS_CODE && !source_product_code.equals("tcash", ignoreCase = true)
                                 && !source_product_code.equals("MANDIRILKD", ignoreCase = true)) {
                             sentDataReqToken(model)
@@ -588,7 +588,7 @@ class BBSCashIn : BaseFragment() {
                 } else if (code == DefineValue.ERROR_0066) {
                     Timber.d("isi response maintenance:%s", response.toString())
                     val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                    alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                    alertDialogMaintenance.showDialogMaintenance(activity)
                 } else {
                     Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
                     dismissProgressDialog()
@@ -608,7 +608,7 @@ class BBSCashIn : BaseFragment() {
     fun showDialogLP() {
         dialog = DefinedDialog.MessageDialog(activity, this.getString(R.string.error),
                 getString(R.string.agent_lp_dialog_message)
-        ) { _, _ -> activity!!.finish() }
+        ) { activity!!.finish() }
         dialog!!.setCanceledOnTouchOutside(false)
         dialog!!.setCancelable(false)
         dialog!!.show()
@@ -617,7 +617,7 @@ class BBSCashIn : BaseFragment() {
     fun showDialogLimit(message: String) {
         dialog = DefinedDialog.MessageDialog(activity, this.getString(R.string.error),
                 message
-        ) { _, _ -> dialog!!.dismiss() }
+        ) { dialog!!.dismiss() }
         dialog!!.setCanceledOnTouchOutside(false)
         dialog!!.setCancelable(false)
         dialog!!.show()
@@ -674,7 +674,7 @@ class BBSCashIn : BaseFragment() {
                                     DefineValue.ERROR_0066 -> {
                                         Timber.d("isi response maintenance:$response")
                                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                        alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                        alertDialogMaintenance.showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         Timber.d("isi error send data member mandiri LKD:$response")
@@ -895,7 +895,7 @@ class BBSCashIn : BaseFragment() {
         cashInHistory()
         val mFrag: Fragment = BBSCashInConfirm()
         mFrag.arguments = mArgs
-        fragmentManager!!.beginTransaction().addToBackStack(BBSTransaksiInformasi.TAG)
+        fragmentManager!!.beginTransaction().addToBackStack("")
                 .replace(R.id.bbs_content, mFrag, BBSCashInConfirm.TAG).commit()
         ToggleKeyboard.hide_keyboard(activity)
     }
@@ -939,7 +939,7 @@ class BBSCashIn : BaseFragment() {
         dismissProgressDialog()
         val mFrag: Fragment = FragDataC2A()
         mFrag.arguments = mArgs
-        fragmentManager!!.beginTransaction().addToBackStack(BBSTransaksiInformasi.TAG)
+        fragmentManager!!.beginTransaction().addToBackStack("")
                 .replace(R.id.bbs_content, mFrag, FragDataC2A.TAG).commit()
         ToggleKeyboard.hide_keyboard(activity)
     }

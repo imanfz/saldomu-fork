@@ -64,18 +64,16 @@ import timber.log.Timber;
  * Created by thinkpad on 3/18/2015.
  */
 public class FragCashOut extends BaseFragment {
-    public final static String TAG = "com.sgo.indonesiakoe.fragments.FragCashout";
 
     View v;
-    LinearLayout layout_acc_name;
     Spinner sp_privacy, sp_bank;
     EditText etAccNo, etNominal, etAccName;
     TextView txtBalance;
     Button btnProcess;
     ProgressDialog progdialog;
 
-    int privacy, start = 0;
-    String balance, bankCashout, bankCode="", bankName, bankGateway;
+    int start = 0;
+    String balance, bankCashout, bankCode, bankName, bankGateway = "";
     ArrayList<String> arrBankName;
     ArrayList<String> arrBankCode;
     ArrayList<String> arrBankGateway;
@@ -92,10 +90,9 @@ public class FragCashOut extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getActivity().finish();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            getActivity().finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -143,7 +140,6 @@ public class FragCashOut extends BaseFragment {
 
         initializeBankCashout();
 
-        layout_acc_name = v.findViewById(R.id.layout_bankcashout_acc_name);
         etAccName = v.findViewById(R.id.cashout_value_bank_acc_name);
         etAccNo = v.findViewById(R.id.cashout_value_bank_acc_no);
         etNominal = v.findViewById(R.id.cashout_value_nominal);
@@ -153,12 +149,6 @@ public class FragCashOut extends BaseFragment {
         btnProcess = v.findViewById(R.id.cashout_btn_process);
 
         etNominal.addTextChangedListener(new NumberTextWatcherForThousand(etNominal));
-
-        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.privacy_list, android.R.layout.simple_spinner_item);
-        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_privacy.setAdapter(spinAdapter);
-        sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
 
 //        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listBankCashOut);
         adapter = new BankCashoutAdapter(getActivity(), android.R.layout.simple_spinner_item);
@@ -190,44 +180,16 @@ public class FragCashOut extends BaseFragment {
         }
     };
 
-    Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            privacy = i+1;
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-
-        }
-    };
-
 
     Spinner.OnItemSelectedListener spinnerNamaBankListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
 
             BankCashoutModel model = listBankCashOut.get(i);
-//            if (model.getBank_gateway().equalsIgnoreCase("Y")) {
-//                layout_acc_name.setVisibility(View.GONE);
-//            } else {
-//                layout_acc_name.setVisibility(View.VISIBLE);
-//            }
-
-
-//            Object item = adapterView.getItemAtPosition(i);
             bankCode = model.getBank_code();
             bankName = model.getBank_name().toString();
 //            if(!arrBankGateway.isEmpty()) bankGateway = arrBankGateway.get(i);
             Timber.d("isi bank name cashout:"+model.toString() + bankCode + bankGateway);
-
-//            if(isBankGateway) {
-//                if (bankGateway.equalsIgnoreCase("Y")) {
-//                    layout_acc_name.setVisibility(View.GONE);
-//                } else if (bankGateway.equalsIgnoreCase("N")) {
-//                    layout_acc_name.setVisibility(View.VISIBLE);
-//                }
-//            }
         }
 
         @Override
@@ -255,7 +217,7 @@ public class FragCashOut extends BaseFragment {
 
 //            params.put(WebParams.PRIVACY, privacy);
             if(isBankGateway) {
-                if (bankGateway.equalsIgnoreCase("N")) {
+                if (bankGateway.equalsIgnoreCase(DefineValue.STRING_NO)) {
                     params.put(WebParams.ACCT_NAME, _accName);
                 }
             }
@@ -311,7 +273,7 @@ public class FragCashOut extends BaseFragment {
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 }else {
                                     Timber.d("isi error req cashout:"+response.toString());
                                     String code_msg = response.getString(WebParams.ERROR_MESSAGE);
@@ -388,7 +350,7 @@ public class FragCashOut extends BaseFragment {
             return false;
         }
         else if(isBankGateway) {
-            if (bankGateway.equalsIgnoreCase("N")) {
+            if (bankGateway.equalsIgnoreCase(DefineValue.STRING_NO)) {
                 if (etAccName.getText().toString().length() == 0) {
                     etAccName.requestFocus();
                     etAccName.setError(getString(R.string.cashout_accname_validation));
@@ -407,13 +369,6 @@ public class FragCashOut extends BaseFragment {
             return false;
         }
         return true;
-    }
-    private void switchActivity(Intent mIntent){
-        if (getActivity() == null)
-            return;
-
-        CashoutActivity fca = (CashoutActivity) getActivity();
-        fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
     }
 
     private void switchContent(Fragment mFrag, String tag){
@@ -462,7 +417,7 @@ public class FragCashOut extends BaseFragment {
                                 } else if (object.get("error_code").equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + object.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 }
                             }
 

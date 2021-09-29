@@ -48,7 +48,6 @@ public class FragHelp extends BaseFragment {
     private ArrayList<HelpModel> listHelp;
     private HelpAdapter mAdapter;
     private ProgressDialog progdialog;
-    private Boolean isnotYetLogin = false;
 
     public static FragHelp newInstance() {
         return new FragHelp();
@@ -65,11 +64,6 @@ public class FragHelp extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Bundle bundle = getArguments();
-        if (bundle != null)
-            isnotYetLogin = bundle.getBoolean(DefineValue.NOT_YET_LOGIN, false);
-//        else
-//            isnotYetLogin = false;
         act = getActivity();
         act1 = getActivity();
 
@@ -78,7 +72,7 @@ public class FragHelp extends BaseFragment {
 
         getHelpList();
 
-        mAdapter = new HelpAdapter(act, listHelp, act1);
+        mAdapter = new HelpAdapter(act, listHelp);
         mListView.setAdapter(mAdapter);
     }
 
@@ -133,18 +127,15 @@ public class FragHelp extends BaseFragment {
                                     }
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(act, message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(act, message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
                                     Toast.makeText(act, message, Toast.LENGTH_LONG).show();
                                 }
@@ -152,8 +143,6 @@ public class FragHelp extends BaseFragment {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
-
                         }
 
                         @Override
@@ -169,7 +158,7 @@ public class FragHelp extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 

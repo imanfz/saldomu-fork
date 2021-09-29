@@ -83,8 +83,7 @@ public class CollectionInput extends BaseFragment {
     private String nama_bank;
     private Bundle args;
     private ProgressDialog progdialog;
-    private ArrayAdapter<String> adapter3;
-    private ImageView spinWheelBankName;
+    private ArrayAdapter<String> adapter;
     private ImageView spinWheelBankProduct;
     private Animation frameAnimation;
     private Spinner sp_privacy;
@@ -109,7 +108,6 @@ public class CollectionInput extends BaseFragment {
         et_amount = v.findViewById(R.id.collectinput_jumlah_value);
         et_remark = v.findViewById(R.id.collectinput_remark_value);
         btn_subSGO = v.findViewById(R.id.btn_submit_sgoplus_input);
-        spinWheelBankName = v.findViewById(R.id.spinning_wheel_bank_name);
         spinWheelBankProduct = v.findViewById(R.id.spinning_wheel_bank_product);
         sp_privacy = v.findViewById(R.id.privacy_spinner);
 
@@ -154,9 +152,9 @@ public class CollectionInput extends BaseFragment {
         spin_namaBank.setOnItemSelectedListener(spinnerNamaBankListener);
 
         listProductName = new ArrayList<>();
-        adapter3 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listProductName);
-        adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spin_produkBank.setAdapter(adapter3);
+        this.adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listProductName);
+        this.adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spin_produkBank.setAdapter(this.adapter);
 
 
         ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
@@ -234,7 +232,7 @@ public class CollectionInput extends BaseFragment {
                             spinWheelBankProduct.clearAnimation();
                             spinWheelBankProduct.setVisibility(View.GONE);
                             spin_produkBank.setVisibility(View.VISIBLE);
-                            adapter3.notifyDataSetChanged();
+                            adapter.notifyDataSetChanged();
                             if (topupType.equals(DefineValue.EMONEY)) {
                                 View LayoutBankName = v.findViewById(R.id.layout_bank_name);
                                 LayoutBankName.setVisibility(View.GONE);
@@ -359,7 +357,7 @@ public class CollectionInput extends BaseFragment {
                             if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
-                    } );
+                    });
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
@@ -393,7 +391,7 @@ public class CollectionInput extends BaseFragment {
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                 if (topupType.equals(DefineValue.SMS_BANKING) || auth_type.equals(DefineValue.AUTH_TYPE_OTP))
-                                    showDialog(_tx_id, _product_code, _product_name, object.get(WebParams.PRODUCT_VALUE).getAsString(), _fee,
+                                    showDialog(_tx_id, _product_code, _product_name, _fee,
                                             _bank_code, _bank_name, _amount, auth_type);
                                 else if (auth_type.equals(DefineValue.AUTH_TYPE_PIN))
                                     changeToDescription(_tx_id, _product_code, _product_name, _amount,
@@ -403,7 +401,7 @@ public class CollectionInput extends BaseFragment {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -411,7 +409,7 @@ public class CollectionInput extends BaseFragment {
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 String code_msg = model.getError_message();
                                 if (code.equals(ErrorDefinition.ERROR_CODE_UNREGISTERED_SMS_BANKING)) {
@@ -500,7 +498,7 @@ public class CollectionInput extends BaseFragment {
         dialog.show();
     }
 
-    private void showDialog(final String _tx_id, final String _product_code, final String _product_name, final String _product_value,
+    private void showDialog(final String _tx_id, final String _product_code, final String _product_name,
                             final String _fee, final String _bank_code, final String _bank_name, final String _amount, final String auth_type) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());

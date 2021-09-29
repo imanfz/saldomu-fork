@@ -4,8 +4,6 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class List_BBS_Birth_Place extends RealmObject {
-    public static final String FIELD_BIRTHPLACE_ID = "birthplace_id";
-    public static final String FIELD_BIRTHPLACE_CITY = "birthplace_city";
 
     @PrimaryKey
     private String birthplace_id;

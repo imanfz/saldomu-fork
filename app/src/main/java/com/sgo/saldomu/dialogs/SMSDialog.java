@@ -477,7 +477,7 @@ public class SMSDialog extends DialogFragment {
                                     } else if (code.equals(DefineValue.ERROR_0066)) {
                                         Timber.d("isi response maintenance:" + object.toString());
                                         AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                        alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                        alertDialogMaintenance.showDialogMaintenance(getActivity());
                                     } else {
 //                                            if ()
 //                                idx_fail++;

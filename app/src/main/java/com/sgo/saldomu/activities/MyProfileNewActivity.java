@@ -108,7 +108,6 @@ public class MyProfileNewActivity extends BaseActivity {
     private String dedate;
     private String date_dob;
     private int RESULT;
-    private Integer proses;
     private Integer set_result_photo;
     private final int RESULT_GALLERY_KTP = 101;
     private final int RESULT_GALLERY_SELFIE = 102;
@@ -117,17 +116,12 @@ public class MyProfileNewActivity extends BaseActivity {
     private final int RESULT_SELFIE = 202;
     private final int RESULT_CAMERA_TTD = 203;
     final int RC_CAMERA_STORAGE = 14;
-    final int RC_GALLERY = 15;
     File ktp, selfie, ttd;
-    AlertDialog dialogSuccess = null;
     private boolean is_first_time = false;
     private boolean isRegisteredLevel = false; //saat antri untuk diverifikasi
     private boolean isUpgradeAgent = false; //saat antri untuk diverifikasi upgrade agent
     private boolean is_verified = false;
     private boolean is_agent = false;
-//    private String listContactPhone = "";
-//    private String listAddress = "";
-    private String contactCenter;
     private String is_new_bulk, reject_KTP, reject_selfie, reject_ttd, respon_reject_ktp, respon_reject_selfie,
             respon_reject_ttd, reject_npwp;
     private ProgressDialog progdialog;
@@ -148,15 +142,15 @@ public class MyProfileNewActivity extends BaseActivity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         if (dataVerifiedMember.getVisibility() == View.VISIBLE) {
-            savedInstanceState.putBoolean("isVerifiedMember", true);
+            savedInstanceState.putBoolean(DefineValue.IS_VERIFIED_MEMBER, true);
             if (ktp != null) {
-                savedInstanceState.putSerializable("KTP", ktp);
+                savedInstanceState.putSerializable(DefineValue.KTP, ktp);
             }
             if (selfie != null) {
-                savedInstanceState.putSerializable("selfieKtp", selfie);
+                savedInstanceState.putSerializable(DefineValue.SELFIE_KTP, selfie);
             }
             if (ttd != null) {
-                savedInstanceState.putSerializable("TTD", ttd);
+                savedInstanceState.putSerializable(DefineValue.TTD, ttd);
             }
         }
     }
@@ -164,16 +158,15 @@ public class MyProfileNewActivity extends BaseActivity {
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        boolean isVerifiedMember = savedInstanceState.getBoolean("isVerifiedMember");
-        ktp = (File) savedInstanceState.getSerializable("KTP");
-        selfie = (File) savedInstanceState.getSerializable("selfieKtp");
-        ttd = (File) savedInstanceState.getSerializable("TTD");
+        boolean isVerifiedMember = savedInstanceState.getBoolean(DefineValue.IS_VERIFIED_MEMBER);
+        ktp = (File) savedInstanceState.getSerializable(DefineValue.KTP);
+        selfie = (File) savedInstanceState.getSerializable(DefineValue.SELFIE_KTP);
+        ttd = (File) savedInstanceState.getSerializable(DefineValue.TTD);
 
         if (isVerifiedMember) {
             btn1.setVisibility(View.GONE);
             dataVerifiedMember.setVisibility(View.VISIBLE);
             if (ktp != null) {
-                Timber.d("ktp :" + ktp);
                 GlideManager.sharedInstance().initializeGlideProfile(MyProfileNewActivity.this, ktp, cameraKTP);
                 uploadFileToServer(ktp, KTP_TYPE);
             }
@@ -204,16 +197,15 @@ public class MyProfileNewActivity extends BaseActivity {
         }
 
         is_agent = sp.getBoolean(DefineValue.IS_AGENT, false);
-        is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK, "N");
-        reject_KTP = sp.getString(DefineValue.REJECT_KTP, "N");
-        reject_npwp = sp.getString(DefineValue.REJECT_NPWP, "N");
-        reject_selfie = sp.getString(DefineValue.REJECT_FOTO, "N");
-        reject_ttd = sp.getString(DefineValue.REJECT_TTD, "N");
+        is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK, DefineValue.STRING_NO);
+        reject_KTP = sp.getString(DefineValue.REJECT_KTP, DefineValue.STRING_NO);
+        reject_npwp = sp.getString(DefineValue.REJECT_NPWP, DefineValue.STRING_NO);
+        reject_selfie = sp.getString(DefineValue.REJECT_FOTO, DefineValue.STRING_NO);
+        reject_ttd = sp.getString(DefineValue.REJECT_TTD, DefineValue.STRING_NO);
         respon_reject_ktp = sp.getString(DefineValue.REMARK_KTP, "");
         respon_reject_selfie = sp.getString(DefineValue.REMARK_FOTO, "");
         respon_reject_ttd = sp.getString(DefineValue.REMARK_TTD, "");
         isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
-        contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER, "");
         isUpgradeAgent = sp.getBoolean(DefineValue.IS_UPGRADE_AGENT, false);
 
         initializeToolbar();
@@ -313,7 +305,7 @@ public class MyProfileNewActivity extends BaseActivity {
             selfieKTP.setEnabled(false);
             cameraTTD.setEnabled(false);
             btn2.setVisibility(View.GONE);
-            if (is_new_bulk.equals("Y")) {
+            if (is_new_bulk.equals(DefineValue.STRING_YES)) {
                 btn1.setVisibility(View.VISIBLE);
             } else
                 btn1.setVisibility(View.GONE);
@@ -367,24 +359,24 @@ public class MyProfileNewActivity extends BaseActivity {
                 c.get(Calendar.DAY_OF_MONTH)
         );
 
-        if (reject_KTP.equals("Y") || reject_selfie.equals("Y") || reject_ttd.equals("Y")) {
+        if (reject_KTP.equals(DefineValue.STRING_YES) || reject_selfie.equals(DefineValue.STRING_YES) || reject_ttd.equals(DefineValue.STRING_YES)) {
             et_nama.setEnabled(false);
             tv_dob.setEnabled(false);
             btn1.setVisibility(View.GONE);
             dataVerifiedMember.setVisibility(View.VISIBLE);
             btn2.setVisibility(View.VISIBLE);
 
-            if (reject_KTP.equals("Y")) {
+            if (reject_KTP.equals(DefineValue.STRING_YES)) {
                 cameraKTP.setEnabled(true);
                 tv_respon_reject_KTP.setText("Alasan : " + respon_reject_ktp);
             } else layoutKTP.setVisibility(View.GONE);
 
-            if (reject_selfie.equals("Y")) {
+            if (reject_selfie.equals(DefineValue.STRING_YES)) {
                 selfieKTP.setEnabled(true);
                 tv_respon_reject_selfie.setText("Alasan : " + respon_reject_selfie);
             } else layoutSelfie.setVisibility(View.GONE);
 
-            if (reject_ttd.equals("Y")) {
+            if (reject_ttd.equals(DefineValue.STRING_YES)) {
                 cameraTTD.setEnabled(true);
                 tv_respon_reject_ttd.setText("Alasan : " + respon_reject_ttd);
             } else layoutTTD.setVisibility(View.GONE);
@@ -564,7 +556,7 @@ public class MyProfileNewActivity extends BaseActivity {
         et_nama.setText(sp.getString(DefineValue.PROFILE_FULL_NAME, ""));
         et_nama.setEnabled(false);
         et_email.setText(sp.getString(DefineValue.PROFILE_EMAIL, ""));
-        if (is_new_bulk.equals("Y")) {
+        if (is_new_bulk.equals(DefineValue.STRING_YES)) {
             et_email.setEnabled(true);
         } else {
             et_email.setEnabled(false);
@@ -624,7 +616,7 @@ public class MyProfileNewActivity extends BaseActivity {
             if (dedate.equals("")) params.put(WebParams.DOB, "");
             else params.put(WebParams.DOB, date_dob);
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
-            params.put(WebParams.IS_REGISTER, "N");
+            params.put(WebParams.IS_REGISTER, DefineValue.STRING_NO);
             params.put(WebParams.SOCIAL_ID, "");
             params.put(WebParams.POB, "");
             params.put(WebParams.ID_TYPE, "");
@@ -647,7 +639,7 @@ public class MyProfileNewActivity extends BaseActivity {
 
             params.put(WebParams.BIO, "");
 
-            Timber.d("isi params update profile:" + params.toString());
+            Timber.d("isi params update profile:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_UPDATE_PROFILE, params,
                     new ResponseListener() {
@@ -656,69 +648,25 @@ public class MyProfileNewActivity extends BaseActivity {
                             UpdateProfileModel model = gson.fromJson(object, UpdateProfileModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                                sp.edit().putString(DefineValue.IS_NEW_BULK, "N");
+                                sp.edit().putString(DefineValue.IS_NEW_BULK, DefineValue.STRING_NO);
                                 setLoginProfile(model);
                                 Toast.makeText(MyProfileNewActivity.this, getString(R.string.myprofile_toast_update_success), Toast.LENGTH_LONG).show();
                                 sp.edit().putString(DefineValue.IS_FIRST, DefineValue.NO).apply();
-//                                    Timber.d("isi response Update Profile:"+ response.toString());
-//                                if (levelClass.isLevel1QAC()) {
-//                                    android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
-//                                    builder1.setTitle(R.string.upgrade_member);
-//                                    builder1.setMessage(R.string.message_upgrade_member);
-//                                    builder1.setCancelable(true);
-//
-//                                    builder1.setPositiveButton(
-//                                            "Yes",
-//                                            new DialogInterface.OnClickListener() {
-//                                                public void onClick(DialogInterface dialog, int id) {
-//                                                    dataVerifiedMember.setVisibility(View.VISIBLE);
-//                                                    et_nama.setEnabled(false);
-//                                                    tv_dob.setEnabled(false);
-//                                                    btn1.setVisibility(View.GONE);
-//                                                    if (is_first_time) {
-//                                                        setResult(MainPage.RESULT_FIRST_TIME);
-//                                                    }
-//                                                }
-//                                            });
-//
-//                                    builder1.setNegativeButton(
-//                                            "No",
-//                                            new DialogInterface.OnClickListener() {
-//                                                public void onClick(DialogInterface dialog, int id) {
-//                                                    tv_dob.setEnabled(false);
-//                                                    if (is_first_time) {
-//                                                        RESULT = MainPage.RESULT_FIRST_TIME;
-//                                                        setResult(MainPage.RESULT_FIRST_TIME);
-//                                                        finish();
-//                                                    } else
-//                                                        finish();
-//                                                }
-//                                            });
-//
-//                                    android.support.v7.app.AlertDialog alert11 = builder1.create();
-//                                    alert11.show();
-//                                }
-//                                else {
                                 finish();
-//                                }
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(MyProfileNewActivity.this, message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(MyProfileNewActivity.this);
                             } else {
-                                code = model.getError_message();
-                                Toast.makeText(MyProfileNewActivity.this, code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(MyProfileNewActivity.this, message, Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -761,7 +709,7 @@ public class MyProfileNewActivity extends BaseActivity {
         mEditor.putString(DefineValue.CUST_NAME, response.getFull_name());
         mEditor.putString(DefineValue.USER_NAME, response.getFull_name());
         mEditor.putString(DefineValue.MEMBER_NAME, response.getFull_name());
-        mEditor.putString(DefineValue.IS_NEW_BULK, "N");
+        mEditor.putString(DefineValue.IS_NEW_BULK, DefineValue.STRING_NO);
         mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
         is_verified = Integer.valueOf(response.getVerified()) == 1;
         mEditor.putString(DefineValue.PROFILE_VERIFIED, response.getVerified());
@@ -1032,7 +980,7 @@ public class MyProfileNewActivity extends BaseActivity {
                         } else if (error_code.equals(DefineValue.ERROR_0066)) {
                             Timber.d("isi response maintenance:" + object.toString());
                             AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                            alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
+                            alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this);
                         } else {
                             Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
 
@@ -1046,13 +994,10 @@ public class MyProfileNewActivity extends BaseActivity {
     private void DialogSuccessUploadPhoto() {
         Dialog dialognya = DefinedDialog.MessageDialog(MyProfileNewActivity.this, this.getString(R.string.level_dialog_finish_title),
                 this.getString(R.string.level_dialog_waiting),
-                new DefinedDialog.DialogButtonListener() {
-                    @Override
-                    public void onClickButton(View v, boolean isLongClick) {
-                        finish();
-                        Intent i = new Intent(getApplicationContext(),MainPage.class);
-                        startActivityForResult(i, REQUEST_FINISH);
-                    }
+                () -> {
+                    finish();
+                    Intent i = new Intent(getApplicationContext(),MainPage.class);
+                    startActivityForResult(i, REQUEST_FINISH);
                 }
         );
 
@@ -1065,12 +1010,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private void DialogWaitingUpgradeAgent() {
         Dialog dialognya = DefinedDialog.MessageDialog(MyProfileNewActivity.this, this.getString(R.string.upgrade_agent_dialog_finish_title),
                 this.getString(R.string.level_dialog_waiting),
-                new DefinedDialog.DialogButtonListener() {
-                    @Override
-                    public void onClickButton(View v, boolean isLongClick) {
-                        finish();
-                    }
-                }
+                () -> finish()
         );
 
         dialognya.setCanceledOnTouchOutside(false);
@@ -1080,11 +1020,6 @@ public class MyProfileNewActivity extends BaseActivity {
 
     private static boolean isValidEmail(CharSequence target) {
         return target != null && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
-    }
-
-    private void closethis() {
-        setResult(RESULT);
-        this.finish();
     }
 
     private void sentExecCust() {
@@ -1107,7 +1042,7 @@ public class MyProfileNewActivity extends BaseActivity {
             params.put(WebParams.CUST_MOTHER_NAME, et_nama.getText().toString());
             params.put(WebParams.CUST_CONTACT_EMAIL, et_email.getText().toString());
             params.put(WebParams.MEMBER_ID, memberIDLogin);
-            params.put(WebParams.IS_REGISTER, "Y");
+            params.put(WebParams.IS_REGISTER, DefineValue.STRING_YES);
             params.put(WebParams.CUST_BIRTH_DATE, date_dob);
             params.put(WebParams.CUST_GENDER, "");
             params.put(WebParams.USER_ID, userPhoneID);
@@ -1162,7 +1097,7 @@ public class MyProfileNewActivity extends BaseActivity {
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this);
                             } else {
                                 code = model.getError_message();
 
@@ -1261,7 +1196,7 @@ public class MyProfileNewActivity extends BaseActivity {
                             } else if (object.get("error_code").equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this);
                             }
                         }
 

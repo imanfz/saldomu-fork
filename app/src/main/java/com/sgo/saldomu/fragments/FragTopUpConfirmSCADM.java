@@ -70,7 +70,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
     LinearLayout layout_otp;
     EditText et_otp;
     String comm_name, member_code, product_name, bank_gateway, comm_code, bank_code, product_code, amount, remark, storeName, storeAddress, storeCode;
-    String ccy_id, tx_id, member_id_scadm, member_name, comm_id, bank_name, admin_fee, total_amount, api_key, item_name, notes, cust_id, tx_favorite_type, product_type;
+    String ccy_id, tx_id, member_id_scadm, member_name, comm_id, bank_name, admin_fee, api_key, notes, cust_id, tx_favorite_type, product_type;
     TextView tv_community_name, tv_community_code, tv_member_code, tv_product_name, tv_jumlah, tv_remark, tv_admin_fee, tv_total_amount,
             tv_store_name, tv_store_address;
     double dfee = 0;
@@ -112,7 +112,6 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
             ccy_id = bundle.getString(DefineValue.CCY_ID, "");
             amount = bundle.getString(DefineValue.AMOUNT, "");
             admin_fee = bundle.getString(DefineValue.FEE, "");
-            total_amount = bundle.getString(DefineValue.TOTAL_AMOUNT, "");
             remark = bundle.getString(DefineValue.REMARK, "");
             api_key = bundle.getString(DefineValue.API_KEY, "");
             attempt = bundle.getInt(DefineValue.ATTEMPT, -1);
@@ -179,10 +178,10 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (bank_gateway.equalsIgnoreCase("N")) {
+                if (bank_gateway.equalsIgnoreCase(DefineValue.STRING_NO)) {
                     changeToSGOPlus(tx_id, product_code, product_name, bank_code,
                             String.valueOf(damount), String.valueOf(dfee), String.valueOf(dtotal_amount), bank_name);
-                } else if (bank_gateway.equalsIgnoreCase("Y")) {
+                } else if (bank_gateway.equalsIgnoreCase(DefineValue.STRING_YES)) {
                     if (product_code.equalsIgnoreCase("SCASH")) {
                         btn_next.setEnabled(false);
                         if (isFav == true) {
@@ -256,7 +255,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + response.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                             }
@@ -300,31 +299,25 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                         @Override
                         public void onResponses(JSONObject response) {
                             try {
-                                Gson gson = new Gson();
                                 jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                String error_message = response.getString(WebParams.ERROR_MESSAGE);
-                                Timber.d("isi response InquiryTrx topup scadm: " + response.toString());
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                Timber.d("isi response InquiryTrx topup scadm: %s", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     CallPINinput(attempt);
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
-                                    Timber.d("Error resendTokenSGOL:" + response.toString());
-                                    code = response.getString(WebParams.ERROR_MESSAGE);
-                                    showDialog(code);
+                                    Timber.d("Error resendTokenSGOL:%s", response.toString());
+                                    showDialog(message);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -394,7 +387,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
 
                                 code = model.getError_code() + ":" + model.getError_message();
@@ -476,21 +469,18 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                             if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
 
                                 showReportBillerDialog(model, sp.getString(DefineValue.USER_NAME, ""),
-                                        sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
+                                        sp.getString(DefineValue.USERID_PHONE, ""), txId,
                                         model.getTx_status(), _amount, model.getMember_cust_id(), model.getMember_cust_name(),
                                         model.getStore_name(), model.getStore_address(), model.getStore_code());
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
                                 showDialog(message);
                             }
@@ -515,7 +505,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
     }
 
     private void showReportBillerDialog(GetTrxStatusReportModel model, String name, String userId, String txId,
-                                        String itemName, String txStatus, String _amount, String member_cust_id, String member_cust_name,
+                                        String txStatus, String _amount, String member_cust_id, String member_cust_name,
                                         String store_name, String store_address, String store_code) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
@@ -523,7 +513,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(model.getCreated()));
         args.putString(DefineValue.TX_ID, txId);
         args.putString(DefineValue.USERID_PHONE, userId);
-        args.putString(DefineValue.DENOM_DATA, itemName);
+        args.putString(DefineValue.DENOM_DATA, "");
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_amount));
         args.putString(DefineValue.REPORT_TYPE, DefineValue.TOPUP);
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(admin_fee));
@@ -676,7 +666,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + response.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }

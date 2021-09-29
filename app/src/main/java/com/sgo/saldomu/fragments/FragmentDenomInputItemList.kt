@@ -61,7 +61,7 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
         Timber.d("isi bundle : "+arguments.toString())
         itemList = ArrayList()
         itemListString = ArrayList()
-        itemListAdapter = DenomItemListAdapter(activity, itemList, this, false)
+        itemListAdapter = DenomItemListAdapter(activity, itemList, this)
 
         frag_input_item_list_field.adapter = itemListAdapter
         frag_input_item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -160,7 +160,7 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
                                     DefineValue.ERROR_0066 -> {
                                         Timber.d("isi response maintenance:$response")
                                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                        alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                        alertDialogMaintenance.showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         val msg = response.getString(WebParams.ERROR_MESSAGE)

@@ -80,9 +80,10 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
             edit_text_amount_transfer.setText(transactionAmount)
             edit_text_amount_transfer.isEnabled = false
         } else {
-            if (qrisParsingModel.percentage!!.toDouble() != 0.00)
+            if (qrisParsingModel.percentage!!.toDouble() != 0.00) {
+                tv_label_fee_amount.append(" " + qrisParsingModel.percentage.toDouble().toInt() + "%")
                 percentage = qrisParsingModel.percentage.toDouble() / 100
-
+            }
             edit_text_amount_transfer.requestFocus()
             ToggleKeyboard.show_keyboard(this)
         }
@@ -131,6 +132,9 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
         edit_text_fee_amount.setText(qrisParsingModel.feeAmount)
         if (qrisParsingModel.indicatorType != "01")
             edit_text_fee_amount.isEnabled = false
+
+        if (qrisParsingModel.indicatorType == "")
+            linear_layout_fee_amount.visibility = View.GONE
 
         cancel_btn.setOnClickListener { finish() }
         proses_btn.setOnClickListener {
@@ -214,7 +218,7 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
                             }
                             DefineValue.ERROR_0066 -> {
                                 AlertDialogMaintenance.getInstance()
-                                    .showDialogMaintenance(this@ConfirmationQrisActivity, message)
+                                    .showDialogMaintenance(this@ConfirmationQrisActivity)
                             }
                             DefineValue.ERROR_0338 -> {
                                 showDialog(message)
@@ -318,7 +322,7 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
                         }
                         DefineValue.ERROR_0066 -> {
                             AlertDialogMaintenance.getInstance()
-                                .showDialogMaintenance(this@ConfirmationQrisActivity, message)
+                                .showDialogMaintenance(this@ConfirmationQrisActivity)
                         }
                         else -> {
                             Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
@@ -372,8 +376,7 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
                             )
                         } else if (code == DefineValue.ERROR_0066) {
                             AlertDialogMaintenance.getInstance().showDialogMaintenance(
-                                this@ConfirmationQrisActivity,
-                                model.error_message
+                                this@ConfirmationQrisActivity
                             )
                         } else {
                             showDialog(message)

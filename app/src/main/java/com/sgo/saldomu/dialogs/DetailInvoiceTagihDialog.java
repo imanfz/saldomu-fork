@@ -19,7 +19,6 @@ import com.sgo.saldomu.R;
 public class DetailInvoiceTagihDialog extends DialogFragment
 {
     View v;
-    Bundle bundle;
     TextView tv_paymentType, tv_remark, tv_phone;
     Button btn_ok;
     String paymentType,remark,phone;
@@ -42,12 +41,6 @@ public class DetailInvoiceTagihDialog extends DialogFragment
             dialog.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             dialog.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        bundle=getArguments();
     }
 
     @Nullable

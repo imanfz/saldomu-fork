@@ -152,11 +152,11 @@ class FragOrderConfirmToko : BaseFragment() {
         params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
         params[WebParams.DOC_DETAIL] = docDetail
         params[WebParams.CUST_TYPE] = DefineValue.TOKO
-        params[WebParams.ACTION_CODE] = "N"
+        params[WebParams.ACTION_CODE] = DefineValue.STRING_NO
         if (paymentOption == getString(R.string.pay_now))
-            params[WebParams.IS_CHECK_BALANCE] = "Y"
+            params[WebParams.IS_CHECK_BALANCE] = DefineValue.STRING_YES
         else if (paymentOption == getString(R.string.pay_later))
-            params[WebParams.IS_CHECK_BALANCE] = "N"
+            params[WebParams.IS_CHECK_BALANCE] = DefineValue.STRING_NO
         params[WebParams.PROMO_CODE] = promoCode
 
         Timber.d("isi params create PO:$params")
@@ -184,7 +184,7 @@ class FragOrderConfirmToko : BaseFragment() {
                                 AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                             }
                             DefineValue.ERROR_0066 -> {
-                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                             }
                             else -> {
                                 Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
@@ -244,7 +244,7 @@ class FragOrderConfirmToko : BaseFragment() {
                                 AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                             }
                             DefineValue.ERROR_0066 -> {
-                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                             }
                             DefineValue.ERROR_57 -> {
                                 showDialog(message)
@@ -382,7 +382,7 @@ class FragOrderConfirmToko : BaseFragment() {
                             val appModel = model.app_data
                             AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                         } else if (code == DefineValue.ERROR_0066) {
-                            AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                            AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                         } else {
                             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                         }

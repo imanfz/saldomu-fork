@@ -38,7 +38,6 @@ public class GroupDetailActivity extends BaseActivity {
     private SecurePreferences sp;
     private int RESULT;
 
-    TextView txtSection;
     private TextView txtPay;
     private TextView txtGetPaid;
     private TextView txtDesc;
@@ -77,11 +76,11 @@ public class GroupDetailActivity extends BaseActivity {
         txtGetPaid = (TextView) findViewById(R.id.txtListGetPaid_home_group);
         txtDesc = (TextView) findViewById(R.id.txtListDesc_home_group);
         txtDate = (TextView) findViewById(R.id.txtListDate_home_group);
-        imageLove = (ImageView)findViewById(R.id.image_love);
-        imageSendComment = (ImageView)findViewById(R.id.image_comment);
-        etComment = (EditText)findViewById(R.id.detail_value_comment);
-        textLove = (TextView)findViewById(R.id.detail_value_love);
-        lvComment = (ListView)findViewById(R.id.lvComment);
+        imageLove = (ImageView) findViewById(R.id.image_love);
+        imageSendComment = (ImageView) findViewById(R.id.image_comment);
+        etComment = (EditText) findViewById(R.id.detail_value_comment);
+        textLove = (TextView) findViewById(R.id.detail_value_love);
+        lvComment = (ListView) findViewById(R.id.lvComment);
 
         Bitmap bm = BitmapFactory.decodeResource(this.getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
@@ -93,7 +92,7 @@ public class GroupDetailActivity extends BaseActivity {
 //            mPic= Picasso.with(this);
 
         Intent i = getIntent();
-        if(i != null) {
+        if (i != null) {
 //            String groupName = i.getStringExtra("groupname");
             String pay = i.getStringExtra("pay");
             String getpaid = i.getStringExtra("getpaid");
@@ -102,8 +101,7 @@ public class GroupDetailActivity extends BaseActivity {
             String profpic = i.getStringExtra("profpic");
 
 
-
-            if(profpic != null && profpic.equals(""))
+            if (profpic != null && profpic.equals(""))
                 GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPicture);
             else
                 GlideManager.sharedInstance().initializeGlide(this, profpic, roundedImage, iconPicture);
@@ -169,15 +167,14 @@ public class GroupDetailActivity extends BaseActivity {
         public void onClick(View v) {
             love = !love;
             String custName = sp.getString(DefineValue.CUST_NAME, getString(R.string.text_strip));
-            if(!love) {
+            if (!love) {
                 imageLove.setImageResource(R.drawable.ic_like_inactive);
 
-                for(int i = 0 ; i < arrayLove.size() ; i++) {
-                    if(arrayLove.get(i).equals(custName)) arrayLove.remove(i);
+                for (int i = 0; i < arrayLove.size(); i++) {
+                    if (arrayLove.get(i).equals(custName)) arrayLove.remove(i);
                 }
 
-            }
-            else {
+            } else {
                 imageLove.setImageResource(R.drawable.ic_like_active);
                 arrayLove.add(custName);
             }
@@ -190,7 +187,7 @@ public class GroupDetailActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             String message = etComment.getText().toString();
-            if(!message.equals("")) {
+            if (!message.equals("")) {
                 GroupCommentObject comment = new GroupCommentObject();
                 comment.setName(sp.getString(DefineValue.CUST_NAME, getString(R.string.text_strip)));
                 comment.setMessage(message);
@@ -207,7 +204,7 @@ public class GroupDetailActivity extends BaseActivity {
         return R.layout.activity_group_detail;
     }
 
-    private void initializeToolbar(){
+    private void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_group_detail));
     }
@@ -225,11 +222,10 @@ public class GroupDetailActivity extends BaseActivity {
 
     private void setLove() {
         String peopleLove = "";
-        for(int i = 0 ; i < arrayLove.size() ; i++) {
-            if(i == arrayLove.size()-1) {
+        for (int i = 0; i < arrayLove.size(); i++) {
+            if (i == arrayLove.size() - 1) {
                 peopleLove += arrayLove.get(i) + " Like this.";
-            }
-            else {
+            } else {
                 peopleLove += arrayLove.get(i) + ", ";
             }
         }

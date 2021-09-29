@@ -725,7 +725,7 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 if (code.equals("0059") || code.equals("0164")) {
                                     showDialogErrorSMS(sentObject.nama_bank, code, model.getError_message());

@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -46,17 +45,14 @@ import java.util.HashMap;
 public class BbsSetupShopClosedActivity extends BaseActivity implements OpenCloseDatePickerFragment.OpenCloseDatePickerListener,
         OpenHourPickerFragment.OpenHourPickerListener {
 
-    ProgressDialog progdialog;
-    ToggleButton tbOpenClosed;
-    Button btnShopDate, btnProses, btnOpenHour;
-    TextView tvDate, tvStartHour, tvEndHour, tvOpen24Hours;
+    ProgressDialog progDialog;
+    Button btnShopDate, btnProses;
+    TextView tvDate, tvStartHour, tvEndHour;
     ArrayList<String> selectedDates = new ArrayList<>();
     ArrayList<Date> listDates = new ArrayList<>();
-    SecurePreferences sp;
     String shopId, memberId, shopStatus, shopRemark, shopStartOpenHour, shopEndOpenHour, flagApprove;
     int iStartHour = 0, iStartMinute = 0, iEndHour = 0, iEndMinute = 0, selectedType = 0;
     LinearLayout llSetupShopDate, tvSetupShopDate, llShopRemark;
-    Boolean isClosed = false;
     EditText etShopRemark;
 
     Spinner spPilihan;
@@ -68,10 +64,10 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
         super.onCreate(savedInstanceState);
         initializeToolbar();
 
-        spPilihan       = findViewById(R.id.spPilihan);
-        arrayItems[0]   = "Silakan Pilih";
-        arrayItems[1]   = getString(R.string.yes);
-        arrayItems[2]   = getString(R.string.no);
+        spPilihan = findViewById(R.id.spPilihan);
+        arrayItems[0] = "Silakan Pilih";
+        arrayItems[1] = getString(R.string.yes);
+        arrayItems[2] = getString(R.string.no);
 
         SpinnerAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, arrayItems);
@@ -82,12 +78,12 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
-                if ( arg2 == 1 ) {
+                if (arg2 == 1) {
                     llSetupShopDate.setVisibility(View.GONE);
                     llShopRemark.setVisibility(View.GONE);
                     tvSetupShopDate.setVisibility(View.GONE);
                     selectedType = arg2;
-                } else if ( arg2 == 2 ) {
+                } else if (arg2 == 2) {
                     llSetupShopDate.setVisibility(View.VISIBLE);
                     llShopRemark.setVisibility(View.VISIBLE);
                     tvSetupShopDate.setVisibility(View.VISIBLE);
@@ -102,35 +98,32 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
             }
         });
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-
-        etShopRemark        = findViewById(R.id.etShopRemark);
-        llSetupShopDate     = findViewById(R.id.llSetupShopDate);
-        llShopRemark        = findViewById(R.id.llShopRemark);
-        tvSetupShopDate     = findViewById(R.id.tvSetupShopDate);
-        tvOpen24Hours       = findViewById(R.id.tvOpen24Hours);
+        etShopRemark = findViewById(R.id.etShopRemark);
+        llSetupShopDate = findViewById(R.id.llSetupShopDate);
+        llShopRemark = findViewById(R.id.llShopRemark);
+        tvSetupShopDate = findViewById(R.id.tvSetupShopDate);
 
         llSetupShopDate.setVisibility(View.GONE);
         tvSetupShopDate.setVisibility(View.GONE);
         llShopRemark.setVisibility(View.GONE);
 
-        shopStatus          = DefineValue.SHOP_CLOSE;
-        shopRemark          = "";
-        shopStartOpenHour   = "";
-        shopEndOpenHour     = "";
+        shopStatus = DefineValue.SHOP_CLOSE;
+        shopRemark = "";
+        shopStartOpenHour = "";
+        shopEndOpenHour = "";
 
-        memberId            = getIntent().getStringExtra("memberId");
-        shopId              = getIntent().getStringExtra("shopId");
-        flagApprove         = getIntent().getStringExtra("flagApprove");
+        memberId = getIntent().getStringExtra(DefineValue.MEMBER_ID);
+        shopId = getIntent().getStringExtra(DefineValue.SHOP_ID);
+        flagApprove = getIntent().getStringExtra(DefineValue.FLAG_APPROVE);
 
-        tvStartHour         = findViewById(R.id.tvStartHour);
-        tvEndHour           = findViewById(R.id.tvEndHour);
+        tvStartHour = findViewById(R.id.tvStartHour);
+        tvEndHour = findViewById(R.id.tvEndHour);
 
-        btnShopDate         = findViewById(R.id.btnShopDate);
+        btnShopDate = findViewById(R.id.btnShopDate);
         btnShopDate.setOnClickListener(btnShopDateListener);
 
-        btnProses       = findViewById(R.id.btnProses);
-        tvDate          = findViewById(R.id.tvDate);
+        btnProses = findViewById(R.id.btnProses);
+        tvDate = findViewById(R.id.tvDate);
 
 
         btnProses.setOnClickListener(
@@ -141,7 +134,7 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
                         String shopDate = new Gson().toJson(selectedDates);
                         Boolean hasError = false;
 
-                        if ( selectedType == 2 ) {
+                        if (selectedType == 2) {
                             if (shopDate.equals("")) {
                                 hasError = true;
                                 Toast.makeText(getApplication(), R.string.err_empty_shop_date, Toast.LENGTH_SHORT).show();
@@ -151,7 +144,7 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
                         if (!hasError) {
 
                             shopRemark = etShopRemark.getText().toString();
-                            progdialog = DefinedDialog.CreateProgressDialog(BbsSetupShopClosedActivity.this, "");
+                            progDialog = DefinedDialog.CreateProgressDialog(BbsSetupShopClosedActivity.this, "");
 
                             if (selectedType == 1) {
 
@@ -159,8 +152,8 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
                                 HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY, extraSignature);
 
                                 params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-                                params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
-                                params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
+                                params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                                params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
                                 params.put(WebParams.SHOP_ID, shopId);
                                 params.put(WebParams.MEMBER_ID, memberId);
                                 params.put(WebParams.USER_ID, userPhoneID);
@@ -175,15 +168,15 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
                                                     if (code.equals(WebParams.SUCCESS_CODE)) {
 
 
-                                                        Intent intent=new Intent(getApplicationContext(),BbsMemberShopActivity.class);
+                                                        Intent intent = new Intent(getApplicationContext(), BbsMemberShopActivity.class);
                                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                        intent.putExtra("memberId", memberId);
-                                                        intent.putExtra("shopId", shopId);
-                                                        intent.putExtra("flagApprove", flagApprove);
+                                                        intent.putExtra(DefineValue.MEMBER_ID, memberId);
+                                                        intent.putExtra(DefineValue.SHOP_ID, shopId);
+                                                        intent.putExtra(DefineValue.FLAG_APPROVE, flagApprove);
                                                         startActivity(intent);
                                                         finish();
 
-                                                    } else if ( code.equals(WebParams.LOGOUT_CODE) ) {
+                                                    } else if (code.equals(WebParams.LOGOUT_CODE)) {
 
                                                     } else {
                                                         //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
@@ -214,7 +207,7 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
 
                                             @Override
                                             public void onComplete() {
-                                                progdialog.dismiss();
+                                                progDialog.dismiss();
                                             }
                                         });
                             } else if (selectedType == 2) {
@@ -224,8 +217,8 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
                                         extraSignature);
 
                                 params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-                                params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
-                                params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
+                                params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                                params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
                                 params.put(WebParams.SHOP_ID, shopId);
                                 params.put(WebParams.MEMBER_ID, memberId);
                                 params.put(WebParams.USER_ID, userPhoneID);
@@ -251,11 +244,11 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
                                                         //                                    //intent.putExtra("PersonID", personDetailsModelArrayList.get(position).getId());
                                                         //                                    startActivity(intent);
 
-                                                        Intent intent=new Intent(getApplicationContext(),BbsMemberShopActivity.class);
+                                                        Intent intent = new Intent(getApplicationContext(), BbsMemberShopActivity.class);
                                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                        intent.putExtra("memberId", memberId);
-                                                        intent.putExtra("shopId", shopId);
-                                                        intent.putExtra("flagApprove", flagApprove);
+                                                        intent.putExtra(DefineValue.MEMBER_ID, memberId);
+                                                        intent.putExtra(DefineValue.SHOP_ID, shopId);
+                                                        intent.putExtra(DefineValue.FLAG_APPROVE, flagApprove);
                                                         startActivity(intent);
                                                         finish();
                                                     } else {
@@ -288,7 +281,7 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
 
                                             @Override
                                             public void onComplete() {
-                                                progdialog.dismiss();
+                                                progDialog.dismiss();
                                             }
                                         });
                             }
@@ -310,26 +303,7 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
             args.putSerializable("selectDates", selectedDates);
             args.putSerializable("listDates", listDates);
             openCloseDatePickerFragment.setArguments(args);
-            openCloseDatePickerFragment.show(getFragmentManager(), OpenCloseDatePickerFragment.TAG  );
-        }
-    };
-
-    Button.OnClickListener btnOpenHourListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            OpenHourPickerFragment openHourPickerFragment = new OpenHourPickerFragment();
-
-            Bundle bundle = new Bundle();
-            bundle.putString("startHour", shopStartOpenHour);
-            bundle.putString("endHour", shopEndOpenHour);
-            bundle.putInt("iStartHour", iStartHour );
-            bundle.putInt("iStartMinute", iStartMinute );
-            bundle.putInt("iEndHour", iEndHour );
-            bundle.putInt("iEndMinute", iEndMinute );
-            openHourPickerFragment.setArguments(bundle);
-
-            openHourPickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
-            openHourPickerFragment.show(getFragmentManager(), OpenHourPickerFragment.TAG  );
+            openCloseDatePickerFragment.show(getFragmentManager(), OpenCloseDatePickerFragment.TAG);
         }
     };
 
@@ -361,24 +335,12 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
     public void onOkDatePickerClick(ArrayList<String> selectedDates, ArrayList<Date> listDates) {
         this.selectedDates = selectedDates;
 
-        ArrayList<String>   tempDates = new ArrayList<>();
-        //Collections.sort(listDates);
-
-        /*for(int i = 0; i < listDates.size(); i++) {
-            String fDate = new SimpleDateFormat("yyyy-MM-dd").format(listDates.get(i));
-            tempDates.add(fDate.toString());
-        }*/
-
         ArrayList<String> tempStringDates = new ArrayList<>();
 
-        for(int j = 0; j < listDates.size(); j++ ) {
-            //String testonly  = listDates.get(j).toString();
+        for (int j = 0; j < listDates.size(); j++) {
             tempStringDates.add(DateTimeFormat.convertDatetoString(listDates.get(j), "dd MMMM yyyy"));
-
         }
         tvDate.setText(TextUtils.join(", ", tempStringDates));
-
-
     }
 
     @Override

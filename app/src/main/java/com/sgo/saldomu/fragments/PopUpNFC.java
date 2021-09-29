@@ -49,24 +49,16 @@ public class PopUpNFC extends DialogFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        noNFC.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getDialog().dismiss();
-            }
-        });
+        noNFC.setOnClickListener(v -> getDialog().dismiss());
 
-        yesNFC.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getDialog().dismiss();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    Intent intent = new Intent(Settings.ACTION_NFC_SETTINGS);
-                    startActivity(intent);
-                } else {
-                    Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
-                    startActivity(intent);
-                }
+        yesNFC.setOnClickListener(v -> {
+            getDialog().dismiss();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                Intent intent = new Intent(Settings.ACTION_NFC_SETTINGS);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                startActivity(intent);
             }
         });
     }

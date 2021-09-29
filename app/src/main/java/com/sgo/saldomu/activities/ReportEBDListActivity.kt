@@ -28,8 +28,8 @@ class ReportEBDListActivity : BaseActivity() {
                 commCodeEspay = ""
             }
         } else {
-            memberCodeEspay = intent.getStringExtra(DefineValue.MEMBER_CODE_ESPAY)
-            commCodeEspay = intent.getStringExtra(DefineValue.COMMUNITY_CODE_ESPAY)
+            memberCodeEspay = intent.getStringExtra(DefineValue.MEMBER_CODE_ESPAY)!!
+            commCodeEspay = intent.getStringExtra(DefineValue.COMMUNITY_CODE_ESPAY)!!
         }
         val adapter = PageTabAdapter(supportFragmentManager)
         adapter.addFragment(FragReportEBDList(DefineValue.PO, memberCodeEspay, commCodeEspay), getString(R.string.purchase_order))

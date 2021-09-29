@@ -25,7 +25,6 @@ import timber.log.Timber;
  * Created by thinkpad on 1/14/2016.
  */
 public class FragFAQ extends Fragment {
-    SecurePreferences sp;
     private View v;
 
     public static FragFAQ newInstance() {

@@ -122,7 +122,7 @@ class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.Start
                 } else if (code == DefineValue.ERROR_0066) run {
                     Timber.d("isi response maintenance:" + response.toString())
                     val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                    alertDialogMaintenance.showDialogMaintenance(this@StarterKitActivityKotlin, model.error_message)
+                    alertDialogMaintenance.showDialogMaintenance(this@StarterKitActivityKotlin)
                 } else {
                     Toast.makeText(this@StarterKitActivityKotlin, message, Toast.LENGTH_SHORT).show()
                 }
@@ -184,7 +184,7 @@ class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.Start
                             }
                             WebParams.ERROR_0066 -> {
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(this@StarterKitActivityKotlin, model.error_message)
+                                alertDialogMaintenance.showDialogMaintenance(this@StarterKitActivityKotlin)
                             }
                             else -> {
                                 val msg = model.error_message
@@ -207,9 +207,7 @@ class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.Start
     private fun dialogSuccess(msg: String) {
         var dialognya = DefinedDialog.MessageDialog(this, this!!.getString(R.string.dialog_download_title),
                 msg
-        ) { v, isLongClick ->
-
-        }
+        ) {}
 
         dialognya.show()
     }

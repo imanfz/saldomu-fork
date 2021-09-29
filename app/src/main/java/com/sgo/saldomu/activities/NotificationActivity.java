@@ -69,17 +69,6 @@ public class NotificationActivity extends BaseActivity {
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    public void switchActivity(Intent mIntent, int j) {
-        switch (j){
-            case MainPage.ACTIVITY_RESULT:
-                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                startActivityForResult(mIntent,MainPage.REQUEST_FINISH);
-                break;
-            case 2:
-                break;
-        }
-    }
-
     private void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.notifications_ab_title));

@@ -11,7 +11,7 @@ import com.sgo.saldomu.receivers.LocalResultReceiver;
  * Created by yuddistirakiki on 8/25/17.
  */
 
-public class JobUpdateBBSData extends JobService{
+public class JobUpdateBBSData extends JobService {
 
     static public final String TAG = "JobUpdateBBSData";
 
@@ -19,12 +19,7 @@ public class JobUpdateBBSData extends JobService{
     public boolean onStartJob(final JobParameters job) {
         BBSDataManager bbsDataManager = new BBSDataManager();
         bbsDataManager.runServiceUpdateData(this,
-                LocalResultReceiver.getSimpleInstance(new LocalResultReceiver.LocalResultInterface() {
-                    @Override
-                    public void onReceiveResult(int resultCode, Bundle resultData) {
-                        jobFinished(job,false);
-                    }
-                }));
+                LocalResultReceiver.getSimpleInstance(() -> jobFinished(job, false)));
         //return true karena job yang kita jalaninnya harus jalanin intent service
         return true;
     }

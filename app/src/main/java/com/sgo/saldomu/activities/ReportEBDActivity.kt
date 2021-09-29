@@ -1,25 +1,17 @@
 package com.sgo.saldomu.activities
 
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.ListFragment
 import com.sgo.saldomu.R
-import com.sgo.saldomu.adapter.ReportTabAdapter
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.ToggleKeyboard
-import com.sgo.saldomu.dialogs.InformationDialog
-import com.sgo.saldomu.fragments.FragReport
 import com.sgo.saldomu.fragments.FragReportEBD
-import com.sgo.saldomu.fragments.FragTokoEBD
 import com.sgo.saldomu.widgets.BaseActivity
-import kotlinx.android.synthetic.main.activity_report.*
 import timber.log.Timber
-import java.util.*
 
 class ReportEBDActivity : BaseActivity() {
 

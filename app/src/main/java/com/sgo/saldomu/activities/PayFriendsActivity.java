@@ -90,37 +90,6 @@ public class PayFriendsActivity extends BaseActivity {
 
     }
 
-    public void switchContent(Fragment mFragment, String fragName, Boolean isBackstack) {
-
-        if (isBackstack) {
-            Timber.d("backstack");
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.payfriends_confirm_token_content, mFragment, fragName)
-                    .addToBackStack(null)
-                    .commit();
-        } else {
-            Timber.d("bukan backstack");
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.payfriends_confirm_token_content, mFragment, fragName)
-                    .commit();
-
-        }
-        setActionBarTitle(fragName);
-    }
-
-    public void switchActivity(Intent mIntent, int j) {
-        switch (j) {
-            case MainPage.ACTIVITY_RESULT:
-                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                startActivityForResult(mIntent, MainPage.REQUEST_FINISH);
-                break;
-            case 2:
-                break;
-        }
-    }
-
     @Override
     protected int getLayoutResource() {
         return R.layout.activity_pay_friends_confirm_token;

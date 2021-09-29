@@ -140,7 +140,7 @@ public class ChangePIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(ChangePIN.this, model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(ChangePIN.this);
                                 } else {
                                     Toast.makeText(ChangePIN.this, message, Toast.LENGTH_LONG).show();
                                     tv_title.setText(getResources().getString(R.string.changepin_text_currentpin));

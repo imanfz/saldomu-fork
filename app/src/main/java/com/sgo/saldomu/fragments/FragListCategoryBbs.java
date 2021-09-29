@@ -15,7 +15,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -27,8 +26,6 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
-import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.adapter.BbsSearchCategoryAdapter;
 import com.sgo.saldomu.adapter.GridBbsCategory;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
@@ -60,7 +57,6 @@ import timber.log.Timber;
 public class FragListCategoryBbs extends ListFragment implements EasyPermissions.PermissionCallbacks {
 
     private View v;
-    BbsSearchCategoryAdapter bbsSearchCategoryAdapter;
     ArrayList<ShopCategory> shopCategories = new ArrayList<>();
     JSONArray categories;
     ProgressDialog progdialog;
@@ -69,24 +65,19 @@ public class FragListCategoryBbs extends ListFragment implements EasyPermissions
     Switch swMobilityAgent;
     LinearLayout llJumlah;
     EditText etJumlah;
-    SecurePreferences sp;
     private static final int RC_LOCATION_PERM = 500;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sp    = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)) {
-            // Have permission, do the thing!
-            //Toast.makeText(getContext(), "TODO: Camera things", Toast.LENGTH_LONG).show();
-        } else {
+        if (!EasyPermissions.hasPermissions(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)) {
             // Ask for one permission
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
                     RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
         }
 
-        progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), "");
+        progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
         progdialog.show();
     }
 
@@ -97,24 +88,21 @@ public class FragListCategoryBbs extends ListFragment implements EasyPermissions
         v = inflater.inflate(R.layout.frag_list_category_bbs, container, false);
 
         gridBbsCategoryAdapter = new GridBbsCategory(getActivity(), shopCategories);
-        gridCategory            = v.findViewById(R.id.gridBbsCategory);
+        gridCategory = v.findViewById(R.id.gridBbsCategory);
         gridCategory.setAdapter(gridBbsCategoryAdapter);
 
-        swMobilityAgent         = v.findViewById(R.id.swMobilityAgent);
+        swMobilityAgent = v.findViewById(R.id.swMobilityAgent);
         swMobilityAgent.setChecked(false);
 
-        llJumlah                = v.findViewById(R.id.llJumlah);
+        llJumlah = v.findViewById(R.id.llJumlah);
         llJumlah.setVisibility(View.GONE);
 
-        etJumlah                = v.findViewById(R.id.etJumlah);
-
-
-
+        etJumlah = v.findViewById(R.id.etJumlah);
 
 
         HashMap<String, Object> params = new HashMap<>();
-        UUID rcUUID             = UUID.randomUUID();
-        String dtime            = DateTimeFormat.getCurrentDateTime();
+        UUID rcUUID = UUID.randomUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
 
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
@@ -143,7 +131,7 @@ public class FragListCategoryBbs extends ListFragment implements EasyPermissions
                                     JSONObject object = categories.getJSONObject(i);
                                     ShopCategory shopCategory = new ShopCategory();
                                     shopCategory.setCategoryId(object.getString("category_id"));
-                                    shopCategory.setCategoryName(object.getString("category_name"));
+                                    shopCategory.setCategoryName(object.getString(WebParams.CATEGORY));
                                     shopCategories.add(shopCategory);
                                 }
 
@@ -197,13 +185,12 @@ public class FragListCategoryBbs extends ListFragment implements EasyPermissions
                 Timber.d("masuk gridcategoryonitemclicklistener");
 
                 Boolean hasError = false;
-                if ( swMobilityAgent.isChecked() ) {
-                    if(etJumlah.getText().toString().length()==0){
+                if (swMobilityAgent.isChecked()) {
+                    if (etJumlah.getText().toString().length() == 0) {
                         etJumlah.requestFocus();
                         etJumlah.setError(getString(R.string.sgoplus_validation_jumlahSGOplus));
                         hasError = true;
-                    }
-                    else if(Long.parseLong(etJumlah.getText().toString()) < 1){
+                    } else if (Long.parseLong(etJumlah.getText().toString()) < 1) {
                         etJumlah.requestFocus();
                         etJumlah.setError(getString(R.string.payfriends_amount_zero));
                         hasError = true;
@@ -212,24 +199,9 @@ public class FragListCategoryBbs extends ListFragment implements EasyPermissions
                     hasError = false;
                 }
 
-                if ( !hasError ) {
-                    /*
+                if (!hasError) {
+
                     Intent i = new Intent(getActivity(), BbsSearchAgentActivity.class);
-
-                    i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(position).getCategoryId());
-                    i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(position).getCategoryName());
-
-                    if (!swMobilityAgent.isChecked()) {
-                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
-                        i.putExtra(DefineValue.AMOUNT, "");
-                    } else {
-                        i.putExtra(DefineValue.AMOUNT, etJumlah.getText().toString());
-                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
-                    }
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
-                    */
-
-                    Intent i=new Intent(getActivity(),BbsSearchAgentActivity.class);
                     i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(position).getCategoryId());
                     i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(position).getCategoryName());
 
@@ -256,12 +228,10 @@ public class FragListCategoryBbs extends ListFragment implements EasyPermissions
 
     // Call Back method  to get the Message form other Activity
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // check if the request code is same as what is passed  here it is 2
-        if(requestCode==DefineValue.IDX_CATEGORY_SEARCH_AGENT)
-        {
+        if (requestCode == DefineValue.IDX_CATEGORY_SEARCH_AGENT) {
 
             try {
                 Bundle extras = data.getExtras();
@@ -284,27 +254,10 @@ public class FragListCategoryBbs extends ListFragment implements EasyPermissions
                         alert11.show();
                     }
                 }
-            }catch( Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-//        Intent i = new Intent(getActivity(), BbsSearchAgentActivity.class);
-//        i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(position).getCategoryId());
-//        i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(position).getCategoryName() );
-//        switchActivity(i, MainPage.ACTIVITY_RESULT);
-
-    }
-
-    private void switchActivity(Intent mIntent, int j){
-        if (getActivity() == null)
-            return;
-
-        MainPage fca = (MainPage) getActivity();
-        fca.switchActivity(mIntent,j);
     }
 
     private TextWatcher jumlahChangeListener = new TextWatcher() {
@@ -315,11 +268,11 @@ public class FragListCategoryBbs extends ListFragment implements EasyPermissions
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if(s.toString().equals("0"))etJumlah.setText("");
-            if(s.length() > 0 && s.charAt(0) == '0'){
+            if (s.toString().equals("0")) etJumlah.setText("");
+            if (s.length() > 0 && s.charAt(0) == '0') {
                 int i = 0;
-                for (; i < s.length(); i++){
-                    if(s.charAt(i) != '0')break;
+                for (; i < s.length(); i++) {
+                    if (s.charAt(i) != '0') break;
                 }
                 etJumlah.setText(s.toString().substring(i));
             }

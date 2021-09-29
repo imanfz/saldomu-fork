@@ -45,18 +45,15 @@ public class FragCancelTrxRequest extends DialogFragment {
     public static final String TAG = "FragCancelTrxRequest";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private Button btnProses, btnCancel;
     private EditText etReason;
     private String txId, userId;
-    SecurePreferences sp;
 
     CancelTrxRequestListener cpl;
     ProgressDialog progdialog;
 
     public interface CancelTrxRequestListener {
-        void onSuccessCancelTrx(String txId);
+        void onSuccessCancelTrx();
     }
 
     public FragCancelTrxRequest() {
@@ -85,7 +82,6 @@ public class FragCancelTrxRequest extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sp                      = CustomSecurePref.getInstance().getmSecurePrefs();
 
         if (getArguments() != null) {
             txId = getArguments().getString(DefineValue.TX_ID);
@@ -144,7 +140,7 @@ public class FragCancelTrxRequest extends DialogFragment {
 
                                         String code = response.getString(WebParams.ERROR_CODE);
                                         if (code.equals(WebParams.SUCCESS_CODE)) {
-                                            cpl.onSuccessCancelTrx(txId);
+                                            cpl.onSuccessCancelTrx();
                                         } else {
                                             Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                                         }

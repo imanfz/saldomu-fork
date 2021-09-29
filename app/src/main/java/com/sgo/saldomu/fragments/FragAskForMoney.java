@@ -82,8 +82,6 @@ public class FragAskForMoney extends BaseFragment {
     private EditText etMessage;
     private String _memberId;
     private String _userid;
-    private String accessKey;
-    private ProgressDialog progdialog;
 
     private int privacy;
     private int max_member_trans;
@@ -108,14 +106,12 @@ public class FragAskForMoney extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_information:
-                if (!dialogI.isAdded())
-                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_information) {
+            if (!dialogI.isAdded())
+                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -225,31 +221,6 @@ public class FragAskForMoney extends BaseFragment {
         dialogI = InformationDialog.newInstance(6);
         dialogI.setTargetFragment(this, 0);
     }
-
-
-    private TextWatcher jumlahChangeListener = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s.toString().equals("0")) etAmount.setText("");
-            if (s.length() > 0 && s.charAt(0) == '0') {
-                int i = 0;
-                for (; i < s.length(); i++) {
-                    if (s.charAt(i) != '0') break;
-                }
-                etAmount.setText(s.toString().substring(i));
-            }
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
 
     private void setNumberRecipients() {
         if (phoneRetv.getSortedRecipients().length == 0) {
@@ -394,8 +365,8 @@ public class FragAskForMoney extends BaseFragment {
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-
                                 JSONArray mArrayData;
                                 String messageDialog = null, recipient = "", amount, recipient_name = "";
                                 try {
@@ -417,18 +388,14 @@ public class FragAskForMoney extends BaseFragment {
                                 }
                                 showDialog(messageDialog);
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else {
                                 if (code.equals("0998")) {
                                     phoneRetv.requestFocus();
                                     phoneRetv.setError(getString(R.string.payfriends_recipients_duplicate_validation));
                                 }
-                                code = model.getError_message();
 
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -443,7 +410,7 @@ public class FragAskForMoney extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -452,16 +419,8 @@ public class FragAskForMoney extends BaseFragment {
         new AlertDialog.Builder(getActivity())
                 .setTitle(getString(R.string.askfriends_predialog_title))
                 .setMessage(message)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        sentData(_message, _data);
-                    }
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> sentData(_message, _data))
+                .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
                 .show();
     }
 
@@ -541,16 +500,10 @@ public class FragAskForMoney extends BaseFragment {
         else if (density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
         else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
 
-        Timber.wtf("url prof pic:" + _url_profpic);
+        Timber.wtf("url prof pic:%s", _url_profpic);
 
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
-
-//        Picasso mPic;
-//        if(MyApiClient.PROD_FLAG_ADDRESS)
-//            mPic = MyPicasso.getUnsafeImageLoader(getActivity());
-//        else
-//            mPic= Picasso.with(getActivity());
 
         if (_url_profpic != null && _url_profpic.isEmpty()) {
             GlideManager.sharedInstance().initializeGlide(getActivity(), R.drawable.user_unknown_menu, roundedImage, imgProfile);

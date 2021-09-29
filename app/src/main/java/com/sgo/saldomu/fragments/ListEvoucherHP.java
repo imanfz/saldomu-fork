@@ -72,14 +72,6 @@ public class ListEvoucherHP extends ListFragment {
         fca.switchContent(i,name,isBackstack);
     }
 
-    private void switchActivity(Intent mIntent){
-        if (getActivity() == null)
-            return;
-
-        EvoucherHPActivity fca = (EvoucherHPActivity) getActivity();
-        fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
-    }
-
     private void setActionBarTitle(String _title){
         if (getActivity() == null)
             return;

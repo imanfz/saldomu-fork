@@ -12,8 +12,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.SnapHelper
 import com.google.gson.Gson
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.CanvasserGoodReceiptActivity
@@ -27,7 +25,6 @@ import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.*
-import com.sgo.saldomu.models.retrofit.ItemModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.fragment_input_item_list.*
@@ -191,7 +188,7 @@ class FragListAddItemGRCanvasser : BaseFragment() {
                                                     listRemarkMappingUnit.add(remarkMappingUnit[j].toString())
                                                 }
                                                 var isFavorite = false
-                                                if (jsonObject.getString(WebParams.IS_FAVORITE) == DefineValue.Y)
+                                                if (jsonObject.getString(WebParams.IS_FAVORITE) == DefineValue.STRING_YES)
                                                     isFavorite = true
 
                                                 val formatQtyJsonArray = jsonObject.getJSONArray(WebParams.FORMAT_QTY)
@@ -229,7 +226,7 @@ class FragListAddItemGRCanvasser : BaseFragment() {
                                                 listRemarkMappingUnit.add(remarkMappingUnit[j].toString())
                                             }
                                             var isFavorite = false
-                                            if (jsonObject.getString(WebParams.IS_FAVORITE) == DefineValue.Y)
+                                            if (jsonObject.getString(WebParams.IS_FAVORITE) == DefineValue.STRING_YES)
                                                 isFavorite = true
 
                                             if (!tempIdHashSet.contains(itemCode)) {
@@ -247,7 +244,7 @@ class FragListAddItemGRCanvasser : BaseFragment() {
                                         AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                                     }
                                     DefineValue.ERROR_0066 -> {
-                                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         showDialog(message)

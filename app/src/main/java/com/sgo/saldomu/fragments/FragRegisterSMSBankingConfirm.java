@@ -64,7 +64,6 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
     private String token_id;
     private String cust_id;
     private String userID;
-    private String accessKey;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -72,7 +71,6 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
         cust_id = sp.getString(DefineValue.CUST_ID,"");
 
         tvNo = v.findViewById(R.id.rsb_value_no);
