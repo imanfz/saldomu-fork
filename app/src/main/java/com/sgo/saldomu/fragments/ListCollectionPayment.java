@@ -51,7 +51,6 @@ public class ListCollectionPayment extends ListFragment {
     private ProgressDialog progdialog;
     private String commID;
     private String userID;
-    private String accessKey;
     private ArrayList<String> _listType;
     private ArrayList<TempObjectData> listBankIB;
     private ArrayList<TempObjectData> listBankSMS;
@@ -69,7 +68,6 @@ public class ListCollectionPayment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         _listType = new ArrayList<>();
 
@@ -225,20 +223,6 @@ public class ListCollectionPayment extends ListFragment {
 
         CollectionActivity fca = (CollectionActivity) getActivity();
         return fca.getToolbarTitle();
-    }
-
-    private void switchActivity(Intent mIntent) {
-        if (getActivity() == null)
-            return;
-
-        CollectionActivity fca = (CollectionActivity) getActivity();
-        fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        Timber.d("attach list top up");
     }
 
     @Override

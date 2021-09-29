@@ -157,29 +157,22 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
     private View v;
     private NavDrawMainMenuAdapter mAdapter;
-    private Bundle _SaveInstance;
     private SecurePreferences sp;
-    ProgressDialog progdialog;
     private LevelClass levelClass;
     private IntentFilter filter;
-    ProgressDialog progdialog2;
+    ProgressDialog progDialog;
     String shopStatus;
     private String userID;
     private String accessKey;
-    private int RESULT;
     private final int RESULT_GALERY = 100;
     private final int RESULT_CAMERA = 200;
     final int RC_CAMERA_STORAGE = 14;
     private PickAndCameraUtil pickAndCameraUtil;
     Boolean isAgent;
-    private String isRegisteredLevel; //saat antri untuk diverifikasi
     String categoryIdcta;
-    ArrayList<ShopCategory> shopCategories = new ArrayList<>();
     private String isDormant, userNameLogin;
 
     Intent i;
-
-    Boolean isLevel1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -201,13 +194,11 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        _SaveInstance = savedInstanceState;
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         levelClass = new LevelClass(getActivity(), sp);
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
-        isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
-        isRegisteredLevel = sp.getString(DefineValue.IS_REGISTERED_LEVEL, "0");
+        isDormant = sp.getString(DefineValue.IS_DORMANT, DefineValue.STRING_NO);
         categoryIdcta = sp.getString(DefineValue.CATEGORY_ID_CTA, "");
         userNameLogin = sp.getString(DefineValue.USER_NAME, "");
         mAdapter = new NavDrawMainMenuAdapter(getActivity(), generateData());
@@ -384,12 +375,8 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
     }
 
     private void setImageProfPic() {
-        float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
 
-//        if(density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
-//        else if(density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
-//        else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
         _url_profpic = sp.getString(DefineValue.IMG_URL, null);
 
         Timber.wtf("url prof pic:" + _url_profpic);
@@ -414,7 +401,6 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
     public void initializeNavDrawer() {
         if (!getActivity().isFinishing()) {
             Fragment newFragment = new FragMainPage();
-            MainPage mainPage=(MainPage) getActivity();
             switchFragment(newFragment, userNameLogin);
             refreshDataNavDrawer();
         }
@@ -492,7 +478,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
     public void selectItem(int itemId, Bundle data) {
         Fragment newFragment;
 
-        isDormant = sp.getString(DefineValue.IS_DORMANT,"N");
+        isDormant = sp.getString(DefineValue.IS_DORMANT, DefineValue.STRING_NO);
 
         switch (itemId) {
             case MTOPUP:
@@ -503,7 +489,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 switchActivity(i, MainPage.ACTIVITY_RESULT);
                 break;
             case MPAYFRIENDS:
-                if (isDormant.equalsIgnoreCase("Y")) {
+                if (isDormant.equalsIgnoreCase(DefineValue.STRING_YES)) {
                     dialogDormant();
                 } else {
                     if (levelClass.isLevel1QAC()) {
@@ -519,7 +505,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 }
                 break;
             case MASK4MONEY:
-                if (isDormant.equalsIgnoreCase("Y")) {
+                if (isDormant.equalsIgnoreCase(DefineValue.STRING_YES)) {
                     dialogDormant();
                 } else {
                     if (levelClass.isLevel1QAC()) {
@@ -535,7 +521,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 }
                 break;
             case MDAP:
-                if (isDormant.equalsIgnoreCase("Y")) {
+                if (isDormant.equalsIgnoreCase(DefineValue.STRING_YES)) {
                     dialogDormant();
                 } else {
                     newFragment = new FragPulsaAgent();
@@ -546,7 +532,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
             case MBUY:
 //                newFragment = new ListBuy();
 //                switchFragment(newFragment, getString(R.string.toolbar_title_purchase));
-                if (isDormant.equalsIgnoreCase("Y")) {
+                if (isDormant.equalsIgnoreCase(DefineValue.STRING_YES)) {
                     dialogDormant();
                 } else {
                     Intent i = new Intent(getActivity(), GridBillerActivity.class);
@@ -573,7 +559,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 }
                 break;
             case MSCADM:
-                if (isDormant.equalsIgnoreCase("Y")) {
+                if (isDormant.equalsIgnoreCase(DefineValue.STRING_YES)) {
                     dialogDormant();
                 } else {
                     i = new Intent(getActivity(), B2BActivity.class);
@@ -603,7 +589,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 switchActivity(i, MainPage.ACTIVITY_RESULT);
                 break;
             case MBBS:
-                if (isDormant.equalsIgnoreCase("Y")) {
+                if (isDormant.equalsIgnoreCase(DefineValue.STRING_YES)) {
                     dialogDormant();
                 } else {
                     if (isAgent) {
@@ -645,12 +631,12 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
             case MLISTAPPROVAL:
                 Intent intentApproval = new Intent(getActivity(), BbsMemberShopActivity.class);
-                intentApproval.putExtra("flagApprove", DefineValue.STRING_NO);
+                intentApproval.putExtra(DefineValue.FLAG_APPROVE, DefineValue.STRING_NO);
                 startActivity(intentApproval);
                 break;
             case MLISTTOKO:
                 Intent intentListToko = new Intent(getActivity(), BbsMemberShopActivity.class);
-                intentListToko.putExtra("flagApprove", DefineValue.STRING_YES);
+                intentListToko.putExtra(DefineValue.FLAG_APPROVE, DefineValue.STRING_YES);
                 startActivity(intentListToko);
                 break;
             case MCATEGORYBBS:
@@ -700,11 +686,6 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
         MainPage fca = (MainPage) getActivity();
         fca.switchActivity(mIntent, j);
-    }
-
-    public void setPositionNull() {
-        mAdapter.setDefault();
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -765,7 +746,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 showAlertEnabledGPS();
             } else {
                 if (isCallWebservice) {
-                    progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+                    progDialog = DefinedDialog.CreateProgressDialog(getContext(), "");
 
                     params.put(WebParams.APP_ID, BuildConfig.APP_ID);
                     params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -812,7 +793,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
                                 @Override
                                 public void onComplete() {
-                                    progdialog2.dismiss();
+                                    progDialog.dismiss();
                                 }
                             });
                 }
@@ -844,13 +825,13 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
     @Override
     public void onProgressUpdate(int percentage) {
         Log.d("okhttp", "percentage :" + String.valueOf(percentage));
-        if (progdialog2.isShowing())
-            progdialog2.setProgress(percentage);
+        if (progDialog.isShowing())
+            progDialog.setProgress(percentage);
     }
 
     private void uploadFileToServer(File photoFile) {
 
-        progdialog2 = DefinedDialog.CreateProgressDialog(CoreApp.getAppContext(), "");
+        progDialog = DefinedDialog.CreateProgressDialog(CoreApp.getAppContext(), "");
 
         if (accessKey == null)
             accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
@@ -896,14 +877,11 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                             mEditor.apply();
 
                             setImageProfPic();
-
-                            RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
                         } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
 //                                Timber.d("isi response autologout:" + response.toString());
 //                                String message = response.getString(WebParams.ERROR_MESSAGE);
 
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(), error_message);
+                            AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), error_message);
                         } else {
                             AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                             alert.setTitle("Upload Image");
@@ -913,7 +891,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
                         }
 
-                        progdialog2.dismiss();
+                        progDialog.dismiss();
 
                     }
                 });
@@ -923,7 +901,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getString(R.string.alertbox_gps_warning))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
 
                         Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -931,7 +909,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
 
@@ -974,13 +952,10 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
     private void dialogDormant() {
         Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getActivity().getString(R.string.title_dialog_dormant),
                 getActivity().getString(R.string.message_dialog_dormant),
-                new DefinedDialog.DialogButtonListener() {
-                    @Override
-                    public void onClickButton(View v, boolean isLongClick) {
-                        Intent i = new Intent(getActivity(), TopUpActivity.class);
-                        i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                        switchActivity(i, MainPage.ACTIVITY_RESULT);
-                    }
+                () -> {
+                    Intent i = new Intent(getActivity(), TopUpActivity.class);
+                    i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
                 }
         );
 

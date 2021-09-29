@@ -26,8 +26,7 @@ import java.util.ArrayList;
 public class ClosedTypePickerFragment extends DialogFragment {
 
     public static final String TAG = "ClosedTypePicker";
-    private int position = 0, countChecked = 0;
-    private String closedType = "";
+    private int position = 0;
     Button btnYes, btnNo;
     ArrayList<String> selectedDays;
     ArrayList<String> selectedDate;
@@ -38,6 +37,7 @@ public class ClosedTypePickerFragment extends DialogFragment {
 
     public interface ClosedTypePickerListener {
         public void onOkClosedTypePickerClick(int position, ArrayList<String> selectedDays, ArrayList<String> selectedDate);
+
         public void onCancelClosedTypePickerClick(int position);
     }
 
@@ -52,36 +52,24 @@ public class ClosedTypePickerFragment extends DialogFragment {
         }
     }
 
-    ClosedTypePickerFragment.ClosedTypePickerListener mListener;
-
-    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        //remove the check that verfis if your activity has the DialogListener Attached because you want to attach it into your list view onClick()
-    }
-
     public ClosedTypePickerFragment() {
         super();
     }
 
-    /** The system calls this to get the DialogFragment's layout, regardless
-     of whether it's being displayed as a dialog or an embedded fragment. */
+    /**
+     * The system calls this to get the DialogFragment's layout, regardless
+     * of whether it's being displayed as a dialog or an embedded fragment.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        //tpStartHour     = (TimePicker) getActivity().findViewById(R.id.tpStartHour);
-        //tpEndHour       = (TimePicker) getActivity().findViewById(R.id.tpEndHour);
-
-        //tpStartHour.setIs24HourView(true);
-        //tpEndHour.setIs24HourView(true);
-
         // Inflate the layout to use as dialog or embedded fragment
         return inflater.inflate(R.layout.frag_closed_type_picker, container, false);
     }
 
-    /** The system calls this only when creating the layout in a dialog. */
+    /**
+     * The system calls this only when creating the layout in a dialog.
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // The only reason you might override this method when using onCreateView() is
@@ -89,15 +77,14 @@ public class ClosedTypePickerFragment extends DialogFragment {
         // title by default, but your custom layout might not need it. So here you can
         // remove the dialog title, but you must call the superclass to get the Dialog.
 
-        position        = getArguments().getInt("position");
-        closedType      = getArguments().getString("closedType");
-        setupOpenHour   = new SetupOpenHour();
-        selectedDate    = getArguments().getStringArrayList("selectedDate");
-        selectedDays    = getArguments().getStringArrayList("selectedDays");
+        position = getArguments().getInt("position");
+        String closedType = getArguments().getString("closedType");
+        setupOpenHour = new SetupOpenHour();
+        selectedDate = getArguments().getStringArrayList("selectedDate");
+        selectedDays = getArguments().getStringArrayList("selectedDays");
 
-        Dialog dialog   = super.onCreateDialog(savedInstanceState);
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.setTitle(getString(R.string.closed_shop_per) + " - " + closedType);
-
 
 
         // Use the Builder class for convenient dialog construction
@@ -110,20 +97,19 @@ public class ClosedTypePickerFragment extends DialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        btnYes          = (Button) view.findViewById(R.id.btnYes);
-        btnNo           = (Button) view.findViewById(R.id.btnNo);
-        llPicker        = (LinearLayout) view.findViewById(R.id.llPicker);
+        btnYes = (Button) view.findViewById(R.id.btnYes);
+        btnNo = (Button) view.findViewById(R.id.btnNo);
+        llPicker = (LinearLayout) view.findViewById(R.id.llPicker);
 
-        if ( position == 1 )
-        {
+        if (position == 1) {
             ArrayList<String> dataWeekDays = setupOpenHour.getWeekDays();
-            for(int i =0; i < dataWeekDays.size(); i++) {
+            for (int i = 0; i < dataWeekDays.size(); i++) {
                 CheckBox cb = new CheckBox(getActivity());
                 cb.setText(dataWeekDays.get(i));
                 cb.setId(i);
 
                 if (selectedDays.size() > 0) {
-                    if ( selectedDays.contains(String.valueOf(i)) ) {
+                    if (selectedDays.contains(String.valueOf(i))) {
                         cb.setChecked(true);
                     }
                 }
@@ -133,7 +119,7 @@ public class ClosedTypePickerFragment extends DialogFragment {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         // TODO Auto-generated method stub
-                        if ( isChecked ) {
+                        if (isChecked) {
                             selectedDays.add(String.valueOf(buttonView.getId()));
                         } else {
                             selectedDays.remove(String.valueOf(buttonView.getId()));
@@ -145,8 +131,7 @@ public class ClosedTypePickerFragment extends DialogFragment {
 
                 llPicker.addView(cb);
             }
-        }
-        else if ( position == 2 ) {
+        } else if (position == 2) {
             ArrayList<Integer> dataWeekDates = setupOpenHour.getDays();
             /*for (int i = 0; i < dataWeekDates.size(); i++) {
                 CheckBox cb = new CheckBox(getActivity());
@@ -160,9 +145,10 @@ public class ClosedTypePickerFragment extends DialogFragment {
 
 
             TableLayout tl = new TableLayout(view.getContext());
-            int offset_in_column=0;/*, table_size=*the size of your answer from the server*/;
-            TableRow tr=null;
-            for (int offset_in_table=0; offset_in_table < dataWeekDates.size(); offset_in_table++) {
+            int offset_in_column = 0;/*, table_size=*the size of your answer from the server*/
+            ;
+            TableRow tr = null;
+            for (int offset_in_table = 0; offset_in_table < dataWeekDates.size(); offset_in_table++) {
                 /* maybe you want to do something special with the data from the server here ? */
 
                 if (offset_in_column == 0) {
@@ -182,7 +168,7 @@ public class ClosedTypePickerFragment extends DialogFragment {
                         check.setChecked(true);
                     }*/
 
-                    if ( selectedDate.contains(String.valueOf(offset_in_table)) ) {
+                    if (selectedDate.contains(String.valueOf(offset_in_table))) {
                         check.setChecked(true);
                     }
                 }
@@ -192,7 +178,7 @@ public class ClosedTypePickerFragment extends DialogFragment {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         // TODO Auto-generated method stub
-                        if ( isChecked ) {
+                        if (isChecked) {
 
                             selectedDate.add(String.valueOf(buttonView.getId()));
 
@@ -214,7 +200,7 @@ public class ClosedTypePickerFragment extends DialogFragment {
                 }
             }
 
-            if ( offset_in_column != 0 ) {
+            if (offset_in_column != 0) {
 
 
                 CheckBox check = new CheckBox(getActivity());
@@ -236,13 +222,12 @@ public class ClosedTypePickerFragment extends DialogFragment {
                     public void onClick(View v) {
 
 
-                        if ( selectedDays.size() == 0 && selectedDate.size() == 0 ){
+                        if (selectedDays.size() == 0 && selectedDate.size() == 0) {
                             Toast.makeText(getActivity(), R.string.err_empty_pick, Toast.LENGTH_LONG).show();
                         } else {
                             cpl.onOkClosedTypePickerClick(position, selectedDays, selectedDate);
                             getDialog().dismiss();
                         }
-
 
 
                     }

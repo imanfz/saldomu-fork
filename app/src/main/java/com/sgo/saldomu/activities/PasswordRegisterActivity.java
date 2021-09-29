@@ -28,13 +28,10 @@ public class PasswordRegisterActivity extends BaseActivity {
     private EditText et_pass_retype;
     private CheckBox cb_show_pass;
     private Button btn_next;
-    private SecurePreferences sp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         initializeToolbar();
 
@@ -65,7 +62,7 @@ public class PasswordRegisterActivity extends BaseActivity {
         return true;
     }
 
-    private Button.OnClickListener btnSubmitNewPassListener = new Button.OnClickListener() {
+    private final Button.OnClickListener btnSubmitNewPassListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(PasswordRegisterActivity.this)) {
@@ -81,7 +78,7 @@ public class PasswordRegisterActivity extends BaseActivity {
         }
     };
 
-    private CheckBox.OnCheckedChangeListener showPassword = new CheckBox.OnCheckedChangeListener() {
+    private final CheckBox.OnCheckedChangeListener showPassword = new CheckBox.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             if(!b){

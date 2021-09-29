@@ -22,10 +22,6 @@ import timber.log.Timber;
   Created by Administrator on 3/4/2015.
  */
 public class CollectionActivity extends BaseActivity {
-
-    String _collection_data;
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,19 +121,6 @@ public class CollectionActivity extends BaseActivity {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(title);
     }
-
-    public void togglerBroadcastReceiver(Boolean _on, BroadcastReceiver _myreceiver){
-        Timber.wtf("masuk turnOnBR");
-        if(_on){
-            IntentFilter filter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
-            registerReceiver(_myreceiver,filter);
-            filter.setPriority(999);
-            filter.addCategory("android.intent.category.DEFAULT");
-        }
-        else unregisterReceiver(_myreceiver);
-
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

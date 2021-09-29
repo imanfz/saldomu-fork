@@ -10,7 +10,6 @@ import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.view.*
-import android.webkit.*
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
@@ -175,7 +174,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                     DefineValue.ERROR_0066 -> {
                                         Timber.d("isi response maintenance:$response")
                                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                        alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                        alertDialogMaintenance.showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         Timber.d("isi error generate url bat:$response")
@@ -253,7 +252,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                 AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                             }
                             DefineValue.ERROR_0066 -> {
-                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                             }
                             else -> {
                                 Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
@@ -340,7 +339,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                 AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                             }
                             DefineValue.ERROR_0066 -> {
-                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                             }
                             else -> {
                                 Toast.makeText(activity, message, Toast.LENGTH_LONG).show()

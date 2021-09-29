@@ -3,13 +3,11 @@ package com.sgo.saldomu.activities
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import com.google.gson.JsonObject
-import com.sgo.saldomu.CameraViewActivity
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
@@ -94,7 +92,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                     .getSignature(MyApiClient.LINK_EXEC_UPGRADE_MEMBER, sp.getString(DefineValue.MEMBER_ID_CUST, ""))
             params[WebParams.CUST_ID] = sp.getString(DefineValue.CUST_ID_MEMBER, "")
             params[WebParams.CUST_NAME] = intent.getStringExtra(DefineValue.MEMBER_CUST_NAME)
-            params[WebParams.CUST_ID_TYPE] = "KTP"
+            params[WebParams.CUST_ID_TYPE] = DefineValue.KTP
             params[WebParams.CUST_ID_NUMBER] = intent.getStringExtra(DefineValue.NIK)
             params[WebParams.CUST_BIRTH_PLACE] = intent.getStringExtra(DefineValue.MEMBER_POB)
             params[WebParams.MEMBER_ID] = sp.getString(DefineValue.MEMBER_ID_CUST, "")
@@ -114,8 +112,8 @@ class DetailMemberToVerifyActivity : BaseActivity() {
             params[WebParams.MOTHER_NAME] = intent.getStringExtra(DefineValue.MEMBER_MOTHERS_NAME)
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.COMM_ID] = MyApiClient.COMM_ID
-            params[WebParams.IS_REGISTER] = "Y"
-            params[WebParams.FROM_AGENT] = "Y"
+            params[WebParams.IS_REGISTER] = DefineValue.STRING_YES
+            params[WebParams.FROM_AGENT] = DefineValue.STRING_YES
 
             Timber.d("isi params upgrade member:$params")
 
@@ -140,7 +138,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                             } else if (code == DefineValue.ERROR_0066) run {
                                 Timber.d("isi response maintenance:$response")
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(this@DetailMemberToVerifyActivity, model.error_message)
+                                alertDialogMaintenance.showDialogMaintenance(this@DetailMemberToVerifyActivity)
                             } else {
                                 var msg = model.error_message
 
@@ -167,7 +165,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
     private fun dialogSuccessUploadPhoto() {
         val dialognya = DefinedDialog.MessageDialog(this@DetailMemberToVerifyActivity, this.getString(R.string.upgrade_member),
                 this.getString(R.string.success_upgrade_member_via_agent)
-        ) { _, _ -> finish() }
+        ) {finish()}
 
         dialognya.setCanceledOnTouchOutside(false)
         dialognya.setCancelable(false)
@@ -285,7 +283,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
             } else if (error_code == DefineValue.ERROR_0066) run {
                 Timber.d("isi response maintenance:$`object`")
                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                alertDialogMaintenance.showDialogMaintenance(this@DetailMemberToVerifyActivity, model.error_message)
+                alertDialogMaintenance.showDialogMaintenance(this@DetailMemberToVerifyActivity)
             } else {
                 Toast.makeText(this@DetailMemberToVerifyActivity, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show()
 

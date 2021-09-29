@@ -98,7 +98,7 @@ class FragGridLendingMenu : BaseFragment() {
                                     DefineValue.ERROR_0066 -> {
                                         Timber.d("isi response maintenance:$response")
                                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                        alertDialogMaintenance.showDialogMaintenance(activity, message)
+                                        alertDialogMaintenance.showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         Timber.d("isi error inquiry lending data:$response")

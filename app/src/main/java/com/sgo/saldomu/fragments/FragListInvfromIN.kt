@@ -87,7 +87,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
         btn_proses_gr.setOnClickListener {
             if (inputValidation()) {
-                if (obj!!.paid_status.equals("Y")) {
+                if (obj!!.paid_status.equals(DefineValue.STRING_YES)) {
                     Toast.makeText(activity, getString(R.string.invoice_already_paid), Toast.LENGTH_LONG).show()
                 } else {
                     requestPayment(obj!!)
@@ -125,7 +125,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
     private fun initializeListInv() {
 
-        listInvoiceAdapter = ListInvoiceAdapter(docListArrayList, activity, this)
+        listInvoiceAdapter = ListInvoiceAdapter(docListArrayList, this)
         recyclerViewList.adapter = listInvoiceAdapter
         recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
@@ -267,7 +267,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
                                     DefineValue.ERROR_0066 -> {
                                         Timber.d("isi response maintenance:$response")
                                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                        alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                        alertDialogMaintenance.showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         Timber.d("isi error request payment canvasser:$response")

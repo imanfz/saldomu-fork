@@ -109,7 +109,6 @@ public class InsertPIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
 
         initializeToolbar();
 
-        final Boolean is_md5 = getIntent().getBooleanExtra(DefineValue.IS_MD5, false);
         final int attempt = getIntent().getIntExtra(DefineValue.ATTEMPT, 0);
 
         if (attempt != 0) {
@@ -199,43 +198,6 @@ public class InsertPIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    void showDialogForgotPin() {
-        // Create custom dialog object
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        // Include dialog.xml file
-        dialog.setContentView(R.layout.dialog_notification);
-
-        // set values for custom dialog components - text, image and button
-        Button btnDialogOK = dialog.findViewById(R.id.btn_dialog_notification_ok);
-        ProgressBar progDialog = dialog.findViewById(R.id.progressBarDialogNotif);
-        TextView Title = dialog.findViewById(R.id.title_dialog);
-        TextView Message = dialog.findViewById(R.id.message_dialog);
-        Message.setVisibility(View.VISIBLE);
-
-
-        Title.setText(getResources().getString(R.string.forgotpin));
-//        Message.setVisibility(View.GONE);
-        Message.setText(getString(R.string.pin_blocked));
-//        Message.setText(getString(R.string.forgotpin_message)+" "+
-//                getString(R.string.appname)+" "+
-//                getString(R.string.forgotpin_message2));
-
-        progDialog.setIndeterminate(true);
-        progDialog.setVisibility(View.VISIBLE);
-        getHelpPin(progDialog, Message);
-
-        btnDialogOK.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
     }
 
     public void getHelpPin(final ProgressBar progDialog, final TextView Message) {

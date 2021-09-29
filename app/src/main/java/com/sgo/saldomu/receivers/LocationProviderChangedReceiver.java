@@ -29,53 +29,48 @@ import timber.log.Timber;
  */
 
 public class LocationProviderChangedReceiver extends BroadcastReceiver {
-    private final static String TAG = "LocationProviderChanged";
-    public static final String INTENT_ACTION_LOCATION_DATA = "com.sgo.saldomu.INTENT_ACTION_LOCATION_DATA";
 
     private SecurePreferences sp;
-    String newShopClosed        = "";
-    Context newContext          = null;
+    String newShopClosed = "";
+    Context newContext = null;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        newContext  = context;
+        newContext = context;
 
-        if (intent.getAction().matches("android.location.PROVIDERS_CHANGED") )
-        {
+        if (intent.getAction().matches("android.location.PROVIDERS_CHANGED")) {
 
             Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
-            if ( isLogin() && isAgent ) {
-                Boolean isCallWebService    = false;
-                String currentShopClosed    = sp.getString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
+            if (isLogin() && isAgent) {
+                Boolean isCallWebService = false;
+                String currentShopClosed = sp.getString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
 
-                if(currentShopClosed == null)
+                if (currentShopClosed == null)
                     currentShopClosed = DefineValue.STRING_NO;
 
-                if ( !GlobalSetting.isLocationEnabled(context) ) {
+                if (!GlobalSetting.isLocationEnabled(context)) {
                     Timber.d("Location Service Changed Receiver. Location Service is disabled.");
 
-                    if ( currentShopClosed.equals(DefineValue.STRING_NO) ) {
-                        isCallWebService    = true;
-                        newShopClosed       = DefineValue.SHOP_CLOSE;
+                    if (currentShopClosed.equals(DefineValue.STRING_NO)) {
+                        isCallWebService = true;
+                        newShopClosed = DefineValue.SHOP_CLOSE;
                     }
                 } else {
                     Timber.d("Location Service Changed Receiver. Location Service is enabled.");
 
-                    if ( currentShopClosed.equals(DefineValue.STRING_YES) ) {
-                        isCallWebService    = true;
-                        newShopClosed       = DefineValue.SHOP_OPEN;
+                    if (currentShopClosed.equals(DefineValue.STRING_YES)) {
+                        isCallWebService = true;
+                        newShopClosed = DefineValue.SHOP_OPEN;
                     }
                 }
 
-                if ( isCallWebService ) {
+                if (isCallWebService) {
 
-                    String extraSignature   = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
+                    String extraSignature = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
 
                     HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
                             extraSignature);
-
-                    String shopStatus       = DefineValue.SHOP_OPEN;
 
                     params.put(WebParams.APP_ID, BuildConfig.APP_ID);
                     params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -94,7 +89,7 @@ public class LocationProviderChangedReceiver extends BroadcastReceiver {
                                         String code = response.getString(WebParams.ERROR_CODE);
                                         if (code.equals(WebParams.SUCCESS_CODE)) {
                                             SecurePreferences.Editor mEditor = sp.edit();
-                                            if ( newShopClosed.equals(DefineValue.SHOP_OPEN) ) {
+                                            if (newShopClosed.equals(DefineValue.SHOP_OPEN)) {
                                                 mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
                                             } else {
                                                 mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
@@ -130,9 +125,9 @@ public class LocationProviderChangedReceiver extends BroadcastReceiver {
         }
     }
 
-    private Boolean isLogin(){
+    private Boolean isLogin() {
         String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        if(flagLogin == null)
+        if (flagLogin == null)
             flagLogin = DefineValue.STRING_NO;
 
         return flagLogin.equals(DefineValue.STRING_YES);

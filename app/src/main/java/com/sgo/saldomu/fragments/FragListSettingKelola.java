@@ -16,23 +16,12 @@ import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.DefineValue;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FragListSettingKelola.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link FragListSettingKelola#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FragListSettingKelola extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private View v;
     String[] _data;
 
@@ -42,32 +31,9 @@ public class FragListSettingKelola extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragListSettingKelola.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FragListSettingKelola newInstance(String param1, String param2) {
-        FragListSettingKelola fragment = new FragListSettingKelola();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
         _data = getResources().getStringArray(R.array.list_bbs_member);
     }
 
@@ -77,13 +43,6 @@ public class FragListSettingKelola extends Fragment {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.frag_list_setting_kelola, container, false);
         return v;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override

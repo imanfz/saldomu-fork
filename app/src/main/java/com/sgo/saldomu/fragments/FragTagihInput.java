@@ -59,16 +59,14 @@ public class FragTagihInput extends BaseFragment {
     SecurePreferences sp;
     EditText et_memberCode;
     Button btn_submit, btn_regShop;
-    Boolean is_search = false, isAgentLKD = false;
+    Boolean isAgentLKD = false;
     View v;
     TextView tv_saldo_collector;
     private ArrayAdapter<String> mitraAdapter;
     private ArrayList<String> mitraNameArrayList = new ArrayList<>();
-    private ArrayList<TagihModel> mitraNameData = new ArrayList<>();
     private ArrayAdapter<String> communityAdapter;
     private ArrayList<String> communityNameArrayList = new ArrayList<>();
-    String commCodeTagih, balanceCollector, commNamePG, commCodePG, anchorNamePG, memberCode, txIdPG, anchorId;
-    ProgressDialog progdialog;
+    String commCodeTagih, balanceCollector, commNamePG, anchorNamePG, memberCode, txIdPG, anchorId;
     private ArrayList<TagihModel> anchorDataList = new ArrayList<>();
     private ArrayList<TagihCommunityModel> communityDataList = new ArrayList<>();
     private Switch favoriteSwitch;
@@ -88,9 +86,7 @@ public class FragTagihInput extends BaseFragment {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            is_search = bundle.getBoolean(DefineValue.IS_SEARCH_DGI, false);
             if (bundle.containsKey(DefineValue.ANCHOR_NAME_PG)) {
-                commCodePG = bundle.getString(DefineValue.COMM_CODE_PG, "");
                 commNamePG = bundle.getString(DefineValue.COMM_NAME_PG, "");
                 anchorNamePG = bundle.getString(DefineValue.ANCHOR_NAME_PG, "");
                 memberCode = bundle.getString(DefineValue.MEMBER_CODE_PG, "");
@@ -148,7 +144,7 @@ public class FragTagihInput extends BaseFragment {
                                         TagihCommunityModel tagihCommunityModel = new TagihCommunityModel();
                                         tagihCommunityModel.setId(jsonObjectCommunities.getString("comm_id"));
                                         tagihCommunityModel.setComm_code(jsonObjectCommunities.getString("comm_code"));
-                                        tagihCommunityModel.setComm_name(jsonObjectCommunities.getString("comm_name"));
+                                        tagihCommunityModel.setComm_name(jsonObjectCommunities.getString(WebParams.COMM_NAME));
                                         comList.add(tagihCommunityModel);
                                     }
 
@@ -362,7 +358,7 @@ public class FragTagihInput extends BaseFragment {
                 params.put(WebParams.MEMBER_ID, memberIDLogin);
                 params.put(WebParams.USER_ID, userPhoneID);
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-                params.put(WebParams.IS_AUTO, "Y");
+                params.put(WebParams.IS_AUTO, DefineValue.STRING_YES);
 
                 if (!memberIDLogin.isEmpty()) {
 
@@ -388,7 +384,7 @@ public class FragTagihInput extends BaseFragment {
                                         } else if (code.equals(DefineValue.ERROR_0066)) {
                                             Timber.d("isi response maintenance:" + response.toString());
                                             AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                            alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                            alertDialogMaintenance.showDialogMaintenance(getActivity());
                                         } else {
                                             code = response.getString(WebParams.ERROR_MESSAGE);
                                             Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -474,7 +470,7 @@ public class FragTagihInput extends BaseFragment {
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + response.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                             }
@@ -551,7 +547,7 @@ public class FragTagihInput extends BaseFragment {
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + response.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                             }

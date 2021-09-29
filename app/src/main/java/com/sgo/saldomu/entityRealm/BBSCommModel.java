@@ -13,8 +13,6 @@ public class BBSCommModel extends RealmObject {
     public final static String COMM_ID = "comm_id";
     @Ignore
     public final static String SCHEME_CODE = "scheme_code";
-    @Ignore
-    public final static String LAST_UPDATE = "last_update";
 
     @PrimaryKey
     private String comm_id;

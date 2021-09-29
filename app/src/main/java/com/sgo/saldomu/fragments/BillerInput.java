@@ -92,71 +92,38 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
     private View v;
     private View layout_denom;
     private View layout_month;
-    private TextView tv_denom;
     private TextView tv_payment_remark;
     private TextView tv_month;
-    private TextView tv_ovo;
-    private TextView tv_notes;
     private EditText et_payment_remark;
     private EditText et_layout_input_samsat_payment_remark;
     private Spinner spin_denom;
     private Spinner spin_month;
     private Button btn_submit, btn_cekSaldo;
     private ImageView spinWheelDenom;
-    private ImageView spinWheelMonth;
     private RelativeLayout lyt_cekSaldo, layout_input_samsat;
-    private ProgressDialog progdialog;
     private Animation frameAnimation;
     private RadioGroup radioGroup;
     private String biller_type_code;
     private String biller_comm_id;
     private String biller_comm_name;
     private String denom_item_id;
-    private String biller_info;
-    String biller_api_key;
     private String biller_item_id;
     private String biller_comm_code;
     private String final_payment_remark;
-    private String buy_type;
     private int buy_code;
     private ArrayList<String> _denomData = new ArrayList<>();
     private ArrayList<String> _monthData;
-    private Biller_Data_Model mBillerData;
     private BillerItem billerItem;
     private List<DenomDataItem> mListDenomData = new ArrayList<>();
-    private RealmChangeListener realmListener;
-    private Boolean isToken;
-    Boolean isHaveItemID;
-    //    private Spinner sp_privacy;
-    private int privacy;
     private String digitsListener = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private Realm realm;
     private ArrayAdapter<String> adapterDenom;
     private ArrayAdapter<String> adapterMonth;
-    private String selectedMonth;
     private LinearLayout layout_warn_pln;
-    SecurePreferences sp;
-    private ArrayList<String> _data;
-    private List<Biller_Data_Model> mListBillerData;
 
     private NfcAdapter nfcAdapter;
-    private String cardSelect = "";
-    private String cardAttribute = "";
     private String cardInfo = "";
-    private String cardUid = "";
     private String cardBalance = "";
-    private String saldo = "";
-    private String numberCard = "";
-
-    private String appletType = "";
-    private String updateCardKey = "";
-    private String session = "";
-    private String pendingAmount = "";
-    private String institutionReff = "";
-    private String sourceOfAccount = "";
-    private String merchantData = "";
-    private String optionNFC = "";
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -168,7 +135,6 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         nfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
 
         Bundle args = getArguments();
@@ -178,11 +144,8 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         biller_item_id = args.getString(DefineValue.BILLER_ITEM_ID, "");
         biller_comm_code = args.getString(DefineValue.BILLER_COMM_CODE, "");
 
-        isToken = false;
-
         radioGroup = v.findViewById(R.id.billerinput_radio);
         spin_denom = v.findViewById(R.id.spinner_billerinput_denom);
-        tv_denom = v.findViewById(R.id.billerinput_text_denom);
         tv_payment_remark = v.findViewById(R.id.billerinput_text_payment_remark);
         et_payment_remark = v.findViewById(R.id.payment_remark_billerinput_value);
         et_layout_input_samsat_payment_remark = v.findViewById(R.id.layout_input_samsat_payment_remark_billerinput_value);
@@ -191,14 +154,10 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         btn_cekSaldo = v.findViewById(R.id.btn_cekSaldo);
         lyt_cekSaldo = v.findViewById(R.id.lyt_cekSaldo);
         layout_denom = v.findViewById(R.id.billerinput_layout_denom);
-//        sp_privacy = v.findViewById(R.id.privacy_spinner);
         spin_month = v.findViewById(R.id.spinner_billerinput_month);
         tv_month = v.findViewById(R.id.billerinput_text_month);
-        tv_ovo = v.findViewById(R.id.tv_ovo);
-        spinWheelMonth = v.findViewById(R.id.spinning_wheel_billerinput_month);
         layout_month = v.findViewById(R.id.billerinput_layout_month);
         layout_warn_pln = v.findViewById(R.id.layout_warn_pln);
-        tv_notes = v.findViewById(R.id.biller_notes);
         layout_input_samsat = v.findViewById(R.id.layout_input_samsat);
         et_payment_remark.setText(args.getString(DefineValue.CUST_ID, ""));
         if (args.containsKey(DefineValue.BILLER_ID_NUMBER)) {
@@ -213,15 +172,12 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
 
-//        realm = Realm.getInstance(RealmManager.BillerConfiguration);
         realm = Realm.getInstance(RealmManager.realmConfiguration);
         initializeLayout();
         initializeRealm();
     }
 
     private void initializeLayout() {
-        String[] _buy_type = getResources().getStringArray(R.array.buy_vpi_title);
-
         if (biller_type_code.equals(billerType[17])) {
             _monthData = new ArrayList<>();
             for (int i = 0; i < 12; i++) {
@@ -230,7 +186,6 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
             adapterMonth = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, _monthData);
             adapterMonth.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spin_month.setAdapter(adapterMonth);
-            spin_month.setOnItemSelectedListener(spinnerMonthListener);
             spin_month.setVisibility(View.GONE);
             tv_month.setVisibility(View.GONE);
             tv_payment_remark.setText(getString(R.string.no_bpjs));
@@ -239,30 +194,25 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         }
 
         if (biller_type_code.equals(billerType[0]) || biller_type_code.equals(billerType[21])) {
-            buy_type = _buy_type[0];
             buy_code = BillerActivity.PURCHASE_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
             et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else if (biller_type_code.equals(billerType[1]) || biller_type_code.equals(billerType[5])) {
-            buy_type = _buy_type[0];
             buy_code = BillerActivity.PURCHASE_TYPE;
             radioGroup.setVisibility(View.VISIBLE);
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Listrik));
             layout_warn_pln.setVisibility(View.VISIBLE);
             et_payment_remark.setKeyListener(DigitsKeyListener.getInstance(digitsListener));
         } else if (biller_type_code.equals(billerType[2])) {
-            buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_CC));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else if (biller_type_code.equals(billerType[6])) {
-            buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_PAM));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
         } else if (biller_type_code.equals(billerType[7]) || biller_type_code.equals(billerType[19])) {
-            buy_type = _buy_type[1];
             buy_code = BillerActivity.PURCHASE_TYPE;
             if (biller_comm_code.equals("EMONEYSALDOMU")) {
                 tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Emoney));
@@ -277,41 +227,34 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
             }
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else if (biller_type_code.equals(billerType[8])) {
-            buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_PST));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
             et_payment_remark.setKeyListener(DigitsKeyListener.getInstance(digitsListener));
         } else if (biller_type_code.equals(billerType[11])) {
-            buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_asuransi));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else if (biller_type_code.equals(billerType[16])) {
-            buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_RMH));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
             et_payment_remark.setKeyListener(DigitsKeyListener.getInstance(digitsListener));
         } else if (biller_type_code.equals(billerType[18])) {
-            buy_type = _buy_type[0];
             buy_code = BillerActivity.PURCHASE_TYPE;
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
         } else if (biller_type_code.equals(billerType[20])) {
-            buy_type = _buy_type[0];
             buy_code = BillerActivity.PURCHASE_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
             et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else if (biller_type_code.equals(billerType[22])) {
-            buy_type = _buy_type[0];
             buy_code = BillerActivity.PAYMENT_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_PST));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
             layout_input_samsat.setVisibility(View.VISIBLE);
             et_layout_input_samsat_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else {
-            buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
             et_payment_remark.setKeyListener(DigitsKeyListener.getInstance(digitsListener));
@@ -369,41 +312,13 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.privacy_list, android.R.layout.simple_spinner_item);
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        sp_privacy.setAdapter(spinAdapter);
-//        sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
 
     }
-
-
-    private Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            privacy = i + 1;
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-
-        }
-    };
 
     private Spinner.OnItemSelectedListener spinnerDenomListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             denom_item_id = mListDenomData.get(i).getItemId();
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-
-        }
-    };
-
-
-    private Spinner.OnItemSelectedListener spinnerMonthListener = new Spinner.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
-            selectedMonth = Integer.toString(pos + 1);
         }
 
         @Override
@@ -450,7 +365,6 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
                     layout_denom.setVisibility(View.GONE);
                     biller_type_code = "PLN";
                     buy_code = BillerActivity.PAYMENT_TYPE;
-                    denom_item_id = mBillerData.getItem_id();
                     tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark));
                     break;
             }
@@ -469,14 +383,12 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         else
             mArgs.putString(DefineValue.ITEM_ID, denom_item_id);
         mArgs.putInt(DefineValue.BUY_TYPE, buy_code);
-        mArgs.putString(DefineValue.SHARE_TYPE, String.valueOf(privacy));
+        mArgs.putString(DefineValue.SHARE_TYPE, "");
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);
         mArgs.putString(DefineValue.COMMUNITY_ID, biller_comm_id);
         mArgs.putString(DefineValue.COMMUNITY_NAME, biller_comm_name);
         if (biller_type_code.equalsIgnoreCase(billerType[22]) && et_layout_input_samsat_payment_remark.getText().toString().length() == 16)
             mArgs.putString(DefineValue.IDENTITY_REMARK, et_layout_input_samsat_payment_remark.getText().toString());
-//        if(biller_type_code.equalsIgnoreCase(billerType[17]))
-//            mArgs.putString(DefineValue.VALUE_ITEM_DATA, "1");
 
         Fragment mFrag = new BillerDesciption2();
         mFrag.setArguments(mArgs);
@@ -575,57 +487,31 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
 
             byte[] selectEmoneyResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
                     "00A40400080000000000000001"));
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d("SELECT_RESPONSE : ", Converter.Companion.toHex(selectEmoneyResponse));
-                    cardSelect = Converter.Companion.toHex(selectEmoneyResponse);
-                }
-            });
+            getActivity().runOnUiThread(() -> Log.d("SELECT_RESPONSE : ", Converter.Companion.toHex(selectEmoneyResponse)));
 
             byte[] cardAttirbuteResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
                     "00F210000B"));
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d("CARD_ATTRIBUTE : ", Converter.Companion.toHex(cardAttirbuteResponse));
-                    cardAttribute = Converter.Companion.toHex(cardAttirbuteResponse);
-                }
-            });
+            getActivity().runOnUiThread(() -> Log.d("CARD_ATTRIBUTE : ", Converter.Companion.toHex(cardAttirbuteResponse)));
 
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d("UUID : ", Converter.Companion.toHex(tag.getId()));
-                    cardUid = Converter.Companion.toHex(tag.getId());
-                }
-            });
+            getActivity().runOnUiThread(() -> Log.d("UUID : ", Converter.Companion.toHex(tag.getId())));
 
             byte[] cardInfoResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
                     "00B300003F"));
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d("CARD_INFO : ", Converter.Companion.toHex(cardInfoResponse));
-                    cardInfo = Converter.Companion.toHex(cardInfoResponse);
-                    et_payment_remark.setText(cardInfo.substring(0, 16));
-                    numberCard = cardInfo.substring(0, 16);
-                }
+            getActivity().runOnUiThread(() -> {
+                Log.d("CARD_INFO : ", Converter.Companion.toHex(cardInfoResponse));
+                cardInfo = Converter.Companion.toHex(cardInfoResponse);
+                et_payment_remark.setText(cardInfo.substring(0, 16));
             });
 
 
             byte[] lastBalanceResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
                     "00B500000A"));
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+            getActivity().runOnUiThread(() -> {
 
-                    Log.d("LAST_BALANCE : ", Converter.Companion.toHex(lastBalanceResponse));
-                    cardBalance = Converter.Companion.toHex(lastBalanceResponse);
+                Log.d("LAST_BALANCE : ", Converter.Companion.toHex(lastBalanceResponse));
+                cardBalance = Converter.Companion.toHex(lastBalanceResponse);
 //                    cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
-                    Log.d("SALDO : ", String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8))));
-                    saldo = String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
-                }
+                Log.d("SALDO : ", String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8))));
             });
         } catch (IOException e) {
             e.printStackTrace();

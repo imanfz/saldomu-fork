@@ -81,8 +81,8 @@ public class UtilsLoader {
                 params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
                 params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, ""));
-                if (sp.getString(DefineValue.IS_MANUAL, "N").equalsIgnoreCase("Y")) {
-                    params.put(WebParams.IS_MANUAL, "Y");
+                if (sp.getString(DefineValue.IS_MANUAL, DefineValue.STRING_NO).equalsIgnoreCase(DefineValue.STRING_YES)) {
+                    params.put(WebParams.IS_MANUAL, DefineValue.STRING_YES);
                 }
                 String isAuto = (is_auto) ? DefineValue.STRING_YES : DefineValue.STRING_NO;
                 params.put(WebParams.IS_AUTO, isAuto);
@@ -139,7 +139,7 @@ public class UtilsLoader {
                                     } else if (code.equals(DefineValue.ERROR_0066)) {
                                         Timber.d("isi response maintenance:" + object.toString());
                                         AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                        alertDialogMaintenance.showDialogMaintenance(getmActivity(), model.getError_message());
+                                        alertDialogMaintenance.showDialogMaintenance(getmActivity());
                                     } else {
                                         code = model.getError_message();
                                         Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();
@@ -213,7 +213,7 @@ public class UtilsLoader {
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getmActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getmActivity());
                             } else {
                                 code = model.getError_message();
                                 Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();

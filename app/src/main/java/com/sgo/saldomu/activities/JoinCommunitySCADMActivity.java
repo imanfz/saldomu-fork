@@ -21,9 +21,8 @@ import timber.log.Timber;
  */
 
 public class JoinCommunitySCADMActivity extends BaseActivity{
-    private SecurePreferences sp;
+
     FragmentManager fragmentManager;
-    Fragment mContent;
     Fragment newFragment = null;
 
     @Override
@@ -45,8 +44,6 @@ public class JoinCommunitySCADMActivity extends BaseActivity{
 
             newFragment = new FragListCommunitySCADM();
         }
-
-        mContent = newFragment;
 
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

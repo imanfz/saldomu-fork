@@ -44,18 +44,16 @@ public class EasyAdapter extends ArrayAdapter<String> {
         View row = convertView;
         ListHolder holder;
 
-        if(row == null)
-        {
-        LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-        row = inflater.inflate(layoutResourceId, parent, false);
+        if (row == null) {
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            row = inflater.inflate(layoutResourceId, parent, false);
 
-        holder = new ListHolder();
-        holder.txtTitle = (TextView)row.findViewById(R.id.txtTitleList);
+            holder = new ListHolder();
+            holder.txtTitle = (TextView) row.findViewById(R.id.txtTitleList);
 
-        row.setTag(holder);
-        }
-        else {
-        holder = (ListHolder)row.getTag();
+            row.setTag(holder);
+        } else {
+            holder = (ListHolder) row.getTag();
         }
 
         holder.txtTitle.setText(adata.get(position));
@@ -63,8 +61,7 @@ public class EasyAdapter extends ArrayAdapter<String> {
         return row;
     }
 
-    class ListHolder
-    {
-      TextView txtTitle,iconArrow;
+    static class ListHolder {
+        TextView txtTitle;
     }
 }

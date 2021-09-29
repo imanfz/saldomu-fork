@@ -124,7 +124,7 @@ class FragConInvoice : BaseFragment() {
                                     DefineValue.ERROR_0066 -> {
                                         Timber.d("isi response maintenance:$response")
                                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                        alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                        alertDialogMaintenance.showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         Timber.d("isi error inquiry doc detail:$response")

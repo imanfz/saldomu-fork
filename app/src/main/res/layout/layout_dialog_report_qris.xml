@@ -118,7 +118,8 @@
         android:layout_margin="8dp"
         android:background="@color/grey_300" />
 
-    <TableRow>
+    <TableRow
+        android:id="@+id/tr_dialog_report_trx_id_ref">
 
         <TextView
             android:layout_gravity="center_vertical"
@@ -135,6 +136,7 @@
     </TableRow>
 
     <View
+        android:id="@+id/line_dialog_report_trx_id_ref"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_margin="8dp"

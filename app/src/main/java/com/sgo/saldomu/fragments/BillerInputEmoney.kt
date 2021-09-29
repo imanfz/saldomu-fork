@@ -347,7 +347,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                                 fee = model.admin_fee.toDouble()
                                 amount = model.amount.toDouble() - fee
                                 description = getGson().toJson(model.description)
-                                enabledAdditionalFee = model.enabled_additional_fee == DefineValue.Y
+                                enabledAdditionalFee = model.enabled_additional_fee == DefineValue.STRING_YES
 
                                 if (isAgent!! && enabledAdditionalFee!!) {
                                     billerinput_layout_add_fee.visibility = View.VISIBLE
@@ -362,17 +362,14 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                                 buttonSubmit(true)
                             }
                             WebParams.LOGOUT_CODE -> {
-                                val test = AlertDialogLogout.getInstance()
-                                test.showDialoginActivity(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val appModel = model.app_data
-                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                             }
                             DefineValue.ERROR_0066 -> {
-                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, message)
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                             }
                             else -> {
                                 if (isVisible) {
@@ -450,17 +447,14 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                                 }
                             }
                             WebParams.LOGOUT_CODE -> {
-                                val test = AlertDialogLogout.getInstance()
-                                test.showDialoginActivity(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val appModel = sentPaymentBillerModel.app_data
-                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                             }
                             DefineValue.ERROR_0066 -> {
-                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, message)
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                             }
                             else -> {
                                 Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG).show()
@@ -533,17 +527,14 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                                 }
                             }
                             WebParams.LOGOUT_CODE -> {
-                                val test = AlertDialogLogout.getInstance()
-                                test.showDialoginActivity(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val appModel = model.app_data
-                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                             }
                             DefineValue.ERROR_0066 -> {
-                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, message)
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                             }
                             ErrorDefinition.WRONG_PIN_BILLER -> {
                                 showDialogError(message)
@@ -613,7 +604,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
     }
 
     private fun showDialogError(code: String?) {
-        val dialog = DefinedDialog.MessageDialog(activity, getString(R.string.error), code) { v, isLongClick -> fragmentManager?.popBackStack() }
+        val dialog = DefinedDialog.MessageDialog(activity, getString(R.string.error), code) { fragmentManager?.popBackStack() }
         dialog.show()
     }
 
@@ -717,7 +708,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                                 }
                                 DefineValue.ERROR_0066 -> {
                                     val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                    alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                    alertDialogMaintenance.showDialogMaintenance(activity)
                                 }
                                 else -> {
                                     Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG).show()
@@ -772,8 +763,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                                     setResultActivity()
                                 }
                                 WebParams.LOGOUT_CODE -> {
-                                    val test = AlertDialogLogout.getInstance()
-                                    test.showDialoginActivity(activity, message)
+                                    AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                                 }
                                 else -> {
                                     Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG).show()
@@ -840,15 +830,12 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                             if (code == WebParams.SUCCESS_CODE || code == "0003") {
                                 showReportBillerDialog(model)
                             } else if (code == WebParams.LOGOUT_CODE) {
-                                val test = AlertDialogLogout.getInstance()
-                                test.showDialoginActivity(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                             } else if (code == DefineValue.ERROR_9333) {
                                 val appModel = model.app_data
-                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                             } else if (code == DefineValue.ERROR_0066) {
-                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                             } else {
                                 showDialog(message)
                             }

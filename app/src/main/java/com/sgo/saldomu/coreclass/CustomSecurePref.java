@@ -18,7 +18,6 @@ public class CustomSecurePref {
 
     private static CustomSecurePref singleton = null;
     private SecurePreferences mSecurePrefs;
-    private Context mContext;
 
     public static CustomSecurePref getInstance( ) {
         return singleton;
@@ -28,7 +27,6 @@ public class CustomSecurePref {
         if(singleton == null) {
             singleton = new CustomSecurePref(_context);
         }
-        singleton.setmContext(_context);
         return singleton;
     }
 
@@ -89,10 +87,6 @@ public class CustomSecurePref {
         else
             Timber.d("gak ada clearAllData");
 
-    }
-
-    private void setmContext(Context mContext) {
-        this.mContext = mContext;
     }
 
     public static SecurePreferences getSecurePrefsInstance() {

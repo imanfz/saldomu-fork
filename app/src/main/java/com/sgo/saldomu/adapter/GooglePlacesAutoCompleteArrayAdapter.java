@@ -22,51 +22,36 @@ import java.util.ArrayList;
 /**
  * Created by Lenovo Thinkpad on 12/1/2016.
  */
-public class GooglePlacesAutoCompleteArrayAdapter extends ArrayAdapter implements Filterable
-{
-    private static final String LOG_TAG = "Google Places Autocomplete";
+public class GooglePlacesAutoCompleteArrayAdapter extends ArrayAdapter implements Filterable {
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
 
-    //private static final String API_KEY = "AIzaSyBCcnPLK3bDto8y5rFGpEXzOi47R8ODLvw";
-
-    //private static final String API_KEY = "AIzaSyDAKr-gNQI2cF5OlA6HnjjPXBB4CQ7zIRM";
-
     private String apiKey;
     private ArrayList<String> resultList;
-    private Context context;
 
-    public GooglePlacesAutoCompleteArrayAdapter(Context context, int textViewResourceId)
-    {
+    public GooglePlacesAutoCompleteArrayAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
-        this.context  = context;
-        apiKey          = context.getString(R.string.google_maps_key_ws);
+        apiKey = context.getString(R.string.google_maps_key_ws);
     }
 
     @Override
-    public int getCount()
-    {
+    public int getCount() {
         return resultList.size();
     }
 
     @Override
-    public String getItem(int index)
-    {
+    public String getItem(int index) {
         return resultList.get(index);
     }
 
     @Override
-    public Filter getFilter()
-    {
-        Filter filter = new Filter()
-        {
+    public Filter getFilter() {
+        Filter filter = new Filter() {
             @Override
-            protected FilterResults performFiltering(CharSequence constraint)
-            {
+            protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
-                if (constraint != null)
-                {
+                if (constraint != null) {
                     // Retrieve the autocomplete results.
                     resultList = autocomplete(constraint.toString());
 
@@ -79,14 +64,10 @@ public class GooglePlacesAutoCompleteArrayAdapter extends ArrayAdapter implement
             }
 
             @Override
-            protected void publishResults(CharSequence constraint, FilterResults results)
-            {
-                if (results != null && results.count > 0)
-                {
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                if (results != null && results.count > 0) {
                     notifyDataSetChanged();
-                }
-                else
-                {
+                } else {
                     notifyDataSetInvalidated();
                 }
             }
@@ -95,14 +76,12 @@ public class GooglePlacesAutoCompleteArrayAdapter extends ArrayAdapter implement
         return filter;
     }
 
-    private ArrayList<String> autocomplete(String input)
-    {
+    private ArrayList<String> autocomplete(String input) {
         ArrayList<String> resultList = null;
 
         HttpURLConnection conn = null;
         StringBuilder jsonResults = new StringBuilder();
-        try
-        {
+        try {
             StringBuilder sb = new StringBuilder(PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON);
             sb.append("?key=" + apiKey);
             sb.append("&components=country:id"); //indonesia
@@ -118,31 +97,22 @@ public class GooglePlacesAutoCompleteArrayAdapter extends ArrayAdapter implement
             // Load the results into a StringBuilder
             int read;
             char[] buff = new char[1024];
-            while ((read = in.read(buff)) != -1)
-            {
+            while ((read = in.read(buff)) != -1) {
                 jsonResults.append(buff, 0, read);
             }
-        }
-        catch(MalformedURLException e)
-        {
+        } catch (MalformedURLException e) {
             //Log.e(LOG_TAG, "Error processing Places API URL", e);
             return resultList;
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             //Log.e(LOG_TAG, "Error connecting to Places API", e);
             return resultList;
-        }
-        finally
-        {
-            if(conn != null)
-            {
+        } finally {
+            if (conn != null) {
                 conn.disconnect();
             }
         }
 
-        try
-        {
+        try {
             //Toast.makeText(context, "result : "+jsonResults.toString(), Toast.LENGTH_SHORT).show();
 
             // Create a JSON object hierarchy from the results
@@ -158,13 +128,10 @@ public class GooglePlacesAutoCompleteArrayAdapter extends ArrayAdapter implement
 
             // Extract the Place descriptions from the results
             resultList = new ArrayList<String>(predsJsonArray.length());
-            for(int i = 0; i < predsJsonArray.length(); i++)
-            {
+            for (int i = 0; i < predsJsonArray.length(); i++) {
                 resultList.add(predsJsonArray.getJSONObject(i).getString("description"));
             }
-        }
-        catch (JSONException e)
-        {
+        } catch (JSONException e) {
             //Log.e(LOG_TAG, "Cannot process JSON results", e);
         }
 

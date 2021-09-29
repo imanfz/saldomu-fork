@@ -557,7 +557,7 @@ class BBSCashOut : BaseFragment() {
                             })
                             if (isSimExist) smsDialog!!.show(fragmentManager!!, "")
                         } else if (source_product_h2h.equals(
-                                "Y",
+                                DefineValue.STRING_YES,
                                 ignoreCase = true
                             ) && source_product_type.equals(DefineValue.EMO, ignoreCase = true)
                         ) {
@@ -598,7 +598,7 @@ class BBSCashOut : BaseFragment() {
                     } else if (code == DefineValue.ERROR_0066) {
                         Timber.d("isi response maintenance:%s", response.toString())
                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                        alertDialogMaintenance.showDialogMaintenance(activity, message)
+                        alertDialogMaintenance.showDialogMaintenance(activity)
                     } else {
                         Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
                     }
@@ -618,7 +618,7 @@ class BBSCashOut : BaseFragment() {
         dialog = DefinedDialog.MessageDialog(
             activity, this.getString(R.string.error),
             getString(R.string.agent_lp_dialog_message)
-        ) { _, _ -> activity!!.finish() }
+        ) { activity!!.finish() }
         dialog!!.setCanceledOnTouchOutside(false)
         dialog!!.setCancelable(false)
         dialog!!.show()
@@ -628,7 +628,7 @@ class BBSCashOut : BaseFragment() {
         dialog = DefinedDialog.MessageDialog(
             activity, this.getString(R.string.limit_dialog_title),
             message
-        ) { _, _ -> dialog!!.dismiss() }
+        ) { dialog!!.dismiss() }
         dialog!!.setCanceledOnTouchOutside(false)
         dialog!!.setCancelable(false)
         dialog!!.show()
@@ -696,8 +696,7 @@ class BBSCashOut : BaseFragment() {
                                         val alertDialogMaintenance =
                                             AlertDialogMaintenance.getInstance()
                                         alertDialogMaintenance.showDialogMaintenance(
-                                            activity,
-                                            message
+                                            activity
                                         )
                                     }
                                     else -> {
@@ -925,7 +924,7 @@ class BBSCashOut : BaseFragment() {
         cashOutHistory()
         val mFrag: Fragment = BBSCashOutConfirm()
         mFrag.arguments = mArgs
-        fragmentManager!!.beginTransaction().addToBackStack(BBSTransaksiInformasi.TAG)
+        fragmentManager!!.beginTransaction().addToBackStack("")
             .replace(R.id.bbs_content, mFrag, BBSCashOutConfirm.TAG).commit()
         ToggleKeyboard.hide_keyboard(activity)
     }

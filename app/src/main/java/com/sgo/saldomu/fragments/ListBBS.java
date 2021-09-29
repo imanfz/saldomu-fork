@@ -61,7 +61,6 @@ import timber.log.Timber;
 public class ListBBS extends Fragment {
 
     private View v;
-    private boolean isJoin = false;
     String[] _data;
     Boolean isAgent;
     SecurePreferences sp;
@@ -107,11 +106,6 @@ public class ListBBS extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        EasyAdapter adapter = new EasyAdapter(getActivity(), R.layout.list_view_item_with_arrow, _data);
-
-        //ListView listView1 = (ListView) v.findViewById(android.R.id.list);
-        //listView1.setAdapter(adapter);
 
         llAgentDetail = v.findViewById(R.id.llAgentDetail);
         swSettingOnline = v.findViewById(R.id.swSettingOnline);
@@ -260,30 +254,25 @@ public class ListBBS extends Fragment {
     }
 
     private ArrayList<String> SetupMenuItems() {
-        ArrayList<String> menuItems = new ArrayList<>() ;
+        ArrayList<String> menuItems = new ArrayList<>();
 
-        if ( isAgent ) {
-            String[] _data = getResources().getStringArray(R.array.list_bbs_agent);
-        } else {
-            String[] _data = getResources().getStringArray(R.array.list_bbs_member);
-        }
-        Collections.addAll(menuItems,_data);
+        Collections.addAll(menuItems, _data);
 
         checkSchemeCode(menuItems);
 
         return menuItems;
     }
 
-    void checkSchemeCode(ArrayList<String> menuItems){
+    void checkSchemeCode(ArrayList<String> menuItems) {
         String string = sp.getString(DefineValue.AGENT_SCHEME_CODES, "");
         try {
             JSONArray arr = new JSONArray(string);
 
-            for (int i=0; i<arr.length(); i++){
+            for (int i = 0; i < arr.length(); i++) {
                 JSONObject obj = arr.getJSONObject(i);
                 String objs = obj.optString(WebParams.SCHEME_CODE, "");
 
-                switch (objs){
+                switch (objs) {
                     case "ATC":
                         menuItems.add(0, getResources().getString(R.string.cash_out));
                         break;
@@ -302,7 +291,6 @@ public class ListBBS extends Fragment {
 
     private int[] SetupMenuIcons() {
         int totalIdx = 0;
-        int overallIdx = 0;
 
         TypedArray taAgent = getResources().obtainTypedArray(R.array.list_icon_bbs_agent);
         TypedArray taMember = getResources().obtainTypedArray(R.array.list_icon_bbs_member);
@@ -391,7 +379,7 @@ public class ListBBS extends Fragment {
                 }
             }
 
-            String extraSignature   = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
+            String extraSignature = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
                     extraSignature);
 
@@ -463,22 +451,18 @@ public class ListBBS extends Fragment {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getString(R.string.alertbox_gps_warning))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                .setPositiveButton(R.string.yes, (dialog, id) -> {
 
-                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivityForResult(ilocation, RC_GPS_REQUEST);
+                    Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivityForResult(ilocation, RC_GPS_REQUEST);
 
-                    }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
+                .setNegativeButton(R.string.no, (dialog, id) -> {
+                    dialog.cancel();
 
-                        swSettingOnline.setOnClickListener(null);
-                        swSettingOnline.setChecked(false);
-                        swSettingOnline.setOnCheckedChangeListener(switchListener);
-                    }
+                    swSettingOnline.setOnClickListener(null);
+                    swSettingOnline.setChecked(false);
+                    swSettingOnline.setOnCheckedChangeListener(switchListener);
                 });
         final AlertDialog alert = builder.create();
         alert.show();
@@ -494,7 +478,7 @@ public class ListBBS extends Fragment {
                     progDialog.dismiss();
                 if (!intent.getBooleanExtra(DefineValue.IS_SUCCESS, false)) {
                     if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) {
-                        Toast.makeText(getContext(),getString(R.string.error_message),Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), getString(R.string.error_message), Toast.LENGTH_LONG).show();
                         switchMenu(NavigationDrawMenu.MHOME);
                     }
                 }

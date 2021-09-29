@@ -99,9 +99,8 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
-    private String categoryId, categoryName, bbsSchemeCode, defaultProductCode;
-    private Intent intentData;
-    ProgressDialog progdialog, progDialog;
+    private String categoryId, categoryName, bbsSchemeCode;
+    ProgressDialog progDialog;
     private Boolean showHideLayoutNote = false, isZoomedAlready = false;
     private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
     private CustomAutoCompleteTextViewWithRadioButton searchLocationEditText;
@@ -116,14 +115,13 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     HashMap<String, Marker> hashMapMarkers;
     EditText etNote;
     AutoCompleteTextView etJumlah;
-    String amount, completeAddress, provinceName, districtName, countryName, bbsProductName;
-    private static final int RC_LOCATION_PERM = 500;
+    String amount, completeAddress, provinceName, districtName, bbsProductName;
     private static final int RC_GPS_REQUEST = 1;
     String denom[];
-    private Realm realm, realmBBSMemberBank;
+    private Realm realmBBSMemberBank;
     private CustomAutoCompleteTextViewWithIcon acMemberAcct;
     private SimpleAdapter adapterAccounts;
-    private List<BBSBankModel> listbankSource, listbankBenef, listBankBenefCTR;
+    private List<BBSBankModel> listBankBenefCTR;
 
     private List<HashMap<String, String>> aListMember;
     // Keys used in Hashmap
@@ -131,11 +129,6 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
     // Ids of views in listview_layout
     private int[] to = {R.id.flag, R.id.txt};
-
-    private Boolean isAgent;
-
-    private List<BBSBankModel> listBankAccounts;
-    BBSCommModel comm;
 
     private int timeDelayed = 20000;
     // Init
@@ -151,7 +144,6 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        realm = Realm.getDefaultInstance();
         realmBBSMemberBank = RealmManager.getRealmBBSMemberBank();
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
@@ -160,15 +152,11 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         progDialog = DefinedDialog.CreateProgressDialog(this);
         progDialog.dismiss();
 
-        isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
-
         aListMember = new ArrayList<>();
-
 
         adapterAccounts = new SimpleAdapter(this, aListMember, R.layout.bbs_autocomplete_layout, from, to);
 
-
-        intentData = getIntent();
+        Intent intentData = getIntent();
         currentShops = new ArrayList<String>();
         latestShops = new ArrayList<String>();
         differentShops = new ArrayList<String>();
@@ -185,7 +173,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         acMemberAcct = findViewById(R.id.acMemberAcct);
         if (bbsSchemeCode.equals(CTA) || bbsSchemeCode.equals(CTR)) {
             acMemberAcct.setHint(getString(R.string.bbs_setor_ke) + " " + getString(R.string.label_bank_pelangggan));
-        } else  {
+        } else {
             acMemberAcct.setHint(getString(R.string.bbs_tarik_dari) + " " + getString(R.string.label_bank_pelangggan));
         }
         acMemberAcct.setAdapter(adapterAccounts);
@@ -214,7 +202,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.alertbox_gps_warning))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
 
                         Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -222,7 +210,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
                         startActivity(new Intent(getApplicationContext(), MainPage.class));
@@ -611,7 +599,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         params.put(WebParams.LONGITUDE, tempLongitude);
         params.put(WebParams.RADIUS, DefineValue.MAX_RADIUS_SEARCH_AGENT);
         params.put(WebParams.USER_ID, userPhoneID);
-        params.put(WebParams.SHOP_TYPE, sp.getString(DefineValue.COMPANY_TYPE,""));
+        params.put(WebParams.SHOP_TYPE, sp.getString(DefineValue.COMPANY_TYPE, ""));
         Timber.d("Params new search agent :" + params);
 
         //Start
@@ -646,12 +634,12 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                                         JSONObject object = shops.getJSONObject(j);
                                         ShopDetail shopDetail = new ShopDetail();
 
-                                        shopDetail.setShopId(object.getString("shop_id"));
+                                        shopDetail.setShopId(object.getString(WebParams.SHOP_ID));
                                         shopDetail.setMemberCust(object.getString("member_cust"));
-                                        shopDetail.setMemberId(object.getString("member_id"));
+                                        shopDetail.setMemberId(object.getString(WebParams.MEMBER_ID));
                                         shopDetail.setShopLatitude(object.getDouble("shop_latitude"));
                                         shopDetail.setShopLongitude(object.getDouble("shop_longitude"));
-                                        shopDetail.setMemberName(object.getString("member_name"));
+                                        shopDetail.setMemberName(object.getString(WebParams.MEMBER_NAME));
                                         shopDetail.setShopAddress(object.getString("shop_address"));
                                         shopDetail.setUrlSmallProfilePicture(object.getString("shop_picture"));
                                         shopDetail.setLastActivity(object.getString("shop_lastactivity"));
@@ -781,7 +769,6 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                     addressArray.add(singleAddress.getAddressLine(i));
                 }
 
-                String fullAddress = TextUtils.join(System.getProperty("line.separator"), addressArray);
                 latitude = singleAddress.getLatitude();
                 longitude = singleAddress.getLongitude();
 
@@ -797,17 +784,8 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                 if (globalMap != null) {
                     LatLng latLng = new LatLng(latitude, longitude);
                     globalMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-
-                    MarkerOptions markerOptions = new MarkerOptions()
-                            .position(latLng)
-                            .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.search_location, 70, 90)));
-                    //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                     markerCurrent.setPosition(latLng);
-
-
                 }
-
-            } else {
 
             }
         } catch (IOException ioException) {
@@ -914,11 +892,9 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
         HashMap<String, Object> query = MyApiClient.getInstance().googleQuery();
         query.put("latlng", latitude + "," + longitude);
-//        query.put("address", districtName + ", " + provinceName);
 
         RetrofitService.getInstance().QueryRequestSSL(
                 MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE, query,
-//                        + "&latlng=" + latitude + "," + longitude,
                 new ObjListeners() {
                     @Override
                     public void onResponses(JSONObject response) {
@@ -945,9 +921,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                                                 districtName = hashMapObject.get(key);
                                                 break;
                                             case "subdistrict":
-                                                break;
                                             case "country":
-                                                countryName = hashMapObject.get(key);
                                                 break;
                                         }
 
@@ -979,101 +953,17 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
                     }
                 });
-
-//        MyApiClient.getGoogleAPIAddressByLatLng(this, latitude, longitude, new JsonHttpResponseHandler() {
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//
-//
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//                super.onFailure(statusCode, headers, responseString, throwable);
-//                ifFailure(throwable);
-//            }
-//
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-//                super.onFailure(statusCode, headers, throwable, errorResponse);
-//                ifFailure(throwable);
-//            }
-//
-//            private void ifFailure(Throwable throwable) {
-//                if (MyApiClient.PROD_FAILURE_FLAG)
-//                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-//                else
-//                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
-//
-//                Timber.w("Error Koneksi: " + throwable.toString());
-//
-//            }
-//        });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == RC_GPS_REQUEST) {
-            //if ( requestCode == Activity.RESULT_OK ) {
             if (GlobalSetting.isLocationEnabled(this)) {
                 runningApp();
             }
-            //}
         }
     }
-
-    /*
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        // Forward results to EasyPermissions
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-        switch(requestCode) {
-            //case RC_LOCATION_PERM:
-            case BaseActivity.RC_LOCATION_PERM:
-                Timber.d("Testing Permission Here");
-                if ( !GlobalSetting.isLocationEnabled(this) ) {
-                    showAlertEnabledGPS();
-                } else {
-                    runningApp();
-                }
-                break;
-        }
-    }
-
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-        switch (requestCode) {
-            case BaseActivity.RC_LOCATION_PERM:
-                if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-                    new AppSettingsDialog.Builder(this).build().show();
-                } else {
-                    AlertDialog alertDialog = new AlertDialog.Builder(BbsNewSearchAgentActivity.this).create();
-                    alertDialog.setCanceledOnTouchOutside(false);
-                    alertDialog.setCancelable(false);
-                    alertDialog.setTitle(getString(R.string.alertbox_title_warning));
-                    alertDialog.setMessage(getString(R.string.alertbox_message_warning));
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    finish();
-                                }
-                            });
-                    alertDialog.show();
-                }
-                break;
-        }
-    }
-*/
 
     @Override
     protected void onResume() {
@@ -1082,46 +972,24 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
 
     private void initializeDataBBS(String schemeCode) {
-
-
-        if (BuildConfig.FLAVOR.equalsIgnoreCase("development"))
-            defaultProductCode = "EMO SALDOMU";
-        else
-            defaultProductCode = getString(R.string.SALDOMU);
-
         if (schemeCode.equalsIgnoreCase(DefineValue.CTA)) {
-//            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD")) {
-//                listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
-//                        .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
-//                        .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF)
-//                        .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll();
-//            }else{
-                listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
-                        .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
-                        .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
-//            }
-            setMember(listbankBenef);
+            List<BBSBankModel> listBankBenef = realmBBSMemberBank.where(BBSBankModel.class)
+                    .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
+                    .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
+            setMember(listBankBenef);
         } else if (schemeCode.equalsIgnoreCase(DefineValue.CTR)) {
             listBankBenefCTR = realmBBSMemberBank.where(BBSBankModel.class)
                     .equalTo(WebParams.SCHEME_CODE, CTR)
                     .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
             setMember(listBankBenefCTR);
         } else {
-//            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD")) {
-//                listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
-//                        .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
-//                        .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE)
-//                        .equalTo(WebParams.PRODUCT_NAME, defaultProductCode)
-//                        .findAll();
-//            } else {
-                listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
-                        .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
-                        .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE).findAll();
-//            }
-            if (listbankSource == null) {
+            List<BBSBankModel> listBankSource = realmBBSMemberBank.where(BBSBankModel.class)
+                    .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
+                    .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE).findAll();
+            if (listBankSource == null) {
                 Toast.makeText(this, getString(R.string.no_source_list_message), Toast.LENGTH_LONG).show();
             }
-            setMember(listbankSource);
+            setMember(listBankSource);
         }
 
 

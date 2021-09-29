@@ -25,13 +25,6 @@ import timber.log.Timber;
 public class CashoutActivity extends BaseActivityOTP implements TransactionResult {
     FragmentManager fragmentManager;
 
-//    @Override
-//    public void onAttachFragment(Fragment fragment) {
-//        super.onAttachFragment(fragment);
-//        setCurrentFragment(fragment);
-//    }
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,17 +34,6 @@ public class CashoutActivity extends BaseActivityOTP implements TransactionResul
             if (savedInstanceState != null) {
                 return;
             }
-
-//            Intent intent    = getIntent();
-//            Bundle args = new Bundle();
-//            args.putString(DefineValue.TX_ID, intent.getStringExtra(DefineValue.TX_ID));
-//            args.putString(DefineValue.BANK_NAME, intent.getStringExtra(DefineValue.BANK_NAME));
-//            args.putString(DefineValue.ACCOUNT_NUMBER, intent.getStringExtra(DefineValue.ACCOUNT_NUMBER));
-//            args.putString(DefineValue.CCY_ID, intent.getStringExtra(DefineValue.CCY_ID));
-//            args.putString(DefineValue.NOMINAL, intent.getStringExtra(DefineValue.NOMINAL));
-//            args.putString(DefineValue.ACCT_NAME, intent.getStringExtra(DefineValue.ACCT_NAME));
-//            args.putString(DefineValue.FEE, intent.getStringExtra(DefineValue.FEE));
-//            args.putString(DefineValue.TOTAL_AMOUNT, intent.getStringExtra(DefineValue.TOTAL_AMOUNT));
 
             Fragment newFragment;
 //            if(intent.getIntExtra(DefineValue.CASHOUT_TYPE,0) == DefineValue.CASHOUT_AGEN)
@@ -67,18 +49,6 @@ public class CashoutActivity extends BaseActivityOTP implements TransactionResul
             fragmentTransaction.commit();
             setResult(MainPage.RESULT_NORMAL);
         }
-    }
-
-    public void togglerBroadcastReceiver(Boolean _on, BroadcastReceiver _myreceiver){
-        Timber.wtf("masuk turnOnBR cashout");
-        if(_on){
-            IntentFilter filter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
-            registerReceiver(_myreceiver,filter);
-            filter.setPriority(999);
-            filter.addCategory("android.intent.category.DEFAULT");
-        }
-        else unregisterReceiver(_myreceiver);
-
     }
 
     @Override

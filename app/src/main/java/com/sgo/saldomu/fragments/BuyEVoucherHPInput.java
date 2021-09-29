@@ -72,12 +72,9 @@ public class BuyEVoucherHPInput extends BaseFragment {
     private EditText noHP_value;
     private String bank_kode;
     private String produckBank_kode;
-    private String memberID;
     private String topupType;
-    String nama_bank;
     private ProgressDialog progdialog;
-    private ArrayAdapter<String> adapter2;
-    private ImageView spinWheelBankProduct;
+    private ArrayAdapter<String> adapter;
     private ImageView spinWheelDenom;
     private Animation frameAnimation;
 
@@ -94,7 +91,6 @@ public class BuyEVoucherHPInput extends BaseFragment {
         topupType = args.getString(DefineValue.TRANSACTION_TYPE);
 
         if (topupType.equals(DefineValue.INTERNET_BANKING)) {
-            memberID = sp.getString(DefineValue.MEMBER_ID, "");
             MyApiClient.IS_INTERNET_BANKING = true;
         } else if (topupType.equals(DefineValue.SMS_BANKING)) {
             getMemberPulsa();
@@ -106,7 +102,6 @@ public class BuyEVoucherHPInput extends BaseFragment {
         spin_denom = v.findViewById(R.id.spinner_evoucher_denom);
         noHP_value = v.findViewById(R.id.noHP_eVoucher_value);
         btn_submit_evoucher = v.findViewById(R.id.btn_submit_evoucher_input);
-        spinWheelBankProduct = v.findViewById(R.id.spinning_wheel_evoucher_bank_product);
         spinWheelDenom = v.findViewById(R.id.spinning_wheel_evoucher_denom);
 
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
@@ -129,9 +124,9 @@ public class BuyEVoucherHPInput extends BaseFragment {
         spin_produkBank.setOnItemSelectedListener(spinnerProductBankListener);
 
 
-        adapter2 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listDenomName);
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spin_denom.setAdapter(adapter2);
+        this.adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listDenomName);
+        this.adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spin_denom.setAdapter(this.adapter);
         spin_denom.setOnItemSelectedListener(spinnerDenomListener);
 
         spin_denom.setVisibility(View.GONE);
@@ -145,14 +140,11 @@ public class BuyEVoucherHPInput extends BaseFragment {
                     mArrayListDenom.add(new DenomModel(DenomModel.allDenom[i][0], DenomModel.allDenom[i][1], DenomModel.allDenom[i][2]));
                     listDenomName[i] = DenomModel.allDenom[i][2];
                 }
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        spinWheelDenom.clearAnimation();
-                        spinWheelDenom.setVisibility(View.GONE);
-                        spin_denom.setVisibility(View.VISIBLE);
-                        adapter2.notifyDataSetChanged();
-                    }
+                getActivity().runOnUiThread(() -> {
+                    spinWheelDenom.clearAnimation();
+                    spinWheelDenom.setVisibility(View.GONE);
+                    spin_denom.setVisibility(View.VISIBLE);
+                    BuyEVoucherHPInput.this.adapter.notifyDataSetChanged();
                 });
             }
         };
@@ -191,12 +183,9 @@ public class BuyEVoucherHPInput extends BaseFragment {
     };
 
 
-    private Button.OnClickListener prosesTopupPulsaSGOListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (inputValidation()) {
-                sentDataValidTopupPulsaRetail();
-            }
+    private Button.OnClickListener prosesTopupPulsaSGOListener = v -> {
+        if (inputValidation()) {
+            sentDataValidTopupPulsaRetail();
         }
     };
 
@@ -220,29 +209,24 @@ public class BuyEVoucherHPInput extends BaseFragment {
                             MemberPulsaModel response = getGson().fromJson(object, MemberPulsaModel.class);
 
                             String code = response.getError_code();
+                            String message = response.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 String arraynya = getGson().toJson(response.getMember_data());
                                 setMemberPulsa(arraynya);
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = response.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + response.getApp_data());
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:%s", response.getApp_data());
                                 final AppDataModel appModel = response.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + response.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), response.getError_message());
+                                Timber.d("isi response maintenance:%s", response.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                code = response.getError_code();
-                                if (code.equals("0003")) showDialogError();
-                                else {
-                                    code = response.getError_code() + ":" + response.getError_message();
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                                }
+                                if (code.equals("0003"))
+                                    showDialogError();
+                                else
+                                    Toast.makeText(getActivity(), code + " : " + message, Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -258,7 +242,7 @@ public class BuyEVoucherHPInput extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -276,14 +260,12 @@ public class BuyEVoucherHPInput extends BaseFragment {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
-            String _member_id="";
+            String _member_id = "";
             _noHPdestination = NoHPFormat.formatTo62(noHP_value.getText().toString());
             String denomPattern = _noHPdestination + "|" + _denomPayment;
 
-            if (topupType.equals(DefineValue.INTERNET_BANKING)) {
-//                if (MyApiClient.IS_PROD) _member_id = MyApiClient.PROD_MEMBER_ID_PULSA_RETAIL;
-//                else _member_id = MyApiClient.DEV_MEMBER_ID_PULSA_RETAIL;
-            } else _member_id = member_pulsa_id;
+            if (!topupType.equals(DefineValue.INTERNET_BANKING))
+                _member_id = member_pulsa_id;
 
             String url;
 
@@ -306,7 +288,7 @@ public class BuyEVoucherHPInput extends BaseFragment {
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params topup pulsa retail:" + params.toString());
+            Timber.d("isi params topup pulsa retail:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(url, params,
                     new ResponseListener() {
@@ -315,8 +297,9 @@ public class BuyEVoucherHPInput extends BaseFragment {
                             GetTrxStatusReportModel response = getGson().fromJson(object, GetTrxStatusReportModel.class);
 
                             String code = response.getError_code();
+                            String message = response.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-                                Timber.d("isi response topup pulsa retail:" + response.toString());
+                                Timber.d("isi response topup pulsa retail:%s", response.toString());
 
                                 if (topupType.equals(DefineValue.INTERNET_BANKING)) {
 
@@ -326,21 +309,16 @@ public class BuyEVoucherHPInput extends BaseFragment {
                                 }
 
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = response.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + response.getApp_data());
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:%s", response.getApp_data());
                                 final AppDataModel appModel = response.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + response.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), response.getError_message());
+                                Timber.d("isi response maintenance:%s", response.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                code = response.getError_code() + ":" + response.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), code + " : " + message, Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -356,7 +334,7 @@ public class BuyEVoucherHPInput extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -373,7 +351,7 @@ public class BuyEVoucherHPInput extends BaseFragment {
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params regtoken pulsa retail:" + params.toString());
+            Timber.d("isi params regtoken pulsa retail:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REQ_TOKEN_SGOL, params,
                     new ResponseListener() {
@@ -382,25 +360,21 @@ public class BuyEVoucherHPInput extends BaseFragment {
                             jsonModel response = getGson().fromJson(object, jsonModel.class);
 
                             String code = response.getError_code();
+                            String message = response.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 showDialog(_tx_id, _product_code, _comm_code);
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = response.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + response.getApp_data());
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:%s", response.getApp_data());
                                 final AppDataModel appModel = response.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), response.getError_message());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                Timber.d("Error req token pulsa retail:" + response.toString());
-                                code = response.getError_code() + " : " + response.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                Timber.d("Error req token pulsa retail:%s", response.toString());
+                                Toast.makeText(getActivity(), code + " : " + message, Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -416,7 +390,7 @@ public class BuyEVoucherHPInput extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -439,24 +413,21 @@ public class BuyEVoucherHPInput extends BaseFragment {
         Message.setText(getResources().getString(R.string.dialog_token_message_sms));
 
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Fragment newFrag = new TopUpToken();
-                Bundle mArgs = new Bundle();
-                mArgs.putString(DefineValue.TRANSACTION_TYPE, DefineValue.PULSA);
-                mArgs.putString(DefineValue.BANK_CHANNEL, spin_produkBank.getSelectedItem().toString());
-                mArgs.putString(WebParams.TX_ID, _tx_id);
-                mArgs.putString(WebParams.PRODUCT_CODE, _product_code);
-                mArgs.putString(WebParams.COMM_CODE, _comm_code);
-                mArgs.putString(WebParams.AMOUNT, _jumlah);
-                mArgs.putString(WebParams.PRODUCT_VALUE, _noHPdestination);
+        btnDialogOTP.setOnClickListener(view -> {
+            Fragment newFrag = new TopUpToken();
+            Bundle mArgs = new Bundle();
+            mArgs.putString(DefineValue.TRANSACTION_TYPE, DefineValue.PULSA);
+            mArgs.putString(DefineValue.BANK_CHANNEL, spin_produkBank.getSelectedItem().toString());
+            mArgs.putString(WebParams.TX_ID, _tx_id);
+            mArgs.putString(WebParams.PRODUCT_CODE, _product_code);
+            mArgs.putString(WebParams.COMM_CODE, _comm_code);
+            mArgs.putString(WebParams.AMOUNT, _jumlah);
+            mArgs.putString(WebParams.PRODUCT_VALUE, _noHPdestination);
 
-                newFrag.setArguments(mArgs);
-                switchFragment(newFrag, getString(R.string.toolbar_title_topup), true);
+            newFrag.setArguments(mArgs);
+            switchFragment(newFrag, getString(R.string.toolbar_title_topup), true);
 
-                dialog.dismiss();
-            }
+            dialog.dismiss();
         });
 
         dialog.show();
@@ -500,9 +471,6 @@ public class BuyEVoucherHPInput extends BaseFragment {
         i.putExtra(WebParams.TX_ID, _tx_id);
         i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.PULSA);
 
-        //if(MyApiClient.PROD_FLAG)i.putExtra(WebParams.API_KEY,MyApiClient.PROD_API_KEY);
-        //else i.putExtra(WebParams.API_KEY,MyApiClient.DEV_API_KEY);
-
         switchActivity(i);
     }
 
@@ -537,10 +505,9 @@ public class BuyEVoucherHPInput extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getFragmentManager().popBackStack();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            getFragmentManager().popBackStack();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -38,7 +38,6 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
     ArrayList<String> reasonCodeArrayList;
     private ArrayList<String> reasonNameArrayList;
     String reason = "";
-    ArrayList<Boolean> checked;
 
     public CancelInvoiceAdapter(ArrayList<InvoiceDGI> invoiceDGIModelArrayList, ArrayList<String> reasonCodeArrayList, ArrayList<String> reasonNameArrayList, OnItemClick listener) {
         this.invoiceDGIModelArrayList = invoiceDGIModelArrayList;
@@ -157,13 +156,11 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
     public static class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox checkBox;
         TextView title_video_text;
-        RelativeLayout content_rl;
         Spinner sp_reason;
         EditText reason_et;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            content_rl = itemView.findViewById(R.id.content_rl);
             checkBox = itemView.findViewById(R.id.checkBox);
             title_video_text = itemView.findViewById(R.id.invoice_tv);
             sp_reason = itemView.findViewById(R.id.sp_reason);

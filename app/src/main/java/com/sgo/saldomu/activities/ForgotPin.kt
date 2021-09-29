@@ -50,7 +50,7 @@ class ForgotPin : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         initializeToolbar()
-        if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")!!.isNotEmpty() && sp.getString(DefineValue.IS_POS, "N").equals("N", ignoreCase = true)) {
+        if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")!!.isNotEmpty() && sp.getString(DefineValue.IS_POS, DefineValue.STRING_NO).equals(DefineValue.STRING_NO, ignoreCase = true)) {
             et_userid.setText(NoHPFormat.formatTo08(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")))
             et_userid.isEnabled = false
         } else if (sp.getString(DefineValue.CURR_USERID, "")!!.isNotEmpty()) {
@@ -209,7 +209,7 @@ class ForgotPin : BaseActivity() {
                                     DefineValue.ERROR_0066 -> {
                                         Timber.d("isi response maintenance:$response")
                                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                        alertDialogMaintenance.showDialogMaintenance(this@ForgotPin, model.error_message)
+                                        alertDialogMaintenance.showDialogMaintenance(this@ForgotPin)
                                     }
                                     else -> {
                                         Timber.d("Error forgot pin:$response")
@@ -295,7 +295,7 @@ class ForgotPin : BaseActivity() {
                             DefineValue.ERROR_0066 -> {
                                 Timber.d("isi response maintenance:$response")
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(this@ForgotPin, model.error_message)
+                                alertDialogMaintenance.showDialogMaintenance(this@ForgotPin)
                             }
                             else -> {
                                 Timber.d("Error forgot pin:$response")

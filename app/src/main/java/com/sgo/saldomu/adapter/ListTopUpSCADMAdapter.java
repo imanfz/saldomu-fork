@@ -20,17 +20,14 @@ import java.util.ArrayList;
  */
 
 public class ListTopUpSCADMAdapter extends RecyclerView.Adapter<ListTopUpSCADMAdapter.ViewHolder> {
-    private final Activity mContext;
-    Fragment mFrag;
     private ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList;
     listener listener;
 
 
-    public ListTopUpSCADMAdapter(ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList, Activity mContext, listener _listener) {
+    public ListTopUpSCADMAdapter(ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList, listener _listener) {
         this.scadmCommunityModelArrayList = scadmCommunityModelArrayList;
-        this.mContext = mContext;
+
         listener = _listener;
-//        this.frameLayout = frameLayout;
     }
 
     public interface listener{

@@ -113,15 +113,11 @@ public class MainPage extends BaseActivity {
     public static final int RESULT_BBS_MEMBER_OTP = 12;
     public static final int RESULT_BBS_STATUS = 13;
     public static final int RESULT_RETRY = 14;
-    public static final int RESULT_BALANCE_COLLECTOR = 14;
 
-    public static final int RESULT_FINISH = 99;
     public static final int ACTIVITY_RESULT = 1;
 
-    private final static int FIRST_SCREEN_LOGIN = 1;
     private final static int FIRST_SCREEN_INTRO = 2;
     private final static int FIRST_SCREEN_SPLASHSCREEN = 3;
-    private final static int REQCODE_PLAY_SERVICE = 312;
 
 
     public static String RESULT_HOME_BALANCE = "refresh_home_balance";
@@ -132,24 +128,20 @@ public class MainPage extends BaseActivity {
     private String flagLogin = DefineValue.STRING_NO;
     private Fragment mContent;
     private NavigationDrawMenu mNavDrawer;
-    FragTagihInput fragTagihInput;
     private DrawerLayout mDrawerLayout;
     public ActionBarDrawerToggle mDrawerToggle;
     private ProgressDialog progdialog;
     private LinearLayout mOuterRelativeContent;
     private FrameLayout mLeftDrawerRelativeLayout;
-    private FrameLayout mRightDrawerRelativeLayout;
     private float lastTranslate = 0.0f;
     //    private BroadcastReceiver mRegistrationBroadcastReceiver; // gcm
     private BalanceService serviceReferenceBalance;
     private AppInfoService serviceAppInfoReference;
     private UserProfileService serviceUserProfileReference;
-    private boolean isBound, isBoundAppInfo, isBoundUserProfile, agent, isForeground = false, isAgent = false;
-    //    public MaterialSheetFab materialSheetFab;
+    private boolean isBound, isBoundAppInfo, isBoundUserProfile, isForeground = false, isAgent = false;
+
     AlertDialog devRootedDeviceAlertDialog;
-    private Bundle savedInstanceState;
-    private SMSclass smSclass;
-    private String isDormant, userNameLogin, fcm_id, fcmId_encrypted, agentTrxCode;
+    private String userNameLogin;
     private MenuItem itemData;
     private NotificationActionView actionView;
 
@@ -158,8 +150,6 @@ public class MainPage extends BaseActivity {
 
     private final int RESULT_GALERY = 100;
     private final int RESULT_CAMERA = 200;
-    private String currentTab = "";
-
 
     private LinearLayout homeLayoutTab;
     private LinearLayout historyLayoutTab;
@@ -178,10 +168,6 @@ public class MainPage extends BaseActivity {
     private ImageView accountImageViewTab;
 
     ColorStateList oldColors;
-
-//    static {
-//        System.loadLibrary("native-lib");
-//    }
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -205,11 +191,6 @@ public class MainPage extends BaseActivity {
                     }
                 });
 
-        this.savedInstanceState = savedInstanceState;
-//        pickAndCameraUtil = new PickAndCameraUtil(this);
-
-
-        isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
         userNameLogin = sp.getString(DefineValue.USER_NAME, "");
 
         if (isHasAppPermission())
@@ -322,29 +303,6 @@ public class MainPage extends BaseActivity {
         accountTextViewTab.setTextColor(oldColors);
     }
 
-    private void dialogDormant() {
-        Dialog dialognya = DefinedDialog.MessageDialog(this, getString(R.string.title_dialog_dormant),
-                getString(R.string.message_dialog_dormant),
-                (v, isLongClick) -> {
-//                    Intent i = new Intent(MainPage.this, TopUpActivity.class);
-//                    i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-//                    switchActivity(i, MainPage.ACTIVITY_RESULT);
-                }
-        );
-
-        dialognya.show();
-    }
-
-    private void dialogUnavailable() {
-        Dialog dialognya = DefinedDialog.MessageDialog(this, getString(R.string.alertbox_title_information),
-                getString(R.string.cashout_dialog_message),
-                (v, isLongClick) -> {
-                }
-        );
-
-        dialognya.show();
-    }
-
     private void InitializeApp() {
         if (GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
             if (RootUtil.isDeviceRooted() || RootUtil.isEmulator()) {
@@ -352,18 +310,8 @@ public class MainPage extends BaseActivity {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
                     builder.setMessage("Apakah anda ingin melewati pengecekan device?")
-                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    initializeDashboard();
-                                }
-                            });
-                    builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
-                        }
-                    });
+                            .setPositiveButton(getString(R.string.ok), (dialog, which) -> initializeDashboard());
+                    builder.setNegativeButton(getString(R.string.no), (dialog, which) -> switchErrorActivity(ErrorActivity.DEVICE_ROOTED));
                     builder.setCancelable(false);
                     devRootedDeviceAlertDialog = builder.create();
                     if (!isFinishing())
@@ -406,7 +354,6 @@ public class MainPage extends BaseActivity {
                 Timber.d("testing :" + msgMap.toString());
 
                 FCMManager fcmManager = new FCMManager(this);
-                Intent intent = fcmManager.checkingAction(type, msgMap);
             }
 
             if (!isLogin()) {
@@ -446,29 +393,14 @@ public class MainPage extends BaseActivity {
     }
 
     void initializeLogin() {
-//        Boolean isSimSame = true;
-//        if (BuildConfig.FLAVOR.equals("production")){
-//            if(smSclass == null)
-//                smSclass = new SMSclass(this);
-//
-//            isSimSame = smSclass.isSimSameSP();
-//        }
-//
-//        if(isSimSame) {
         showProgLoading(getString(R.string.please_wait), false);
 
         startLocationService();
 
-//            if (savedInstanceState != null)
-//                mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
-
         levelClass = new LevelClass(this, sp);
         isForeground = true;
-        agent = sp.getBoolean(DefineValue.IS_AGENT, false);
-        UtilsLoader utilsLoader = new UtilsLoader(this, sp);
-//        utilsLoader.getAppVersion();
+
         InitializeNavDrawer();
-//        setupFab();
         FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userPhoneID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
 
         AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
@@ -536,9 +468,9 @@ public class MainPage extends BaseActivity {
                 case FCMManager.AGENT_LOCATION_SET_SHOP_LOCATION:
                     i = new Intent(this, BbsMemberLocationActivity.class);
 
-                    bundle.putString("memberId", jsonObj.getString("memberId"));
-                    bundle.putString("shopId", jsonObj.getString("shopId"));
-                    bundle.putString("shopName", jsonObj.getString("shopName"));
+                    bundle.putString(DefineValue.MEMBER_ID, jsonObj.getString(DefineValue.MEMBER_ID));
+                    bundle.putString(DefineValue.SHOP_ID, jsonObj.getString(DefineValue.SHOP_ID));
+                    bundle.putString(DefineValue.SHOP_NAME, jsonObj.getString(DefineValue.SHOP_NAME));
                     bundle.putString("memberType", jsonObj.getString("memberType"));
                     bundle.putString("memberName", jsonObj.getString("memberName"));
                     bundle.putString("commName", jsonObj.getString("commName"));
@@ -830,11 +762,6 @@ public class MainPage extends BaseActivity {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int width = size.x - 150;
-        int height = size.y;
-
-//        mRightDrawerRelativeLayout.getLayoutParams().width = width;
-//        mRightDrawerRelativeLayout.getLayoutParams().height = height;
 
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, getToolbar(), R.string.drawer_open, R.string.drawer_close) {
@@ -843,11 +770,6 @@ public class MainPage extends BaseActivity {
                 super.onDrawerOpened(drawerView);
                 invalidateOptionsMenu();
                 ToggleKeyboard.hide_keyboard(MainPage.this);
-
-//                if (drawerView == mLeftDrawerRelativeLayout)
-//                    mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, mRightDrawerRelativeLayout);
-//                else
-//                    mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, mLeftDrawerRelativeLayout);
             }
 
             @Override
@@ -866,36 +788,14 @@ public class MainPage extends BaseActivity {
 
                 float moveFactor = (drawerView.getWidth() * slideOffset);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    if (drawerView == mLeftDrawerRelativeLayout)
-                        mOuterRelativeContent.setTranslationX(moveFactor);
-                    else if (drawerView == mRightDrawerRelativeLayout)
-                        mOuterRelativeContent.setTranslationX(-moveFactor);
-                } else {
-                    TranslateAnimation anim = null;
-
-                    if (drawerView == mLeftDrawerRelativeLayout)
-                        anim = new TranslateAnimation(lastTranslate, moveFactor, 0.0f, 0.0f);
-//                    else if (drawerView == mRightDrawerRelativeLayout)
-//                        anim = new TranslateAnimation(lastTranslate, -moveFactor, 0.0f, 0.0f);
-
-                    if (anim != null) {
-                        anim.setDuration(0);
-                        anim.setFillAfter(true);
-                        mOuterRelativeContent.startAnimation(anim);
-                    }
-
-                    lastTranslate = moveFactor;
-                }
+                if (drawerView == mLeftDrawerRelativeLayout)
+                    mOuterRelativeContent.setTranslationX(moveFactor);
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 invalidateOptionsMenu();
-//                if (drawerView == mLeftDrawerRelativeLayout)
-//                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mRightDrawerRelativeLayout);
-//                else
                 mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mLeftDrawerRelativeLayout);
             }
         };
@@ -909,13 +809,6 @@ public class MainPage extends BaseActivity {
         mNavDrawer = new NavigationDrawMenu();
         getSupportFragmentManager().beginTransaction().replace(R.id.left_menu_layout, mNavDrawer, NavigationDrawMenu.TAG).commitAllowingStateLoss();
     }
-
-
-//    private void refreshPromo() {
-//        RightSideDrawMenu mRightDrawer = (RightSideDrawMenu) getSupportFragmentManager().findFragmentById(R.id.main_list_menu_fragment_right);
-//        if (mRightDrawer != null)
-//            mRightDrawer.autoRefreshList();
-//    }
 
     private void initializeNavDrawer() {
         if (mNavDrawer != null) {
@@ -962,6 +855,7 @@ public class MainPage extends BaseActivity {
                             GetMemberModel model = RetrofitService.getInstance().getGson().fromJson(object, GetMemberModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                 if (!model.getMemberData().isEmpty()) {
@@ -978,9 +872,8 @@ public class MainPage extends BaseActivity {
                                         serviceReferenceBalance.runBalance();
 
                                     initializeNavDrawer();
-                                    CheckNotification();
 
-                                    String is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK, "N");
+                                    String is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK, DefineValue.STRING_NO);
 
                                     if (is_new_bulk.equalsIgnoreCase(DefineValue.STRING_YES)) {
                                         UserProfileHandler mBH = new UserProfileHandler(getApplication());
@@ -1014,12 +907,12 @@ public class MainPage extends BaseActivity {
                                                 && sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO)) {
                                             Intent intent = new Intent(MainPage.this, BbsMemberLocationActivity.class);
                                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                            intent.putExtra("memberId", shopAgentObject.optString("member_id", ""));
-                                            intent.putExtra("shopId", shopAgentObject.optString("shop_id", ""));
-                                            intent.putExtra("shopName", shopAgentObject.optString("shop_name", ""));
-                                            intent.putExtra("memberType", shopAgentObject.optString("member_type", ""));
-                                            intent.putExtra("memberName", shopAgentObject.optString("member_name", ""));
-                                            intent.putExtra("commName", shopAgentObject.optString("comm_name", ""));
+                                            intent.putExtra(DefineValue.MEMBER_ID, shopAgentObject.optString(WebParams.MEMBER_ID, ""));
+                                            intent.putExtra(DefineValue.SHOP_ID, shopAgentObject.optString("shop_id", ""));
+                                            intent.putExtra(DefineValue.SHOP_NAME, shopAgentObject.optString("shop_name", ""));
+                                            intent.putExtra(DefineValue.MEMBER_TYPE, shopAgentObject.optString(WebParams.MEMBER_TYPE, ""));
+                                            intent.putExtra(DefineValue.MEMBER_NAME, shopAgentObject.optString(WebParams.MEMBER_NAME, ""));
+                                            intent.putExtra(DefineValue.COMMUNITY_NAME, shopAgentObject.optString(WebParams.COMM_NAME, ""));
                                             intent.putExtra("province", shopAgentObject.optString("province", ""));
                                             intent.putExtra("district", shopAgentObject.optString("district", ""));
                                             intent.putExtra("address", shopAgentObject.optString("address1", ""));
@@ -1042,15 +935,6 @@ public class MainPage extends BaseActivity {
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
-//                                    }
-//                                    else if (!sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_OPENHOUR, "").equals(DefineValue.STRING_NO)) {
-//                                        try {
-//
-//
-//                                        } catch (Exception e) {
-//                                            e.printStackTrace();
-//                                        }
-//                                    }
 
                                 } else {
 
@@ -1065,25 +949,19 @@ public class MainPage extends BaseActivity {
 
 
                             } else if (code.equals(WebParams.LOGOUT_CODE) || code.equals(WebParams.ERROR_0003)) {
-                                Timber.d("isi response autologout:" + model.getError_message());
-
-                                String message = model.getError_message();
-
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginMain(MainPage.this, message);
+                                Timber.d("isi response autologout:%s", model.getError_message());
+                                AlertDialogLogout.getInstance().showDialoginMain(MainPage.this, message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(MainPage.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(MainPage.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(MainPage.this, model.getError_message());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(MainPage.this);
                             } else {
-                                Timber.d("Error ListMember comlist:" + model.getError_message());
-                                code = model.getError_message();
-                                Toast.makeText(MainPage.this, code, Toast.LENGTH_LONG).show();
+                                Timber.d("Error ListMember comlist:%s", model.getError_message());
+
+                                Toast.makeText(MainPage.this, message, Toast.LENGTH_LONG).show();
 
                             }
 
@@ -1133,17 +1011,6 @@ public class MainPage extends BaseActivity {
         }
     }
 
-    private void CheckNotification() {
-//        Thread mth = new Thread() {
-//            @Override
-//            public void run() {
-//                NotificationHandler mNoHand = new NotificationHandler(MainPage.this, sp);
-//                mNoHand.sentRetrieveNotif();
-//            }
-//        };
-//        mth.start();
-    }
-
     private void callBBSCityService() {
         Timber.d("Panggil service BBS City");
         UpdateBBSCity.startUpdateBBSCity(MainPage.this);
@@ -1163,20 +1030,20 @@ public class MainPage extends BaseActivity {
 
     private void showMyProfile() {
         Intent i = new Intent(this, MyProfileNewActivity.class);
-//        i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         switchActivity(i, ACTIVITY_RESULT);
     }
 
     private void showCreatePin() {
         Intent i = new Intent(this, CreatePIN.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         switchActivity(i, MainPage.ACTIVITY_RESULT);
-
     }
 
     private void showChangePin() {
         Intent i = new Intent(this, ChangePIN.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         switchActivity(i, MainPage.ACTIVITY_RESULT);
-
     }
 
     private void checkField() {
@@ -1189,9 +1056,6 @@ public class MainPage extends BaseActivity {
         } else if (sp.getString(DefineValue.FORCE_CHANGE_PIN, "").equalsIgnoreCase(DefineValue.STRING_YES)) {
             showChangePin();
         }
-//        else if(sp.getString(DefineValue.IS_NEW_BULK,"N").equalsIgnoreCase(DefineValue.STRING_YES)){
-//            showValidasiEmail();
-//        }
     }
 
 
@@ -1286,7 +1150,7 @@ public class MainPage extends BaseActivity {
         deleteData();
         SecurePreferences.Editor mEditor = sp.edit();
         mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        if (sp.getString(DefineValue.IS_POS, "N").equals(DefineValue.N)) {
+        if (sp.getString(DefineValue.IS_POS, DefineValue.STRING_NO).equals(DefineValue.STRING_NO)) {
             mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userPhoneID);
         } else
             mEditor.remove(DefineValue.PREVIOUS_LOGIN_USER_ID);
@@ -1374,8 +1238,8 @@ public class MainPage extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Timber.d("isi request code:" + String.valueOf(requestCode));
-        Timber.d("isi result Code:" + String.valueOf(resultCode));
+        Timber.d("isi request code:%s", String.valueOf(requestCode));
+        Timber.d("isi result Code:%s", String.valueOf(resultCode));
         if (requestCode == REQUEST_FINISH) {
             if (resultCode == RESULT_LOGOUT) {
                 switchLogout();
@@ -1387,13 +1251,8 @@ public class MainPage extends BaseActivity {
                 Timber.w("Masuk result Balance");
                 mNavDrawer.getBalance(true);
             }
-            if (resultCode == RESULT_BALANCE_COLLECTOR) {
-                Timber.w("Masuk result Balance collector");
-                fragTagihInput.getBalanceCollector();
-            }
             if (resultCode == RESULT_NOTIF) {
                 Timber.w("Masuk result notif");
-                CheckNotification();
                 invalidateOptionsMenu();
                 if (data != null) {
                     int _type = data.getIntExtra(DefineValue.NOTIF_TYPE, 0);
@@ -1472,17 +1331,6 @@ public class MainPage extends BaseActivity {
         Timber.d("isLoginMainPage");
         return flagLogin.equals(DefineValue.STRING_YES);
     }
-
-    private void showLogoutDialog() {
-        AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
-        alertbox.setTitle(getString(R.string.warning));
-        alertbox.setMessage(getString(R.string.exit_message));
-        alertbox.setPositiveButton("OK", (arg0, arg1) -> switchLogout());
-        alertbox.setNegativeButton(getString(R.string.cancel), (arg0, arg1) -> {
-        });
-        alertbox.show();
-    }
-//---------------------------------------------------------------------------------------------------------
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -1578,13 +1426,10 @@ public class MainPage extends BaseActivity {
 
         Object tm = context.getSystemService(Context.TELEPHONY_SERVICE);
         Method method_getDefaultSim;
-        int defaultSimm = -1;
         try {
             method_getDefaultSim = tm.getClass().getDeclaredMethod("getDefaultSim");
             method_getDefaultSim.setAccessible(true);
-            defaultSimm = (Integer) method_getDefaultSim.invoke(tm);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -1668,8 +1513,6 @@ public class MainPage extends BaseActivity {
     @Override
     protected void onDestroy() {
         Timber.w("destroy main page");
-        /*serviceReferenceBalance.StopCallBalance();
-        doUnbindService();*/
 
         hideProgLoading();
 
@@ -1681,30 +1524,6 @@ public class MainPage extends BaseActivity {
     private void deleteData() {
 //        sp.edit().clear().apply();
         CustomSecurePref.getInstance().ClearAllCustomData();
-    }
-
-
-//    private void setupFab() {
-//        materialSheetFab = FabInstance.newInstance(this, new FabInstance.OnBtnListener() {
-//            @Override
-//            public void OnClickItemFAB(int idx) {
-//                switch (idx) {
-//                    case FabInstance.ITEM_FAB_ASK4MONEY:
-//                        switchMenu(NavigationDrawMenu.MASK4MONEY, null);
-//                        break;
-//                    case FabInstance.ITEM_FAB_PAYFRIENDS:
-//                        switchMenu(NavigationDrawMenu.MPAYFRIENDS, null);
-//                        break;
-//                }
-//            }
-//        });
-//
-//    }
-
-    private void showValidasiEmail() {
-        Intent i = new Intent(this, ValidasiEmailActivity.class);
-        i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
-        switchActivity(i, ACTIVITY_RESULT);
     }
 
     private void callAgentShopService() {

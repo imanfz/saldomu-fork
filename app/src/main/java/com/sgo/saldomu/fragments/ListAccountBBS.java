@@ -95,12 +95,7 @@ public class ListAccountBBS extends BaseFragment implements View.OnClickListener
 
             listAccountBBSAdapter = new ListAccountBBSAdapter(getContext(),
                     R.layout.list_account_bbs_item, listDataAccount);
-            listAccountBBSAdapter.setDeleteListener(new ListAccountBBSAdapter.OnDeleteListener() {
-                @Override
-                public void onCLick(int position, View view) {
-                    showDialogDelete(position);
-                }
-            });
+            listAccountBBSAdapter.setDeleteListener(this::showDialogDelete);
         }
     }
 
@@ -365,7 +360,7 @@ public class ListAccountBBS extends BaseFragment implements View.OnClickListener
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 } else {
                                     code = response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(getActivity(),code, Toast.LENGTH_SHORT).show();

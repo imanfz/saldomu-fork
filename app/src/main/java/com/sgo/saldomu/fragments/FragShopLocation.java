@@ -49,15 +49,11 @@ import timber.log.Timber;
 public class FragShopLocation extends BaseFragment {
 
     View v;
-    Bundle bundle;
     EditText et_address;
-    Spinner sp_city;
     Button bt_regist, bt_back;
-    TextView useCurrLoc, setCoordinate, codeStore, commNameText, changeLoc;
+    TextView setCoordinate, codeStore, commNameText, changeLoc;
     LinearLayout linearLayoutSetLocation;
     AutoCompleteTextView cityLocField;
-
-    CustomAutoCompleteAdapter adapter;
     ArrayAdapter<String> adapters;
 
     String memberCode, commCode, commName;
@@ -70,7 +66,6 @@ public class FragShopLocation extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.frag_regist_shop_location, container, false);
 
-        useCurrLoc = v.findViewById(R.id.curr_loc_text);
         setCoordinate = v.findViewById(R.id.regis_shop_showmap);
         codeStore = v.findViewById(R.id.regis_shop_store_code);
         cityLocField = v.findViewById(R.id.get_shop_location_list);
@@ -78,7 +73,6 @@ public class FragShopLocation extends BaseFragment {
         changeLoc = v.findViewById(R.id.regis_shop_change_location);
 
         et_address = v.findViewById(R.id.et_address);
-        sp_city = v.findViewById(R.id.sp_city);
         bt_back = v.findViewById(R.id.btn_cancel);
         bt_regist = v.findViewById(R.id.btn_shop_register);
         linearLayoutSetLocation = v.findViewById(R.id.ll_setLocation);
@@ -90,7 +84,6 @@ public class FragShopLocation extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        bundle = getArguments();
         Bundle bundle = getArguments();
         if (bundle != null) {
             memberCode = bundle.getString(DefineValue.MEMBER_CODE, "");
@@ -103,7 +96,6 @@ public class FragShopLocation extends BaseFragment {
 
         locList = new ArrayList<>();
         locLists = new ArrayList<>();
-        adapter = new CustomAutoCompleteAdapter(getActivity(), locList, android.R.layout.simple_spinner_dropdown_item);
         adapters = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, locLists);
         cityLocField.setAdapter(adapters);
 //        cityLocField.setDropDownBackgroundResource(R.color.white);
@@ -198,7 +190,7 @@ public class FragShopLocation extends BaseFragment {
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 } else {
                                     code = response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();

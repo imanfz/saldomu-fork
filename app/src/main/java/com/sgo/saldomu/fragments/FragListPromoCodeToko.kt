@@ -156,7 +156,7 @@ class FragListPromoCodeToko : BaseFragment() {
                                     AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                                 }
                                 DefineValue.ERROR_0066 -> {
-                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                                 }
                                 else -> {
                                     showDialog(message)
@@ -219,7 +219,7 @@ class FragListPromoCodeToko : BaseFragment() {
                                         AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                                     }
                                     DefineValue.ERROR_0066 -> {
-                                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         showDialog(message)

@@ -56,7 +56,7 @@ public class FragMyGroup extends ListFragment {
     private int sectionPosition = 0;
     private int listPosition = 0;
 
-    private String _ownerID,accessKey;
+    private String _ownerID;
     private String page = "0";
 
     private MyGroupAdapter myGroupAdapter;
@@ -86,7 +86,6 @@ public class FragMyGroup extends ListFragment {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         _ownerID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
         ptrFrameLayout = (PtrFrameLayout) getActivity().findViewById(R.id.mygroup_ptr_frame);
 
         StoreHouseHeader header = new StoreHouseHeader(getActivity().getApplicationContext());

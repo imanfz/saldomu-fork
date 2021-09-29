@@ -18,17 +18,11 @@ import java.util.ArrayList;
 
 public class GridBbsMenu extends BaseAdapter {
 
-    public interface myInterface {
-        void click();
-    }
-
     private Context mContext;
     private final ArrayList<String> menuItems;
-    private final int[] menuIcons;
 
     public GridBbsMenu(Context c, ArrayList<String> menuItems, int[] menuIcons) {
         mContext = c;
-        this.menuIcons = menuIcons;
         this.menuItems = menuItems;
     }
 

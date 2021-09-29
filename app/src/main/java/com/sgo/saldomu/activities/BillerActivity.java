@@ -53,7 +53,6 @@ import timber.log.Timber;
  */
 public class BillerActivity extends BaseActivity {
 
-    private SecurePreferences sp;
     public final static int PAYMENT_TYPE = 221;
     public final static int PURCHASE_TYPE = 222;
 
@@ -62,17 +61,10 @@ public class BillerActivity extends BaseActivity {
     public final static String FRAG_BIL_DESCRIPTION = "bilDesc";
     private FragmentManager fragmentManager;
     private String _biller_merchant_name;
-    private String userID;
-    private String accessKey;
     public String _biller_type_code;
     private Boolean isOneBiller;
-    private Boolean isEmptyBiller;
     private List<BillerItem> billerData;
-    private List<DenomDataItem> denomDataItems;
     private Realm realm;
-    private RealmChangeListener realmListener;
-    //    BillerActivityRF mWorkFragment;
-    ProgressDialog progdialog;
     String IdNumber = null;
 
     @Override
@@ -80,65 +72,18 @@ public class BillerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         if (savedInstanceState != null) {
             return;
         }
 
         Intent intent = getIntent();
-//        realm = Realm.getInstance(RealmManager.BillerConfiguration);
         realm = Realm.getInstance(RealmManager.realmConfiguration);
-//        if (intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID) != null) {
-//
-//            setActionBarIcon(R.drawable.ic_arrow_left);
-//            setToolbarTitle(intent.getStringExtra(DefineValue.BILLER_TYPE) + " - " + intent.getStringExtra(DefineValue.COMMUNITY_NAME));
-//
-//            Bundle mArgs = new Bundle();
-//            Fragment mFrag;
-//            String tag = "";
-//            _biller_type_code = intent.getStringExtra(DefineValue.BILLER_TYPE);
-//            if (_biller_type_code .equalsIgnoreCase("AIR")) {
-//                mArgs.putString(DefineValue.COMMUNITY_ID, intent.getStringExtra(DefineValue.COMMUNITY_ID));
-//                mArgs.putString(DefineValue.COMMUNITY_NAME, intent.getStringExtra(DefineValue.COMMUNITY_NAME));
-//                mArgs.putString(DefineValue.CUST_ID, intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
-//                mArgs.putString(DefineValue.ITEM_ID, intent.getStringExtra(DefineValue.ITEM_ID));
-//                if (intent.getStringExtra(DefineValue.BILLER_TYPE).equals("GAME") || intent.getStringExtra(DefineValue.BILLER_TYPE).equals("VCHR")) {
-//                    mArgs.putInt(DefineValue.BUY_TYPE, PURCHASE_TYPE);
-//                } else {
-//                    mArgs.putInt(DefineValue.BUY_TYPE, PAYMENT_TYPE);
-//                }
-//
-//                mArgs.putString(DefineValue.SHARE_TYPE, "ss");
-//                mArgs.putString(DefineValue.BILLER_TYPE, intent.getStringExtra(DefineValue.BILLER_TYPE));
-//
-//                mFrag = new BillerDesciption();
-//                tag = BillerInput.TAG;
-//
-//                mFrag.setArguments(mArgs);
-//                fragmentManager = getSupportFragmentManager();
-//                android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.replace(R.id.biller_content, mFrag, tag);
-//                fragmentTransaction.commitAllowingStateLoss();
-//                setResult(MainPage.RESULT_NORMAL);
-//                return;
-//            }
-
-
-//            mFrag.setArguments(mArgs);
-//            fragmentManager = getSupportFragmentManager();
-//            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//            fragmentTransaction.replace(R.id.biller_content, mFrag, tag);
-//            fragmentTransaction.commitAllowingStateLoss();
-//            setResult(MainPage.RESULT_NORMAL);
-//        }
 
         _biller_type_code = intent.getStringExtra(DefineValue.BILLER_TYPE);
-        Timber.d("isi biller type code " + _biller_type_code);
+        Timber.d("isi biller type code %s", _biller_type_code);
         _biller_merchant_name = intent.getStringExtra(DefineValue.BILLER_NAME);
-        Timber.d("isi biller merchant name " + _biller_merchant_name);
-        isEmptyBiller = false;
+        Timber.d("isi biller merchant name %s", _biller_merchant_name);
 
         if (intent.hasExtra(DefineValue.BILLER_ID_NUMBER)) {
             IdNumber = intent.getStringExtra(DefineValue.BILLER_ID_NUMBER);
@@ -148,50 +93,6 @@ public class BillerActivity extends BaseActivity {
         getBillerData();
 
         Log.wtf("onCreate BillerActivity", "onCreate BillerActivity");
-
-//        //auto updater realm biller
-//        realmListener = new RealmChangeListener() {
-//            @Override
-//            public void onChange() {
-//                Timber.d("Masuk realm listener bilactive asdfasdfa");
-//                if(!BillerActivity.this.isFinishing()){
-//                    if(progdialog != null && progdialog.isShowing())
-//                        progdialog.dismiss();
-//                    if(isEmptyBiller){
-//                        initializeData();
-//                    }
-//                    else {
-//                        mBillerTypeData = realm.where(Biller_Type_Data_Model.class)
-//                                .equalTo(WebParams.BILLER_TYPE_CODE, _biller_type_code)
-//                                .findFirst();
-//                        if(mBillerTypeData.getBiller_data_models().size() == 0) {
-//                            BillerActivity.this.finish();
-//                        }
-//                    }
-//
-//                }
-//            }};
-//        realm.addChangeListener(realmListener);
-//
-//        FragmentManager fm = getSupportFragmentManager();
-//        // Check to see if we have retained the worker fragment.
-//        mWorkFragment = (BillerActivityRF) fm.findFragmentByTag(BillerActivityRF.BILLERACTIV_TAG);
-//        // If not retained (or first time running), we need to create it.
-//        if (mWorkFragment == null) {
-//            mWorkFragment = new BillerActivityRF();
-//            // Tell it who it is working with.
-//            fm.beginTransaction().add(mWorkFragment, BillerActivityRF.BILLERACTIV_TAG).commit();
-//        }
-//
-//        mWorkFragment.getBillerList(_biller_type_code, isOneBiller);
-//
-//        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-//            @Override
-//            public void onBackStackChanged() {
-//                if(isFragmentValid())
-//                    mWorkFragment.runQueing();
-//            }
-//        });
     }
 
     private void getBillerData() {
@@ -233,14 +134,12 @@ public class BillerActivity extends BaseActivity {
     }
 
     private void initializeData() {
-//        billerData = realm.where(BillerItem.class).findAll();
 
         if (billerData != null) {
-            Timber.d("isi billeractivity isinya " + billerData.size());
+            Timber.d("isi billeractivity isinya %s", billerData.size());
 
             if (billerData.size() != 0) {
                 if (findViewById(R.id.biller_content) != null) {
-                    isEmptyBiller = false;
                     isOneBiller = billerData.size() <= 1;
                     initializeListBiller();
                 }
@@ -397,7 +296,7 @@ public class BillerActivity extends BaseActivity {
     }
 
     public void setResultActivity(int result) {
-        setResult(MainPage.RESULT_BALANCE);
+        setResult(result);
     }
 
     @Override

@@ -47,7 +47,6 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
@@ -122,7 +121,6 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
     private Boolean is_display_amount;
     private Boolean is_sgo_plus;
     private Boolean isPIN;
-    Boolean isFacebook = false;
     private Boolean isShowDescription = false;
     private Boolean isPLN = false;
     private ProgressDialog progdialog;
@@ -131,7 +129,6 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
     private LinearLayout ly_additionalFee;
     private TextView tv_additionalFee;
     private String additionalFee;
-    private LevelClass levelClass;
     private Boolean isAgent;
 
     private Switch favoriteSwitch;
@@ -139,7 +136,6 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
     private String productType = "";
     private String item_id = "";
     String value_pin = "";
-    String _amount = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -174,7 +170,6 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
     private void initializeLayout() {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        levelClass = new LevelClass(getActivity(), sp);
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
         Bundle args = getArguments();
@@ -429,7 +424,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
                         btn_submit.setEnabled(true);
                     } else {
                         if (inputValidation()) {
-                            sentInsertTransTopup(et_token_value.getText().toString(), _amount);
+                            sentInsertTransTopup(et_token_value.getText().toString());
                         } else btn_submit.setEnabled(true);
                     }
 
@@ -469,22 +464,17 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
             //  Log.d("onActivity result", "Biller Fragment masuk request exit");
             if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
                 value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
-                if (is_input_amount)
-                    _amount = amount_desire;
-                else
-                    _amount = amount;
-                //    Log.d("onActivity result", "Biller Fragment result pin value");
 
                 if (favoriteSwitch.isChecked()) {
                     onSaveToFavorite();
                 } else {
-                    sentInsertTransTopup(value_pin, _amount);
+                    sentInsertTransTopup(value_pin);
                 }
             }
         }
     }
 
-    private void sentInsertTransTopup(String tokenValue, final String _amount) {
+    private void sentInsertTransTopup(String tokenValue) {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -520,8 +510,8 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
                             String code = model.getError_code();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                getTrxStatus(tx_id, args.getString(DefineValue.BILLER_COMM_ID), _amount);
-                                setResultActivity(MainPage.RESULT_BALANCE);
+                                getTrxStatus(tx_id, args.getString(DefineValue.BILLER_COMM_ID));
+                                setResultActivity();
 
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
@@ -608,7 +598,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -616,7 +606,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + response.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 code = model.getError_code();
 
@@ -652,7 +642,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
     }
 
 
-    private void getTrxStatus(final String txId, String comm_id, final String _amount) {
+    private void getTrxStatus(final String txId, String comm_id) {
         try {
 
             extraSignature = txId + comm_id;
@@ -682,15 +672,15 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
                             if (!model.getOn_error()) {
                                 if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
 
-                                    String txstatus = model.getTx_status();
+                                    String txStatus = model.getTx_status();
                                     showReportBillerDialog(sp.getString(DefineValue.USER_NAME, ""),
                                             sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
-                                            txstatus, _amount, model);
+                                            txStatus, model);
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     String message = model.getError_message();
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(getActivity(), message);
-                                }else if (code.equals(DefineValue.ERROR_9333)) {
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
                                     Timber.d("isi response app data:" + model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
                                     AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -698,7 +688,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 } else {
                                     String msg = model.getError_message();
                                     showDialog(msg);
@@ -725,23 +715,8 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         }
     }
 
-    private void showDialogError(String message) {
-        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.blocked_pin_title),
-                message,
-                new DefinedDialog.DialogButtonListener() {
-                    @Override
-                    public void onClickButton(View v, boolean isLongClick) {
-                        onOkButton();
-                    }
-                });
-
-        dialognya.show();
-    }
-
     private void changeToSgoPlus(String _tx_id, String _amount, String _bank_code, String _product_code,
                                  String _fee) {
-
-
         Bundle args = getArguments();
 
         Intent i = new Intent(getActivity(), SgoPlusWeb.class);
@@ -783,13 +758,13 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         }
 
         i.putExtra(DefineValue.AMOUNT_DESIRED, _isi_amount_desired);
-        Timber.d("isi args:" + args.toString());
+        Timber.d("isi args:%s", args.toString());
         btn_submit.setEnabled(true);
         switchActivityIB(i);
     }
 
     private void showReportBillerDialog(String name, String userId, String txId, String itemName, String txStatus,
-                                        String _amount, GetTrxStatusModel model) {
+                                        GetTrxStatusModel model) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, name);
@@ -807,28 +782,15 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         args.putString(DefineValue.DESTINATION_REMARK, NoHPFormat.formatTo62(cust_id));
         args.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription);
 
-        Boolean txStat = false;
+        boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
-//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
         } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
-//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
         }
-//        else if (txStatus.equals(DefineValue.SUSPECT)) {
-//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-//        } else if (!txStatus.equals(DefineValue.FAILED)) {
-//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-//        } else {
-//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
-//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
         args.putString(DefineValue.TRX_STATUS_REMARK, model.getTx_status_remark());
         if (!txStat) args.putString(DefineValue.TRX_REMARK, model.getTx_remark());
-
-
-//        double totalAmount = Double.parseDouble(_amount) + Double.parseDouble(fee);
-//        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(String.valueOf(totalAmount)));
 
         String _isi_amount_desired = "";
         if (is_input_amount)
@@ -854,7 +816,6 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         args.putString(DefineValue.PRODUCT_NAME, model.getProduct_name());
 
         dialog.setArguments(args);
-//        dialog.setTargetFragment(this, 0);
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         ft.add(dialog, ReportBillerDialog.TAG);
         ft.commitAllowingStateLoss();
@@ -896,12 +857,12 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
     }
 
-    private void setResultActivity(int result) {
+    private void setResultActivity() {
         if (getActivity() == null)
             return;
 
         BillerActivity fca = (BillerActivity) getActivity();
-        fca.setResultActivity(result);
+        fca.setResultActivity(MainPage.RESULT_BALANCE);
     }
 
     private void changeTextBtnSub() {
@@ -1070,8 +1031,8 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + response.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                            }else {
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                            } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
@@ -1087,7 +1048,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
 
                     @Override
                     public void onComplete() {
-                        sentInsertTransTopup(value_pin, _amount);
+                        sentInsertTransTopup(value_pin);
                     }
                 });
     }

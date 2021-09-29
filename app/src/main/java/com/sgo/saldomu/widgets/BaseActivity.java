@@ -46,17 +46,15 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
     private TextView title_detoolbar, greeting_detoolbar;
     private ImageView img_detoolbar;
     private ProgressBar deprogressbar;
-    protected SMSclass smsClass;
-    protected boolean isActive;
     public String[] perms = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-//    private String[] perms = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CONTACTS,
+
     private IntentFilter fcmFilter = new IntentFilter();
     FcmReceiver fcmReceiver = new FcmReceiver();
 
     protected PermissionResult permissionResultInterface = this;
 
     protected SecurePreferences sp;
-    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey, userName;
+    protected String memberIDLogin, commIDLogin, userPhoneID, userName;
     protected String extraSignature = "";
 
     protected Gson gson;
@@ -73,7 +71,6 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
         memberIDLogin = sp.getString(DefineValue.MEMBER_ID, "");
         commIDLogin = sp.getString(DefineValue.COMMUNITY_ID, "");
         userPhoneID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
         userName = sp.getString(DefineValue.USER_NAME, "");
 
         detoolbar = findViewById(R.id.main_toolbar);
@@ -95,14 +92,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
     @Override
     protected void onStart() {
         super.onStart();
-        isActive = true;
         checkPermission();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        isActive = false;
     }
 
     @Override

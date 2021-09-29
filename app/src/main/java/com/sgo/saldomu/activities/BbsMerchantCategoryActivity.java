@@ -28,29 +28,29 @@ public class BbsMerchantCategoryActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         initializeToolbar();
 
-        memberId        = getIntent().getStringExtra("memberId");
-        shopId          = getIntent().getStringExtra("shopId");
-        flagApprove     = getIntent().getStringExtra("flagApprove");
-        setupOpenHour   = getIntent().getStringExtra("setupOpenHour");
+        memberId = getIntent().getStringExtra(DefineValue.MEMBER_ID);
+        shopId = getIntent().getStringExtra(DefineValue.SHOP_ID);
+        flagApprove = getIntent().getStringExtra(DefineValue.FLAG_APPROVE);
+        setupOpenHour = getIntent().getStringExtra(DefineValue.SETUP_OPEN_HOUR);
 
         if (findViewById(R.id.category_content) != null) {
             if (savedInstanceState != null) {
                 return;
             }
 
-            Intent intent    = getIntent();
-            int index = intent.getIntExtra(DefineValue.INDEX,0);
+            Intent intent = getIntent();
+            int index = intent.getIntExtra(DefineValue.INDEX, 0);
 
             Fragment newFragment = null;
             switch (index) {
-                case 0 :
+                case 0:
                     newFragment = new FragMerchantCategory();
 
                     Bundle bundle = new Bundle();
-                    bundle.putString("memberId", memberId);
-                    bundle.putString("shopId", shopId);
-                    bundle.putString("flagApprove", flagApprove);
-                    bundle.putString("setupOpenHour", setupOpenHour);
+                    bundle.putString(DefineValue.MEMBER_ID, memberId);
+                    bundle.putString(DefineValue.SHOP_ID, shopId);
+                    bundle.putString(DefineValue.FLAG_APPROVE, flagApprove);
+                    bundle.putString(DefineValue.SETUP_OPEN_HOUR, setupOpenHour);
                     newFragment.setArguments(bundle);
                     break;
             }
@@ -74,17 +74,16 @@ public class BbsMerchantCategoryActivity extends BaseActivity {
         setActionBarTitle(getString(R.string.merchant_category));
     }
 
-    public void switchContent(Fragment mFragment,String fragName,Boolean isBackstack) {
+    public void switchContent(Fragment mFragment, String fragName, Boolean isBackstack) {
         ToggleKeyboard.hide_keyboard(this);
-        if(isBackstack){
+        if (isBackstack) {
             Timber.d("backstack");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.category_content, mFragment, fragName)
                     .addToBackStack(null)
                     .commitAllowingStateLoss();
-        }
-        else {
+        } else {
             Timber.d("bukan backstack");
             getSupportFragmentManager()
                     .beginTransaction()

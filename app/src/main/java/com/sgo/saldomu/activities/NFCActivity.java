@@ -64,7 +64,6 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
     private String merchantType;
     private String reverse_card_key;
     private boolean reversalSuccess = false;
-    private Boolean testReversal = false;
     private Boolean cardShifted = false;
     private int count = 1;
 
@@ -367,7 +366,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                             } else if (code.equals("0031")) {
                                 Dialog dialog = DefinedDialog.MessageDialog(NFCActivity.this, getString(R.string.remark),
                                         model.getErrorMessage(),
-                                        (v, isLongClick) -> {
+                                        () -> {
                                             dismissProgressDialog();
                                         });
 

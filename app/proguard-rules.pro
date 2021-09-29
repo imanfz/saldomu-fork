@@ -54,7 +54,6 @@
 #-keep class com.sgo.saldomu.coreclass.Singleton.MyApiClient { *; }
 -keep class com.sgo.saldomu.coreclass.MyPicasso { *; }
 -keep class com.sgo.saldomu.coreclass.NotificationActionView { *; }
--keep class com.sgo.saldomu.coreclass.PeriodTime { *; }
 -keep class com.sgo.saldomu.coreclass.RoundedImageView { *; }
 -keep class com.sgo.saldomu.coreclass.QRCodeEncoder { *; }
 -keep class com.sgo.saldomu.coreclass.WebParams { *; }

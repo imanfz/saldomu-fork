@@ -18,11 +18,9 @@ import com.sgo.saldomu.fragments.FragHelp;
 public class ContactTabAdapter extends FragmentStatePagerAdapter {
 
     private final String[] TITLES;
-    private final Context mContext;
 
-    public ContactTabAdapter(FragmentManager fm, Context _context, String[] _titles) {
+    public ContactTabAdapter(FragmentManager fm, String[] _titles) {
         super(fm);
-        mContext = _context;
         TITLES = _titles;
     }
 

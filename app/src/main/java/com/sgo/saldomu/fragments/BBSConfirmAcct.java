@@ -40,7 +40,7 @@ import timber.log.Timber;
 
 
 public class BBSConfirmAcct extends BaseFragment {
-    public final static String TAG = "com.sgo.saldomu.fragments.BBSConfirmAcct";
+
     private final static String TYPE_ACCT = "ACCT";
     private EditText etPassword;
     private ActionListener actionListener;
@@ -198,6 +198,7 @@ public class BBSConfirmAcct extends BaseFragment {
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
 
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 String name = getArguments().getString(DefineValue.ACCT_NAME);
@@ -215,25 +216,17 @@ public class BBSConfirmAcct extends BaseFragment {
 
                                 Dialog dialog = DefinedDialog.MessageDialog(getContext(),
                                         title, msg,
-                                        new DefinedDialog.DialogButtonListener() {
-                                            @Override
-                                            public void onClickButton(View v, boolean isLongClick) {
-                                                actionListener.onSuccess();
-                                            }
-                                        });
+                                        () -> actionListener.onSuccess());
                                 dialog.show();
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                code = model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -249,7 +242,7 @@ public class BBSConfirmAcct extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient: " + e.getMessage());
+            Timber.d("httpclient: %s", e.getMessage());
         }
     }
 

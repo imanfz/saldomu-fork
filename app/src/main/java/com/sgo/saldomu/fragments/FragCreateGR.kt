@@ -181,7 +181,7 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
             params[WebParams.PROMO] = promoCode
             params[WebParams.DISCOUNT_AMOUNT] = totalDisc
             params[WebParams.TOTAL_AMOUNT] = totalAmount
-            params[WebParams.ACTION_CODE] = "N"
+            params[WebParams.ACTION_CODE] = DefineValue.STRING_NO
             Timber.d("params create GR:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CREATE_GR, params,
                     object : ObjListeners {
@@ -215,7 +215,7 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
                                     DefineValue.ERROR_0066 -> {
                                         Timber.d("isi response maintenance:$response")
                                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                        alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                        alertDialogMaintenance.showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         Timber.d("isi error create GR:$response")

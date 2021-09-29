@@ -19,11 +19,8 @@ import timber.log.Timber;
 public class AppInfoService extends Service {
 
     private final IBinder testBinder = new MyLocalBinder();
-    private boolean isServiceDestroyed;
     private Activity mainPageContext = null;
     private UtilsLoader utilsLoader;
-
-    private static final long LOOPING_TIME = 50000; // 30 detik = 30 * 1000 ms
 
     private static class MyHandler extends Handler {
         @Override
@@ -52,7 +49,6 @@ public class AppInfoService extends Service {
     public void onCreate() {
         super.onCreate();
         Timber.i("Masuk onCreate call AppInfo Service");
-        setServiceDestroyed(false);
         mHandler.removeCallbacks(callBalance);
 //        mHandler.postDelayed(callBalance, LOOPING_TIME);
     }
@@ -69,14 +65,6 @@ public class AppInfoService extends Service {
         return START_STICKY;
     }
 
-    public boolean isServiceDestroyed() {
-        return isServiceDestroyed;
-    }
-
-    private void setServiceDestroyed(boolean isServiceDestroyed) {
-        this.isServiceDestroyed = isServiceDestroyed;
-    }
-
     public class MyLocalBinder extends Binder {
         public AppInfoService getService() {
             return AppInfoService.this;
@@ -91,7 +79,6 @@ public class AppInfoService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Timber.i("Masuk onDestroy App Info Service");
-        setServiceDestroyed(true);
         mHandler.removeCallbacks(callBalance);
     }
 

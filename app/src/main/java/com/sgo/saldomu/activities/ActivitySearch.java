@@ -1,6 +1,5 @@
 package com.sgo.saldomu.activities;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -71,30 +70,6 @@ public class ActivitySearch extends BaseActivity {
 
     }
 
-    public void switchActivity(Class<?> clsName, Bundle bundle) {
-        ToggleKeyboard.hide_keyboard(this);
-
-        Intent intent = new Intent(this, clsName);
-        if (bundle.size() > 0) {
-            intent.putExtra(DefineValue.BUNDLE_FRAG, bundle);
-        }
-        startActivity(intent);
-    }
-
-    public void switchFragment(Fragment fragment, String fragName, boolean isBackStack) {
-        ToggleKeyboard.hide_keyboard(this);
-        if (isBackStack) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(content.getId(), fragment, fragName)
-                    .addToBackStack(fragName)
-                    .commitAllowingStateLoss();
-        } else {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(content.getId(), fragment, fragName)
-                    .commitAllowingStateLoss();
-        }
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         ToggleKeyboard.hide_keyboard(this);
@@ -112,7 +87,6 @@ public class ActivitySearch extends BaseActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override

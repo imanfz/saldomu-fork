@@ -80,8 +80,8 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
     SCADMCommunityModel obj;
     ArrayList<DenomListModel> itemList;
     ArrayList<DenomOrderListModel> orderList;
-    String productCode, bankCode, productName, commName, commCode, memberCode, amount, fee, totalAmount, ccyID, bankGateway, bankName, txID, remark,
-            apiKey, memberIdSACDM, memberName = "", commID, item_name = "", storeName, storeAddress, cust_id, product_type, tx_favorite_type, notes, promoCode, totalDiscount;
+    String productCode, bankCode, productName, commName, commCode, memberCode, amount, fee, totalAmount, ccyID, bankGateway, bankName, txID,
+            memberIdSACDM, memberName = "", commID, item_name = "", storeName, storeAddress, cust_id, product_type, tx_favorite_type, notes, promoCode, totalDiscount;
     int attempt, failed;
     Boolean isPIN = false, isFav = false;
 
@@ -117,7 +117,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         Bundle bundle = getArguments();
         assert bundle != null;
         if (bundle != null) {
-            Timber.d("isi bundle : " +bundle.toString());
+            Timber.d("isi bundle : " + bundle.toString());
             bankGateway = bundle.getString(WebParams.BANK_GATEWAY, "");
             bankName = bundle.getString(WebParams.BANK_NAME, "");
             attempt = bundle.getInt(DefineValue.ATTEMPT, -1);
@@ -134,12 +134,6 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                 tx_favorite_type = bundle.getString(DefineValue.TX_FAVORITE_TYPE, "");
                 product_type = bundle.getString(DefineValue.PRODUCT_TYPE, "");
             }
-        }
-
-        try {
-            JSONArray jArray = new JSONArray(promoCode);
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
 
         orderList = new ArrayList<>();
@@ -241,7 +235,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         i.putExtra(DefineValue.BANK_NAME, bank_name);
         i.putExtra(DefineValue.PRODUCT_NAME, product_name);
         i.putExtra(DefineValue.FEE, fee);
-        i.putExtra(DefineValue.REMARK, remark);
+        i.putExtra(DefineValue.REMARK, "");
         i.putExtra(DefineValue.COMMUNITY_CODE, commCode);
         i.putExtra(DefineValue.MEMBER_CODE, memberCode);
         i.putExtra(DefineValue.MEMBER_ID_SCADM, memberIdSACDM);
@@ -250,7 +244,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         i.putExtra(DefineValue.AMOUNT, amount);
         i.putExtra(DefineValue.TOTAL_AMOUNT, total_amount);
         i.putExtra(DefineValue.COMMUNITY_ID, commID);
-        i.putExtra(DefineValue.API_KEY, apiKey);
+        i.putExtra(DefineValue.API_KEY, "");
         i.putExtra(DefineValue.CALLBACK_URL, (DefineValue.CALLBACK_URL));
         i.putExtra(DefineValue.REPORT_TYPE, DefineValue.TOPUP);
         i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.TOPUP_IB_TYPE);
@@ -260,12 +254,12 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
     }
 
 
-    private void setResultActivity(int result) {
+    private void setResultActivity() {
         if (getActivity() == null)
             return;
 
         DenomSCADMActivity fca = (DenomSCADMActivity) getActivity();
-        fca.setResultActivity(result);
+        fca.setResultActivity();
     }
 
     private void CallPINinput(int _attempt) {
@@ -274,64 +268,6 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
             i.putExtra(DefineValue.ATTEMPT, _attempt);
         startActivityForResult(i, MainPage.REQUEST_FINISH);
     }
-
-//    void getDenomConfirmData(){
-//
-//        showLoading();
-//
-//        extraSignature = obj.getMember_id_scadm()+productCode;
-//
-//        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_DENOM_INVOKE, extraSignature);
-//
-//        params.put(WebParams.MEMBER_ID_SCADM, obj.getMember_id_scadm());
-//        params.put(WebParams.PRODUCT_CODE, productCode);
-//        params.put(WebParams.BANK_CODE, bankCode);
-//        params.put(WebParams.ITEM, buildItem());
-//        params.put(WebParams.USER_ID, userPhoneID);
-//
-//        Timber.d("isi params sent get denom invoke:"+params.toString());
-//
-//        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_DENOM_INVOKE, params,
-//                new ObjListeners() {
-//                    @Override
-//                    public void onResponses(JSONObject response) {
-//                        try {
-//
-//                            Timber.d("isi response get denom invoke:"+response.toString());
-//                            String code = response.getString(WebParams.ERROR_CODE);
-//
-//                            if (code.equals(WebParams.SUCCESS_CODE)) {
-//
-//                                setDataView(response);
-//
-//                            } else if(code.equals(WebParams.LOGOUT_CODE)){
-//                                Timber.d("isi response autologout:"+response.toString());
-//                                String message = response.getString(WebParams.ERROR_MESSAGE);
-//                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-//                                test.showDialoginActivity(getActivity(),message);
-//                            }
-//                            else {
-//                                String msg = response.getString(WebParams.ERROR_MESSAGE);
-////                            showDialogUpdate(msg);
-//                            }
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable throwable) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//                        dismissLoading();
-//
-//                    }
-//                });
-//    }
 
     public void confirmToken() {
         showProgressDialog();
@@ -344,7 +280,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         params.put(WebParams.COMM_CODE, commCode);
         params.put(WebParams.USER_COMM_CODE, sp.getString(DefineValue.COMMUNITY_CODE, ""));
         params.put(WebParams.USER_ID, userPhoneID);
-        Timber.d("params confirm payment denom scadm : " + params.toString());
+        Timber.d("params confirm payment denom scadm : %s", params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_PAYMENT_DGI, params,
                 new ObjListeners() {
@@ -355,22 +291,22 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                             Gson gson = new Gson();
                             jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                             String code = response.getString(WebParams.ERROR_CODE);
-                            String error_message = response.getString(WebParams.ERROR_MESSAGE);
-                            Timber.d("response confirm payment denom scadm : " + response.toString());
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            Timber.d("response confirm payment denom scadm : %s", response.toString());
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 sentInquiry();
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                Timber.d("isi response autologout:%s", response.toString());
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + response.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                Timber.d("isi response maintenance:%s", response.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-//                                Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
-                                showDialog(error_message);
+                                showDialog(message);
                             }
 
 
@@ -423,30 +359,23 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                         try {
                             Gson gson = new Gson();
                             jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
-                            Timber.d("isi response get denom invoke:" + response.toString());
+                            Timber.d("isi response get denom invoke:%s", response.toString());
                             String code = response.getString(WebParams.ERROR_CODE);
-
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-
                                 setDataView(response);
-
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                Timber.d("isi response autologout:" + response.toString());
-                                String message = response.getString(WebParams.ERROR_MESSAGE);
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                Timber.d("isi response autologout:%s", response.toString());
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + response.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                Timber.d("isi response maintenance:%s", response.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                String msg = response.getString(WebParams.ERROR_MESSAGE);
-                                showDialog(msg);
+                                showDialog(message);
                             }
 
                         } catch (JSONException e) {
@@ -489,40 +418,33 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                             try {
                                 jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                String error_message = response.getString(WebParams.ERROR_MESSAGE);
-                                Timber.d("isi response InquiryTrx denom scadm: " + response.toString());
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                Timber.d("isi response InquiryTrx denom scadm: %s", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    if (bankGateway.equalsIgnoreCase("N")) {
+                                    if (bankGateway.equalsIgnoreCase(DefineValue.STRING_NO)) {
                                         changeToSGOPlus(txID, productCode, productName, bankCode,
                                                 String.valueOf(amount), String.valueOf(fee), String.valueOf(totalAmount), bankName);
-                                    } else if (bankGateway.equalsIgnoreCase("Y")) {
+                                    } else if (bankGateway.equalsIgnoreCase(DefineValue.STRING_YES)) {
                                         if (productCode.equalsIgnoreCase("SCASH")) {
                                             CallPINinput(attempt);
                                         } else {
                                             if (inputValidation()) {
-                                                sentInsertTransTopup(OTPedittext.getText().toString(), amount);
+                                                sentInsertTransTopup(OTPedittext.getText().toString());
                                             }
                                         }
                                     }
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
-                                    Timber.d("Error resendTokenSGOL:" + response.toString());
-                                    code = response.getString(WebParams.ERROR_MESSAGE);
-
-                                    showDialog(code);
+                                    showDialog(message);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -537,15 +459,14 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                         @Override
                         public void onComplete() {
                             dismissProgressDialog();
-//                            btn_confirm.setEnabled(true);
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
-    private void sentInsertTransTopup(String tokenValue, final String _amount) {
+    private void sentInsertTransTopup(String tokenValue) {
         try {
             showProgressDialog();
             String link = MyApiClient.LINK_INSERT_TRANS_TOPUP;
@@ -564,7 +485,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
             params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncryptCommID(commName, uuid, dateTime, userPhoneID, tokenValue, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());
+            Timber.d("isi params insertTrxTOpupSGOL:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
@@ -573,32 +494,24 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                             FailedPinModel model = getGson().fromJson(object, FailedPinModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                getTrxStatus(txID, commID, _amount);
-                                setResultActivity(MainPage.RESULT_BALANCE);
+                                getTrxStatus(txID, commID);
+                                setResultActivity();
 
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-
-                                code = model.getError_code() + " : " + model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                                String message = model.getError_message();
+                                Toast.makeText(getActivity(), code + " : " + message, Toast.LENGTH_LONG).show();
                                 showDialog(message);
-//                            progdialog.dismiss();
-//                            btn_next.setEnabled(true);
                                 if (isPIN && message.equals("PIN tidak sesuai")) {
                                     Intent i = new Intent(getActivity(), InsertPIN.class);
 
@@ -610,10 +523,6 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
 
                                     startActivityForResult(i, MainPage.REQUEST_FINISH);
                                 }
-//                                else {
-//                                    getActivity().finish();
-//                                }
-
                             }
                         }
 
@@ -628,11 +537,11 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
-    private void getTrxStatus(final String txId, String comm_id, final String _amount) {
+    private void getTrxStatus(final String txId, String comm_id) {
         try {
             showProgressDialog();
             extraSignature = txID + comm_id;
@@ -643,7 +552,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
             params.put(WebParams.TYPE, DefineValue.BIL_PAYMENT_TYPE);
             params.put(WebParams.TX_TYPE, DefineValue.ESPAY);
             params.put(WebParams.USER_ID, userPhoneID);
-            Timber.d("isi params sent get Trx Status:" + params.toString());
+            Timber.d("isi params sent get Trx Status:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
                     new ResponseListener() {
@@ -652,33 +561,28 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                             GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
 
-                                String txstatus = model.getTx_status();
                                 showReportBillerDialog(sp.getString(DefineValue.USER_NAME, ""),
                                         DateTimeFormat.formatToID(model.getCreated()),
                                         sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
-                                        txstatus, model.getTx_remark(), _amount, model.getTotal_amount(), model.getTx_fee(), getGson().toJson(model.getDenom_detail()), model.getBuss_scheme_code(),
+                                        model.getTx_status(), model.getTx_remark(), model.getTotal_amount(), model.getTx_fee(), getGson().toJson(model.getDenom_detail()), model.getBuss_scheme_code(),
                                         model.getBuss_scheme_name(), model.getProduct_name(), model.getOrder_id(), model.getComm_code(),
                                         model.getMember_code(), model.getStore_name(), model.getStore_address(), model.getStore_code(),
                                         model.getMember_cust_name(), model.getMember_cust_id(), model);
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                Timber.d("isi response autologout:%s", object.toString());
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                String msg;
-                                msg = model.getError_message();
-                                showDialog(msg);
+                                showDialog(message);
                             }
                         }
 
@@ -698,7 +602,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
     }
 
     private void showReportBillerDialog(String name, String date, String userId, String txId, String itemName, String txStatus,
-                                        String txRemark, String _amount, String totalAmount, String txFee, String denom_detail,
+                                        String txRemark, String totalAmount, String txFee, String denom_detail,
                                         String buss_scheme_code, String buss_scheme_name, String product_name, String order_id,
                                         String comm_code, String member_code, String store_name, String store_address, String store_code,
                                         String agent_name, String agent_phone, GetTrxStatusReportModel model) {
@@ -714,27 +618,16 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         args.putString(DefineValue.REPORT_TYPE, DefineValue.TOPUP);
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(txFee));
 
-        Boolean txStat = false;
+        boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
-//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
         } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
-//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
         }
-//        else if (txStatus.equals(DefineValue.SUSPECT)) {
-//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-//        } else if (!txStatus.equals(DefineValue.FAILED)) {
-//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-//        } else {
-//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
-//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
         args.putString(DefineValue.TRX_STATUS_REMARK, model.getTx_status_remark());
         if (!txStat) args.putString(DefineValue.TRX_REMARK, txRemark);
 
-
-//        double totalAmount = Double.parseDouble(amount) + Double.parseDouble(fee);
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(String.valueOf(totalAmount)));
         args.putString(DefineValue.DENOM_DETAIL, denom_detail);
         args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
@@ -804,7 +697,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
             bankName = resp.getString("bank_name");
             bankCode = bankCode;
             memberIdSACDM = obj.getMember_id_scadm();
-            memberName = resp.getString("member_name");
+            memberName = resp.getString(WebParams.MEMBER_NAME);
 
             commNameTextview.setText(commName);
             commCodeTextview.setText(commCode);
@@ -877,7 +770,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + response.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
@@ -910,7 +803,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                 String _amount;
                 _amount = amount;
                 //    Log.d("onActivity result", "Biller Fragment result pin value");
-                sentInsertTransTopup(value_pin, _amount);
+                sentInsertTransTopup(value_pin);
             } else {
                 backToDenomSACDM();
             }
@@ -926,7 +819,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
 //        getActivity().onBackPressed();
         List<Fragment> frags = getFragmentManager().getFragments();
         for (Fragment f : frags) {
-            if (f.getTag().equals(DenomSCADMActivity.DENOM_PAYMENT)){
+            if (f.getTag().equals(DenomSCADMActivity.DENOM_PAYMENT)) {
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 fragmentTransaction.remove(f).commit();
             }

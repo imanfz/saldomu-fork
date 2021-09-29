@@ -188,7 +188,7 @@ public class FragmentDenom extends BaseFragment {
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 } else {
                                     String msg = response.getString(WebParams.ERROR_MESSAGE);
                                     showDialog(msg);
@@ -257,7 +257,7 @@ public class FragmentDenom extends BaseFragment {
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 } else {
                                     String msg = response.getString(WebParams.ERROR_MESSAGE);
                                     showDialog(msg);

@@ -22,21 +22,14 @@ import timber.log.Timber;
 
 public class JobScheduleManager {
 
-    private Context mContext;
     private FirebaseJobDispatcher dispatcher;
 
     public JobScheduleManager(Context context){
-        this.mContext = context;
         this.dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
     }
 
     public static JobScheduleManager getInstance(Context context){
         return new JobScheduleManager(context);
-    }
-
-    public void scheduleRegisterFCM(){
-        Timber.d("Masuk schedule Register FCM");
-        scheduleJob(JobRegisterFCM.class,JobRegisterFCM.TAG);
     }
 
     public void scheduleUpdateDataBBS(){

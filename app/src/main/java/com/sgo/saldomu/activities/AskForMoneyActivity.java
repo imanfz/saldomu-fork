@@ -15,12 +15,10 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,7 +69,6 @@ import timber.log.Timber;
  */
 
 public class AskForMoneyActivity extends BaseActivity {
-    private View v;
     private ImageView imgProfile;
     private ImageView imgRecipients;
     private TextView txtName;
@@ -83,7 +80,6 @@ public class AskForMoneyActivity extends BaseActivity {
     private EditText etMessage;
     private String _memberId;
     private String _userid;
-    private String accessKey;
     private ProgressDialog progdialog;
 
     private int privacy;
@@ -131,7 +127,6 @@ public class AskForMoneyActivity extends BaseActivity {
 
         _memberId = sp.getString(DefineValue.MEMBER_ID, "");
         _userid = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
         setImageProfPic();
 
         txtName.setText(sp.getString(DefineValue.USER_NAME, ""));
@@ -143,21 +138,15 @@ public class AskForMoneyActivity extends BaseActivity {
 
         btnRequestMoney.setOnClickListener(btnRequestMoneyListener);
 
-        etAmount.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    setNumberRecipients();
-                }
+        etAmount.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                setNumberRecipients();
             }
         });
 
-        etMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    setNumberRecipients();
-                }
+        etMessage.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                setNumberRecipients();
             }
         });
 
@@ -227,33 +216,6 @@ public class AskForMoneyActivity extends BaseActivity {
 
         Timber.d("isi length recipients:" + phoneRetv.getRecipients().length);
     }
-
-    private Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            privacy = i + 1;
-            if (phoneRetv.hasFocus())
-                phoneRetv.clearFocus();
-            setNumberRecipients();
-
-            if (phoneRetv.length() == 0)
-                txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
-            else
-                txtNumberRecipients.setText(String.valueOf(phoneRetv.getRecipients().length));
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-            if (phoneRetv.hasFocus())
-                phoneRetv.clearFocus();
-            setNumberRecipients();
-
-            if (phoneRetv.length() == 0)
-                txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
-            else
-                txtNumberRecipients.setText(String.valueOf(phoneRetv.getRecipients().length));
-        }
-    };
 
     private class TempObjectData {
 
@@ -348,7 +310,7 @@ public class AskForMoneyActivity extends BaseActivity {
             params.put(WebParams.PRIVACY, privacy);
             params.put(WebParams.MEMBER_LEVEL, memberLevel);
 
-            Timber.d("isi params sent ask for money:" + params.toString());
+            Timber.d("isi params sent ask for money:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ASKFORMONEY_SUBMIT, params,
                     new ResponseListener() {
@@ -357,9 +319,7 @@ public class AskForMoneyActivity extends BaseActivity {
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
-
-
-                            Log.wtf("asd", "code" + code);
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                 JSONArray mArrayData;
@@ -384,27 +344,20 @@ public class AskForMoneyActivity extends BaseActivity {
                                 }
                                 showDialog(messageDialog);
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(AskForMoneyActivity.this, message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(AskForMoneyActivity.this, message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(AskForMoneyActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(AskForMoneyActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(AskForMoneyActivity.this, model.getError_message());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(AskForMoneyActivity.this);
                             } else {
                                 if (code.equals("0998")) {
                                     phoneRetv.requestFocus();
                                     phoneRetv.setError(getString(R.string.payfriends_recipients_duplicate_validation));
                                 }
-                                code = model.getError_message();
-
-                                Toast.makeText(AskForMoneyActivity.this, code, Toast.LENGTH_LONG).show();
-
+                                Toast.makeText(AskForMoneyActivity.this, message, Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -430,16 +383,8 @@ public class AskForMoneyActivity extends BaseActivity {
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.askfriends_predialog_title))
                 .setMessage(message)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        sentData(_message, _data);
-                    }
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> sentData(_message, _data))
+                .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
                 .show();
     }
 
@@ -475,12 +420,7 @@ public class AskForMoneyActivity extends BaseActivity {
         Message_Detail.setGravity(Gravity.LEFT);
         Message_Detail.setText(messageDialog);
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        btnDialogOTP.setOnClickListener(view -> dialog.dismiss());
 
         dialog.show();
     }

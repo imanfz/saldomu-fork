@@ -21,14 +21,10 @@ import java.util.ArrayList;
 public class CustomTabPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 2;
     private String tabTitles[] = new String[] {"Merchant", "Agent"};
-    private Context context;
-    private String[] menuItems;
     private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
 
-    public CustomTabPagerAdapter(FragmentManager fm, Context context, String[] menuItems, ArrayList<ShopDetail> shopDetails) {
+    public CustomTabPagerAdapter(FragmentManager fm, ArrayList<ShopDetail> shopDetails) {
         super(fm);
-        this.context        = context;
-        this.menuItems      = menuItems;
         this.shopDetails    = shopDetails;
     }
 

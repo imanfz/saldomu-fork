@@ -116,7 +116,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
                 } else if (code == DefineValue.ERROR_0066) run {
                     Timber.d("isi response maintenance:$`object`")
                     val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                    alertDialogMaintenance.showDialogMaintenance(this@HistoryActivity, model.error_message)
+                    alertDialogMaintenance.showDialogMaintenance(this@HistoryActivity)
                 }
             }
 
@@ -231,7 +231,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
                             }
                             WebParams.ERROR_0066 -> {
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(this@HistoryActivity, model.error_message)
+                                alertDialogMaintenance.showDialogMaintenance(this@HistoryActivity)
                             }
                             else -> {
                                 val msg = model.error_message

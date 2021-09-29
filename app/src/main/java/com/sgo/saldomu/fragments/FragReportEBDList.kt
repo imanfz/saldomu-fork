@@ -209,7 +209,7 @@ ${dateTo?.get(Calendar.DAY_OF_MONTH)}-${dateTo?.get(Calendar.MONTH)?.plus(1)}-${
                     }
                     DefineValue.ERROR_0066 -> {
                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                        alertDialogMaintenance.showDialogMaintenance(activity, message)
+                        alertDialogMaintenance.showDialogMaintenance(activity)
                     }
                     else -> {
                         Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
@@ -263,7 +263,7 @@ ${dateTo?.get(Calendar.DAY_OF_MONTH)}-${dateTo?.get(Calendar.MONTH)?.plus(1)}-${
                     }
                     DefineValue.ERROR_0066 -> {
                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                        alertDialogMaintenance.showDialogMaintenance(activity, message)
+                        alertDialogMaintenance.showDialogMaintenance(activity)
                     }
                     else -> {
                         Toast.makeText(activity, message, Toast.LENGTH_LONG).show()

@@ -28,7 +28,6 @@ import timber.log.Timber;
 
 public class InfoHargaWebActivity extends BaseActivity {
     private WebView webview_info_harga;
-    SecurePreferences sp;
     private ProgressBar progbar;
     private Boolean isDisconnected;
     private String masterDomainInfoHarga;
@@ -39,7 +38,6 @@ public class InfoHargaWebActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initializeToolbar();
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         progbar = findViewById(R.id.progbar);
 

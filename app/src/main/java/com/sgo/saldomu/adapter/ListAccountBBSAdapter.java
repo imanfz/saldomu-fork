@@ -22,7 +22,7 @@ import io.realm.RealmBaseAdapter;
 public class ListAccountBBSAdapter extends RealmBaseAdapter<BBSAccountACTModel> implements ListAdapter{
 
     public interface OnDeleteListener{
-        void onCLick(int position, View view);
+        void onCLick(int position);
     }
 
     Context context;
@@ -65,12 +65,7 @@ public class ListAccountBBSAdapter extends RealmBaseAdapter<BBSAccountACTModel> 
             holder.txtAccountCity = (TextView)row.findViewById(R.id.account_city_value);
             holder.layoutCity = row.findViewById(R.id.listaccount_layout_city);
             holder.btn_delete = (Button) row.findViewById(R.id.btn_delete);
-            holder.btn_delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onDeleteListener.onCLick(position,v);
-                }
-            });
+            holder.btn_delete.setOnClickListener(v -> onDeleteListener.onCLick(position));
             row.setTag(holder);
         }
         else {
@@ -115,10 +110,6 @@ public class ListAccountBBSAdapter extends RealmBaseAdapter<BBSAccountACTModel> 
     public void deleteItem(int position){
         adata.deleteFromRealm(position);
         notifyDataSetChanged();
-    }
-
-    public void setButtonDeleteHide(){
-        showDelete = false;
     }
 
     private class ListHolder

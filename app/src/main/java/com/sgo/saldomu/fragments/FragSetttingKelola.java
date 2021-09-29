@@ -65,19 +65,7 @@ import java.util.HashMap;
  */
 public class FragSetttingKelola extends Fragment implements View.OnClickListener {
     public final static String TAG = "com.sgo.saldomu.fragments.Frag_Settting_Kelola";
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
-
-    String[] _data;
-    ArrayList<String> menu;
     ListView lvSetting;
     String shopId, memberId, shopName, memberType, category, agentName, commName, province, district, address, stepApprove, shopClosed, isMobility;
     ProgressDialog progdialog, progdialog2;
@@ -89,7 +77,6 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
     View llMemberDetail;
     Button btnSettingLokasi;
     Switch swTutupToko;
-    ArrayList<String> selectedDates = new ArrayList<>();
     EasyAdapter lvSettingAdapter;
     String[] menuItems;
     FragmentManager fragmentManager;
@@ -100,33 +87,10 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragSetttingKelola.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FragSetttingKelola newInstance(String param1, String param2) {
-        FragSetttingKelola fragment = new FragSetttingKelola();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-        sp                      = CustomSecurePref.getInstance().getmSecurePrefs();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
     }
 
     @Override
@@ -136,34 +100,34 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
         setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.frag_settting_kelola, container, false);
 
-        menuItems               = getResources().getStringArray(R.array.list_bbs_setting);
+        menuItems = getResources().getStringArray(R.array.list_bbs_setting);
 
-        lvSettingAdapter        = new EasyAdapter(getActivity(),R.layout.list_view_item_setting_with_arrow, menuItems);
+        lvSettingAdapter = new EasyAdapter(getActivity(), R.layout.list_view_item_setting_with_arrow, menuItems);
 
-        lvSetting               = v.findViewById(R.id.lvSetting);
+        lvSetting = v.findViewById(R.id.lvSetting);
         lvSetting.setOverscrollFooter(new ColorDrawable(Color.TRANSPARENT));
         lvSetting.setVisibility(View.GONE);
 
-        llMemberDetail          =  v.findViewById(R.id.llMemberDetail);
+        llMemberDetail = v.findViewById(R.id.llMemberDetail);
         llMemberDetail.setVisibility(View.GONE);
 
-        btnSettingLokasi        = v.findViewById(R.id.btnSettingLokasi);
+        btnSettingLokasi = v.findViewById(R.id.btnSettingLokasi);
         btnSettingLokasi.setVisibility(View.GONE);
-        tvDetailMemberName      = v.findViewById(R.id.tvDetailMemberName);
-        tvCategoryName          = v.findViewById(R.id.tvCategoryName);
-        tvCommName              = v.findViewById(R.id.tvCommName);
-        tvAddress               = v.findViewById(R.id.tvAddress);
-        tvTutupSekarangLabel    = v.findViewById(R.id.tvTutupSekarangLabel);
+        tvDetailMemberName = v.findViewById(R.id.tvDetailMemberName);
+        tvCategoryName = v.findViewById(R.id.tvCategoryName);
+        tvCommName = v.findViewById(R.id.tvCommName);
+        tvAddress = v.findViewById(R.id.tvAddress);
+        tvTutupSekarangLabel = v.findViewById(R.id.tvTutupSekarangLabel);
         tvTutupSekarangLabel.setVisibility(View.GONE);
 
-        swTutupToko             = v.findViewById(R.id.swTutupToko);
+        swTutupToko = v.findViewById(R.id.swTutupToko);
 
         lvSetting.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String tag = "";
                 Fragment newFragment = null;
-                String  menuName = ((TextView) view.findViewById(R.id.txtTitleList)).getText().toString();
+                String menuName = ((TextView) view.findViewById(R.id.txtTitleList)).getText().toString();
                 fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
                     @Override
@@ -173,11 +137,11 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                 });
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-                if ( menuName.equals(getString(R.string.setup_agent_open_hour)) ) {
+                if (menuName.equals(getString(R.string.setup_agent_open_hour))) {
                     newFragment = new FragWaktuBeroperasi();
                     tag = FragWaktuBeroperasi.TAG;
                     setActionBarTitle(getString(R.string.setup_agent_open_hour));
-                } else if ( menuName.equals(getString(R.string.setup_tutup_manual)) ) {
+                } else if (menuName.equals(getString(R.string.setup_tutup_manual))) {
                     newFragment = new FragTutupManual();
                     tag = FragTutupManual.TAG;
                     setActionBarTitle(getString(R.string.setup_tutup_manual));
@@ -191,41 +155,41 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
         });
 
         btnSettingLokasi.setOnClickListener(
-            new View.OnClickListener() {
-                public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), BbsMemberLocationActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("memberId", memberId);
-                    intent.putExtra("shopId", shopId);
-                    intent.putExtra("shopName", shopName);
-                    intent.putExtra("memberType", memberType);
-                    intent.putExtra("memberName", agentName);
-                    intent.putExtra("commName", commName);
-                    intent.putExtra("province", province);
-                    intent.putExtra("district", district);
-                    intent.putExtra("address", address);
-                    intent.putExtra("category", category);
-                    intent.putExtra("isMobility", isMobility);
-                    getActivity().startActivityForResult(intent, MainPage.REQUEST_FINISH, null);
-                    //getActivity().finish();
+                new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), BbsMemberLocationActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra(DefineValue.MEMBER_ID, memberId);
+                        intent.putExtra(DefineValue.SHOP_ID, shopId);
+                        intent.putExtra(DefineValue.SHOP_NAME, shopName);
+                        intent.putExtra("memberType", memberType);
+                        intent.putExtra("memberName", agentName);
+                        intent.putExtra("commName", commName);
+                        intent.putExtra("province", province);
+                        intent.putExtra("district", district);
+                        intent.putExtra("address", address);
+                        intent.putExtra("category", category);
+                        intent.putExtra("isMobility", isMobility);
+                        getActivity().startActivityForResult(intent, MainPage.REQUEST_FINISH, null);
+                        //getActivity().finish();
 
+                    }
                 }
-            }
         );
 
 
-        swTutupToko.setOnCheckedChangeListener (null);
+        swTutupToko.setOnCheckedChangeListener(null);
 
-        flagApprove             = DefineValue.STRING_BOTH;
-        progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
+        flagApprove = DefineValue.STRING_BOTH;
+        progdialog = DefinedDialog.CreateProgressDialog(getContext(), "");
 
         String extraSignature = flagApprove;
 
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_MEMBER_SHOP_LIST, extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
-        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
+        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.CUSTOMER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
         params.put(WebParams.FLAG_APPROVE, flagApprove);
         params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
@@ -241,46 +205,46 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
                                 llMemberDetail.setVisibility(View.VISIBLE);
 
-                                JSONArray members = response.getJSONArray("member");
+                                JSONArray members = response.getJSONArray(WebParams.MEMBER);
 
                                 for (int i = 0; i < members.length(); i++) {
                                     JSONObject object = members.getJSONObject(i);
 
                                     ShopDetail shopDetail = new ShopDetail();
-                                    shopDetail.setMemberId(object.getString("member_id"));
-                                    shopDetail.setMemberCode(object.getString("member_code"));
-                                    shopDetail.setMemberName(object.getString("member_name"));
-                                    shopDetail.setMemberType(object.getString("member_type"));
-                                    shopDetail.setCommName(object.getString("comm_name"));
-                                    shopDetail.setCommCode(object.getString("comm_code"));
-                                    shopDetail.setShopId(object.getString("shop_id"));
-                                    shopDetail.setShopName(object.getString("shop_name"));
-                                    shopDetail.setShopFirstAddress(object.getString("address1"));
-                                    shopDetail.setShopDistrict(object.getString("district"));
-                                    shopDetail.setShopProvince(object.getString("province"));
-                                    shopDetail.setShopCountry(object.getString("country"));
-                                    shopDetail.setStepApprove(object.getString("step_approve"));
+                                    shopDetail.setMemberId(object.getString(WebParams.MEMBER_ID));
+                                    shopDetail.setMemberCode(object.getString(WebParams.MEMBER_CODE));
+                                    shopDetail.setMemberName(object.getString(WebParams.MEMBER_NAME));
+                                    shopDetail.setMemberType(object.getString(WebParams.MEMBER_TYPE));
+                                    shopDetail.setCommName(object.getString(WebParams.COMM_NAME));
+                                    shopDetail.setCommCode(object.getString(WebParams.COMM_CODE));
+                                    shopDetail.setShopId(object.getString(WebParams.SHOP_ID));
+                                    shopDetail.setShopName(object.getString(WebParams.SHOP_NAME));
+                                    shopDetail.setShopFirstAddress(object.getString(WebParams.ADDRESS1));
+                                    shopDetail.setShopDistrict(object.getString(WebParams.DISTRICT));
+                                    shopDetail.setShopProvince(object.getString(WebParams.PROVINCE));
+                                    shopDetail.setShopCountry(object.getString(WebParams.COUNTRY));
+                                    shopDetail.setStepApprove(object.getString(WebParams.STEP_APPROVE));
                                     shopDetail.setSetupOpenHour(object.getString("setup_open_hour"));
                                     shopDetail.setIsMobility(object.getString("is_mobility"));
 
-                                    memberId    = shopDetail.getMemberId();
-                                    shopId      = shopDetail.getShopId();
-                                    shopName      = shopDetail.getShopName();
-                                    memberType      = shopDetail.getMemberType();
-                                    agentName = object.getString("member_name");
-                                    stepApprove = object.getString("step_approve");
-                                    commName      = shopDetail.getCommName();
+                                    memberId = shopDetail.getMemberId();
+                                    shopId = shopDetail.getShopId();
+                                    shopName = shopDetail.getShopName();
+                                    memberType = shopDetail.getMemberType();
+                                    agentName = object.getString(WebParams.MEMBER_NAME);
+                                    stepApprove = object.getString(WebParams.STEP_APPROVE);
+                                    commName = shopDetail.getCommName();
                                     province = shopDetail.getShopProvince();
                                     district = shopDetail.getShopDistrict();
                                     address = shopDetail.getShopFirstAddress();
-                                    isMobility  = object.getString("is_mobility");
+                                    isMobility = object.getString("is_mobility");
 
-                                    if ( !object.getString("category").equals("") ) {
-                                        JSONArray categories = object.getJSONArray("category");
+                                    if (!object.getString(WebParams.CATEGORY).equals("")) {
+                                        JSONArray categories = object.getJSONArray(WebParams.CATEGORY);
 
                                         for (int j = 0; j < categories.length(); j++) {
                                             JSONObject object2 = categories.getJSONObject(j);
-                                            shopDetail.setCategories(object2.getString("category_name"));
+                                            shopDetail.setCategories(object2.getString(WebParams.CATEGORY));
                                         }
                                         category = TextUtils.join(", ", shopDetail.getCategories());
                                     } else {
@@ -289,22 +253,20 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
                                     shopDetails.add(shopDetail);
 
-                                    shopClosed = object.getString("shop_closed");
-                                    tvDetailMemberName.setText(object.getString("member_name"));
+                                    shopClosed = object.getString(WebParams.SHOP_CLOSED);
+                                    tvDetailMemberName.setText(object.getString(WebParams.MEMBER_NAME));
                                     tvCategoryName.setText(category);
-                                    tvCommName.setText(object.getString("shop_name"));
-                                    tvAddress.setText(object.getString("address1"));
+                                    tvCommName.setText(object.getString(WebParams.SHOP_NAME));
+                                    tvAddress.setText(object.getString(WebParams.ADDRESS1));
 
-                                    if ( isMobility.equals(DefineValue.STRING_NO) && shopDetail.getStepApprove().equals(DefineValue.STRING_YES) && shopDetail.getSetupOpenHour().equals(DefineValue.STRING_NO) ) {
+                                    if (isMobility.equals(DefineValue.STRING_NO) && shopDetail.getStepApprove().equals(DefineValue.STRING_YES) && shopDetail.getSetupOpenHour().equals(DefineValue.STRING_NO)) {
 
                                         FragWaktuBeroperasi fragWaktuBeroperasi = new FragWaktuBeroperasi();
                                         FragmentManager fragmentManager = getFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace(R.id.bbs_content, fragWaktuBeroperasi, null);
 
-                                        if ( getActivity() != null ) {
-                                            BBSActivity bbc = (BBSActivity) getActivity();
-
+                                        if (getActivity() != null) {
                                             TextView title_detoolbar = getActivity().findViewById(R.id.main_toolbar_title);
                                             title_detoolbar.setText(getString(R.string.menu_item_title_waktu_beroperasi));
                                         }
@@ -313,7 +275,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
                                 }
 
-                                if ( stepApprove.equals(DefineValue.STRING_NO) ) {
+                                if (stepApprove.equals(DefineValue.STRING_NO)) {
                                     btnSettingLokasi.setVisibility(View.VISIBLE);
                                     tvTutupSekarangLabel.setVisibility(View.GONE);
                                     swTutupToko.setVisibility(View.GONE);
@@ -324,7 +286,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                                     lvSetting.setVisibility(View.VISIBLE);
                                     lvSetting.setAdapter(lvSettingAdapter);
 
-                                    if ( shopClosed.equals(DefineValue.STRING_YES) ) {
+                                    if (shopClosed.equals(DefineValue.STRING_YES)) {
                                         swTutupToko.setChecked(false);
                                     } else {
                                         swTutupToko.setChecked(true);
@@ -370,7 +332,6 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                                 alertDialog.setMessage(getString(R.string.message_notif_not_registered_agent));
 
 
-
                                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
@@ -406,17 +367,6 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                     }
                 });
 
-//        memberId        = getIntent().getStringExtra("memberId");
-//        shopId          = getIntent().getStringExtra("shopId");
-//        shopName        = getIntent().getStringExtra("shopName");
-//        memberType      = getIntent().getStringExtra("memberType");
-//        category        = getIntent().getStringExtra("category");
-//        agentName       = getIntent().getStringExtra("memberName");
-//        commName        = getIntent().getStringExtra("commName");
-//        province        = getIntent().getStringExtra("province");
-//        district        = getIntent().getStringExtra("district");
-//        address         = getIntent().getStringExtra("address");
-
         // Inflate the layout for this fragment
         return v;
     }
@@ -427,11 +377,11 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
         title_detoolbar.setText(_title);
     }
 
-    private void InitializeTitle(){
+    private void InitializeTitle() {
         Fragment fragment = fragmentManager.findFragmentById(R.id.bbs_content);
-        if(fragment instanceof FragWaktuBeroperasi) {
+        if (fragment instanceof FragWaktuBeroperasi) {
             setActionBarTitle(getString(R.string.setup_agent_open_hour));
-        }else if(fragment instanceof FragTutupManual)
+        } else if (fragment instanceof FragTutupManual)
             setActionBarTitle(getString(R.string.setup_tutup_manual));
 
     }
@@ -445,8 +395,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.action_information:
                 showTutorial();
                 return true;
@@ -461,30 +410,20 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
         validasiTutorial();
     }
 
-    private void validasiTutorial()
-    {
-        if(sp.contains(DefineValue.TUTORIAL_KELOLA_AGENT))
-        {
-            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_KELOLA_AGENT,false);
-            if(is_first_time)
+    private void validasiTutorial() {
+        if (sp.contains(DefineValue.TUTORIAL_KELOLA_AGENT)) {
+            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_KELOLA_AGENT, false);
+            if (is_first_time)
                 showTutorial();
-        }
-        else {
+        } else {
             showTutorial();
         }
     }
 
-    private void showTutorial()
-    {
+    private void showTutorial() {
         Intent intent = new Intent(getActivity(), TutorialActivity.class);
         intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_kelola_agent);
         startActivity(intent);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     @Override
@@ -492,27 +431,12 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
 
     private void showAlertEnabledGPS() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getString(R.string.alertbox_gps_warning))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
 
                         Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -520,7 +444,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
 
@@ -537,31 +461,31 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-            shopStatus              = DefineValue.SHOP_OPEN;
-            Boolean isCallWebservice    = false;
+            shopStatus = DefineValue.SHOP_OPEN;
+            Boolean isCallWebservice = false;
 
             if (!isChecked) {
                 //buka
-                shopStatus          = DefineValue.SHOP_CLOSE;
+                shopStatus = DefineValue.SHOP_CLOSE;
 
             }
 
             if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
-                if ( !sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO) ) {
-                    isCallWebservice    = true;
+                if (!sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO)) {
+                    isCallWebservice = true;
                 }
 
             } else {
-                if ( !sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_YES) ) {
-                    isCallWebservice    = true;
+                if (!sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_YES)) {
+                    isCallWebservice = true;
                 }
             }
 
-            String extraSignature   = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
+            String extraSignature = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY, extraSignature);
 
-            if ( !GlobalSetting.isLocationEnabled(getActivity()) && shopStatus.equals(DefineValue.SHOP_OPEN) ) {
+            if (!GlobalSetting.isLocationEnabled(getActivity()) && shopStatus.equals(DefineValue.SHOP_OPEN)) {
                 showAlertEnabledGPS();
             } else {
                 if (isCallWebservice) {

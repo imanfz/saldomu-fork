@@ -136,11 +136,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
             }
         }
 
-
-        //Toast.makeText(this, SGO_PLUS_URL, Toast.LENGTH_LONG).show();
         Timber.d("sgo+ urlnya:" + SGO_PLUS_URL);
-        //showReportBillerDialog(MyApiClient.getCurrentDateTime(), paymentId, sp.getString(CoreApp.USERID_PHONE, "")
-        //        , bankName,productCode,fee,amount);
         loadUrl(sp.getString(DefineValue.USER_NAME, ""), SGO_PLUS_URL, paymentId, userID, totalAmount,
                 fee, amount, reportType, comm_id, transType, commCode, shareType);
         setResult(MainPage.RESULT_NORMAL);
@@ -336,7 +332,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(SgoPlusWeb.this, model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(SgoPlusWeb.this);
                                 }else {
                                     String msg = model.getError_message();
                                     if (code.equals("0003")) {
@@ -426,7 +422,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + object.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(SgoPlusWeb.this, model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(SgoPlusWeb.this);
                                 } else {
                                     if (code.equals("0003")) {
                                         showReportBillerDialog(userName, date, txId, userId, totalAmount, fee, amount,

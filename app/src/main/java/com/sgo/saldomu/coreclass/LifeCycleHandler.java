@@ -74,8 +74,4 @@ public class LifeCycleHandler implements Application.ActivityLifecycleCallbacks 
         return started > stopped;
     }
 
-    public static boolean isApplicationInForeground() {
-        return resumed > paused;
-    }
-
 }

@@ -49,7 +49,7 @@ public class FragJoinCommunityConfirm extends BaseFragment {
     TextView community_name, tvmember_code, tvmember_name, community_code;
     Button btn_next;
     String comm_name, member_code, member_name, comm_id_scadm, comm_code;
-    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
+    protected String userPhoneID;
     private ProgressDialog progdialog;
 
     @Nullable
@@ -64,10 +64,7 @@ public class FragJoinCommunityConfirm extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        memberIDLogin = sp.getString(DefineValue.MEMBER_ID,"");
-        commIDLogin = sp.getString(DefineValue.COMMUNITY_ID,"");
         userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         Bundle bundle = getArguments();
         comm_name = bundle.getString(DefineValue.COMMUNITY_NAME);
@@ -136,7 +133,7 @@ public class FragJoinCommunityConfirm extends BaseFragment {
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 }else {
                                     Timber.d("Error isi response confirm join community scadm:" + response.toString());
                                     code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
@@ -172,12 +169,7 @@ public class FragJoinCommunityConfirm extends BaseFragment {
     private void successDialog()
     {
         Dialog dialognya = DefinedDialog.MessageDialog(getActivity(),"Sukses!", "Selamat, anda berhasil bergabung dalam komunitas!",
-                new DefinedDialog.DialogButtonListener() {
-                    @Override
-                    public void onClickButton(View v, boolean isLongClick) {
-                        getActivity().finish();
-                    }
-                }
+                () -> getActivity().finish()
         );
 
         dialognya.setCanceledOnTouchOutside(false);

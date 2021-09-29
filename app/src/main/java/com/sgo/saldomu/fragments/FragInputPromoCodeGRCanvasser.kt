@@ -189,7 +189,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
                                     DefineValue.ERROR_0066 -> {
                                         Timber.d("isi response maintenance:$response")
                                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                        alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                        alertDialogMaintenance.showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         Timber.d("isi error confirm doc:$response")
@@ -277,7 +277,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
                                         AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                                     }
                                     DefineValue.ERROR_0066 -> {
-                                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         showDialog(message)

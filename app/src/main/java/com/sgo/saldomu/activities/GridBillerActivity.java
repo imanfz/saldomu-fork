@@ -27,7 +27,6 @@ import static com.sgo.saldomu.fragments.FragHomeNew.BILLER_TYPE_CODE_EMONEY;
 
 public class GridBillerActivity extends BaseActivity {
 
-    private SecurePreferences sp;
     Fragment fragment;
     FragmentManager fragmentManager;
     private Realm realm;
@@ -97,20 +96,7 @@ public class GridBillerActivity extends BaseActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void switchContent(Fragment mFragment, String fragName, String tag) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.content, mFragment)
-                .addToBackStack(tag)
-                .commitAllowingStateLoss();
-        setToolbarTitle(fragName);
-    }
-
     public void setToolbarTitle(String title) {
         setActionBarTitle(title);
-    }
-
-    public void setResultActivity(int result) {
-        setResult(MainPage.RESULT_BALANCE);
     }
 }

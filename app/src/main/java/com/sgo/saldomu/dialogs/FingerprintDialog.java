@@ -53,7 +53,6 @@ public class FingerprintDialog extends DialogFragment {
     private Cipher cipher;
     private KeyStore keyStore;
     private KeyGenerator keyGenerator;
-    private Key key;
     private FingerprintManager.CryptoObject cryptoObject;
     private FingerprintManager fingerprintManager;
     private KeyguardManager keyguardManager;

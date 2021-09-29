@@ -312,7 +312,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.Conne
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.alertbox_gps_warning))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
 
                         Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -320,7 +320,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.Conne
 
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
                         startActivity(new Intent(getApplicationContext(), MainPage.class));

@@ -10,18 +10,18 @@ public class DefineValue {
 
     //Final Value
     public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    public static final String SEC_PREF_NAME = BuildConfig.APPLICATION_ID+"_pref";
+    public static final String SEC_PREF_NAME = BuildConfig.APPLICATION_ID + "_pref";
     public static final String INDONESIA = "indonesia";
     public static final String PRODUCT_BCA_SIMTOOLKIT = "BCASIMTOOLKIT";
     public static final String PRODUCT_BCA_KLIKBCAVA = "KLIKBCAVA";
     public static final String PRODUCT_BCA_MOBILEBANK = "MBCAMOBILEBCA";
 
     //Static Value
-    public static String DEVELOPMENT = "development" ;
-    public static String PRODUCTION = "production" ;
+    public static String DEVELOPMENT = "development";
+    public static String PRODUCTION = "production";
     public static String language = null;
-    public static String VERSION_CODE = "" ;
-    public static String VERSION_NAME = "" ;
+    public static String VERSION_CODE = "";
+    public static String VERSION_NAME = "";
     public static String TOPUP_IB_TYPE = "1";
     public static String TOPUP_SMS_TYPE = "2";
     public static String TRANSFER_TYPE = "3";
@@ -30,8 +30,6 @@ public class DefineValue {
     public static String TOPUP_ACL_TYPE = "6";
     public static String CASHOUT_TUNAI_TYPE = "7";
     public static String YES = "1";
-    public static String Y = "Y";
-    public static String N = "N";
     public static String NO = "0";
     public static String SUCCESS = "S";
     public static String ONRECONCILED = "OR";
@@ -51,31 +49,31 @@ public class DefineValue {
     public static String TRANSACTION_ESPAY = "tsesp";
     public static String BIL_TYPE_BUY = "BUY";
     public static String BIL_TYPE_PAY = "PAY";
-    public static String BANKLIST_TYPE_ALL = "ALL" ;
-    public static String BANKLIST_TYPE_SMS = "SMS" ;
-    public static String BANKLIST_TYPE_IB = "IB" ;
-    public static String BANKLIST_TYPE_EMO = "EMO" ;
-    public static String AUTH_TYPE_PIN = "PIN" ;
-    public static String AUTH_TYPE_OTP = "OTP" ;
-    public static String TOKEN = "toKen" ;
-    public static String EMO = "EMO" ;
-    public static String ESPAY = "ESPAY" ;
-    public static String ERROR_0002 = "0002" ;
-    public static String ERROR_0004 = "0004" ;
-    public static String ERROR_0042 = "0042" ;
-    public static String ERROR_0018 = "0018" ;
-    public static String ERROR_0017 = "0017" ;
-    public static String ERROR_0126 = "0126" ;
-    public static String ERROR_0127 = "0127" ;
-    public static String ERROR_9333 = "9333" ;
-    public static String ERROR_0066 = "0066" ;
-    public static String ERROR_0061 = "0061" ;
-    public static String ERROR_0135 = "0135" ;
-    public static String ERROR_0338 = "0338" ;
-    public static String ERROR_57 = "57" ;
-    public static String SCASH = "SCASH" ;
-    public static String PRIVATE = "1" ;
-    public static String PUBLIC = "2" ;
+    public static String BANKLIST_TYPE_ALL = "ALL";
+    public static String BANKLIST_TYPE_SMS = "SMS";
+    public static String BANKLIST_TYPE_IB = "IB";
+    public static String BANKLIST_TYPE_EMO = "EMO";
+    public static String AUTH_TYPE_PIN = "PIN";
+    public static String AUTH_TYPE_OTP = "OTP";
+    public static String TOKEN = "toKen";
+    public static String EMO = "EMO";
+    public static String ESPAY = "ESPAY";
+    public static String ERROR_0002 = "0002";
+    public static String ERROR_0004 = "0004";
+    public static String ERROR_0042 = "0042";
+    public static String ERROR_0018 = "0018";
+    public static String ERROR_0017 = "0017";
+    public static String ERROR_0126 = "0126";
+    public static String ERROR_0127 = "0127";
+    public static String ERROR_9333 = "9333";
+    public static String ERROR_0066 = "0066";
+    public static String ERROR_0061 = "0061";
+    public static String ERROR_0135 = "0135";
+    public static String ERROR_0338 = "0338";
+    public static String ERROR_57 = "57";
+    public static String SCASH = "SCASH";
+    public static String PRIVATE = "1";
+    public static String PUBLIC = "2";
 
     public static boolean NOBACK = false;
     public static String IS_UPGRADE_AGENT = "isUpgradeAgent";
@@ -101,9 +99,10 @@ public class DefineValue {
     public static String COMMUNITY_NAME = "communityName";
     public static String COMMUNITY_API_KEY = "communityAPIKey";
     public static String MEMBER_CODE = "memberCode";
-    public static String MEMBER_CODE_ESPAY= "memberCodeEspay";
+    public static String MEMBER_CODE_ESPAY = "memberCodeEspay";
     public static String MEMBER_ID = "memberID";
     public static String MEMBER_NAME = "memberName";
+    public static String MEMBER_TYPE = "memberType";
     public static String MEMBER_SHOP_PHONE = "memberShopPhone";
     public static String MEMBER_SHOP_NO = "memberShopNo";
     public static String MEMBER_SHOP_NAME = "memberShopName";
@@ -240,8 +239,8 @@ public class DefineValue {
     public static String FROM = "from";
     public static String STATUS = "status";
     public static String REASON = "reason";
-	public static String BALANCE_AMOUNT = "balanceAmount";
-	public static String BALANCE_COLLECTOR_AMOUNT = "balanceCollectorAmount";
+    public static String BALANCE_AMOUNT = "balanceAmount";
+    public static String BALANCE_COLLECTOR_AMOUNT = "balanceCollectorAmount";
     public static String BALANCE_MAX_TOPUP = "balanceMaxTopup";
     public static String BALANCE_CCYID = "balaceCcyid";
     public static String BALANCE_REMAIN_LIMIT = "balanceRemainLimit";
@@ -257,7 +256,7 @@ public class DefineValue {
     public static String IS_REGISTERED_LEVEL = "isRegisteredLevel";
     public static String LIST_ID_TYPES = "listIDTypes";
 
-	public static String ACCOUNT_NUMBER = "accountNumber";
+    public static String ACCOUNT_NUMBER = "accountNumber";
     public static String NOMINAL = "nominal";
 
     public static String BANK_CASHOUT = "bankCashout";
@@ -313,45 +312,48 @@ public class DefineValue {
     public static String IS_SHOW_DESCRIPTION = "isDescription";
     public static String IS_PLN = "isPLN";
 
-    public static String SHOP_ID = "shop_id";
-    public static String CLOSED_TYPE_NONE   = "NONE";
-    public static String CLOSED_TYPE_DATE   = "DATE";
-    public static String CLOSED_TYPE_DAY    = "DAY";
+    public static String SHOP_ID = "shopId";
+    public static String SHOP_NAME = "shopName";
+    public static String CLOSED_TYPE_NONE = "NONE";
+    public static String CLOSED_TYPE_DATE = "DATE";
+    public static String CLOSED_TYPE_DAY = "DAY";
 
-    public static String LAST_CURRENT_LATITUDE      = "lastCurrentLatitude";
-    public static String LAST_CURRENT_LONGITUDE     = "lastCurrentLongitude";
+    public static String CURRENT_LATITUDE = "currentLatitude";
+    public static String LAST_CURRENT_LATITUDE = "lastCurrentLatitude";
+    public static String CURRENT_LONGITUDE = "currentLongitude";
+    public static String LAST_CURRENT_LONGITUDE = "lastCurrentLongitude";
 
-    public static String SHOP_MERCHANT  = "M";
-    public static String SHOP_AGENT     = "A";
+    public static String SHOP_MERCHANT = "M";
+    public static String SHOP_AGENT = "A";
 
-    public static String SHOP_OPEN      = "O";
-    public static String SHOP_CLOSE     = "C";
+    public static String SHOP_OPEN = "O";
+    public static String SHOP_CLOSE = "C";
 
-    public static String CATEGORY_ID    = "category_id";
-    public static String CATEGORY_ID_CTA    = "category_id_cta";
-    public static String CATEGORY_ID_UPG    = "category_id_upg";
-    public static String CATEGORY_NAME  = "category_name";
-    public static String CATEGORY_CODE  = "category_code";
+    public static String CATEGORY_ID = "category_id";
+    public static String CATEGORY_ID_CTA = "category_id_cta";
+    public static String CATEGORY_ID_UPG = "category_id_upg";
+    public static String CATEGORY_NAME = "category_name";
+    public static String CATEGORY_CODE = "category_code";
 
     //GOOGLE MAP DEFINE PARAMETERS
-    public static float ZOOM_CAMERA_POSITION                = 16.0f; //16.0f
-    public static int REQUEST_CODE_RECOVER_PLAY_SERVICES    = 200;
-    public static long INTERVAL_LOCATION_REQUEST            = 1000; //15 seconds
-    public static long FASTEST_INTERVAL_LOCATION_REQUEST    = 1000; //10 seconds
-    public static int DISPLACEMENT                          = 1;
-    public static int REQUEST_CODE_AUTOCOMPLETE             = 1;
+    public static float ZOOM_CAMERA_POSITION = 16.0f; //16.0f
+    public static int REQUEST_CODE_RECOVER_PLAY_SERVICES = 200;
+    public static long INTERVAL_LOCATION_REQUEST = 1000; //15 seconds
+    public static long FASTEST_INTERVAL_LOCATION_REQUEST = 1000; //10 seconds
+    public static int DISPLACEMENT = 1;
+    public static int REQUEST_CODE_AUTOCOMPLETE = 1;
 
-    public static long AGENT_INTERVAL_LOCATION_REQUEST              = 1000; //60 seconds
-    public static long AGENT_FASTEST_INTERVAL_LOCATION_REQUEST      = 1000; //58 seconds
-    public static int AGENT_DISPLACEMENT                            = 1; //30meter
+    public static long AGENT_INTERVAL_LOCATION_REQUEST = 1000; //60 seconds
+    public static long AGENT_FASTEST_INTERVAL_LOCATION_REQUEST = 1000; //58 seconds
+    public static int AGENT_DISPLACEMENT = 1; //30meter
 
-    public static long MEMBER_INTERVAL_LOCATION_REQUEST             = 60000; //60 seconds
-    public static long MEMBER_FASTEST_INTERVAL_LOCATION_REQUEST     = 58000; //58 seconds
-    public static int MEMBER_DISPLACEMENT                           = 20; //30meter
+    public static long MEMBER_INTERVAL_LOCATION_REQUEST = 60000; //60 seconds
+    public static long MEMBER_FASTEST_INTERVAL_LOCATION_REQUEST = 58000; //58 seconds
+    public static int MEMBER_DISPLACEMENT = 20; //30meter
 
-    public static String DEFAULT_LANGUAGE_CODE              = "id";
-    public static String GMAP_MODE                          = "driving";
-	public static String RECEIVER_ID						= "GOMOBILE";
+    public static String DEFAULT_LANGUAGE_CODE = "id";
+    public static String GMAP_MODE = "driving";
+    public static String RECEIVER_ID = "GOMOBILE";
 
     public static String IS_AGENT = "isAgent";
 
@@ -392,67 +394,69 @@ public class DefineValue {
     public static String BENEF_PRODUCT_VALUE_TOKEN = "benefProductValueToken";
     public static String SOURCE_PRODUCT_VALUE_TOKEN = "sourceProductValueToken";
 
-    public static String BBS_SENDER_ID							= "GOAPK";
-    public static String BBS_RECEIVER_ID						= "GOMOBILE";
-    public static String BBS_AGENT_MOBILITY                     = "mobility";
-    public static String IS_AUTOSEARCH                          = "isAutoSearch";
-    public static String BBS_NOTE                               = "bbsNote";
+    public static String BBS_SENDER_ID = "GOAPK";
+    public static String BBS_RECEIVER_ID = "GOMOBILE";
+    public static String BBS_AGENT_MOBILITY = "mobility";
+    public static String IS_AUTOSEARCH = "isAutoSearch";
+    public static String BBS_NOTE = "bbsNote";
 
-    public static String TX_ID2             = "tx_id";
-    public static String KEY_CODE           = "key_code";
-    public static String KEY_NAME           = "key_name";
-    public static String KEY_ADDRESS        = "key_address";
-    public static String KEY_DISTRICT       = "key_district";
-    public static String KEY_PROVINCE       = "key_province";
-    public static String KEY_COUNTRY        = "key_country";
-    public static String KEY_CCY            = "key_ccy";
-    public static String KEY_AMOUNT         = "key_amount";
-    public static String KEY_LATITUDE       = "key_latitude";
-    public static String KEY_LONGITUDE      = "key_longitude";
-    public static String KEY_TX_STATUS      = "tx_status";
-    public static String KEY_VALUE          = "key_value";
-    public static String CATEGORY_SCHEME_CODE   = "scheme_code";
+    public static String TX_ID2 = "tx_id";
+    public static String KEY_CODE = "key_code";
+    public static String KEY_NAME = "key_name";
+    public static String KEY_ADDRESS = "key_address";
+    public static String KEY_DISTRICT = "key_district";
+    public static String KEY_PROVINCE = "key_province";
+    public static String KEY_COUNTRY = "key_country";
+    public static String KEY_CCY = "key_ccy";
+    public static String KEY_AMOUNT = "key_amount";
+    public static String KEY_LATITUDE = "key_latitude";
+    public static String KEY_LONGITUDE = "key_longitude";
+    public static String KEY_TX_STATUS = "tx_status";
+    public static String KEY_VALUE = "key_value";
+    public static String CATEGORY_SCHEME_CODE = "scheme_code";
 
-    public static String STRING_ACCEPT          = "S";
-    public static String STRING_CANCEL          = "F";
+    public static String STRING_ACCEPT = "S";
+    public static String STRING_CANCEL = "F";
 
-    public static String IS_AGENT_SET_LOCATION  = "IsAgentSetLocation";
-    public static String IS_AGENT_SET_OPENHOUR  = "IsAgentSetOpenHour";
-    public static String SHOP_AGENT_DATA    = "ShopAgentData";
-    public static String IS_AGENT_APPROVE   = "IsAgentApprove";
-    public static String AOD_TX_ID          = "AodTxId";
-    public static String BBS_TX_ID          = "BbsTxId";
-    public static String BBS_MEMBER_ID      = "BbsMemberId";
-    public static String BBS_SHOP_ID        = "BbsShopId";
-    public static String LAST_LATITUDE      = "LastLatitude";
-    public static String LAST_LONGITUDE     = "LastLongitude";
-    public static String AGENT_LATITUDE         = "AgentLatitude";
-    public static String AGENT_LONGITUDE        = "AgentLongitude";
-    public static String MEMBER_LATITUDE        = "MemberLatitude";
-    public static String MEMBER_LONGITUDE       = "MemberLongitude";
-    public static String BENEF_LATITUDE         = "BenefLatitude";
-    public static String BENEF_LONGITUDE        = "BenefLongitude";
-    public static String TX_STATUS_OP           = "OP";
-    public static String TX_STATUS_RJ           = "RJ";
+    public static String IS_AGENT_SET_LOCATION = "IsAgentSetLocation";
+    public static String IS_AGENT_SET_OPENHOUR = "IsAgentSetOpenHour";
+    public static String SHOP_AGENT_DATA = "ShopAgentData";
+    public static String IS_AGENT_APPROVE = "IsAgentApprove";
+    public static String AOD_TX_ID = "AodTxId";
+    public static String BBS_TX_ID = "BbsTxId";
+    public static String BBS_MEMBER_ID = "BbsMemberId";
+    public static String BBS_SHOP_ID = "BbsShopId";
+    public static String LATITUDE = "latitude";
+    public static String LAST_LATITUDE = "LastLatitude";
+    public static String LONGITUDE = "longitude";
+    public static String LAST_LONGITUDE = "LastLongitude";
+    public static String AGENT_LATITUDE = "AgentLatitude";
+    public static String AGENT_LONGITUDE = "AgentLongitude";
+    public static String MEMBER_LATITUDE = "MemberLatitude";
+    public static String MEMBER_LONGITUDE = "MemberLongitude";
+    public static String BENEF_LATITUDE = "BenefLatitude";
+    public static String BENEF_LONGITUDE = "BenefLongitude";
+    public static String TX_STATUS_OP = "OP";
+    public static String TX_STATUS_RJ = "RJ";
     public static int IDX_CATEGORY_SEARCH_AGENT = 1111;
-    public static String MSG_NOTIF              = "MsgNotif";
+    public static String MSG_NOTIF = "MsgNotif";
 
-    public static String DEFAULT_RADIUS         = "10";
+    public static String DEFAULT_RADIUS = "10";
     public static String STRING_BOTH = "B";
     public static String TUTORIAL_PAY_FRIEND = "tutorialPayFriend";
     public static String TUTORIAL_ASK_MONEY = "tutorialAskMoney";
-    public static String TUTORIAL_TOP_UP= "tutorialAskMoney";
+    public static String TUTORIAL_TOP_UP = "tutorialAskMoney";
     public static String TUTORIAL_BELANJA = "tutorialBelanja";
     public static String TUTORIAL_REPORT = "tutorialReport";
     public static String TUTORIAL_BBS = "tutorialBBS";
 
-    public static String TUTORIAL_CASHIN             = "tutorialCashIn";
-    public static String TUTORIAL_IMAGE            = "tutorialImage";
-    public static String TUTORIAL_TAMBAH_REKENING        = "tutorialDaftarRekening";
-    public static String TUTORIAL_CASHOUT              = "tutorialCashOut";
-    public static String TUTORIAL_KONFIRMASI_CASHOUT_BBS              = "tutorialKonfirmasiCashOutBBS";
-    public static String TUTORIAL_REGISTER_AGEN             = "tutorialRegisterAgen";
-    public static String TUTORIAL_KELOLA_AGENT            = "tutorialKelolaAgent";
+    public static String TUTORIAL_CASHIN = "tutorialCashIn";
+    public static String TUTORIAL_IMAGE = "tutorialImage";
+    public static String TUTORIAL_TAMBAH_REKENING = "tutorialDaftarRekening";
+    public static String TUTORIAL_CASHOUT = "tutorialCashOut";
+    public static String TUTORIAL_KONFIRMASI_CASHOUT_BBS = "tutorialKonfirmasiCashOutBBS";
+    public static String TUTORIAL_REGISTER_AGEN = "tutorialRegisterAgen";
+    public static String TUTORIAL_KELOLA_AGENT = "tutorialKelolaAgent";
     public static String UPDATE_TIME_BBS_CTA_DATA = "updateTimeBBSDataCTA";
     public static String UPDATE_TIME_BBS_ATC_DATA = "updateTimeBBSDataATC";
     public static String UPDATE_TIME_BBS_CTR_DATA = "updateTimeBBSDataCTR";
@@ -465,15 +469,15 @@ public class DefineValue {
     public static String IS_UPDATING_BBS_MEMBER_DATA = "isUpdatingBBSMemberData";
     public static String IS_BBS_MEMBER_DATA_UPDATED = "IsBBSMemberDataUpdated";
 
-    public static String AGENT_NAME             = "agentName";
-    public static String AGENT_PHONE             = "agentPhone";
-    public static String AGENT_SHOP_CLOSED      = "agentShopClosed";
+    public static String AGENT_NAME = "agentName";
+    public static String AGENT_PHONE = "agentPhone";
+    public static String AGENT_SHOP_CLOSED = "agentShopClosed";
     public static String FCM_SERVER_UUID = "fcmServerUuid";
 
     public static int CASHOUT_LKD = 2;
     public static String STRING_NO = "N";
-    public static String ERROR = "error" ;
-    public static String ERROR_CODE = "errorCode" ;
+    public static String ERROR = "error";
+    public static String ERROR_CODE = "errorCode";
     public static String SHORT_URL_APP = "shortUrlApp";
     public static String CASH_IN_HISTORY_TEMP = "cashinHistoryTemp";
     public static String CASH_OUT_HISTORY_TEMP = "cashout_history_temp";
@@ -492,7 +496,7 @@ public class DefineValue {
     public static final String BankUOB = "058";
     public static final String BankBRI = "002";
     public static final String BankBNI = "009";
-    public static String BANKLIST_TYPE_ATM = "ATM" ;
+    public static String BANKLIST_TYPE_ATM = "ATM";
     public static String IS_MERCHANT = "isMerchant";
     public static String IS_UNREGISTER_MEMBER = "unregister_member";
 
@@ -506,8 +510,11 @@ public class DefineValue {
     public static String CONTACTCENTER_EMAIL = "contactCenterEmail";
     public static String DATA_REJECT_UPGRADE_MEMBER = "dataRejectUpgradeMember";
     public static String DATA_REJECT_UPGRADE_AGENT = "dataRejectUpgradeAgent";
+    public static String KTP = "KTP";
+    public static String SELFIE_KTP = "selfieKtp";
     public static String REJECT_KTP = "rejectKtp";
     public static String REJECT_FOTO = "rejectFoto";
+    public static String TTD = "TTD";
     public static String REJECT_TTD = "rejectTtd";
     public static String REJECT_SIUP = "rejectSiup";
     public static String REJECT_NPWP = "rejectNpwp";
@@ -519,43 +526,43 @@ public class DefineValue {
     public static String MODEL_NOTIF = "model_notif";
 
     public static String MEMBER_PROFILE_PICTURE = "member_profile_picture";
-    public static String AGENT_PROFILE_PICTURE  = "agent_profile_picture";
+    public static String AGENT_PROFILE_PICTURE = "agent_profile_picture";
 
-    public static String BBS_MODULE             = "bbs_module";
-    public static String BBS_REVIEW             = "bbs_review";
-    public static String BBS_SHOP_NAME          = "shop_name";
-    public static String BBS_MEMBER_WAITING_AGENT_APPROVAL  = "bbs_member_waiting_agent_approval";
-    public static String BBS_MAXIMUM_RATING     = "bbs_maximum_rating";
-    public static String BBS_DEFAULT_RATING     = "bbs_default_rating";
-    public static String URL_PROFILE_PICTURE    = "url_profile_picture";
-    public static String BBS_SCHEME_CODE        = "bbs_scheme_code";
+    public static String BBS_MODULE = "bbs_module";
+    public static String BBS_REVIEW = "bbs_review";
+    public static String BBS_SHOP_NAME = "shop_name";
+    public static String BBS_MEMBER_WAITING_AGENT_APPROVAL = "bbs_member_waiting_agent_approval";
+    public static String BBS_MAXIMUM_RATING = "bbs_maximum_rating";
+    public static String BBS_DEFAULT_RATING = "bbs_default_rating";
+    public static String URL_PROFILE_PICTURE = "url_profile_picture";
+    public static String BBS_SCHEME_CODE = "bbs_scheme_code";
 
-    public static String SOURCE                 = "SOURCE";
-    public static String BENEF                  = "BENEF";
-    public static String BBS_PRODUCT_NAME       = "bbs_product_name";
+    public static String SOURCE = "SOURCE";
+    public static String BENEF = "BENEF";
+    public static String BBS_PRODUCT_NAME = "bbs_product_name";
 
-    public static String IS_SAME_PREVIOUS_USER  = "is_same_previous_user";
-    public static String IS_MUST_UPDATE_BBS_DATA  = "is_must_update_bbs_data";
+    public static String IS_SAME_PREVIOUS_USER = "is_same_previous_user";
+    public static String IS_MUST_UPDATE_BBS_DATA = "is_must_update_bbs_data";
     public static String INTENT_ACTION_FCM_DATA = "intent_action_fcm_data";
     public static String INTENT_ACTION_LOCATION_DATA = "intent.action.location.data";
-    public static String FCM_OPTIONS            = "options";
-    public static String TCASH_HP_VALIDATION    = "tcash_hp_validation";
-    public static String MANDIRI_LKD_VALIDATION    = "mandirilkd_validation";
-    public static String OFFSET    = "offset";
-    public static String CODE_SUCCESS    = "code_success";
+    public static String FCM_OPTIONS = "options";
+    public static String TCASH_HP_VALIDATION = "tcash_hp_validation";
+    public static String MANDIRI_LKD_VALIDATION = "mandirilkd_validation";
+    public static String OFFSET = "offset";
+    public static String CODE_SUCCESS = "code_success";
 
     public static String NO_HP_MEMBER_LOCATION = "noHPMemberLocation";
 
-    public static String MEMBER_PHONE    = "member_phone";
-    public static String TO_ALIAS    = "to_alias";
-    public static String TRANSFER_DATA    = "transfer_data";
-    public static String IS_REPORT    = "is_report";
-    public static String PAYMENT_PHONE   = "payment_phone";
-    public static String IS_MEMBER_CTA    = "is_member_cta";
-    public static String COMM_ID_SCADM   = "comm_id_scadm";
-    public static String MEMBER_ID_SCADM   = "member_id_scadm";
-    public static String BANK_GATEWAY   = "bank_gateway";
-    public static String ORDER_ID   = "order_id";
+    public static String MEMBER_PHONE = "member_phone";
+    public static String TO_ALIAS = "to_alias";
+    public static String TRANSFER_DATA = "transfer_data";
+    public static String IS_REPORT = "is_report";
+    public static String PAYMENT_PHONE = "payment_phone";
+    public static String IS_MEMBER_CTA = "is_member_cta";
+    public static String COMM_ID_SCADM = "comm_id_scadm";
+    public static String MEMBER_ID_SCADM = "member_id_scadm";
+    public static String BANK_GATEWAY = "bank_gateway";
+    public static String ORDER_ID = "order_id";
     public static String OTHER_ATM = "other_atm";
     public static String TOKEN_ID = "token_id";
     public static String IS_OWNER = "is_owner";
@@ -566,15 +573,14 @@ public class DefineValue {
     public static String TX_MANDIRI_LP = "tx_mandiri_lp";
 
 
-
     public static String QR_TYPE = "qr_type";
     public static String QR_FROM_PAY_FRIENDS = "QR_FROM_PAY_FRIENDS";
     public static String QR_TYPE_FROM_DEFAULT_ACCOUNT = "QR_TYPE_FROM_DEFAULT_ACCOUNT";
     public static String QR_OBJ = "QR_OBJ";
     public static String DGI = "DGI";
-    public static String DGI_MEMBER_NAME= "dgi_member_name";
-    public static String DGI_ANCHOR_NAME= "dgi_anchor_name";
-    public static String DGI_COMM_NAME= "dgi_comm_name";
+    public static String DGI_MEMBER_NAME = "dgi_member_name";
+    public static String DGI_ANCHOR_NAME = "dgi_anchor_name";
+    public static String DGI_COMM_NAME = "dgi_comm_name";
     public static String MOBILE_PHONE = "mobile_phone";
     public static String RESPONSE = "mobile_phone";
     public static String COMM_CODE_DGI = "comm_code_dgi";
@@ -582,30 +588,30 @@ public class DefineValue {
     public static String PAYMENT_TYPE = "payment_type";
     public static String AGENT_TYPE = "agent_type";
     public static String COMPANY_TYPE = "company_type";
-    public static String PAYMENT_TYPE_DESC= "payment_type_desc";
+    public static String PAYMENT_TYPE_DESC = "payment_type_desc";
     public static String INVOICE = "invoice";
     public static String SCHEME_CODE = "scheme_code";
-    public static String AGENT_SCHEME_CODES= "agent_scheme_codes";
-    public static String AGENT_BILLER_CODES= "agent_biller_codes";
-    public static String AGENT_EBD_CODES= "agent_ebd_codes";
-    public static String AGENT_TRX_CODES= "agent_trx_codes";
-    public static String MEMBER_SCHEME_CODES= "member_scheme_codes";
-    public static String IS_MEMBER_SHOP_DGI= "is_member_shop_dgi";
-    public static String IS_SEARCH_DGI= "is_search_dgi";
-    public static String DEVICE_NAME= "device_name";
-    public static String IS_MANUAL= "is_manual";
-    public static String IS_DORMANT= "is_dormant";
-    public static String ADDITIONAL_FEE= "additionalFee";
-    public static String ENABLED_ADDITIONAL_FEE= "enabledAdditionalFee";
-    public static String SG3= "SG3";
-    public static String IS_INAPP= "is_inapp";
-    public static String MEMBER_CODE_PG= "memberCodePG";
-    public static String COMM_CODE_PG= "commCodePG";
-    public static String COMM_NAME_PG= "commNamePG";
-    public static String ANCHOR_NAME_PG= "anchorNamePG";
-    public static String IS_AGENT_TRX_REQ= "isAgentTrxReq";
-    public static String IS_AGENT_TRX_CTA_MANDIRI_LP= "isAgentTrxCTAMandiriLP";
-    public static String IS_AGENT_TRX_ATC_MANDIRI_LP= "isAgentTrxATCMandiriLP";
+    public static String AGENT_SCHEME_CODES = "agent_scheme_codes";
+    public static String AGENT_BILLER_CODES = "agent_biller_codes";
+    public static String AGENT_EBD_CODES = "agent_ebd_codes";
+    public static String AGENT_TRX_CODES = "agent_trx_codes";
+    public static String MEMBER_SCHEME_CODES = "member_scheme_codes";
+    public static String IS_MEMBER_SHOP_DGI = "is_member_shop_dgi";
+    public static String IS_SEARCH_DGI = "is_search_dgi";
+    public static String DEVICE_NAME = "device_name";
+    public static String IS_MANUAL = "is_manual";
+    public static String IS_DORMANT = "is_dormant";
+    public static String ADDITIONAL_FEE = "additionalFee";
+    public static String ENABLED_ADDITIONAL_FEE = "enabledAdditionalFee";
+    public static String SG3 = "SG3";
+    public static String IS_INAPP = "is_inapp";
+    public static String MEMBER_CODE_PG = "memberCodePG";
+    public static String COMM_CODE_PG = "commCodePG";
+    public static String COMM_NAME_PG = "commNamePG";
+    public static String ANCHOR_NAME_PG = "anchorNamePG";
+    public static String IS_AGENT_TRX_REQ = "isAgentTrxReq";
+    public static String IS_AGENT_TRX_CTA_MANDIRI_LP = "isAgentTrxCTAMandiriLP";
+    public static String IS_AGENT_TRX_ATC_MANDIRI_LP = "isAgentTrxATCMandiriLP";
 
     public static String TEMP_ICCID = "temp_iccid";
     public static String TEMP_IMEI = "temp_imei";
@@ -637,11 +643,11 @@ public class DefineValue {
     public static String MEMBER_PROVINSI = "memberProvinsi";
     public static String MEMBER_RELIGION = "memberReligion";
     public static String MEMBER_STATUS = "memberStatus";
-    public static String MEMBER_OCUPATION= "memberOcupation";
+    public static String MEMBER_OCUPATION = "memberOcupation";
     public static String MEMBER_NATIONALITY = "memberNationality";
     public static String CUST_ID_MEMBER = "custIdMember";
-    public static String BENEF_BANK_CODE= "benef_bank_code";
-    public static String MEMBER_CREATED= "member_created";
+    public static String BENEF_BANK_CODE = "benef_bank_code";
+    public static String MEMBER_CREATED = "member_created";
     public static String PAYMENT_BANK = "paymentBank";
     public static String LATITUDE_UPDATED = "latitudeUpdated";
     public static String LONGITUDE_UPDATED = "longitudeUpdated";
@@ -744,9 +750,13 @@ public class DefineValue {
     public static String ANCHOR_COMPANY = "anchorCompany";
     public static String DOC_TYPE_REMARK = "docTypeRemark";
     public static String ALLOW_TRANSFER = "allowTransfer";
-    public static String LOGOUT_FROM_SESSION_TIMEOUT = "logout_from_session_timeout";
+    public static String LOGOUT_FROM_SESSION_TIMEOUT = "logoutFromSessionTimeout";
     public static String PATTERN_BILLER_ITEM = "pattern_biller_item";
-    public static String BILLER_ITEM = "biller_item";
+    public static String BILLER_ITEM = "billerItem";
     public static String OTP = "otp";
+    public static String IS_VERIFIED_MEMBER = "isVerifiedMember";
+    public static String COMM_NAME = "commName";
+    public static String FLAG_APPROVE = "flagApprove";
+    public static String SETUP_OPEN_HOUR = "setupOpenHour";
 }
 

@@ -19,18 +19,14 @@ import java.util.ArrayList;
 public class BbsMemberShopAdapter extends BaseAdapter {
 
     private ArrayList<ShopDetail> shopDetails;
-    private Context context;
     private LayoutInflater inflater;
 
-    public BbsMemberShopAdapter(Context context, ArrayList<ShopDetail> shopDetails)
-    {
-        this.context = context;
+    public BbsMemberShopAdapter(Context context, ArrayList<ShopDetail> shopDetails) {
         this.shopDetails = shopDetails;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    class ViewHolder
-    {
+    static class ViewHolder {
         TextView tvShopName, tvCommName, tvMemberName, tvMemberCode;
     }
 
@@ -54,15 +50,15 @@ public class BbsMemberShopAdapter extends BaseAdapter {
         View rootView = convertView;
         ViewHolder holder;
 
-        if(rootView == null) {
+        if (rootView == null) {
             //viewHolder = new BbsMerchantCommunityListAdapter.ViewHolder();
-            rootView                = inflater.inflate(R.layout.bbs_member_shop_adapter, null);
+            rootView = inflater.inflate(R.layout.bbs_member_shop_adapter, null);
 
-            holder                  = new ViewHolder();
-            holder.tvShopName       = (TextView) rootView.findViewById(R.id.text_shop_name);
-            holder.tvCommName       = (TextView) rootView.findViewById(R.id.text_comm_name);
-            holder.tvMemberName     = (TextView) rootView.findViewById(R.id.text_member_name);
-            holder.tvMemberCode     = (TextView) rootView.findViewById(R.id.text_member_code);
+            holder = new ViewHolder();
+            holder.tvShopName = (TextView) rootView.findViewById(R.id.text_shop_name);
+            holder.tvCommName = (TextView) rootView.findViewById(R.id.text_comm_name);
+            holder.tvMemberName = (TextView) rootView.findViewById(R.id.text_member_name);
+            holder.tvMemberCode = (TextView) rootView.findViewById(R.id.text_member_code);
 
 
             rootView.setTag(holder);
@@ -70,7 +66,7 @@ public class BbsMemberShopAdapter extends BaseAdapter {
             holder = (ViewHolder) rootView.getTag();
         }
 
-        ShopDetail shopDetail   = (ShopDetail) getItem(position);
+        ShopDetail shopDetail = (ShopDetail) getItem(position);
         holder.tvShopName.setText(shopDetail.getShopName());
         holder.tvCommName.setText(shopDetail.getCommName());
         holder.tvMemberName.setText(shopDetail.getMemberName());

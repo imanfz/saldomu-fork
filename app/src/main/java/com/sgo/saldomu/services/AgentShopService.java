@@ -50,18 +50,18 @@ public class AgentShopService extends IntentService {
     }
 
     private void getAgentShop() {
-        sp                              = CustomSecurePref.getInstance().getmSecurePrefs();
-        try{
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        try {
 
-            String flagApprove             = DefineValue.STRING_NO;
+            String flagApprove = DefineValue.STRING_NO;
 
             String extraSignature = flagApprove;
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_MEMBER_SHOP_LIST, extraSignature);
 
             params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
-            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
+            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params.put(WebParams.CUSTOMER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
             params.put(WebParams.FLAG_APPROVE, flagApprove);
             params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
@@ -72,23 +72,20 @@ public class AgentShopService extends IntentService {
                         public void onResponses(JSONObject response) {
                             try {
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                Timber.d("Isi response get Agent Shop: "+response.toString());
+                                Timber.d("Isi response get Agent Shop: %s", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                    JSONArray members = response.getJSONArray("member");
+                                    JSONArray members = response.getJSONArray(WebParams.MEMBER);
 
-                                    for (int i = 0; i < members.length(); i++) {
-                                        JSONObject object = members.getJSONObject(i);
+                                    JSONObject object = members.getJSONObject(0);
 
-                                        SecurePreferences.Editor mEditor = sp.edit();
-                                        mEditor.putString(DefineValue.IS_AGENT_APPROVE, DefineValue.STRING_YES);
-                                        mEditor.putString(DefineValue.AGENT_NAME, object.getString("shop_name"));
-                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, object.getString("shop_closed"));
-                                        mEditor.putString(DefineValue.BBS_MEMBER_ID, object.getString("member_id"));
-                                        mEditor.putString(DefineValue.BBS_SHOP_ID, object.getString("shop_id"));
-                                        mEditor.apply();
-                                        break;
-                                    }
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    mEditor.putString(DefineValue.IS_AGENT_APPROVE, DefineValue.STRING_YES);
+                                    mEditor.putString(DefineValue.AGENT_NAME, object.getString(WebParams.SHOP_NAME));
+                                    mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, object.getString("shop_closed"));
+                                    mEditor.putString(DefineValue.BBS_MEMBER_ID, object.getString(WebParams.MEMBER_ID));
+                                    mEditor.putString(DefineValue.BBS_SHOP_ID, object.getString(WebParams.SHOP_ID));
+                                    mEditor.apply();
 
                                 } else {
                                     SecurePreferences.Editor mEditor = sp.edit();
@@ -114,8 +111,8 @@ public class AgentShopService extends IntentService {
 
                         }
                     });
-        }catch (Exception e){
-            Log.d("httpclient:",e.getMessage());
+        } catch (Exception e) {
+            Timber.tag("httpclient:").d(e);
         }
     }
 

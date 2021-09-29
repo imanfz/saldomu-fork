@@ -22,14 +22,13 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class ListInvoiceAdapter extends RecyclerView.Adapter<ListInvoiceAdapter.ViewHolder> {
-    private final Activity mContext;
+
     private ArrayList<ListPOModel> docListArrayList;
     static ListInvoiceAdapter.listener listener;
 
 
-    public ListInvoiceAdapter(ArrayList<ListPOModel> docListArrayList, Activity mContext, ListInvoiceAdapter.listener _listener) {
+    public ListInvoiceAdapter(ArrayList<ListPOModel> docListArrayList, ListInvoiceAdapter.listener _listener) {
         this.docListArrayList = docListArrayList;
-        this.mContext = mContext;
         listener = _listener;
     }
 

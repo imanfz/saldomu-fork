@@ -5,7 +5,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.ToggleKeyboard
-import com.sgo.saldomu.fragments.FragmentScan
+import com.sgo.saldomu.fragments.FragmentScanQris
 import com.sgo.saldomu.widgets.BaseActivity
 
 class QrisActivity : BaseActivity() {
@@ -13,7 +13,7 @@ class QrisActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializeToolbar()
-        supportFragmentManager.beginTransaction().replace(R.id.view, FragmentScan()).commitAllowingStateLoss()
+        supportFragmentManager.beginTransaction().replace(R.id.view, FragmentScanQris()).commitAllowingStateLoss()
     }
 
     override fun getLayoutResource(): Int {

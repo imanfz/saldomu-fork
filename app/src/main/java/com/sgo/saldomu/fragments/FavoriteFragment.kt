@@ -135,7 +135,7 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
                                 DefineValue.ERROR_0066 -> run {
                                     Timber.d("isi response maintenance:$jsonObject")
                                     val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                    alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                    alertDialogMaintenance.showDialogMaintenance(activity)
                                 }
                             }
                         } catch (e: Exception) {
@@ -200,7 +200,7 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
                                 DefineValue.ERROR_0066 -> run {
                                     Timber.d("isi response maintenance:$`object`")
                                     val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                    alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                    alertDialogMaintenance.showDialogMaintenance(activity)
                                 }
                                 else -> {
                                     Toast.makeText(context, message, Toast.LENGTH_LONG).show()

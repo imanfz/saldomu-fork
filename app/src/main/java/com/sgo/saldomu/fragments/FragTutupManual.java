@@ -36,17 +36,8 @@ import java.util.Objects;
 
 import timber.log.Timber;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * to handle interaction events.
- * Use the {@link FragTutupManual#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FragTutupManual extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
     public final static String TAG = "com.sgo.saldomu.fragments.Frag_Tutup_Manual";
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     private final String DATEFROM = "tagFrom";
     private final String DATETO = "tagTo";
@@ -54,7 +45,7 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
     EditText etFromDate, etToDate;
     ImageView ivStartDate, ivEndDate;
     int startDay, startMonth, startYear, endDay, endMonth, endYear;
-    Calendar calendar, cTanggalAwal, cNextTomorrow;
+    Calendar cTanggalAwal, cNextTomorrow;
     Button btnSubmit;
     ProgressDialog progdialog, progdialog2;
     SecurePreferences sp;
@@ -65,31 +56,12 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragTutupManual.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FragTutupManual newInstance(String param1, String param2) {
-        FragTutupManual fragment = new FragTutupManual();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View viewLayout = inflater.inflate(R.layout.frag_tutup_manual, container, false);
 
-        calendar = Calendar.getInstance();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         btnSubmit = viewLayout.findViewById(R.id.btnSubmit);
@@ -158,7 +130,7 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
                                 llMulaiDari.setVisibility(View.VISIBLE);
                                 llSampaiDengan.setVisibility(View.VISIBLE);
 
-                                JSONArray members = response.getJSONArray("member");
+                                JSONArray members = response.getJSONArray(WebParams.MEMBER);
 
                                 if (members.length() > 0) {
                                     memberId = members.getJSONObject(0).getString("member_id");
@@ -295,16 +267,6 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
             }
         }
     };
-
-    public static int getId(String resourceName, Class<?> c) {
-        try {
-            Field idField = c.getDeclaredField(resourceName);
-            return idField.getInt(idField);
-        } catch (Exception e) {
-            throw new RuntimeException("No resource ID found for: "
-                    + resourceName + " / " + c, e);
-        }
-    }
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {

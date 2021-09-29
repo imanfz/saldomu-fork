@@ -23,7 +23,6 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.faber.circlestepview.CircleStepView;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
@@ -65,7 +64,6 @@ public class Regist3 extends BaseFragment {
     TextView mNoHPValue, mNamaValue, mEmail, txtToken;
     ProgressDialog progdialog;
     View v, layout_resend;
-    CircleStepView mCircleStepView;
     Boolean isFacebook;
     Activity act;
 
@@ -128,25 +126,21 @@ public class Regist3 extends BaseFragment {
     }
 
 
-    Button.OnClickListener submitListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (InetHandler.isNetworkAvailable(getActivity())) {
-                if (inputValidation()) {
-                    sentData();
-                }
-            } else
-                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
-        }
+    Button.OnClickListener submitListener = view -> {
+        if (InetHandler.isNetworkAvailable(getActivity())) {
+            if (inputValidation()) {
+                sentData();
+            }
+        } else
+            DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
     };
 
     Button.OnClickListener resendListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if (InetHandler.isNetworkAvailable(getActivity())) {
-                if (max_resend_sms != 0) requestResendToken("Y", "N");
-//                else if(max_resend_email > 0) requestResendToken("N","Y");
-//                else Toast.makeText(getActivity(),getString(R.string.reg2_notif_max_resend_token_empty),Toast.LENGTH_LONG).show();
+                if (max_resend_sms != 0)
+                    requestResendToken(DefineValue.STRING_YES, DefineValue.STRING_NO);
             } else
                 DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
@@ -158,18 +152,8 @@ public class Regist3 extends BaseFragment {
 //            DefineValue.NOBACK = false;
             AlertDialog.Builder builder = new AlertDialog.Builder(act)
                     .setMessage(getString(R.string.reg3_cancel_message))
-                    .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                        }
-                    })
-                    .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
+                    .setPositiveButton(getString(R.string.ok), (dialogInterface, i) -> getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE))
+                    .setNegativeButton(getString(R.string.cancel), (dialogInterface, i) -> dialogInterface.dismiss());
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
         }
@@ -194,17 +178,14 @@ public class Regist3 extends BaseFragment {
     }
 
     public void changeTextBtnSub() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (max_resend_sms != 0)
-                    btnResend.setText(getString(R.string.reg3_btn_text_resend_token_sms) + " (" + max_resend_sms + ")");
+        getActivity().runOnUiThread(() -> {
+            if (max_resend_sms != 0)
+                btnResend.setText(getString(R.string.reg3_btn_text_resend_token_sms) + " (" + max_resend_sms + ")");
 //                else if(max_resend_email > 0)
 //                    btnResend.setText(getString(R.string.reg2_btn_text_resend_token_email) + " (" + max_resend_email + ")");
 //                else if(max_resend_email == 0)
 //                    btnResend.setText(getString(R.string.reg2_btn_text_resend_token_email) + " (" + max_resend_email + ")");
 
-            }
         });
     }
 
@@ -244,7 +225,7 @@ public class Regist3 extends BaseFragment {
             params.put(WebParams.IS_SMS, is_sms);
             params.put(WebParams.IS_EMAIL, is_email);
 
-            Timber.d("isi params resend token:" + params.toString());
+            Timber.d("isi params resend token:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REG_STEP2, params,
                     new ResponseListener() {
@@ -253,10 +234,11 @@ public class Regist3 extends BaseFragment {
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                 AlertDialog dialogToken;
-                                if (is_sms.equalsIgnoreCase("Y")) {
+                                if (is_sms.equalsIgnoreCase(DefineValue.STRING_YES)) {
                                     --max_resend_sms;
 
                                     if (max_resend_sms == 0) {
@@ -265,23 +247,15 @@ public class Regist3 extends BaseFragment {
                                     } else {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                         builder.setMessage(getString(R.string.reg3_dialog_token_message_sms))
-                                                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
-                                                    }
-                                                });
+                                                .setPositiveButton(getString(R.string.ok), (dialog, which) -> dialog.dismiss());
                                         dialogToken = builder.create();
                                         dialogToken.show();
                                         countDownTimer.start();
                                     }
                                 }
                                 changeTextBtnSub();
-
                             } else {
-
-                                code = model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -301,7 +275,7 @@ public class Regist3 extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -321,7 +295,7 @@ public class Regist3 extends BaseFragment {
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.SMS_TOKEN, TokenValue.getText().toString());
 
-            Timber.d("isi params reg 3 submit:" + params.toString());
+            Timber.d("isi params reg 3 submit:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REG_STEP3, params,
                     new ResponseListener() {
@@ -330,16 +304,17 @@ public class Regist3 extends BaseFragment {
                             RegModel model = getGson().fromJson(object, RegModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 custID = model.getCust_phone();
                                 authType = model.getAuthentication_type();
                                 token = TokenValue.getText().toString();
                                 Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
                                 i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 switchActivityPIN(i);
                             } else {
-                                code = model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -359,7 +334,7 @@ public class Regist3 extends BaseFragment {
                     });
 
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -367,25 +342,17 @@ public class Regist3 extends BaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Timber.d("isi regist 3 requestCode:" + String.valueOf(requestCode));
+        Timber.d("isi regist 3 requestCode:%s", String.valueOf(requestCode));
         if (requestCode == LoginActivity.ACTIVITY_RESULT) {
-            Timber.d("isi regist 3 resultcode:" + String.valueOf(resultCode));
+            Timber.d("isi regist 3 resultcode:%s", String.valueOf(resultCode));
             if (resultCode == LoginActivity.RESULT_PIN) {
-                Timber.d("isi regist 3 authtype:" + authType);
+                Timber.d("isi regist 3 authtype:%s", authType);
 
                 pass = data.getStringExtra(DefineValue.NEW_PASSWORD);
                 confPass = data.getStringExtra(DefineValue.CONFIRM_PASSWORD);
 
-//                Intent i = new Intent(getActivity(), CreatePIN.class);
-//                i.putExtra(DefineValue.REGISTRATION, true);
-//                switchActivityPIN(i);
-
                 sendCreatePass();
             } else if (resultCode == LoginActivity.RESULT_FINISHING) {
-//                if(authType.equals(DefineValue.AUTH_TYPE_OTP)){
-//                    pass = data.getStringExtra(DefineValue.NEW_PASSWORD);
-//                    confPass = data.getStringExtra(DefineValue.CONFIRM_PASSWORD);
-//                }
                 sendCreatePin(data);
             }
         }
@@ -409,7 +376,7 @@ public class Regist3 extends BaseFragment {
             params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, custID, token, subStringLink));
             params.put(WebParams.CUST_ID, custID);
 
-            Timber.d("params create pass:" + params.toString());
+            Timber.d("params create pass:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
@@ -425,8 +392,9 @@ public class Regist3 extends BaseFragment {
 
                                 Intent i = new Intent(getActivity(), CreatePIN.class);
                                 i.putExtra(DefineValue.REGISTRATION, true);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 switchActivityPIN(i);
-                            }else if(code.equals("0301")){
+                            } else if (code.equals("0301")) {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                 builder.setTitle(getActivity().getResources().getString(R.string.logout)).setMessage(model.getError_message())
                                         .setCancelable(false)
@@ -437,10 +405,10 @@ public class Regist3 extends BaseFragment {
                                             }
                                         });
                             } else {
-
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
                                 i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 switchActivityPIN(i);
                             }
                         }
@@ -457,7 +425,7 @@ public class Regist3 extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
 
     }
@@ -482,7 +450,7 @@ public class Regist3 extends BaseFragment {
             params.put(WebParams.PIN, RSA.opensslEncrypt(uuid, dateTime, custID, pin, subStringLink));
             params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(uuid, dateTime, custID, confirmPin, subStringLink));
 
-            Timber.d("params create pin:" + params.toString());
+            Timber.d("params create pin:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
@@ -496,10 +464,10 @@ public class Regist3 extends BaseFragment {
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 showDialog();
                             } else {
-
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(getActivity(), CreatePIN.class);
                                 i.putExtra(DefineValue.REGISTRATION, true);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 switchActivityPIN(i);
                             }
                         }
@@ -516,7 +484,7 @@ public class Regist3 extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
 
     }

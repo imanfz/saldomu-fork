@@ -158,7 +158,7 @@ public class ChangeEmail extends BaseActivity {
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + object.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(ChangeEmail.this, model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(ChangeEmail.this);
                                 } else {
                                     message = model.getError_message();
                                     Toast.makeText(ChangeEmail.this, message, Toast.LENGTH_LONG).show();
@@ -197,12 +197,7 @@ public class ChangeEmail extends BaseActivity {
     private void dialogSuccessChangeEmail() {
         Dialog dialognya = DefinedDialog.MessageDialog(ChangeEmail.this, this.getString(R.string.dialog_change_email),
                 this.getString(R.string.dialog_change_email1),
-                new DefinedDialog.DialogButtonListener() {
-                    @Override
-                    public void onClickButton(View v, boolean isLongClick) {
-                        finish();
-                    }
-                }
+                () -> finish()
         );
 
         dialognya.setCanceledOnTouchOutside(false);

@@ -25,7 +25,6 @@ import timber.log.Timber;
 
 public class FcmReceiver extends BroadcastReceiver {
 
-    private BundleToJSON bundleToJSON = new BundleToJSON();
     SecurePreferences sp;
 
     public FcmReceiver() {

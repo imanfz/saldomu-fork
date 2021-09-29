@@ -228,7 +228,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                     }
                     WebParams.ERROR_0066 -> {
                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                        alertDialogMaintenance.showDialogMaintenance(activity, cashCollectionModel.error_message)
+                        alertDialogMaintenance.showDialogMaintenance(activity)
                     }
                     else -> {
                         val msg = cashCollectionModel.error_message
@@ -312,7 +312,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                         }
                         WebParams.ERROR_0066 -> {
                             val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                            alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                            alertDialogMaintenance.showDialogMaintenance(activity)
                         }
                         else -> {
                             val msg = model.error_message
@@ -369,7 +369,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                                 DefineValue.ERROR_0066 -> {
                                     Timber.d("isi response maintenance:$response")
                                     val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                    alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                    alertDialogMaintenance.showDialogMaintenance(activity)
                                 }
                                 else -> showDialog(error_message)
                             }
@@ -458,7 +458,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                                     DefineValue.ERROR_0066 -> {
                                         Timber.d("isi response maintenance:$response")
                                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                        alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                        alertDialogMaintenance.showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         Timber.d("Error inquirytrx cash collection:$response")
@@ -528,7 +528,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                 params[WebParams.MEMBER_ID] = memberIDLogin
                 params[WebParams.USER_ID] = userPhoneID
                 params[WebParams.COMM_ID] = MyApiClient.COMM_ID
-                params[WebParams.IS_AUTO] = "Y"
+                params[WebParams.IS_AUTO] = DefineValue.STRING_YES
                 if (!memberIDLogin.isEmpty()) {
                     RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_SALDO_CASH_COLLECTOR, params,
                             object : ObjListeners {
@@ -551,7 +551,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                                         } else if (code == DefineValue.ERROR_0066) {
                                             Timber.d("isi response maintenance:$response")
                                             val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                            alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                            alertDialogMaintenance.showDialogMaintenance(activity)
                                         } else {
                                             code = response.getString(WebParams.ERROR_MESSAGE)
                                             Toast.makeText(activity, code, Toast.LENGTH_LONG).show()

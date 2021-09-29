@@ -46,7 +46,6 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
     TextView tvDate, tvStartHour, tvEndHour, tvOpen24Hours;
     ArrayList<String> selectedDates = new ArrayList<>();
     ArrayList<Date> listDates = new ArrayList<>();
-    SecurePreferences sp;
     String shopId, memberId, shopStatus, shopRemark, shopStartOpenHour, shopEndOpenHour;
     int iStartHour = 0, iStartMinute = 0, iEndHour = 0, iEndMinute = 0;
     LinearLayout llSetupHourForm, llSetupHourFormEnd, llHourForm;
@@ -57,7 +56,6 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
         super.onCreate(savedInstanceState);
         initializeToolbar();
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         tbOpenClosed = (ToggleButton) findViewById(R.id.tbOpenClosed);
         tbOpenClosed.setTextOn(getString(R.string.shop_open));
         tbOpenClosed.setTextOff(getString(R.string.shop_close));
@@ -78,8 +76,8 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
         shopStartOpenHour = "";
         shopEndOpenHour = "";
 
-        memberId = getIntent().getStringExtra("memberId");
-        shopId = getIntent().getStringExtra("shopId");
+        memberId = getIntent().getStringExtra(DefineValue.MEMBER_ID);
+        shopId = getIntent().getStringExtra(DefineValue.SHOP_ID);
 
         tvStartHour = (TextView) findViewById(R.id.tvStartHour);
         tvEndHour = (TextView) findViewById(R.id.tvEndHour);
@@ -255,24 +253,13 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
     public void onOkDatePickerClick(ArrayList<String> selectedDates, ArrayList<Date> listDates) {
         this.selectedDates = selectedDates;
 
-        ArrayList<String> tempDates = new ArrayList<>();
-        //Collections.sort(listDates);
-
-        /*for(int i = 0; i < listDates.size(); i++) {
-            String fDate = new SimpleDateFormat("yyyy-MM-dd").format(listDates.get(i));
-            tempDates.add(fDate.toString());
-        }*/
-
         ArrayList<String> tempStringDates = new ArrayList<>();
 
         for (int j = 0; j < listDates.size(); j++) {
-            //String testonly  = listDates.get(j).toString();
             tempStringDates.add(DateTimeFormat.convertDatetoString(listDates.get(j), "dd MMMM yyyy"));
 
         }
         tvDate.setText(TextUtils.join(", ", tempStringDates));
-
-
     }
 
     @Override

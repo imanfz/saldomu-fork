@@ -126,12 +126,10 @@ public class BillerDesciption extends BaseFragment {
     private List<BankBillerItem> mListBankBiller;
     private List<DenomDataItem> mListDenomData;
     private Realm realm;
-    Boolean isPLN = false;
-    String fee = "0", deAmount, enabledAdditionalFee;
+    String fee = "0", enabledAdditionalFee;
     private Boolean isAgent = false;
     private LinearLayout layout_additionalFee;
     private EditText et_additionalFee;
-    LevelClass levelClass;
     SentPaymentBillerModel sentPaymentBillerModel;
 
     @Override
@@ -173,7 +171,6 @@ public class BillerDesciption extends BaseFragment {
         Timber.d("isi args biller description:" + args.toString());
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        levelClass = new LevelClass(getActivity(), sp);
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
         biller_comm_id = args.getString(DefineValue.COMMUNITY_ID);
@@ -195,15 +192,7 @@ public class BillerDesciption extends BaseFragment {
 
         biller_comm_code = mBillerData.getCommCode();
         biller_api_key = mBillerData.getApiKey();
-//        callback_url = mBillerData.getCallback_url();
         callback_url = "";
-
-        if (biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS) ||
-                biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_NON_TAG) ||
-                biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_PLN) ||
-                biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_PLN_TKN)) {
-            isPLN = true;
-        }
 
     }
 
@@ -236,7 +225,7 @@ public class BillerDesciption extends BaseFragment {
             }
         }
 
-        if (isAgent && enabledAdditionalFee.equals("Y")) {
+        if (isAgent && enabledAdditionalFee.equals(DefineValue.STRING_YES)) {
             layout_additionalFee.setVisibility(View.VISIBLE);
         }
 
@@ -248,7 +237,6 @@ public class BillerDesciption extends BaseFragment {
         ((TextView) (layout_total.findViewById(R.id.billertoken_total_value))).setText(ccy_id + ". " + CurrencyFormat.format(amount));
         layout_total.setVisibility(View.VISIBLE);
         double mAmount = Double.parseDouble(amount) - Double.parseDouble(fee);
-        deAmount = String.valueOf(mAmount);
         tv_amount_value.setText(ccy_id + ". " + CurrencyFormat.format(mAmount));
         tv_total_value.setText(ccy_id + ". " + CurrencyFormat.format(mAmount));
 //            }
@@ -521,7 +509,7 @@ public class BillerDesciption extends BaseFragment {
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             }else {
                                 code = model.getError_code() + " : " + model.getError_message();
                                 if (isVisible()) {
@@ -543,7 +531,7 @@ public class BillerDesciption extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -584,7 +572,7 @@ public class BillerDesciption extends BaseFragment {
                     params.put(WebParams.ADDITIONAL_FEE, "0");
             }
 
-            Timber.d("isi params sent payment biller:" + params.toString());
+            Timber.d("isi params sent payment biller:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_PAYMENT_BILLER, params,
                     new ResponseListener() {
@@ -612,14 +600,14 @@ public class BillerDesciption extends BaseFragment {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
                             }else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + sentPaymentBillerModel.getApp_data());
+                                Timber.d("isi response app data:%s", sentPaymentBillerModel.getApp_data());
                                 final AppDataModel appModel = sentPaymentBillerModel.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
                                 alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
+                                Timber.d("isi response maintenance:%s", object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), sentPaymentBillerModel.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 code = sentPaymentBillerModel.getError_code() + " : " + sentPaymentBillerModel.getError_message();
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -694,7 +682,7 @@ public class BillerDesciption extends BaseFragment {
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 String code_msg = model.getError_message();
                                 switch (code) {
@@ -752,12 +740,7 @@ public class BillerDesciption extends BaseFragment {
     private void showDialogError(String message) {
         Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.error),
                 message,
-                new DefinedDialog.DialogButtonListener() {
-                    @Override
-                    public void onClickButton(View v, boolean isLongClick) {
-                        getFragmentManager().popBackStack();
-                    }
-                }
+                (DefinedDialog.DialogButtonListener) () -> getFragmentManager().popBackStack()
         );
         dialognya.show();
     }
@@ -884,12 +867,6 @@ public class BillerDesciption extends BaseFragment {
             mArgs.putString(DefineValue.AMOUNT_DESIRED, desired_amount);
             mArgs.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(totalAmount));
         }
-//        if (isPLN) {
-//            double mAmount = Double.parseDouble(amount) - Double.parseDouble(fee);
-//            String deAmount = String.valueOf(mAmount);
-//            mArgs.putString(DefineValue.AMOUNT, deAmount);
-//            mArgs.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(amount));
-//        }
 
         Fragment newFrag = new BillerConfirm();
         newFrag.setArguments(mArgs);

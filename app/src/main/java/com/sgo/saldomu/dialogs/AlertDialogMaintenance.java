@@ -23,22 +23,7 @@ public class AlertDialogMaintenance {
         return instance;
     }
 
-    public void showDialogMaintenance(final Activity mContext, String message) {
-//        DialogInterface.OnClickListener okListener = new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                mContext.finish();
-//                android.os.Process.killProcess(android.os.Process.myPid());
-//                System.exit(0);
-//                mContext.getParent().finish();
-//            }
-//        };
-//        android.support.v7.app.AlertDialog alertDialog = DefinedDialog.BuildAlertDialog(mContext, mContext.getString(R.string.maintenance),
-//                message, android.R.drawable.ic_dialog_alert, false,
-//                mContext.getString(R.string.ok), okListener);
-//        alertDialog.show();
-//
-//        Timber.d("showDialogUpdate");
+    public void showDialogMaintenance(final Activity mContext) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle(mContext.getResources().getString(R.string.maintenance)).setMessage(mContext.getResources().getString(R.string.maintenance_message))

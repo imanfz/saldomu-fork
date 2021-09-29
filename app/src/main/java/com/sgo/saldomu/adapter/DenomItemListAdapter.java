@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,18 +27,16 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
     ArrayList<DenomListModel> itemList;
     ArrayList<DenomListModel> originalList;
     listener listener;
-    boolean isFragConfirm;
 
     public interface listener {
         void onChangeQty(String itemId, String qty);
     }
 
-    public DenomItemListAdapter(Context _context, ArrayList<DenomListModel> itemList, listener listener, boolean isFragConfirm) {
+    public DenomItemListAdapter(Context _context, ArrayList<DenomListModel> itemList, listener listener) {
         this.context = _context;
         this.itemList = itemList;
         originalList = itemList;
         this.listener = listener;
-        this.isFragConfirm = isFragConfirm;
     }
 
     @NonNull
@@ -95,11 +92,10 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
         return itemList.size();
     }
 
-    class holder extends RecyclerView.ViewHolder {
+    static class holder extends RecyclerView.ViewHolder {
 
         TextView itemName, itemID, itemPrice;
         EditText itemQty;
-        LinearLayout inputDenom;
         View border;
 
         public holder(View itemView) {
@@ -109,7 +105,6 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
             itemID = itemView.findViewById(R.id.adapter_item_id_field);
             itemQty = itemView.findViewById(R.id.adapter_item_et_qty);
             itemPrice = itemView.findViewById(R.id.adapter_item_price_field);
-            inputDenom = itemView.findViewById(R.id.adapter_item_layout);
         }
     }
 

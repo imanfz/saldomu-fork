@@ -86,7 +86,6 @@ public class PulsaAgentDescription extends BaseFragment {
     private String item_name;
     private String payment_name;
     private String comm_id;
-    private String comm_name;
     private String comm_code;
     private String api_key;
     private String callback_url;
@@ -366,7 +365,6 @@ public class PulsaAgentDescription extends BaseFragment {
                                         );
 
                                         if (mBob.getProduct_code().equals(DefineValue.SCASH)) {
-                                            String tempProductName = mBob.getProduct_name();
                                             mDataPayment.add(mBob);
                                             paymentData.add(getString(R.string.appname));
                                         } else {
@@ -389,7 +387,6 @@ public class PulsaAgentDescription extends BaseFragment {
 
                                 }
                                 comm_id = model.getComm_id();
-                                comm_name = model.getComm_name();
                                 comm_code = model.getComm_code();
                                 api_key = model.getApi_key();
                                 callback_url = model.getCallback_url();
@@ -464,7 +461,7 @@ public class PulsaAgentDescription extends BaseFragment {
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 String code_msg = model.getError_message();
                                 switch (code) {

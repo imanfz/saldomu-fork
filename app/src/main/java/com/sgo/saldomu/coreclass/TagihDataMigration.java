@@ -22,7 +22,7 @@ public class TagihDataMigration implements RealmMigration {
             schema.create("TagihCommunityModel")
                     .addField("id", String.class, FieldAttribute.PRIMARY_KEY)
                     .addField("comm_code", String.class)
-                    .addField("comm_name", String.class);
+                    .addField(WebParams.COMM_NAME, String.class);
         }
     }
 }

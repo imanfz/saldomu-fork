@@ -66,17 +66,11 @@ public class CoreApp extends MultiDexApplication {
 
         set_instance(this);
 
-//        Stetho.initialize(
-//                Stetho.newInitializerBuilder(this)
-//                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-//                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
-//                        .build());
-
 
         Iconify.with(new FontAwesomeModule());
         CustomSecurePref.initialize(this);
         MyApiClient myApiClient = MyApiClient.Initialize(this);
-        setsDefSystemLanguage(null);
+        setsDefSystemLanguage();
 
         RealmManager.init(this, R.raw.saldomudevrealm);
 
@@ -104,106 +98,18 @@ public class CoreApp extends MultiDexApplication {
         }
 
         myApiClient.InitializeAddress();
-//        Timber.wtf("isi headaddressfinal:" + MyApiClient.headaddressfinal);
-//        Configuration.Builder configurationBuilder = new Configuration.Builder(getApplicationContext());
-//        configurationBuilder.addModelClasses(
-//                friendModel.class,
-//                myFriendModel.class,
-//                listTimeLineModel.class,
-//                listHistoryModel.class,
-//                likeModel.class,
-//                commentModel.class
-//        );
-//        ActiveAndroid.initialize(configurationBuilder.create());
         registerActivityLifecycleCallbacks(new LifeCycleHandler(this));
-
-        /*registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                if(LifeCycleHandler.isApplicationVisible()) {
-                    if (action.equalsIgnoreCase("android.intent.action.SIM_STATE_CHANGED")) {
-                        if (intent.getStringExtra("ss").equalsIgnoreCase("ABSENT")) {
-                            if(new SMSclass(CoreApp.this).isSimExists()) {
-                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                                SecurePreferences.Editor mEditor = prefs.edit();
-                                mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-                                mEditor.apply();
-                                Intent i = new Intent(CoreApp.this.getApplicationContext(), ErrorActivity.class);
-                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                i.putExtra(DefineValue.TYPE, ErrorActivity.SIM_CARD_ABSENT);
-                                CoreApp.this.startActivity(i);
-                            }
-                        }
-                    }
-                }
-            }
-        },new IntentFilter("android.intent.action.SIM_STATE_CHANGED") );*/
-    }
-
-
-    private void deleteBundledRealmFile(String outFileName) {
-        File file = new File(this.getFilesDir(), outFileName);
-        if (file.exists()) {
-            if (file.delete())
-                Timber.d("delete " + getString(R.string.success));
-            else
-                Timber.d("delete " + getString(R.string.failed));
-
-        }
-    }
-
-
-    private String copyBundledRealmFile(InputStream inputStream, String outFileName) {
-        try {
-            File file = new File(this.getFilesDir(), outFileName);
-            long sizeraw = inputStream.available();
-            long sizefile = 0;
-            if (file.exists()) {
-                sizefile = file.length();
-                Timber.d("sizeRaw / sizeFile = " + String.valueOf(sizeraw) + " / " + String.valueOf(sizefile));
-            }
-
-            if (sizeraw != sizefile) {
-                FileOutputStream outputStream = new FileOutputStream(file);
-                byte[] buf = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buf)) > 0) {
-                    outputStream.write(buf, 0, bytesRead);
-                }
-                outputStream.close();
-                Timber.d("file baru dicopy");
-                return file.getAbsolutePath();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Timber.d("file tidak dicopy");
-        return null;
     }
 
     @Override
     public void onConfigurationChanged(android.content.res.Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        setsDefSystemLanguage(newConfig);
+        setsDefSystemLanguage();
     }
 
-    private void setsDefSystemLanguage(android.content.res.Configuration newConfig) {
-
-        String delanguage;
-        if (newConfig == null) {
-            delanguage = Locale.getDefault().getLanguage();
-        } else {
-            delanguage = newConfig.locale.getLanguage();
-        }
-
+    private void setsDefSystemLanguage() {
         DefineValue.sDefSystemLanguage = "in";
-
     }
 
 
@@ -215,10 +121,6 @@ public class CoreApp extends MultiDexApplication {
 
     public static Context getAppContext() {
         return get_instance().getApplicationContext();
-    }
-
-    public Activity getCurrentActivity() {
-        return mCurrentActivity;
     }
 
     public void setCurrentActivity(Activity mCurrentActivity) {

@@ -129,7 +129,7 @@ class OTPActivity : BaseActivity() {
                             DefineValue.ERROR_0066 -> {
                                 Timber.d("isi response maintenance:$response")
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(this@OTPActivity, model.error_message)
+                                alertDialogMaintenance.showDialogMaintenance(this@OTPActivity)
                             }
                             else -> {
                                 Timber.d("Error forgot pin:$response")
@@ -190,7 +190,7 @@ class OTPActivity : BaseActivity() {
                             DefineValue.ERROR_0066 -> {
                                 Timber.d("isi response maintenance:$response")
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(this@OTPActivity, model.error_message)
+                                alertDialogMaintenance.showDialogMaintenance(this@OTPActivity)
                             }
                             else -> {
                                 Timber.d("Error forgot pin:$response")
