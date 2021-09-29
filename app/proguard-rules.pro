@@ -160,3 +160,5 @@
 -keep class com.sgo.saldomu.models.EBDConfirmModel { *; }
 -keep class com.sgo.saldomu.models.PaymentMethods { *; }
 -keep class com.sgo.saldomu.models.retrofit.ItemModel { *; }
+
+-printconfiguration /tmp/full-r8-config.txt
