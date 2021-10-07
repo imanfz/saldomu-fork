@@ -1612,6 +1612,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="internet">Internet</string>
     <string name="pbb">PBB Payment</string>
     <string name="e_samsat">E-Samsat</string>
+    <string name="b2b_telco">B2B Telco</string>
     <string name="pln_non_taglis">PLN Non-Taglis</string>
     <string name="tuition_fee">Tuition Fee</string>
     <string name="residence">Residence</string>

@@ -1592,6 +1592,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="internet">Internet</string>
     <string name="pbb">Pembayaran PBB</string>
     <string name="e_samsat">E-Samsat</string>
+    <string name="b2b_telco">B2B Telco</string>
     <string name="pln_non_taglis">PLN Non-Taglis</string>
     <string name="tuition_fee">Uang Sekolah</string>
     <string name="residence">Perumahan</string>

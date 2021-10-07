@@ -24,6 +24,7 @@ public class ListSettingAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
     private ArrayList<String> menu;
+    private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
     private String shopId, memberId, agentName, category, memberType, shopName, commName, province, district, address, flagApprove, stepApprove;
 
     public ListSettingAdapter(Context context, ArrayList<String> menu, String flagApprove) {

@@ -183,6 +183,14 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/billertoken_text_payment_input_amount"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
                 <EditText
                     android:id="@+id/billertoken_amount_desired_value"
                     android:layout_width="match_parent"
@@ -198,13 +206,7 @@
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/billertoken_text_payment_input_amount"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/abc_text_size_medium_material"
-                    android:textStyle="bold" />
+
 
             </LinearLayout>
 

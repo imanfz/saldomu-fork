@@ -87,7 +87,8 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
             "EMON", // Emoney 19
             "VCHR",// voucher 20
             "DATA", // data 21
-            "SMST" // E-Samsat 22
+            "SMST", // E-Samsat 22
+            "RTU" // B2b Telco 23
     };
     private View v;
     private View layout_denom;
@@ -96,11 +97,12 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
     private TextView tv_month;
     private EditText et_payment_remark;
     private EditText et_layout_input_samsat_payment_remark;
+    private EditText et_input_amount_b2btelco_value;
     private Spinner spin_denom;
     private Spinner spin_month;
     private Button btn_submit, btn_cekSaldo;
     private ImageView spinWheelDenom;
-    private RelativeLayout lyt_cekSaldo, layout_input_samsat;
+    private RelativeLayout lyt_cekSaldo, layout_input_samsat, layout_amount_b2btelco;
     private Animation frameAnimation;
     private RadioGroup radioGroup;
     private String biller_type_code;
@@ -159,6 +161,7 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         layout_month = v.findViewById(R.id.billerinput_layout_month);
         layout_warn_pln = v.findViewById(R.id.layout_warn_pln);
         layout_input_samsat = v.findViewById(R.id.layout_input_samsat);
+        layout_amount_b2btelco = v.findViewById(R.id.layout_amount_b2btelco);
         et_payment_remark.setText(args.getString(DefineValue.CUST_ID, ""));
         if (args.containsKey(DefineValue.BILLER_ID_NUMBER)) {
             et_payment_remark.setText(args.getString(DefineValue.BILLER_ID_NUMBER));
@@ -254,7 +257,15 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
             layout_input_samsat.setVisibility(View.VISIBLE);
             et_layout_input_samsat_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
-        } else {
+        } else if (biller_type_code.equals(billerType[23])) {
+            buy_code = BillerActivity.PURCHASE_TYPE;
+            tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
+            layout_amount_b2btelco.setVisibility(View.VISIBLE);
+            et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
+            et_input_amount_b2btelco_value.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+            et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
+            et_input_amount_b2btelco_value.setInputType(InputType.TYPE_CLASS_NUMBER);
+        }else {
             buy_code = BillerActivity.PAYMENT_TYPE;
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
             et_payment_remark.setKeyListener(DigitsKeyListener.getInstance(digitsListener));
@@ -387,6 +398,8 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);
         mArgs.putString(DefineValue.COMMUNITY_ID, biller_comm_id);
         mArgs.putString(DefineValue.COMMUNITY_NAME, biller_comm_name);
+        if (biller_type_code.equalsIgnoreCase(billerType[23]))
+            mArgs.putString(DefineValue.AMOUNT, et_input_amount_b2btelco_value.getText().toString());
         if (biller_type_code.equalsIgnoreCase(billerType[22]) && et_layout_input_samsat_payment_remark.getText().toString().length() == 16)
             mArgs.putString(DefineValue.IDENTITY_REMARK, et_layout_input_samsat_payment_remark.getText().toString());
 

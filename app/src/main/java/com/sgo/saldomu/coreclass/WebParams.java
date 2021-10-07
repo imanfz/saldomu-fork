@@ -56,6 +56,7 @@ public class WebParams {
 
     public static String CCY_ID = "ccy_id";
     public static String AMOUNT = "amount";
+    public static String BILL_AMOUNT = "bill_amount";
     public static String TOTAL_AMOUNT = "total_amount";
     public static String NETT_AMOUNT = "nett_amount";
 

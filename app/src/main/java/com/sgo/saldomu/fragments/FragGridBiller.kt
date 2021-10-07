@@ -28,6 +28,7 @@ class FragGridBiller : BaseFragment() {
     private val BILLER_TYPE_CODE_TV = "TV"
     private val BILLER_TYPE_CODE_PBB = "PBB"
     private val BILLER_TYPE_CODE_SMST = "SMST"
+    private val BILLER_TYPE_CODE_B2B = "RTU"
 
     private val billerTypeList = arrayOf(
             BILLER_TYPE_CODE_CC,
@@ -39,7 +40,8 @@ class FragGridBiller : BaseFragment() {
             BILLER_TYPE_CODE_INT,
             BILLER_TYPE_CODE_TV,
             BILLER_TYPE_CODE_PBB,
-            BILLER_TYPE_CODE_SMST
+            BILLER_TYPE_CODE_SMST,
+            BILLER_TYPE_CODE_B2B
     )
     private val menuStrings = ArrayList<String>()
     private val menuDrawables = ArrayList<Drawable>()
@@ -111,6 +113,10 @@ class FragGridBiller : BaseFragment() {
                     billerTypeData.biller_type_code = BILLER_TYPE_CODE_SMST
                     billerTypeData.biller_type_name = getString(R.string.e_samsat)
                 }
+                BILLER_TYPE_CODE_B2B -> {
+                    billerTypeData.biller_type_code = BILLER_TYPE_CODE_B2B
+                    billerTypeData.biller_type_name = getString(R.string.b2b_telco)
+                }
             }
             billerTypeDataList.add(billerTypeData)
         }
@@ -140,6 +146,7 @@ class FragGridBiller : BaseFragment() {
             getString(R.string.cable_tv) -> R.drawable.icon_biller_tv
             getString(R.string.pbb) -> R.drawable.icon_biller_pbb
             getString(R.string.e_samsat) -> R.drawable.icon_biller_samsat
+            getString(R.string.b2b_telco) -> R.drawable.ic_menu_b2b
             else -> R.drawable.ic_mandiri
         }
     }

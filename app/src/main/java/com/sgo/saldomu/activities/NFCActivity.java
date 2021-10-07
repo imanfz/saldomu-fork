@@ -652,7 +652,6 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                 } else {
                                     reversalSuccess = true;
                                     cardShifted = false;
-                                    testReversal = true;
 
                                     getCheckCardBalance2();
                                 }
@@ -733,7 +732,6 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
 
                                     reversalSuccess = true;
                                     cardShifted = false;
-                                    testReversal = true;
 
                                     getCheckCardBalance2();
 

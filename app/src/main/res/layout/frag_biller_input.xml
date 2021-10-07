@@ -162,6 +162,37 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/layout_amount_b2btelco"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingBottom="10dp"
+            android:clipToPadding="false"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_input_amount_b2btelco_text_payment_remark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:text="@string/nominal_text"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                />
+
+            <EditText
+                android:id="@+id/et_input_amount_b2btelco_value"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_input_amount_b2btelco_text_payment_remark"
+                android:enabled="true"
+                android:maxLength="10" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/layout_input_samsat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
