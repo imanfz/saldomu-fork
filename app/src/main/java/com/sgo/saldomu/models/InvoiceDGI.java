@@ -14,6 +14,8 @@ public class InvoiceDGI {
     String due_date;
     String datetime;
     String app_id;
+    String reference_number;
+    String device_key;
     boolean selected;
 
     public InvoiceDGI() {
@@ -68,6 +70,14 @@ public class InvoiceDGI {
 
     public String getApp_id() {
         return app_id;
+    }
+
+    public String getReference_number() {
+        return reference_number;
+    }
+
+    public String getDevice_key() {
+        return device_key;
     }
 
     public boolean getSelected() {
@@ -128,6 +138,14 @@ public class InvoiceDGI {
 
     public void setApp_id(String app_id) {
         this.app_id = app_id;
+    }
+
+    public void setReference_number(String reference_number) {
+        this.reference_number = reference_number;
+    }
+
+    public void setDevice_key(String device_key) {
+        this.device_key = device_key;
     }
 
     public void setSelected(boolean selected) {
