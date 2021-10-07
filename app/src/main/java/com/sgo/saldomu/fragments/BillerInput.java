@@ -152,6 +152,7 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         tv_payment_remark = v.findViewById(R.id.billerinput_text_payment_remark);
         et_payment_remark = v.findViewById(R.id.payment_remark_billerinput_value);
         et_layout_input_samsat_payment_remark = v.findViewById(R.id.layout_input_samsat_payment_remark_billerinput_value);
+        et_input_amount_b2btelco_value = v.findViewById(R.id.et_input_amount_b2btelco_value);
         spinWheelDenom = v.findViewById(R.id.spinning_wheel_billerinput_denom);
         btn_submit = v.findViewById(R.id.btn_submit_billerinput);
         btn_cekSaldo = v.findViewById(R.id.btn_cekSaldo);
