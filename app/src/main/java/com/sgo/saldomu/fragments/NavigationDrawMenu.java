@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.fragment.app.ListFragment;
@@ -148,7 +149,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
     private ImageView headerCustImage;
     private TextView headerCustName, headerCustID, headerCurrency, balanceValue, currencyLimit, limitValue, periodeLimit, tvAgentDetailName;
-    private Switch swSettingOnline;
+    private SwitchCompat swSettingOnline;
     private LinearLayout llBalanceDetail, llAgentDetail;
 
     private Animation frameAnimation;
@@ -237,54 +238,40 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
         refreshUINavDrawer();
 //        refreshDataNavDrawer();
 
-        headerCustImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String[] items = {"Choose from Gallery", "Take a Photo"};
+        headerCustImage.setOnClickListener(v -> {
+            final String[] items = {"Choose from Gallery", "Take a Photo"};
 
-                AlertDialog.Builder a = new AlertDialog.Builder(getActivity());
-                a.setCancelable(true);
-                a.setTitle("Choose Profile Picture");
-                a.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items),
-                        new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (which == 0) {
-                                    Timber.wtf("masuk gallery");
-                                    pickAndCameraUtil.chooseGallery(RESULT_GALERY);
-                                } else if (which == 1) {
-                                    chooseCamera();
-                                }
-
-                            }
+            AlertDialog.Builder a = new AlertDialog.Builder(getActivity());
+            a.setCancelable(true);
+            a.setTitle("Choose Profile Picture");
+            a.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items),
+                    (dialog, which) -> {
+                        if (which == 0) {
+                            Timber.wtf("masuk gallery");
+                            pickAndCameraUtil.chooseGallery(RESULT_GALERY);
+                        } else if (which == 1) {
+                            chooseCamera();
                         }
-                );
-                a.create();
-                a.show();
-            }
+
+                    }
+            );
+            a.create();
+            a.show();
         });
 
-        llHeaderProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        llHeaderProfile.setOnClickListener(v -> {
 
 //                Intent i = new Intent(getActivity(), ActivityProfileQr.class);
 //                startActivity(i);
 
 //                Intent i = new Intent(getActivity(), MyProfileNewActivity.class);
 //                switchActivity(i, MainPage.ACTIVITY_RESULT);
-            }
         });
 
         btn_refresh_balance = v.findViewById(R.id.btn_refresh_balance);
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
-        btn_refresh_balance.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getBalance(false);
-            }
-        });
+        btn_refresh_balance.setOnClickListener(v -> getBalance(false));
 
         setBalanceToUI();
     }
@@ -379,7 +366,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
         _url_profpic = sp.getString(DefineValue.IMG_URL, null);
 
-        Timber.wtf("url prof pic:" + _url_profpic);
+        Timber.wtf("url prof pic:%s", _url_profpic);
 
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
@@ -824,7 +811,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
     @Override
     public void onProgressUpdate(int percentage) {
-        Log.d("okhttp", "percentage :" + String.valueOf(percentage));
+        Timber.tag("okhttp").d("percentage :%s", String.valueOf(percentage));
         if (progDialog.isShowing())
             progDialog.setProgress(percentage);
     }
@@ -857,43 +844,40 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
         params2.put(WebParams.COMM_ID, req2);
 
         RetrofitService.getInstance().MultiPartRequest(MyApiClient.LINK_UPLOAD_PROFILE_PIC, params2, filePart,
-                new ObjListener() {
-                    @Override
-                    public void onResponses(JsonObject object) {
+                object -> {
 
-                        UploadPPModel model = gson.fromJson(object, UploadPPModel.class);
+                    UploadPPModel model = gson.fromJson(object, UploadPPModel.class);
 
-                        String error_code = model.getError_code();
-                        String error_message = model.getError_message();
+                    String error_code = model.getError_code();
+                    String error_message = model.getError_message();
 //                            Timber.d("response upload profile picture:" + response.toString());
-                        if (error_code.equalsIgnoreCase("0000")) {
-                            SecurePreferences.Editor mEditor = sp.edit();
+                    if (error_code.equalsIgnoreCase("0000")) {
+                        SecurePreferences.Editor mEditor = sp.edit();
 
-                            mEditor.putString(DefineValue.IMG_URL, model.getImg_url());
-                            mEditor.putString(DefineValue.IMG_SMALL_URL, model.getImg_small_url());
-                            mEditor.putString(DefineValue.IMG_MEDIUM_URL, model.getImg_medium_url());
-                            mEditor.putString(DefineValue.IMG_LARGE_URL, model.getImg_large_url());
+                        mEditor.putString(DefineValue.IMG_URL, model.getImg_url());
+                        mEditor.putString(DefineValue.IMG_SMALL_URL, model.getImg_small_url());
+                        mEditor.putString(DefineValue.IMG_MEDIUM_URL, model.getImg_medium_url());
+                        mEditor.putString(DefineValue.IMG_LARGE_URL, model.getImg_large_url());
 
-                            mEditor.apply();
+                        mEditor.apply();
 
-                            setImageProfPic();
-                        } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
+                        setImageProfPic();
+                    } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
 //                                Timber.d("isi response autologout:" + response.toString());
 //                                String message = response.getString(WebParams.ERROR_MESSAGE);
 
-                            AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), error_message);
-                        } else {
-                            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-                            alert.setTitle("Upload Image");
-                            alert.setMessage("Upload Image : " + error_message);
-                            alert.setPositiveButton("OK", null);
-                            alert.show();
-
-                        }
-
-                        progDialog.dismiss();
+                        AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), error_message);
+                    } else {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                        alert.setTitle("Upload Image");
+                        alert.setMessage("Upload Image : " + error_message);
+                        alert.setPositiveButton("OK", null);
+                        alert.show();
 
                     }
+
+                    progDialog.dismiss();
+
                 });
     }
 
@@ -901,22 +885,18 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getString(R.string.alertbox_gps_warning))
                 .setCancelable(false)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                .setPositiveButton(R.string.yes, (dialog, id) -> {
 
-                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivityForResult(ilocation, RC_GPS_REQUEST);
+                    Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivityForResult(ilocation, RC_GPS_REQUEST);
 
-                    }
                 })
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
+                .setNegativeButton(R.string.no, (dialog, id) -> {
+                    dialog.cancel();
 
-                        swSettingOnline.setOnClickListener(null);
-                        swSettingOnline.setChecked(false);
-                        swSettingOnline.setOnCheckedChangeListener(switchListener);
-                    }
+                    swSettingOnline.setOnClickListener(null);
+                    swSettingOnline.setChecked(false);
+                    swSettingOnline.setOnCheckedChangeListener(switchListener);
                 });
         final AlertDialog alert = builder.create();
         alert.show();
@@ -926,19 +906,11 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
         final AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getActivity().getString(R.string.level_dialog_title),
                 getActivity().getString(R.string.level_dialog_message_agent), getActivity().getString(R.string.level_dialog_btn_ok),
                 getActivity().getString(R.string.cancel), false);
-        dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent mI = new Intent(getActivity(), MyProfileNewActivity.class);
-                getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
-            }
+        dialog_frag.setOkListener((dialog, which) -> {
+            Intent mI = new Intent(getActivity(), MyProfileNewActivity.class);
+            getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
         });
-        dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog_frag.dismiss();
-            }
-        });
+        dialog_frag.setCancelListener((dialog, which) -> dialog_frag.dismiss());
 
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");

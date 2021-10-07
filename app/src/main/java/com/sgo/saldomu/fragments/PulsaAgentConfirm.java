@@ -153,7 +153,7 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
         shareType = args.getString(DefineValue.SHARE_TYPE);
         phone_number = args.getString(DefineValue.PHONE_NUMBER);
         operator_name = args.getString(DefineValue.OPERATOR_NAME);
-        Timber.d("isi args", args.toString());
+        Timber.d("isi args %s", args.toString());
 
         tv_operator_value.setText(operator_name);
         tv_nominal_value.setText(item_name);
@@ -208,7 +208,7 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
         public void onClick(View view) {
             if (InetHandler.isNetworkAvailable(getActivity())) {
 
-                Timber.d("hit button submit", "masukkkk");
+                Timber.d("hit button submit %s", "masukkkk");
                 btn_submit.setEnabled(false);
                 if (is_sgo_plus) {
                     changeToSgoPlus(tx_id, bank_code, product_code, fee);
@@ -230,12 +230,9 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
         }
     };
 
-    private Button.OnClickListener cancelListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            hideKeyboard();
-            exit();
-        }
+    private Button.OnClickListener cancelListener = view -> {
+        hideKeyboard();
+        exit();
     };
 
     private void sentInsertTransTopup(String tokenValue) {
@@ -259,7 +256,7 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
             params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
             params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncryptCommID(comm_id, uuid, dateTime, userID, tokenValue, subStringLink));
 
-            Timber.d("isi params insertTrxTOpupSGOL", params.toString());
+            Timber.d("isi params insertTrxTOpupSGOL %s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
@@ -282,11 +279,11 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             }else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
+                                Timber.d("isi response maintenance:%s", object.toString());
                                 AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), code + ":" + message, Toast.LENGTH_LONG).show();
@@ -308,7 +305,7 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient", e.getMessage());
+            Timber.d("httpclient %s", e.getMessage());
         }
     }
 
@@ -323,7 +320,7 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
             params.put(WebParams.PRIVACY, shareType);
             params.put(WebParams.TX_TYPE, DefineValue.ESPAY);
 
-            Timber.d("isi params sent get Trx Status" + params.toString());
+            Timber.d("isi params sent get Trx Status%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
                     new ResponseListener() {
@@ -366,7 +363,7 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient", e.getMessage());
+            Timber.d("httpclient %s", e.getMessage());
         }
     }
 
@@ -429,12 +426,9 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
         Title.setText(getString(R.string.error));
         Message.setText(msg);
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                //SgoPlusWeb.this.finish();
-            }
+        btnDialogOTP.setOnClickListener(view -> {
+            dialog.dismiss();
+            //SgoPlusWeb.this.finish();
         });
 
         dialog.show();
@@ -491,7 +485,7 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
     @Override
     public void onResume() {
         super.onResume();
-        Log.wtf("masuk onResume", "masukkk");
+        Timber.tag("masuk onResume").wtf("masukkk");
         if (!is_sgo_plus)
             if (!isPIN)
                 toggleMyBroadcastReceiver(true);

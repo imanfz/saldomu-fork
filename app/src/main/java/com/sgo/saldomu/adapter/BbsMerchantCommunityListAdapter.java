@@ -85,17 +85,14 @@ public class BbsMerchantCommunityListAdapter extends BaseAdapter {
         holder.tvCommName.setText(context.getString(R.string.community) + " : " + merchantCommunityList.getCommName());
         holder.tvAddress.setText(context.getString(R.string.myprofile_text_address) + " : " + merchantCommunityList.getAddress1() + ", " + merchantCommunityList.getDistrict() + ", " + merchantCommunityList.getProvince());
 
-        holder.ivRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        holder.ivRegister.setOnClickListener(v -> {
 
-                MerchantCommunityList merchantCommunityList = (MerchantCommunityList) getItem(position);
-                Intent intent = new Intent(context, BbsMemberLocationActivity.class);
-                intent.putExtra(DefineValue.MEMBER_ID, merchantCommunityList.getMemberId());
-                intent.putExtra(DefineValue.SHOP_ID, merchantCommunityList.getShopId());
-                intent.putExtra(DefineValue.SHOP_NAME, merchantCommunityList.getShopName());
-                context.startActivity(intent);
-            }
+            MerchantCommunityList merchantCommunityList1 = (MerchantCommunityList) getItem(position);
+            Intent intent = new Intent(context, BbsMemberLocationActivity.class);
+            intent.putExtra(DefineValue.MEMBER_ID, merchantCommunityList1.getMemberId());
+            intent.putExtra(DefineValue.SHOP_ID, merchantCommunityList1.getShopId());
+            intent.putExtra(DefineValue.SHOP_NAME, merchantCommunityList1.getShopName());
+            context.startActivity(intent);
         });
 
         return rootView;

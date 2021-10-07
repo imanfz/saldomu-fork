@@ -53,7 +53,7 @@ public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder
         holder.docNo.setText(docListArrayList.get(position).getDoc_no());
         holder.docStatus.setText(docListArrayList.get(position).getDoc_status());
         holder.totalAmount.setText(mContext.getString(R.string.currency) + CurrencyFormat.format(docListArrayList.get(position).getNett_amount()));
-        holder.dueDate.setText(docListArrayList.get(position).getDue_date());
+        holder.issueDate.setText(docListArrayList.get(position).getIssue_date());
         holder.paidStatus.setText(docListArrayList.get(position).getPaid_status());
         holder.partner.setText(docListArrayList.get(position).getPartner());
         holder.layout.setOnClickListener(view -> listener.onClick(docListArrayList.get(position)));
@@ -70,7 +70,7 @@ public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView docNo, docStatus, totalAmount, dueDate, paidStatus, partner;
+        TextView docNo, docStatus, totalAmount, issueDate, paidStatus, partner;
         LinearLayout layout;
 
         public ViewHolder(View itemView) {
@@ -78,7 +78,7 @@ public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder
             docNo = itemView.findViewById(R.id.tv_docNo);
             docStatus = itemView.findViewById(R.id.tv_docStatus);
             totalAmount = itemView.findViewById(R.id.tv_totalAmount);
-            dueDate = itemView.findViewById(R.id.tv_due_date);
+            issueDate = itemView.findViewById(R.id.tv_issued_date);
             paidStatus = itemView.findViewById(R.id.tv_paid_status);
             partner = itemView.findViewById(R.id.tv_partner);
             layout = itemView.findViewById(R.id.layout1);

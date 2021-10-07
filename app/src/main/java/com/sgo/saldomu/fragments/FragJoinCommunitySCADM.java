@@ -83,15 +83,12 @@ public class FragJoinCommunitySCADM extends BaseFragment {
         community_name.setText(comm_name);
         community_code.setText(comm_code);
 
-        btn_next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (et_member_code.getText().toString() == null || et_member_code.getText().toString().equalsIgnoreCase(""))
-                {
-                    et_member_code.requestFocus();
-                    et_member_code.setError("Kode Member harus diisi!");
-                }else nextlistener();
-            }
+        btn_next.setOnClickListener(view -> {
+            if (et_member_code.getText().toString() == null || et_member_code.getText().toString().equalsIgnoreCase(""))
+            {
+                et_member_code.requestFocus();
+                et_member_code.setError("Kode Member harus diisi!");
+            }else nextlistener();
         });
     }
 
@@ -111,7 +108,7 @@ public class FragJoinCommunitySCADM extends BaseFragment {
             params.put(WebParams.COMM_ID_SCADM, comm_id_scadm);
             params.put(WebParams.MEMBER_CODE, et_member_code.getText().toString());
 
-            Timber.d("isi params sent preview join community scadm:" + params.toString());
+            Timber.d("isi params sent preview join community scadm:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_PREVIEW_COMMUNITY_SCADM, params,
                     new ObjListeners() {
@@ -121,7 +118,8 @@ public class FragJoinCommunitySCADM extends BaseFragment {
                                 Gson gson = new Gson();
                                 jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                Timber.d("isi response sent preview join community scadm:" + response.toString());
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                Timber.d("isi response sent preview join community scadm:%s", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                     comm_name = response.getString(WebParams.COMM_NAME);
@@ -133,24 +131,18 @@ public class FragJoinCommunitySCADM extends BaseFragment {
                                     changeToConfirm();
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 }else {
-                                    Timber.d("Error isi response sent preview join community scadm:" + response.toString());
-                                    code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    Timber.d("Error isi response sent preview join community scadm:%s", response.toString());
+                                    Toast.makeText(getActivity(), code+ ":" +message, Toast.LENGTH_LONG).show();
                                     getActivity().finish();
                                 }
 
@@ -174,7 +166,7 @@ public class FragJoinCommunitySCADM extends BaseFragment {
                     });
 
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 

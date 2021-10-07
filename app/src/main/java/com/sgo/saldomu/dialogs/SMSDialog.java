@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -56,7 +57,6 @@ import timber.log.Timber;
 public class SMSDialog extends DialogFragment {
 
     private static final int REQUEST_SMS = 1;
-    public Long date;
     private ImageView img_view;
     private ProgressBar progBar;
     private TextView progText, tvMessage, tvMessage1;
@@ -66,15 +66,13 @@ public class SMSDialog extends DialogFragment {
     private final static int intervalTimer = 1000;
     private final static int max_fail_connect = 5; //5 minute
     private static Boolean isStop;
-    private String imeiDevice, ICCIDDevice;
-    private SMSclass smsClass;
+    private String imeiDevice, ICCIDDevice = "";
     private String message1, msg, msgFinal;
     private String SMS_VERIFY;
     private String timeStamp, dateTime;
-    private SMSclass.SMS_VERIFY_LISTENER smsVerifyListener;
     private Handler handler;
     private int idx_fail;
-    private boolean isRetry = false, flag;
+    private boolean isRetry = false;
     SecurePreferences sp;
     View v;
 
@@ -110,7 +108,6 @@ public class SMSDialog extends DialogFragment {
         SMSDialog dialog = new SMSDialog();
         dialog.dateTime = date;
         dialog.deListener = _listener;
-        dialog.flag = flag;
         return dialog;
     }
 
@@ -148,57 +145,43 @@ public class SMSDialog extends DialogFragment {
 
         message1 = getActivity().getString(R.string.dialog_sms_msg);
 
-        btnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (InetHandler.isNetworkAvailable(getActivity())) {
-                    progBar.setProgress(0);
-                    tvMessage.setText(getActivity().getString(R.string.dialog_sms_msg2));
-                    tvMessage1.setText(getActivity().getString(R.string.dialog_sms_msg5));
-                    progBar.setVisibility(View.VISIBLE);
-                    progText.setVisibility(View.VISIBLE);
-                    btnOk.setVisibility(View.GONE);
-                    btnCancel.setVisibility(View.GONE);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        img_view.setImageDrawable(getActivity().getDrawable(R.drawable.phone_sms_icon_process));
-                    } else {
-                        img_view.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.phone_sms_icon_process));
-                    }
+        btnOk.setOnClickListener(v -> {
+            if (InetHandler.isNetworkAvailable(getActivity())) {
+                progBar.setProgress(0);
+                tvMessage.setText(getActivity().getString(R.string.dialog_sms_msg2));
+                tvMessage1.setText(getActivity().getString(R.string.dialog_sms_msg5));
+                progBar.setVisibility(View.VISIBLE);
+                progText.setVisibility(View.VISIBLE);
+                btnOk.setVisibility(View.GONE);
+                btnCancel.setVisibility(View.GONE);
+                img_view.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.phone_sms_icon_process));
 
-                    isStop = false;
-                    idx_fail = 0;
+                isStop = false;
+                idx_fail = 0;
 //                    sentInquirySMS();
-                    sentSms();
-                    cdTimer.start();
-                    if (deListener != null)
-                        deListener.onClickOkButton(v, false);
-                } else {
-                    Toast.makeText(getActivity(), getActivity().getString(R.string.inethandler_dialog_message), Toast.LENGTH_SHORT).show();
-                }
+                sentSms();
+                cdTimer.start();
+                if (deListener != null)
+                    deListener.onClickOkButton(v, false);
+            } else {
+                Toast.makeText(getActivity(), getActivity().getString(R.string.inethandler_dialog_message), Toast.LENGTH_SHORT).show();
             }
         });
 
 
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tvMessage.setText(message1);
-                progText.setVisibility(View.GONE);
-                progBar.setVisibility(View.GONE);
-                btnOk.setVisibility(View.VISIBLE);
-                btnCancel.setVisibility(View.VISIBLE);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    img_view.setImageDrawable(getActivity().getDrawable(R.drawable.phone_sms_icon));
-                } else {
-                    img_view.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.phone_sms_icon_process));
-                }
-                cdTimer.cancel();
-                RetrofitService.dispose();
-                isStop = true;
-                dismiss();
-                if (deListener != null)
-                    deListener.onClickCancelButton(v, false);
-            }
+        btnCancel.setOnClickListener(v -> {
+            tvMessage.setText(message1);
+            progText.setVisibility(View.GONE);
+            progBar.setVisibility(View.GONE);
+            btnOk.setVisibility(View.VISIBLE);
+            btnCancel.setVisibility(View.VISIBLE);
+            img_view.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.phone_sms_icon));
+            cdTimer.cancel();
+            RetrofitService.dispose();
+            isStop = true;
+            dismiss();
+            if (deListener != null)
+                deListener.onClickCancelButton(v, false);
         });
 
 
@@ -228,44 +211,13 @@ public class SMSDialog extends DialogFragment {
                 progBar.setVisibility(View.GONE);
                 btnOk.setVisibility(View.VISIBLE);
                 btnCancel.setVisibility(View.VISIBLE);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    img_view.setImageDrawable(getActivity().getDrawable(R.drawable.phone_sms_icon_fail));
-                } else {
-                    img_view.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.phone_sms_icon_fail));
-                }
+                img_view.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.phone_sms_icon_fail));
             }
         };
 
         SMSclass test = new SMSclass(getActivity());
         imeiDevice = test.getDeviceAndroidId();
-//        ICCIDDevice = test.getDeviceICCID();
         Timber.wtf("device imei/ICCID : " + imeiDevice + "/" + ICCIDDevice);
-
-        smsVerifyListener = new SMSclass.SMS_VERIFY_LISTENER() {
-            @Override
-            public void success() {
-                Timber.i("sms terkirim sukses");
-            }
-
-            @Override
-            public void failed() {
-                Timber.i("sms terkirim gagal");
-                tvMessage.setText(getActivity().getString(R.string.dialog_sms_msg3));
-                progText.setVisibility(View.GONE);
-                progBar.setVisibility(View.GONE);
-                btnOk.setVisibility(View.VISIBLE);
-                btnCancel.setVisibility(View.VISIBLE);
-                isRetry = true;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    img_view.setImageDrawable(getActivity().getDrawable(R.drawable.phone_sms_icon_fail));
-                } else {
-                    img_view.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.phone_sms_icon_fail));
-                }
-                cdTimer.cancel();
-                RetrofitService.dispose();
-                isStop = true;
-            }
-        };
     }
 
     @Override
@@ -276,7 +228,7 @@ public class SMSDialog extends DialogFragment {
 
 
 //        timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
-        Timber.i("isi timestamp : " + timeStamp);
+        Timber.i("isi timestamp : %s", timeStamp);
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
                 new IntentFilter("fcmData"));
@@ -297,21 +249,14 @@ public class SMSDialog extends DialogFragment {
             tvMessage.setText(getActivity().getString(R.string.dialog_sms_msg4));
             progText.setVisibility(View.GONE);
             progBar.setVisibility(View.GONE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                img_view.setImageDrawable(getActivity().getDrawable(R.drawable.phone_sms_icon_success));
-            } else {
-                img_view.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.phone_sms_icon_success));
-            }
+            img_view.setImageDrawable(getActivity().getDrawable(R.drawable.phone_sms_icon_success));
             cdTimer.cancel();
 
             if (handler == null)
                 handler = new Handler();
 
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
+            handler.postDelayed(() -> {
 //                    saveData(new JSONObject());
-                }
             }, 10000);
 
             cdTimer.cancel();
@@ -324,11 +269,7 @@ public class SMSDialog extends DialogFragment {
         progBar.setVisibility(View.GONE);
         btnOk.setVisibility(View.VISIBLE);
         btnCancel.setVisibility(View.VISIBLE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            img_view.setImageDrawable(getActivity().getDrawable(R.drawable.phone_sms_icon));
-        } else {
-            img_view.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.phone_sms_icon));
-        }
+        img_view.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.phone_sms_icon));
         DestroyDialog();
     }
 
@@ -347,7 +288,7 @@ public class SMSDialog extends DialogFragment {
 //            } else
             dateTime = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
             Timber.wtf("device imei/ICCID : " + imeiDevice + "/" + ICCIDDevice);
-            Timber.d("jalanin sentSMSVerify " + ICCIDDevice);
+            Timber.d("jalanin sentSMSVerify %s", ICCIDDevice);
             String mobileNetworkCode = NoHPFormat.getMNC(ICCIDDevice);
             String mobileDestination = NoHPFormat.getSMSVerifyDestination(mobileNetworkCode);
             if (isRetry) {
@@ -360,7 +301,7 @@ public class SMSDialog extends DialogFragment {
             Uri uri = Uri.parse("smsto:" + mobileDestination);
             Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
             intent.putExtra("sms_body", msgFinal);
-            Timber.d("content sms : " + msgFinal);
+            Timber.d("content sms : %s", msgFinal);
             startActivityForResult(intent, REQUEST_SMS);
         }
     }
@@ -382,18 +323,18 @@ public class SMSDialog extends DialogFragment {
             params.put(WebParams.IMEI_ID, imeiDevice.toUpperCase());
             params.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID,""));
             params.put(WebParams.REFERENCE_ID, sp.getString(DefineValue.SMS_CONTENT_ENCRYPTED,""));
-            Timber.d("isi params fcm:" + params.toString());
+            Timber.d("isi params fcm:%s", params.toString());
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_FCM, params, new ResponseListener() {
                 @Override
                 public void onResponses(JsonObject object) {
-                    Timber.d("isi response fcm:" + object);
+                    Timber.d("isi response fcm:%s", object);
 
                     sentInquirySMS();
                 }
 
                 @Override
                 public void onError(Throwable throwable) {
-                    Timber.d("isi error fcm:" + throwable);
+                    Timber.d("isi error fcm:%s", throwable);
                 }
 
                 @Override
@@ -402,13 +343,13 @@ public class SMSDialog extends DialogFragment {
                 }
             });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
     private void sentInquirySMS() {
         try {
-            Timber.d("idx fail = " + String.valueOf(idx_fail));
+            Timber.d("idx fail = %s", String.valueOf(idx_fail));
 
             if (idx_fail <= max_fail_connect && InetHandler.isNetworkAvailable(getActivity())) {
                 if (!isStop) {
@@ -422,7 +363,7 @@ public class SMSDialog extends DialogFragment {
                     params.put(WebParams.SENT, timeStamp);
                     params.put(WebParams.REFERENCE_ID, sp.getString(DefineValue.SMS_CONTENT_ENCRYPTED, ""));
 
-                    Timber.d("isi params inquiry sms:" + params.toString());
+                    Timber.d("isi params inquiry sms:%s", params.toString());
 
                     RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INQUIRY_SMS, params
                             , new ResponseListener() {
@@ -433,7 +374,8 @@ public class SMSDialog extends DialogFragment {
                                     final InqSMSModel model = gson.fromJson(object, InqSMSModel.class);
 
                                     String code = model.getError_code();
-                                    Timber.d("isi response inquiry sms:" + object.toString());
+                                    String message = model.getError_message();
+                                    Timber.d("isi response inquiry sms:%s", object.toString());
 
                                     sp.edit().remove(DefineValue.TIMESTAMP).apply();
 
@@ -442,21 +384,10 @@ public class SMSDialog extends DialogFragment {
                                         tvMessage.setText(getActivity().getString(R.string.dialog_sms_msg4));
                                         progText.setVisibility(View.GONE);
                                         progBar.setVisibility(View.GONE);
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                            img_view.setImageDrawable(getActivity().getDrawable(R.drawable.phone_sms_icon_success));
-                                        } else {
-                                            img_view.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.phone_sms_icon_success));
-                                        }
+                                        img_view.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.phone_sms_icon_success));
                                         cdTimer.cancel();
 
-
-
-                                        getHandler().postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                saveData(model);
-                                            }
-                                        }, 10000);
+                                        getHandler().postDelayed(() -> saveData(model), 10000);
 
                                     } else if (code.equals(DefineValue.ERROR_0004)) {
                                         cdTimer.cancel();
@@ -470,34 +401,20 @@ public class SMSDialog extends DialogFragment {
                                         DestroyDialog();
                                         idx_fail = 0;
                                     } else if (code.equals(DefineValue.ERROR_9333)) {
-                                        Timber.d("isi response app data:" + model.getApp_data());
+                                        Timber.d("isi response app data:%s", model.getApp_data());
                                         final AppDataModel appModel = model.getApp_data();
-                                        AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                        alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                        AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                     } else if (code.equals(DefineValue.ERROR_0066)) {
-                                        Timber.d("isi response maintenance:" + object.toString());
-                                        AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                        alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                        Timber.d("isi response maintenance:%s", object.toString());
+                                        AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                     } else {
-//                                            if ()
-//                                idx_fail++;
-                                        getHandler().postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                sentInquirySMS();
-                                            }
-                                        }, 10000);
+                                        getHandler().postDelayed(() -> sentInquirySMS(), 10000);
                                     }
                                 }
 
                                 @Override
                                 public void onError(Throwable throwable) {
-                                    getHandler().postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            sentInquirySMS();
-                                        }
-                                    }, 10000);
+                                    getHandler().postDelayed(() -> sentInquirySMS(), 10000);
                                 }
 
                                 @Override
@@ -512,18 +429,14 @@ public class SMSDialog extends DialogFragment {
                 progBar.setVisibility(View.GONE);
                 btnOk.setVisibility(View.VISIBLE);
                 btnCancel.setVisibility(View.VISIBLE);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    img_view.setImageDrawable(getActivity().getDrawable(R.drawable.phone_sms_icon_fail));
-                } else {
-                    img_view.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.phone_sms_icon_fail));
-                }
+                img_view.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.phone_sms_icon_fail));
 
                 RetrofitService.dispose();
                 DestroyDialog();
                 idx_fail = 0;
             }
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 

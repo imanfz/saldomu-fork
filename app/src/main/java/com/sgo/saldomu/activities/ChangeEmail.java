@@ -133,34 +133,30 @@ public class ChangeEmail extends BaseActivity {
             params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, value_pin, subStringLink));
             params.put(WebParams.MEMBER_ID, memberIDLogin);
 
-            Timber.d("isi params Change Email:" + params.toString());
+            Timber.d("isi params Change Email:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params
                     , new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             ChangeEmailModel model = RetrofitService.getInstance().getGson().fromJson(object, ChangeEmailModel.class);
-                            String code;
                             if (!model.getOn_error()) {
 
-                                code = model.getError_code();
+                                String code = model.getError_code();
+                                String message = model.getError_message();
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     dialogSuccessChangeEmail();
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(ChangeEmail.this, model.getError_message());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(ChangeEmail.this, model.getError_message());
                                 }else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(ChangeEmail.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(ChangeEmail.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + object.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(ChangeEmail.this);
+                                    Timber.d("isi response maintenance:%s", object.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(ChangeEmail.this);
                                 } else {
-                                    message = model.getError_message();
                                     Toast.makeText(ChangeEmail.this, message, Toast.LENGTH_LONG).show();
                                     if (code.equals("0097")) {
                                         Intent i = new Intent(ChangeEmail.this, InsertPIN.class);
@@ -190,7 +186,7 @@ public class ChangeEmail extends BaseActivity {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 

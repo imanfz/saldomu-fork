@@ -127,167 +127,154 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
 
 
         btnProses.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
+                v -> {
 
 
-                        String shopDate = new Gson().toJson(selectedDates);
-                        Boolean hasError = false;
+                    String shopDate = new Gson().toJson(selectedDates);
+                    Boolean hasError = false;
 
-                        if (selectedType == 2) {
-                            if (shopDate.equals("")) {
-                                hasError = true;
-                                Toast.makeText(getApplication(), R.string.err_empty_shop_date, Toast.LENGTH_SHORT).show();
-                            }
+                    if (selectedType == 2) {
+                        if (shopDate.equals("")) {
+                            hasError = true;
+                            Toast.makeText(getApplication(), R.string.err_empty_shop_date, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    if (!hasError) {
+
+                        shopRemark = etShopRemark.getText().toString();
+                        progDialog = DefinedDialog.CreateProgressDialog(BbsSetupShopClosedActivity.this, "");
+
+                        if (selectedType == 1) {
+
+                            String extraSignature = memberId + shopId;
+                            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY, extraSignature);
+
+                            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+                            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+                            params.put(WebParams.SHOP_ID, shopId);
+                            params.put(WebParams.MEMBER_ID, memberId);
+                            params.put(WebParams.USER_ID, userPhoneID);
+
+                            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY, params,
+                                    new ObjListeners() {
+                                        @Override
+                                        public void onResponses(JSONObject response) {
+                                            try {
+
+                                                String code = response.getString(WebParams.ERROR_CODE);
+                                                if (code.equals(WebParams.SUCCESS_CODE)) {
+
+
+                                                    Intent intent = new Intent(getApplicationContext(), BbsMemberShopActivity.class);
+                                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    intent.putExtra(DefineValue.MEMBER_ID, memberId);
+                                                    intent.putExtra(DefineValue.SHOP_ID, shopId);
+                                                    intent.putExtra(DefineValue.FLAG_APPROVE, flagApprove);
+                                                    startActivity(intent);
+                                                    finish();
+
+                                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+
+                                                } else {
+                                                    //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+
+                                                    AlertDialog alertDialog = new AlertDialog.Builder(BbsSetupShopClosedActivity.this).create();
+                                                    alertDialog.setTitle(getString(R.string.alertbox_title_information));
+
+                                                    alertDialog.setMessage(response.getString(WebParams.ERROR_MESSAGE));
+                                                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                                            (dialog, which) -> dialog.dismiss());
+                                                    alertDialog.show();
+
+                                                }
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable throwable) {
+
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+                                            progDialog.dismiss();
+                                        }
+                                    });
+                        } else if (selectedType == 2) {
+
+                            String extraSignature = memberId + shopId + shopStatus;
+                            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REGISTER_OPEN_CLOSE_TOKO,
+                                    extraSignature);
+
+                            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+                            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+                            params.put(WebParams.SHOP_ID, shopId);
+                            params.put(WebParams.MEMBER_ID, memberId);
+                            params.put(WebParams.USER_ID, userPhoneID);
+
+                            params.put(WebParams.SHOP_STATUS, shopStatus);
+                            params.put(WebParams.SHOP_REMARK, shopRemark);
+                                /*if (!isClosed) {
+                                    params.put(WebParams.SHOP_START_OPEN_HOUR, shopStartOpenHour);
+                                    params.put(WebParams.SHOP_END_OPEN_HOUR, shopEndOpenHour);
+                                }*/
+                            params.put(WebParams.SHOP_DATE, shopDate);
+
+                            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REGISTER_OPEN_CLOSE_TOKO, params,
+                                    new ObjListeners() {
+                                        @Override
+                                        public void onResponses(JSONObject response) {
+                                            try {
+
+                                                String code = response.getString(WebParams.ERROR_CODE);
+                                                if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                                    //                                    Intent intent=new Intent(BbsRegisterOpenClosedShopActivity.this, .class);
+                                                    //                                    //intent.putExtra("PersonID", personDetailsModelArrayList.get(position).getId());
+                                                    //                                    startActivity(intent);
+
+                                                    Intent intent = new Intent(getApplicationContext(), BbsMemberShopActivity.class);
+                                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    intent.putExtra(DefineValue.MEMBER_ID, memberId);
+                                                    intent.putExtra(DefineValue.SHOP_ID, shopId);
+                                                    intent.putExtra(DefineValue.FLAG_APPROVE, flagApprove);
+                                                    startActivity(intent);
+                                                    finish();
+                                                } else {
+                                                    //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+
+                                                    AlertDialog alertDialog = new AlertDialog.Builder(BbsSetupShopClosedActivity.this).create();
+                                                    alertDialog.setTitle(getString(R.string.alertbox_title_information));
+
+                                                    alertDialog.setMessage(response.getString(WebParams.ERROR_MESSAGE));
+                                                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                                            (dialog, which) -> dialog.dismiss());
+                                                    alertDialog.show();
+
+                                                }
+
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable throwable) {
+
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+                                            progDialog.dismiss();
+                                        }
+                                    });
                         }
 
-                        if (!hasError) {
-
-                            shopRemark = etShopRemark.getText().toString();
-                            progDialog = DefinedDialog.CreateProgressDialog(BbsSetupShopClosedActivity.this, "");
-
-                            if (selectedType == 1) {
-
-                                String extraSignature = memberId + shopId;
-                                HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY, extraSignature);
-
-                                params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-                                params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-                                params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-                                params.put(WebParams.SHOP_ID, shopId);
-                                params.put(WebParams.MEMBER_ID, memberId);
-                                params.put(WebParams.USER_ID, userPhoneID);
-
-                                RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY, params,
-                                        new ObjListeners() {
-                                            @Override
-                                            public void onResponses(JSONObject response) {
-                                                try {
-
-                                                    String code = response.getString(WebParams.ERROR_CODE);
-                                                    if (code.equals(WebParams.SUCCESS_CODE)) {
-
-
-                                                        Intent intent = new Intent(getApplicationContext(), BbsMemberShopActivity.class);
-                                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                        intent.putExtra(DefineValue.MEMBER_ID, memberId);
-                                                        intent.putExtra(DefineValue.SHOP_ID, shopId);
-                                                        intent.putExtra(DefineValue.FLAG_APPROVE, flagApprove);
-                                                        startActivity(intent);
-                                                        finish();
-
-                                                    } else if (code.equals(WebParams.LOGOUT_CODE)) {
-
-                                                    } else {
-                                                        //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
-
-                                                        AlertDialog alertDialog = new AlertDialog.Builder(BbsSetupShopClosedActivity.this).create();
-                                                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
-
-                                                        alertDialog.setMessage(response.getString(WebParams.ERROR_MESSAGE));
-                                                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                                                new DialogInterface.OnClickListener() {
-                                                                    public void onClick(DialogInterface dialog, int which) {
-                                                                        dialog.dismiss();
-
-                                                                    }
-                                                                });
-                                                        alertDialog.show();
-
-                                                    }
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onError(Throwable throwable) {
-
-                                            }
-
-                                            @Override
-                                            public void onComplete() {
-                                                progDialog.dismiss();
-                                            }
-                                        });
-                            } else if (selectedType == 2) {
-
-                                String extraSignature = memberId + shopId + shopStatus;
-                                HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REGISTER_OPEN_CLOSE_TOKO,
-                                        extraSignature);
-
-                                params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-                                params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-                                params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-                                params.put(WebParams.SHOP_ID, shopId);
-                                params.put(WebParams.MEMBER_ID, memberId);
-                                params.put(WebParams.USER_ID, userPhoneID);
-
-                                params.put(WebParams.SHOP_STATUS, shopStatus);
-                                params.put(WebParams.SHOP_REMARK, shopRemark);
-                                    /*if (!isClosed) {
-                                        params.put(WebParams.SHOP_START_OPEN_HOUR, shopStartOpenHour);
-                                        params.put(WebParams.SHOP_END_OPEN_HOUR, shopEndOpenHour);
-                                    }*/
-                                params.put(WebParams.SHOP_DATE, shopDate);
-
-                                RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REGISTER_OPEN_CLOSE_TOKO, params,
-                                        new ObjListeners() {
-                                            @Override
-                                            public void onResponses(JSONObject response) {
-                                                try {
-
-                                                    String code = response.getString(WebParams.ERROR_CODE);
-                                                    if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                                                        //                                    Intent intent=new Intent(BbsRegisterOpenClosedShopActivity.this, .class);
-                                                        //                                    //intent.putExtra("PersonID", personDetailsModelArrayList.get(position).getId());
-                                                        //                                    startActivity(intent);
-
-                                                        Intent intent = new Intent(getApplicationContext(), BbsMemberShopActivity.class);
-                                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                        intent.putExtra(DefineValue.MEMBER_ID, memberId);
-                                                        intent.putExtra(DefineValue.SHOP_ID, shopId);
-                                                        intent.putExtra(DefineValue.FLAG_APPROVE, flagApprove);
-                                                        startActivity(intent);
-                                                        finish();
-                                                    } else {
-                                                        //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
-
-                                                        AlertDialog alertDialog = new AlertDialog.Builder(BbsSetupShopClosedActivity.this).create();
-                                                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
-
-                                                        alertDialog.setMessage(response.getString(WebParams.ERROR_MESSAGE));
-                                                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                                                new DialogInterface.OnClickListener() {
-                                                                    public void onClick(DialogInterface dialog, int which) {
-                                                                        dialog.dismiss();
-
-                                                                    }
-                                                                });
-                                                        alertDialog.show();
-
-                                                    }
-
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onError(Throwable throwable) {
-
-                                            }
-
-                                            @Override
-                                            public void onComplete() {
-                                                progDialog.dismiss();
-                                            }
-                                        });
-                            }
-
-
-                        }
 
                     }
 
@@ -295,16 +282,13 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
         );
     }
 
-    Button.OnClickListener btnShopDateListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            OpenCloseDatePickerFragment openCloseDatePickerFragment = new OpenCloseDatePickerFragment();
-            Bundle args = new Bundle();
-            args.putSerializable("selectDates", selectedDates);
-            args.putSerializable("listDates", listDates);
-            openCloseDatePickerFragment.setArguments(args);
-            openCloseDatePickerFragment.show(getFragmentManager(), OpenCloseDatePickerFragment.TAG);
-        }
+    Button.OnClickListener btnShopDateListener = v -> {
+        OpenCloseDatePickerFragment openCloseDatePickerFragment = new OpenCloseDatePickerFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("selectDates", selectedDates);
+        args.putSerializable("listDates", listDates);
+        openCloseDatePickerFragment.setArguments(args);
+        openCloseDatePickerFragment.show(getFragmentManager(), OpenCloseDatePickerFragment.TAG);
     };
 
     @Override

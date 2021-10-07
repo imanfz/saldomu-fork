@@ -88,43 +88,37 @@ public class BbsMemberListAdapter extends BaseAdapter {
         holder.tvMemberCode.setText(shopDetail.getMemberCode());
         holder.setPosition(position);
 
-        holder.ivLocation.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                ShopDetail tempDetail = (ShopDetail) getItem(position);
+        holder.ivLocation.setOnClickListener(v -> {
+            ShopDetail tempDetail = (ShopDetail) getItem(position);
 
 
-                Intent intent = new Intent(context.getApplicationContext(), BbsMemberLocationActivity.class);
-                intent.putExtra(DefineValue.MEMBER_ID, tempDetail.getMemberId());
-                intent.putExtra(DefineValue.SHOP_ID, tempDetail.getShopId());
-                intent.putExtra(DefineValue.SHOP_NAME, tempDetail.getShopName());
-                intent.putExtra("memberType", tempDetail.getMemberType());
-                context.startActivity(intent);
+            Intent intent = new Intent(context.getApplicationContext(), BbsMemberLocationActivity.class);
+            intent.putExtra(DefineValue.MEMBER_ID, tempDetail.getMemberId());
+            intent.putExtra(DefineValue.SHOP_ID, tempDetail.getShopId());
+            intent.putExtra(DefineValue.SHOP_NAME, tempDetail.getShopName());
+            intent.putExtra("memberType", tempDetail.getMemberType());
+            context.startActivity(intent);
 
-            }
         });
 
-        holder.ivTutupManual.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        holder.ivTutupManual.setOnClickListener(v -> {
 
-                ShopDetail tempDetail = (ShopDetail) getItem(position);
+            ShopDetail tempDetail = (ShopDetail) getItem(position);
 
-                Intent intent = new Intent(context.getApplicationContext(), BbsRegisterOpenClosedShopActivity.class);
-                intent.putExtra(DefineValue.MEMBER_ID, tempDetail.getMemberId());
-                intent.putExtra(DefineValue.SHOP_ID, tempDetail.getShopId());
-                context.startActivity(intent);
+            Intent intent = new Intent(context.getApplicationContext(), BbsRegisterOpenClosedShopActivity.class);
+            intent.putExtra(DefineValue.MEMBER_ID, tempDetail.getMemberId());
+            intent.putExtra(DefineValue.SHOP_ID, tempDetail.getShopId());
+            context.startActivity(intent);
 
-            }
         });
 
-        holder.ivOpenHour.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                ShopDetail tempDetail = (ShopDetail) getItem(position);
-                Intent intent = new Intent(context.getApplicationContext(), BbsMerchantSetupHourActivity.class);
-                intent.putExtra(DefineValue.MEMBER_ID, tempDetail.getMemberId());
-                intent.putExtra(DefineValue.SHOP_ID, tempDetail.getShopId());
-                context.startActivity(intent);
+        holder.ivOpenHour.setOnClickListener(v -> {
+            ShopDetail tempDetail = (ShopDetail) getItem(position);
+            Intent intent = new Intent(context.getApplicationContext(), BbsMerchantSetupHourActivity.class);
+            intent.putExtra(DefineValue.MEMBER_ID, tempDetail.getMemberId());
+            intent.putExtra(DefineValue.SHOP_ID, tempDetail.getShopId());
+            context.startActivity(intent);
 
-            }
         });
 
         return rootView;

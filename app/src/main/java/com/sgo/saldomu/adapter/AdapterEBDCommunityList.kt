@@ -24,6 +24,7 @@ class AdapterEBDCommunityList(var context: Context, var itemList: List<EBDCommun
         holder.layout.setOnClickListener { listener.onClick(position) }
         holder.memberCode.text = itemList[position].member_code
         holder.communityCode.text = itemList[position].comm_code
+        holder.shopName.text = itemList[position].shop_name
     }
 
     override fun getItemCount(): Int {
@@ -34,5 +35,6 @@ class AdapterEBDCommunityList(var context: Context, var itemList: List<EBDCommun
         var layout: LinearLayout = itemView.findViewById(R.id.layout1)
         var communityCode: TextView = itemView.findViewById(R.id.community_code)
         var memberCode: TextView = itemView.findViewById(R.id.member_code)
+        var shopName: TextView = itemView.findViewById(R.id.shop_name)
     }
 }

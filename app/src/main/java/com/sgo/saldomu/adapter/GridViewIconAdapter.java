@@ -81,26 +81,24 @@ public class GridViewIconAdapter extends BaseAdapter {
 
         holder.setPosition(position);
 
-        holder.ivSetting.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                ShopDetail tempDetail = (ShopDetail) getItem(position);
+        holder.ivSetting.setOnClickListener(v -> {
+            ShopDetail tempDetail = (ShopDetail) getItem(position);
 
-                Intent intent = new Intent(context.getApplicationContext(), BbsListSettingKelolaActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra(DefineValue.MEMBER_ID, tempDetail.getMemberId());
-                intent.putExtra(DefineValue.SHOP_ID, tempDetail.getShopId());
-                intent.putExtra(DefineValue.SHOP_NAME, tempDetail.getShopName());
-                intent.putExtra("memberType", tempDetail.getMemberType());
-                intent.putExtra("memberName", tempDetail.getMemberName());
-                intent.putExtra("category", TextUtils.join(", ", tempDetail.getCategories()));
-                intent.putExtra("commName", tempDetail.getCommName());
-                intent.putExtra("province", tempDetail.getShopProvince());
-                intent.putExtra("district", tempDetail.getShopDistrict());
-                intent.putExtra("address", tempDetail.getShopFirstAddress());
-                context.startActivity(intent);
+            Intent intent = new Intent(context.getApplicationContext(), BbsListSettingKelolaActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra(DefineValue.MEMBER_ID, tempDetail.getMemberId());
+            intent.putExtra(DefineValue.SHOP_ID, tempDetail.getShopId());
+            intent.putExtra(DefineValue.SHOP_NAME, tempDetail.getShopName());
+            intent.putExtra("memberType", tempDetail.getMemberType());
+            intent.putExtra("memberName", tempDetail.getMemberName());
+            intent.putExtra("category", TextUtils.join(", ", tempDetail.getCategories()));
+            intent.putExtra("commName", tempDetail.getCommName());
+            intent.putExtra("province", tempDetail.getShopProvince());
+            intent.putExtra("district", tempDetail.getShopDistrict());
+            intent.putExtra("address", tempDetail.getShopFirstAddress());
+            context.startActivity(intent);
 
 
-            }
         });
 
         return rootView;

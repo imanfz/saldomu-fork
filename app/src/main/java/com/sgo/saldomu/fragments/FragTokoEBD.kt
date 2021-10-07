@@ -3,18 +3,18 @@ package com.sgo.saldomu.fragments
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.core.content.res.ResourcesCompat
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.FavoriteActivity
 import com.sgo.saldomu.activities.TokoEBDActivity
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.GridMenu
 import com.sgo.saldomu.coreclass.CustomSecurePref
-import com.sgo.saldomu.coreclass.DefineValue
+import com.sgo.saldomu.databinding.FragGridBinding
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.frag_grid.*
 
 class FragTokoEBD : BaseFragment() {
 
@@ -23,9 +23,17 @@ class FragTokoEBD : BaseFragment() {
     private val menuDrawables = ArrayList<Drawable>()
     private var adapter: GridMenu? = null
 
+    private var binding: FragGridBinding? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        v = inflater.inflate(R.layout.frag_grid, container, false)
+        binding = FragGridBinding.inflate(inflater, container, false)
+        v = binding!!.root
         return v
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -42,8 +50,8 @@ class FragTokoEBD : BaseFragment() {
         menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_biller, null)!!)
 
         adapter = GridMenu(context!!, menuStrings, menuDrawables)
-        grid.adapter = adapter
-        grid.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
+        binding!!.grid.adapter = adapter
+        binding!!.grid.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
             if (menuStrings[i] == getString(R.string.store_registration))
                 tokoEBDActivity!!.switchContent(FragRegisterEBD(), getString(R.string.store_registration), true, "FragRegisterEBD")
             else if (menuStrings[i] == getString(R.string.purchase_order))

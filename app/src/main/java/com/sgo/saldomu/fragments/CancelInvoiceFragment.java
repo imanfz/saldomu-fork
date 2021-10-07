@@ -157,7 +157,7 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
     }
 
     void callCancelInvoice() {
-        Log.e("see", selectedCancelInvoice.size() + " callCancelInvoice: " + new Gson().toJson(selectedCancelInvoice.toArray()));
+        Timber.tag("see").e(selectedCancelInvoice.size() + " callCancelInvoice: " + new Gson().toJson(selectedCancelInvoice.toArray()));
         if (selectedCancelInvoice.size() == 0) {
             Toast.makeText(getContext(), Objects.requireNonNull(getContext()).getString(R.string.no_item_selected), Toast.LENGTH_SHORT).show();
             return;
@@ -212,7 +212,7 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
         params.put(WebParams.NEXT_VISIT_DATE, date);
         params.put(WebParams.LATITUDE, latitude);
         params.put(WebParams.LONGITUDE, longitude);
-        Timber.d("params cancel search DGI : " + params.toString());
+        Timber.d("params cancel search DGI : %s", params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CANCEL_SEARCH_DGI, params,
                 new ObjListeners() {
@@ -223,7 +223,7 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
 
                             Gson gson = new Gson();
                             jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
-                            Timber.d("response cancel search DGI : " + response.toString());
+                            Timber.d("response cancel search DGI : %s", response.toString());
                             String code = response.getString(WebParams.ERROR_CODE);
                             String error_message = response.getString(WebParams.ERROR_MESSAGE);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
@@ -231,25 +231,20 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                 builder.setTitle("Alert")
                                         .setMessage(getString(R.string.cancel_transaction_dgi))
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                                getActivity().finish();
-                                            }
+                                        .setPositiveButton("OK", (dialog, which) -> {
+                                            dialog.dismiss();
+                                            getActivity().finish();
                                         });
                                 AlertDialog dialog = builder.create();
                                 dialog.show();
 
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + response.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", response.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                                 dismissProgressDialog();
@@ -279,10 +274,10 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
             createLocationRequest();
         }
 
-        Timber.d("GPS Test googleapiclient : " + mGoogleApiClient.toString());
+        Timber.d("GPS Test googleapiclient : %s", mGoogleApiClient.toString());
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
-            Timber.d("GPS Test googleapiclient connect : " + mGoogleApiClient.toString());
+            Timber.d("GPS Test googleapiclient connect : %s", mGoogleApiClient.toString());
         }
 
     }
@@ -291,7 +286,7 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
 
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(getContext());
-        Timber.d("GPS Test checkPlayServices : " + String.valueOf(result));
+        Timber.d("GPS Test checkPlayServices : %s", String.valueOf(result));
         if (result != ConnectionResult.SUCCESS) {
             if (googleAPI.isUserResolvableError(result)) {
                 Toast.makeText(getActivity(), "GOOGLE API LOCATION CONNECTION FAILED", Toast.LENGTH_SHORT).show();
@@ -341,7 +336,7 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
                     latitude = mLastLocation.getLatitude();
                     longitude = mLastLocation.getLongitude();
 
-                    Timber.d("Location Found" + mLastLocation.toString());
+                    Timber.d("Location Found%s", mLastLocation.toString());
                     //googleApiClient.disconnect();
                 }
             } catch (SecurityException se) {

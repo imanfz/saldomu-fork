@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -66,7 +67,7 @@ public class ListBBS extends Fragment {
     SecurePreferences sp;
     private IntentFilter filter;
     private LinearLayout llAgentDetail;
-    private Switch swSettingOnline;
+    private SwitchCompat swSettingOnline;
     String shopStatus;
     ProgressDialog progdialog2;
     ProgressDialog progDialog;
@@ -117,67 +118,64 @@ public class ListBBS extends Fragment {
         GridBbsMenu gridBbsMenuAdapter = new GridBbsMenu(getActivity(), SetupMenuItems(), SetupMenuIcons());
         gvListBbs.setAdapter(gridBbsMenuAdapter);
 
-        gvListBbs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String menuItemName = ((TextView) view.findViewById(R.id.tvMenuName)).getText().toString();
-                String trxType = "";
-                int posIdx;
-                if (isAgent) {
-                    if (menuItemName.equalsIgnoreCase(getString(R.string.title_bbs_list_account_bbs)))
-                        posIdx = BBSActivity.LISTACCBBS;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.transaction)))
-                        posIdx = BBSActivity.TRANSACTION;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.title_cash_out_member)))
-                        posIdx = BBSActivity.CONFIRMCASHOUT;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_kelola)))
-                        posIdx = BBSActivity.BBSKELOLA;
-                        //else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_list_approval)))
-                        //posIdx = BBSActivity.BBSAPPROVALAGENT;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_trx_agent)))
-                        posIdx = BBSActivity.BBSTRXAGENT;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_waktu_beroperasi)))
-                        posIdx = BBSActivity.BBSWAKTUBEROPERASI;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_tutup_manual)))
-                        posIdx = BBSActivity.BBSTUTUPMANUAL;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.cash_in))) {
-                        posIdx = BBSActivity.TRANSACTION;
-                        trxType = DefineValue.BBS_CASHIN;
-                    } else if (menuItemName.equalsIgnoreCase(getString(R.string.cash_out))) {
-                        posIdx = BBSActivity.TRANSACTION;
-                        trxType = DefineValue.BBS_CASHOUT;
-                    } else if (menuItemName.equals(getString(R.string.menu_item_title_onprogress_agent))) {
-                        posIdx = BBSActivity.BBSONPROGRESSAGENT;
-                        trxType = DefineValue.INDEX;
-                    } else if (menuItemName.equals(getString(R.string.menu_item_title_tagih_agent))) {
-                        posIdx = -1;
-                        startActivity(new Intent(getActivity(), TagihActivity.class));
-                    } else {
-                        posIdx = -1;
-                    }
+        gvListBbs.setOnItemClickListener((parent, view, position, id) -> {
+            String menuItemName = ((TextView) view.findViewById(R.id.tvMenuName)).getText().toString();
+            String trxType = "";
+            int posIdx;
+            if (isAgent) {
+                if (menuItemName.equalsIgnoreCase(getString(R.string.title_bbs_list_account_bbs)))
+                    posIdx = BBSActivity.LISTACCBBS;
+                else if (menuItemName.equalsIgnoreCase(getString(R.string.transaction)))
+                    posIdx = BBSActivity.TRANSACTION;
+                else if (menuItemName.equalsIgnoreCase(getString(R.string.title_cash_out_member)))
+                    posIdx = BBSActivity.CONFIRMCASHOUT;
+                else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_kelola)))
+                    posIdx = BBSActivity.BBSKELOLA;
+                    //else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_list_approval)))
+                    //posIdx = BBSActivity.BBSAPPROVALAGENT;
+                else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_trx_agent)))
+                    posIdx = BBSActivity.BBSTRXAGENT;
+                else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_waktu_beroperasi)))
+                    posIdx = BBSActivity.BBSWAKTUBEROPERASI;
+                else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_tutup_manual)))
+                    posIdx = BBSActivity.BBSTUTUPMANUAL;
+                else if (menuItemName.equalsIgnoreCase(getString(R.string.cash_in))) {
+                    posIdx = BBSActivity.TRANSACTION;
+                    trxType = DefineValue.BBS_CASHIN;
+                } else if (menuItemName.equalsIgnoreCase(getString(R.string.cash_out))) {
+                    posIdx = BBSActivity.TRANSACTION;
+                    trxType = DefineValue.BBS_CASHOUT;
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_onprogress_agent))) {
+                    posIdx = BBSActivity.BBSONPROGRESSAGENT;
+                    trxType = DefineValue.INDEX;
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_tagih_agent))) {
+                    posIdx = -1;
+                    startActivity(new Intent(getActivity(), TagihActivity.class));
                 } else {
-                    if (menuItemName.equalsIgnoreCase(getString(R.string.title_cash_out_member)))
-                        posIdx = BBSActivity.CONFIRMCASHOUT;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.title_rating_by_member)))
-                        posIdx = BBSActivity.BBSRATINGBYMEMBER;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.title_bbs_my_orders)))
-                        posIdx = BBSActivity.BBSMYORDERS;
-                    else {
-                        posIdx = -1;
-                    }
-
+                    posIdx = -1;
                 }
-                if (posIdx != -1) {
-                    Intent i = new Intent(getActivity(), BBSActivity.class);
-                    i.putExtra(DefineValue.INDEX, posIdx);
-
-                    if (!trxType.equals(""))
-                        i.putExtra(DefineValue.TYPE, trxType);
-
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+            } else {
+                if (menuItemName.equalsIgnoreCase(getString(R.string.title_cash_out_member)))
+                    posIdx = BBSActivity.CONFIRMCASHOUT;
+                else if (menuItemName.equalsIgnoreCase(getString(R.string.title_rating_by_member)))
+                    posIdx = BBSActivity.BBSRATINGBYMEMBER;
+                else if (menuItemName.equalsIgnoreCase(getString(R.string.title_bbs_my_orders)))
+                    posIdx = BBSActivity.BBSMYORDERS;
+                else {
+                    posIdx = -1;
                 }
 
             }
+            if (posIdx != -1) {
+                Intent i = new Intent(getActivity(), BBSActivity.class);
+                i.putExtra(DefineValue.INDEX, posIdx);
+
+                if (!trxType.equals(""))
+                    i.putExtra(DefineValue.TYPE, trxType);
+
+                switchActivity(i, MainPage.ACTIVITY_RESULT);
+            }
+
         });
 
         Bundle bundle = getArguments();

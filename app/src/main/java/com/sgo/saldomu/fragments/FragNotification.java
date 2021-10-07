@@ -107,12 +107,7 @@ public class FragNotification extends BaseFragment {
         empty_layout = v.findViewById(R.id.empty_layout);
         empty_layout.setVisibility(View.GONE);
         Button btn_refresh = empty_layout.findViewById(R.id.btnRefresh);
-        btn_refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPtr.autoRefresh();
-            }
-        });
+        btn_refresh.setOnClickListener(v -> mPtr.autoRefresh());
 
         mPtr = v.findViewById(R.id.rotate_header_list_view_frame);
         mPtr.setPtrHandler(new PtrHandler() {
@@ -250,7 +245,7 @@ public class FragNotification extends BaseFragment {
                         data.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.TYPE_LIKE);
                     else
                         data.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.TYPE_COMMENT);
-                    Timber.d("isi extra intennt history detail activity:" + Objects.requireNonNull(data.getExtras()).toString());
+                    Timber.d("isi extra intennt history detail activity:%s", Objects.requireNonNull(data.getExtras()).toString());
                     Objects.requireNonNull(getActivity()).setResult(MainPage.RESULT_NOTIF, data);
                     getActivity().finish();
                     break;
@@ -345,7 +340,7 @@ public class FragNotification extends BaseFragment {
             return mAdapter.getItemCount() == 0 || mRecyclerView == null || mLayoutManager.findFirstCompletelyVisibleItemPosition() == 0 && mRecyclerView.getChildAt(0).getTop() == 0;
 
         } catch (Exception ex) {
-            Timber.wtf("Exception checkCandoRefresh:" + ex.getMessage());
+            Timber.wtf("Exception checkCandoRefresh:%s", ex.getMessage());
         }
         return false;
     }
@@ -360,7 +355,7 @@ public class FragNotification extends BaseFragment {
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
 
-            Timber.d("isi params Read Notif:" + params.toString());
+            Timber.d("isi params Read Notif:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_NOTIF_READ, params,
                     new ResponseListener() {
@@ -368,7 +363,7 @@ public class FragNotification extends BaseFragment {
                         public void onResponses(JsonObject object) {
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
                             String code = model.getError_code();
-
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 if (getActivity() != null) {
                                     mData.get(position).setRead(true);
@@ -377,21 +372,16 @@ public class FragNotification extends BaseFragment {
                                     CheckNotification();
                                 }
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                code = model.getError_code() + ":" + model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), code + ":" + message, Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -406,7 +396,7 @@ public class FragNotification extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -443,7 +433,7 @@ public class FragNotification extends BaseFragment {
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.MEMBER_CREATED, sp.getString(DefineValue.MEMBER_CREATED, ""));
 
-            Timber.d("isi params Retrieve Notif:" + params.toString());
+            Timber.d("isi params Retrieve Notif:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_NOTIF_RETRIEVE, params,
                     new ResponseListener() {
@@ -455,8 +445,9 @@ public class FragNotification extends BaseFragment {
                                 NotifModel model = getGson().fromJson(object, NotifModel.class);
 
                                 String code = model.getError_code();
+                                String message = model.getError_message();
 
-                                Timber.d("response usernotif : " + object.toString());
+                                Timber.d("response usernotif : %s", object.toString());
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
 
@@ -471,7 +462,7 @@ public class FragNotification extends BaseFragment {
                                     mData.clear();
                                     mDataNotifDetail.clear();
                                     int notif_type, image = 0;
-                                    boolean read=false;
+                                    boolean read = false;
                                     Date time1;
                                     PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
                                     JSONObject notif_detail, mObject;
@@ -620,13 +611,10 @@ public class FragNotification extends BaseFragment {
                                             }
                                         }
 
-                                        Collections.sort(mData, new Comparator<NotificationModelClass>() {
-                                            @Override
-                                            public int compare(NotificationModelClass o1, NotificationModelClass o2) {
-                                                Date date1 = DateTimeFormat.convertStringtoCustomDateTime(o1.getDate_time());
-                                                Date date2 = DateTimeFormat.convertStringtoCustomDateTime(o2.getDate_time());
-                                                return date2.compareTo(date1);
-                                            }
+                                        Collections.sort(mData, (o1, o2) -> {
+                                            Date date1 = DateTimeFormat.convertStringtoCustomDateTime(o1.getDate_time());
+                                            Date date2 = DateTimeFormat.convertStringtoCustomDateTime(o2.getDate_time());
+                                            return date2.compareTo(date1);
                                         });
 
                                         if (mData.size() != 0) {
@@ -642,23 +630,19 @@ public class FragNotification extends BaseFragment {
 
                                         getActivity().setResult(MainPage.RESULT_NOTIF);
                                     } catch (Exception ex) {
-                                        Timber.e("isi exception Notification:" + ex.getMessage());
+                                        Timber.e("isi exception Notification:%s", ex.getMessage());
                                     }
 
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    String message = model.getError_message();
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + object.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                    Timber.d("isi response maintenance:%s", object.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
 
                                     if (code.equals("0003")) {
@@ -672,7 +656,7 @@ public class FragNotification extends BaseFragment {
 
                                         }
                                     } else
-                                        Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 }
 
                             } catch (JSONException e) {
@@ -695,7 +679,7 @@ public class FragNotification extends BaseFragment {
                     });
         } catch (Exception e) {
             String err = (e.getMessage() == null) ? "Connection failed" : e.getMessage();
-            Timber.e("http err:" + err);
+            Timber.e("http err:%s", err);
         }
     }
 
@@ -711,7 +695,7 @@ public class FragNotification extends BaseFragment {
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.HOLD_ID, _hold_id);
 
-            Timber.d("isi params sent claim non member:" + params.toString());
+            Timber.d("isi params sent claim non member:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CLAIM_TRANSFER_NON_MEMBER, params,
                     new ResponseListener() {
@@ -749,7 +733,7 @@ public class FragNotification extends BaseFragment {
                     });
         } catch (Exception e) {
             String err = (e.getMessage() == null) ? "Connection failed" : e.getMessage();
-            Timber.e("http err:" + err);
+            Timber.e("http err:%s", err);
         }
     }
 

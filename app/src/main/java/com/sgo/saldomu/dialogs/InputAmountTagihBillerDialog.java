@@ -133,12 +133,7 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
                 Toast.makeText(getActivity(), "Jumlah input tidak sesuai", Toast.LENGTH_SHORT).show();
         });
 
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        btnCancel.setOnClickListener(v -> dismiss());
     }
 
 

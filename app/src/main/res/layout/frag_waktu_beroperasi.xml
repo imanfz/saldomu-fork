@@ -250,7 +250,7 @@
                 android:text="@string/label_setting_tutup_setiap_tanggal"
                  />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/swTutupToko"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

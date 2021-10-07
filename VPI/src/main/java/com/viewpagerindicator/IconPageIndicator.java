@@ -58,12 +58,10 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
         if (mIconSelector != null) {
             removeCallbacks(mIconSelector);
         }
-        mIconSelector = new Runnable() {
-            public void run() {
-                final int scrollPos = iconView.getLeft() - (getWidth() - iconView.getWidth()) / 2;
-                smoothScrollTo(scrollPos, 0);
-                mIconSelector = null;
-            }
+        mIconSelector = () -> {
+            final int scrollPos = iconView.getLeft() - (getWidth() - iconView.getWidth()) / 2;
+            smoothScrollTo(scrollPos, 0);
+            mIconSelector = null;
         };
         post(mIconSelector);
     }

@@ -1769,6 +1769,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="remaining_balance">Sisa Saldo</string>
     <string name="no_reference">No. Referensi</string>
     <string name="tip">Tip</string>
+    <string name="transaction_fee">Biaya Transaksi</string>
     <string name="acquire_name">Nama Pengakuisisi</string>
     <string name="listatm_topup_bni_2">Pilih menu Virtual Account Billing</string>
     <string name="listatm_topup_bni_3">Masukkan nomor Virtual Account</string>
@@ -1777,4 +1778,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="show_verification_code">Silahkan tunjukkan kode verifikasi ini kepada petugas.</string>
     <string name="check">Cek</string>
     <string name="invoice_failed">Invoice Gagal</string>
+    <string name="invoice_exist">Invoice Telah Tersedia</string>
 </resources>

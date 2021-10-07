@@ -226,17 +226,14 @@ public class CollectionInput extends BaseFragment {
                         }
                     }
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            spinWheelBankProduct.clearAnimation();
-                            spinWheelBankProduct.setVisibility(View.GONE);
-                            spin_produkBank.setVisibility(View.VISIBLE);
-                            adapter.notifyDataSetChanged();
-                            if (topupType.equals(DefineValue.EMONEY)) {
-                                View LayoutBankName = v.findViewById(R.id.layout_bank_name);
-                                LayoutBankName.setVisibility(View.GONE);
-                            }
+                    getActivity().runOnUiThread(() -> {
+                        spinWheelBankProduct.clearAnimation();
+                        spinWheelBankProduct.setVisibility(View.GONE);
+                        spin_produkBank.setVisibility(View.VISIBLE);
+                        adapter.notifyDataSetChanged();
+                        if (topupType.equals(DefineValue.EMONEY)) {
+                            View LayoutBankName = v.findViewById(R.id.layout_bank_name);
+                            LayoutBankName.setVisibility(View.GONE);
                         }
                     });
                 }
@@ -299,7 +296,7 @@ public class CollectionInput extends BaseFragment {
             else
                 params.put(WebParams.PRODUCT_TYPE, DefineValue.BANKLIST_TYPE_EMO);
 
-            Timber.d("isi params Valid TopupCollection:" + params.toString());
+            Timber.d("isi params Valid TopupCollection:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_TOP_UP_ACCOUNT_COLLECTION, params,
                     new ResponseListener() {
@@ -308,6 +305,7 @@ public class CollectionInput extends BaseFragment {
                             TopupAccCollectionModel model = getGson().fromJson(object, TopupAccCollectionModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                 if (topupType.equals(DefineValue.INTERNET_BANKING)) {
@@ -337,13 +335,9 @@ public class CollectionInput extends BaseFragment {
                                     );
                                 }
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else {
-                                code = model.getError_code() + ":" + model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-
+                                Toast.makeText(getActivity(), code + ":" + message, Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -359,7 +353,7 @@ public class CollectionInput extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -379,7 +373,7 @@ public class CollectionInput extends BaseFragment {
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
 
-            Timber.d("isi params regtoken Collection:" + params.toString());
+            Timber.d("isi params regtoken Collection:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REQ_TOKEN_SGOL, params,
                     new ResponseListener() {
@@ -388,53 +382,41 @@ public class CollectionInput extends BaseFragment {
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-
                                 if (topupType.equals(DefineValue.SMS_BANKING) || auth_type.equals(DefineValue.AUTH_TYPE_OTP))
                                     showDialog(_tx_id, _product_code, _product_name, _fee,
                                             _bank_code, _bank_name, _amount, auth_type);
                                 else if (auth_type.equals(DefineValue.AUTH_TYPE_PIN))
                                     changeToDescription(_tx_id, _product_code, _product_name, _amount,
                                             _payment_remark, _ccy_value, _bank_name, _bank_code, _fee, auth_type);
-
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                String code_msg = model.getError_message();
                                 if (code.equals(ErrorDefinition.ERROR_CODE_UNREGISTERED_SMS_BANKING)) {
                                     showDialogSMS(nama_bank);
                                 } else if (code.equals(ErrorDefinition.ERROR_CODE_LESS_BALANCE)) {
-                                    String message_dialog = "\"" + code_msg + "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
+                                    String message_dialog = "\"" + message + "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
 
                                     AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
                                             message_dialog, getString(R.string.ok), getString(R.string.cancel), false);
-                                    dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent mI = new Intent(getActivity(), TopUpActivity.class);
-                                            mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                                            switchActivity(mI, MainPage.ACTIVITY_RESULT);
-                                        }
+                                    dialog_frag.setOkListener((dialog, which) -> {
+                                        Intent mI = new Intent(getActivity(), TopUpActivity.class);
+                                        mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                                        switchActivity(mI, MainPage.ACTIVITY_RESULT);
                                     });
                                     dialog_frag.setTargetFragment(CollectionInput.this, 0);
                                     dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
                                 } else {
-                                    code = model.getError_code() + ":" + model.getError_message();
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), code + ":" + message, Toast.LENGTH_LONG).show();
                                 }
-
-
                             }
                         }
 
@@ -450,7 +432,7 @@ public class CollectionInput extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -477,18 +459,15 @@ public class CollectionInput extends BaseFragment {
         if (levelClass.isLevel1QAC())
             btnDialogOTP.setText(getString(R.string.ok));
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        btnDialogOTP.setOnClickListener(view -> {
 
-                if (!levelClass.isLevel1QAC()) {
-                    Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
-                    newIntent.putExtra(DefineValue.BANK_NAME, _nama_bank);
-                    switchActivity(newIntent, MainPage.ACTIVITY_RESULT);
-                }
-
-                dialog.dismiss();
+            if (!levelClass.isLevel1QAC()) {
+                Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
+                newIntent.putExtra(DefineValue.BANK_NAME, _nama_bank);
+                switchActivity(newIntent, MainPage.ACTIVITY_RESULT);
             }
+
+            dialog.dismiss();
         });
 
         spin_namaBank.setSelection(0);
@@ -516,14 +495,11 @@ public class CollectionInput extends BaseFragment {
         Title.setText(getResources().getString(R.string.regist1_notif_title_verification));
         Message.setText(getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms));
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                changeToDescription(_tx_id, _product_code, _product_name, _amount,
-                        String.valueOf(et_remark.getText()), MyApiClient.CCY_VALUE,
-                        _bank_name, _bank_code, _fee, auth_type);
-                dialog.dismiss();
-            }
+        btnDialogOTP.setOnClickListener(view -> {
+            changeToDescription(_tx_id, _product_code, _product_name, _amount,
+                    String.valueOf(et_remark.getText()), MyApiClient.CCY_VALUE,
+                    _bank_name, _bank_code, _fee, auth_type);
+            dialog.dismiss();
         });
 
         dialog.show();

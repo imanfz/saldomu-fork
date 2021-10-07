@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -66,7 +67,7 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
             tx_id, amount, comm_id, benef_product_name,
             userId_source, remark, source_product_name, transaksi, fee, totalAmount, source_product_code;
     private Boolean retryToken = false;
-    private Switch favoriteSwitch;
+    private SwitchCompat favoriteSwitch;
     private EditText notesEditText;
 
     @Override
@@ -101,7 +102,7 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
         Button btnBack = v.findViewById(R.id.btn_back);
 
         Bundle bundle = getArguments();
-        Log.e("mantul : ", bundle.toString());
+        Timber.tag("mantul : ").e(bundle.toString());
 
         if (bundle != null) {
             transaksi = bundle.getString(DefineValue.TRANSACTION);
@@ -211,7 +212,7 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
             params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncryptCommID(comm_id, uuid, dateTime, userID, token, subStringLink));
             params.put(WebParams.USER_ID, userID);
 
-            Timber.d("isi params insertTrxSGOL:" + params.toString());
+            Timber.d("isi params insertTrxSGOL:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
@@ -276,7 +277,7 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -299,7 +300,7 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
             params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, userID, token, subStringLink));
             params.put(WebParams.USER_ID, userID);
 
-            Timber.d("isi params sentRetryToken:" + params.toString());
+            Timber.d("isi params sentRetryToken:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
@@ -366,7 +367,7 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.USER_ID, userId);
 
-            Timber.d("isi params sent get Trx Status bbs:" + params.toString());
+            Timber.d("isi params sent get Trx Status bbs:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_TRX_STATUS_BBS, params,
                     new ResponseListener() {
@@ -449,27 +450,16 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
         Title.setText(getString(R.string.error));
         Message.setText(msg);
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                //SgoPlusWeb.this.finish();
-            }
+        btnDialogOTP.setOnClickListener(view -> {
+            dialog.dismiss();
         });
 
         dialog.show();
     }
 
     private void showReportBillerDialog(String userName,
-//                                        String date,
                                         String txId, String userId,
-//                                         String bankName, String bankProduct,
-//                                        String fee, String amount,
                                         String txStatus,
-// String txRemark, String total_amount, String member_name,
-//                                        String source_bank_name, String source_acct_no, String source_acct_name,
-//                                        String benef_bank_name, String benef_acct_no, String benef_acct_name, String member_shop_phone,
-//                                        String member_shop_name, String buss_scheme_code, String buss_scheme_name, String member_shop_no,
                                         GetTrxStatusReportModel response) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
@@ -556,7 +546,7 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
 
     private void onSaveToFavorite() {
         extraSignature = NoHPFormat.formatTo62(userId_source) + source_product_type + "BBS";
-        Log.e("extraSignature params ", extraSignature);
+        Timber.tag("extraSignature params ").e(extraSignature);
         String url = MyApiClient.LINK_TRX_FAVORITE_SAVE;
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(url, extraSignature);
         params.put(WebParams.USER_ID, userPhoneID);
@@ -568,7 +558,7 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
         params.put(WebParams.BENEF_BANK_CODE, source_product_code);
         params.put(WebParams.SOURCE_BANK_CODE, tx_bank_code);
 
-        Log.e("params ", params.toString());
+        Timber.tag("params ").e(params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(url, params,
                 new ObjListeners() {
@@ -576,7 +566,7 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
                     public void onResponses(JSONObject response) {
                         try {
                             jsonModel model = RetrofitService.getInstance().getGson().fromJson(response.toString(), jsonModel.class);
-                            Log.e("onResponses ", response.toString());
+                            Timber.tag("onResponses ").e(response.toString());
                             String code = response.getString(WebParams.ERROR_CODE);
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
@@ -598,7 +588,7 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
 
                     @Override
                     public void onError(Throwable throwable) {
-                        Log.e("onResponses ", throwable.getLocalizedMessage());
+                        Timber.tag("onResponses ").e(throwable.getLocalizedMessage());
                         btnSubmit.setEnabled(true);
                         throwable.printStackTrace();
                     }

@@ -241,15 +241,12 @@ public class FingerprintDialog extends DialogFragment {
 
         // Setelah 1 detik dialog didismiss dan arahin ke halaman utama
         final Handler handler = new Handler();
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (getDialog().isShowing())
-                    getDialog().dismiss();
-                listener.onFinishFingerprintDialog(true);
+        final Runnable runnable = () -> {
+            if (getDialog().isShowing())
+                getDialog().dismiss();
+            listener.onFinishFingerprintDialog(true);
 //                ActivityLogin activityLogin = (ActivityLogin) getActivity();
 //                activityLogin.showDashboard();
-            }
         };
         handler.postDelayed(runnable, 1000);
     }
@@ -268,15 +265,12 @@ public class FingerprintDialog extends DialogFragment {
             tv_status.setText(getString(R.string.fingerprint_attempt) + " (" + attempt + ")");
         if (attempt == 5) {
             final Handler handler = new Handler();
-            final Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    if (getDialog().isShowing())
-                        getDialog().dismiss();
-                    listener.onFinishFingerprintDialog(false);
+            final Runnable runnable = () -> {
+                if (getDialog().isShowing())
+                    getDialog().dismiss();
+                listener.onFinishFingerprintDialog(false);
 //                ActivityLogin activityLogin = (ActivityLogin) getActivity();
 //                activityLogin.showDashboard();
-                }
             };
             handler.postDelayed(runnable, 1000);
         }

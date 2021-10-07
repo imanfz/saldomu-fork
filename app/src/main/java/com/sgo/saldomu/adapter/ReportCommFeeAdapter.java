@@ -27,15 +27,7 @@ public class ReportCommFeeAdapter extends ArrayAdapter<ReportDataModel> {
 
     private Context context;
     private int layoutResourceId;
-    private ArrayList<ReportListCommFeeModel> data = null;
     List<ReportDataModel> reportListModel;
-
-//    public ReportCommFeeAdapter(Context context, int resource, ArrayList<ReportListCommFeeModel> objects) {
-//        super(context, resource, objects);
-//        this.layoutResourceId = resource;
-//        this.context = context;
-//        this.data = objects;
-//    }
 
     public ReportCommFeeAdapter(Context context, int resource, List<ReportDataModel> reportListModel) {
         super(context, resource, reportListModel);

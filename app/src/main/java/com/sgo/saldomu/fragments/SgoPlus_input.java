@@ -80,12 +80,11 @@ import timber.log.Timber;
  */
 public class SgoPlus_input extends BaseFragment implements EasyPermissions.PermissionCallbacks {
     private final static int RC_SENDSMS = 103;
-    private HashMap<String, String> listBankName;
     private HashMap<String, String> listBankProduct;
     private List<listBankModel> listDB;
-    private ArrayList<String> BankProduct;
+    private ArrayList<String> bankProduct = new ArrayList<String>();
     private InformationDialog dialogI;
-    private SMSclass smsclass;
+    private SMSclass smsClass;
     private SMSDialog smsDialog;
     private SentObject sentObject;
 
@@ -94,13 +93,9 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
     Spinner spin_namaBank, spin_produkBank;
     EditText jumlahSGO_value;
     listBankModel listBankModel;
-    String topupType, data, bank_name, product_name, bank_code, product_code, pairing_id, is_pairing;
+    String bank_name, product_name, bank_code, product_code;
     ProgressDialog progdialog;
-    ArrayAdapter<String> adapter3;
-    ImageView spinWheelBankName, spinWheelBankProduct;
-    Animation frameAnimation;
     Spinner sp_privacy;
-    Calendar calendar;
     String timeDate;
     int privacy;
     boolean isSMSBanking = false, isTagihan = false, isFacebook = false;
@@ -190,7 +185,7 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
         setHasOptionsMenu(true);
 
         Bundle args = getArguments();
-        smsDialog=new SMSDialog();
+        smsDialog = new SMSDialog();
 
         if (sentObject == null)
             sentObject = new SentObject();
@@ -223,7 +218,7 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
             dialogI = InformationDialog.newInstance(this, 3);
 
             initializeSmsClass();
-            smsDialog = SMSDialog.newDialog(timeDate,checkFailedVerify(), new SMSDialog.DialogButtonListener() {
+            smsDialog = SMSDialog.newDialog(timeDate, checkFailedVerify(), new SMSDialog.DialogButtonListener() {
                 @Override
                 public void onClickOkButton(View v, boolean isLongClick) {
                     if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.CAMERA)) {
@@ -250,7 +245,7 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
                 public void onSuccess(String product_value) {
                     if (sentObject != null) {
                         sentObject.productValue = product_value;
-                        Timber.d("onSuccess SMS verifikasi " + sentObject.getData());
+                        Timber.d("onSuccess SMS verifikasi %s", sentObject.getData());
                         smsDialog.dismiss();
                         smsDialog.reset();
                         sentDataReqToken();
@@ -279,23 +274,20 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
     }
 
     private void initializeSmsClass() {
-        SMSclass smSclass = new SMSclass(getActivity());
+        smsClass = new SMSclass(getActivity());
 
-        smSclass.isSimExists(new SMSclass.SMS_SIM_STATE() {
-            @Override
-            public void sim_state(Boolean isExist, String msg) {
-                if (!isExist) {
-                    Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
-                    getActivity().finish();
-                }
+        smsClass.isSimExists((isExist, msg) -> {
+            if (!isExist) {
+                Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+                getActivity().finish();
             }
         });
 
         try {
-            getActivity().unregisterReceiver(smSclass.simStateReceiver);
+            getActivity().unregisterReceiver(smsClass.simStateReceiver);
         } catch (Exception ignored) {
         }
-        getActivity().registerReceiver(smSclass.simStateReceiver, SMSclass.simStateIntentFilter);
+        getActivity().registerReceiver(smsClass.simStateReceiver, SMSclass.simStateIntentFilter);
     }
 
 
@@ -406,8 +398,8 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_privacy.setAdapter(spinAdapter);
         sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
-        calendar = Calendar.getInstance();
-        timeDate = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
+
+        timeDate = DateTimeFormat.getCurrentDateTimeSMS();
 
 
     }
@@ -454,66 +446,12 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
         }
     };
 
-    Spinner.OnItemSelectedListener spinnerNamaBankListener = new Spinner.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
-
-            spin_produkBank.setVisibility(View.GONE);
-            spinWheelBankProduct.setVisibility(View.VISIBLE);
-            spinWheelBankProduct.startAnimation(frameAnimation);
-
-            Object item = adapterView.getItemAtPosition(i);
-            sentObject.nama_bank = item.toString();
-            Timber.d("nama bank:" + sentObject.nama_bank);
-
-            BankProduct.clear();
-            listBankProduct = new HashMap<>();
-
-            Thread deproses = new Thread() {
-                @Override
-                public void run() {
-                    for (listBankModel aListDB : listDB) {
-                        //Timber.d("isi semua", aListDB.getProduct_type()+"; "+aListDB.getProduct_name()+"; "+aListDB.getProduct_code());
-                        if (aListDB.getBank_name().equals(sentObject.nama_bank)) {
-                            //Timber.d("isi product name", aListDB.getProduct_name());
-                            BankProduct.add(aListDB.getProduct_name());
-                            listBankProduct.put(aListDB.getProduct_name(), aListDB.getProduct_code());
-                        }
-                    }
-
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            spinWheelBankProduct.clearAnimation();
-                            spinWheelBankProduct.setVisibility(View.GONE);
-                            spin_produkBank.setVisibility(View.VISIBLE);
-                            adapter3.notifyDataSetChanged();
-                        }
-                    });
-                }
-            };
-            deproses.start();
-
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-
-        }
-    };
-
-
     Button.OnClickListener prosesSGOplusListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if (InetHandler.isNetworkAvailable(getActivity())) {
                 if (inputValidation()) {
-                    if (isTagihan) {
-//                        changeTagihanPreview(listBankName.get(spin_namaBank.getSelectedItem().toString()),
-//                                spin_namaBank.getSelectedItem().toString(),
-//                                listBankProduct.get(spin_produkBank.getSelectedItem().toString()),
-//                                spin_produkBank.getSelectedItem().toString());
-                    } else {
+                    if (!isTagihan) {
                         sentDataValidTopup(bank_code,
                                 bank_name,
                                 product_code,
@@ -545,8 +483,7 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params sgoplusinput:" + params.toString());
-
+            Timber.d("isi params sgoplusinput:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_VALID_TOPUP, params,
                     new ResponseListener() {
@@ -555,6 +492,7 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
                             TopupValidModel model = getGson().fromJson(object, TopupValidModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 if (isSMSBanking) {
                                     if (sentObject == null)
@@ -568,41 +506,24 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
                                     sentObject.amount = amount;
                                     sentObject.product_name = product_name;
                                     sentObject.ccy_id = MyApiClient.CCY_VALUE;
-                                    Timber.d("Valid topup " + sentObject.getData());
-                                    smsDialog.show(getFragmentManager(),"aa");
+                                    Timber.d("Valid topup %s", sentObject.getData());
+                                    smsDialog.show(getFragmentManager(), "aa");
                                 } else {
                                     changeTopUpSgoPlus(model.getTx_id(), model.getProduct_code(), bank_kode
                                             , product_name, model.getComm_code(), model.getFee(),
                                             MyApiClient.CCY_VALUE, bank_name, amount, false, null);
                                 }
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogMaintenance = AlertDialogUpdateApp.getInstance();
-                                alertDialogMaintenance.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                DialogInterface.OnClickListener okListener = new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        getActivity().finish();
-                                        android.os.Process.killProcess(android.os.Process.myPid());
-                                        System.exit(0);
-                                        getActivity().getParent().finish();
-                                    }
-                                };
-                                AlertDialog alertDialog = DefinedDialog.BuildAlertDialog(getActivity(), getActivity().getString(R.string.maintenance),
-                                        model.getError_message(), android.R.drawable.ic_dialog_alert, false,
-                                        getActivity().getString(R.string.ok), okListener);
-                                alertDialog.show();
-                            }else {
-                                code = model.getError_code() + " : " + model.getError_message();
-
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
+                            } else {
+                                Toast.makeText(getActivity(), code + " : " + message, Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -617,49 +538,14 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
-
-//    private void changeTagihanPreview(String _bank_kode, String _bank_name, String _product_code, String _product_name) {
-//
-//        getActivity().getSupportFragmentManager().popBackStack();
-//        Fragment newFrag = new PreviewTagihanViaBank();
-//        Bundle mArgs = new Bundle();
-//
-//        mArgs.putString(DefineValue.TOPUP_TYPE, DefineValue.EMONEY);
-//        mArgs.putString(DefineValue.PRODUCT_CODE,_product_code);
-//        mArgs.putString(DefineValue.PRODUCT_NAME,_product_name);
-//        mArgs.putString(DefineValue.COMMUNITY_ID,  getArguments().getString(DefineValue.COMMUNITY_ID, ""));
-//        mArgs.putString(DefineValue.COMMUNITY_CODE, getArguments().getString(DefineValue.COMMUNITY_CODE, ""));
-//        mArgs.putString(DefineValue.COMMUNITY_NAME, getArguments().getString(DefineValue.COMMUNITY_NAME, ""));
-//        mArgs.putString(DefineValue.CALLBACK_URL, getArguments().getString(DefineValue.CALLBACK_URL, ""));
-//        mArgs.putString(DefineValue.API_KEY, getArguments().getString(DefineValue.API_KEY, ""));
-//        mArgs.putString(DefineValue.BANK_CODE, _bank_kode);
-//        mArgs.putString(DefineValue.BANK_NAME, _bank_name);
-//        mArgs.putString(DefineValue.INVOICES, getArguments().getString(DefineValue.INVOICES, ""));
-//        mArgs.putString(DefineValue.AMOUNT, getArguments().getString(DefineValue.AMOUNT_TAGIHAN, ""));
-//        mArgs.putString(DefineValue.SHARE_TYPE, String.valueOf(privacy));
-//        mArgs.putBoolean(DefineValue.IS_SMS_BANKING, isSMSBanking);
-//        mArgs.putString(DefineValue.IS_PAIRING, is_pairing);
-//        mArgs.putString(DefineValue.PAIRING_ID, pairing_id);
-//
-//        newFrag.setArguments(mArgs);
-//
-//        switchTagihanFragment(newFrag, getString(R.string.toolbar_title_sekolahku),true);
-//        if(isTagihan) {
-//            spin_namaBank.setSelection(0);
-//            spin_produkBank.setSelection(0);
-//        }
-//        else {
-//            jumlahSGO_value.setText("");
-//        }
-//    }
 
     private void changeTopUpSgoPlus(String _tx_id, String _product_code, String bank_kode, String productBank_name,
                                     String _comm_code, String _fee, String _ccy_id, String _nama_bank, String _amount,
                                     Boolean isSmsBanking, String productValue) {
-        Timber.d("change topup bankname " + sentObject.getData());
+        Timber.d("change topup bankname %s", sentObject.getData());
         Fragment newFrag = new TopUpToken();
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.TOPUP_TYPE, DefineValue.EMONEY);
@@ -682,10 +568,7 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
         newFrag.setArguments(mArgs);
 
         switchFragment(newFrag, getString(R.string.toolbar_title_topup), true);
-        if (isTagihan) {
-//            spin_namaBank.setSelection(0);
-//            spin_produkBank.setSelection(0);
-        } else {
+        if (!isTagihan) {
             jumlahSGO_value.setText("");
         }
     }
@@ -710,29 +593,24 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
                             DataReqModel model = getGson().fromJson(object, DataReqModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 sentObject.productValue = model.getProduct_value();
                                 showDialog();
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
                                 if (code.equals("0059") || code.equals("0164")) {
-                                    showDialogErrorSMS(sentObject.nama_bank, code, model.getError_message());
+                                    showDialogErrorSMS(sentObject.nama_bank, code, message);
                                 } else {
-                                    code = model.getError_code() + " : " + model.getError_message();
-
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), code + " : " + message, Toast.LENGTH_LONG).show();
                                 }
                             }
                         }
@@ -749,7 +627,7 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -769,25 +647,22 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
         Message.setVisibility(View.VISIBLE);
         Title.setText(getResources().getString(R.string.regist1_notif_title_verification));
         Message.setText(getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms));
-        Timber.d("showdialog  " + sentObject.getData());
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        Timber.d("showdialog  %s", sentObject.getData());
+        btnDialogOTP.setOnClickListener(view -> {
 
-                changeTopUpSgoPlus(sentObject.tx_id,
-                        sentObject.product_code,
-                        sentObject.bank_kode,
-                        sentObject.product_name,
-                        sentObject.comm_code,
-                        sentObject.fee,
-                        sentObject.ccy_id,
-                        sentObject.nama_bank,
-                        sentObject.amount,
-                        true,
-                        sentObject.productValue);
+            changeTopUpSgoPlus(sentObject.tx_id,
+                    sentObject.product_code,
+                    sentObject.bank_kode,
+                    sentObject.product_name,
+                    sentObject.comm_code,
+                    sentObject.fee,
+                    sentObject.ccy_id,
+                    sentObject.nama_bank,
+                    sentObject.amount,
+                    true,
+                    sentObject.productValue);
 
-                dialog.dismiss();
-            }
+            dialog.dismiss();
         });
 
         dialog.show();
@@ -812,26 +687,20 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
 //            Message.setText(getString(R.string.topup_not_registered,_nama_bank));
             Message.setText(error_msg);
             btnDialogOTP.setText(getString(R.string.firstscreen_button_daftar));
-            btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            btnDialogOTP.setOnClickListener(view -> {
 
-                    Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
-                    newIntent.putExtra(DefineValue.BANK_NAME, _nama_bank);
-                    switchActivity(newIntent, MainPage.ACTIVITY_RESULT);
+                Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
+                newIntent.putExtra(DefineValue.BANK_NAME, _nama_bank);
+                switchActivity(newIntent, MainPage.ACTIVITY_RESULT);
 
-                    dialog.dismiss();
-                }
+                dialog.dismiss();
             });
         } else if (error_code.equals("0164")) {
             Message.setText(error_msg);
             btnDialogOTP.setText(getString(R.string.close));
-            btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
-                    getActivity().finish();
-                }
+            btnDialogOTP.setOnClickListener(view -> {
+                dialog.dismiss();
+                getActivity().finish();
             });
         }
         if (isTagihan) {
@@ -939,24 +808,26 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
                 smsDialog.dismiss();
         }
     }
-    SecurePreferences getSP(){
+
+    SecurePreferences getSP() {
         if (sp == null)
             sp = CustomSecurePref.getInstance().getmSecurePrefs();
         return sp;
     }
-    boolean checkFailedVerify(){
+
+    boolean checkFailedVerify() {
         String temp_iccid = getSP().getString(DefineValue.TEMP_ICCID, "");
         String temp_imei = getSP().getString(DefineValue.TEMP_IMEI, "");
         boolean temp_is_sent = getSP().getBoolean(DefineValue.TEMP_IS_SENT, false);
 
-        if(!temp_iccid.equals("") && !temp_imei.equals("")){
-//            String diccid = smsclass.getDeviceICCID();
-            String dimei = smsclass.getDeviceAndroidId();
+        if (!temp_iccid.equals("") && !temp_imei.equals("")) {
+//            String diccid = smsClass.getDeviceICCID();
+            String dimei = smsClass.getDeviceAndroidId();
 //            boolean biccid = diccid.equalsIgnoreCase(temp_iccid);
             boolean biccid = false;
             boolean bimei = dimei.equalsIgnoreCase(temp_imei);
 
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("ID","INDONESIA"));
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("ID", "INDONESIA"));
             Calendar cal = Calendar.getInstance();
 //            cal.add(Calendar.SECOND, 10);
 
@@ -980,9 +851,7 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
             }
 
 
-
-
             return biccid && bimei && temp_is_sent && ddate;
-        }else return false;
+        } else return false;
     }
 }

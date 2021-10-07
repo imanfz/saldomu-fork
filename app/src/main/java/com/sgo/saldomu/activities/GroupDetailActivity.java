@@ -139,7 +139,7 @@ public class GroupDetailActivity extends BaseActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                Timber.d("test comment:" + s.toString());
+                Timber.d("test comment:%s", s.toString());
                 if (s.toString().equals("")) {
                     imageSendComment.setImageResource(R.drawable.ic_send_normal);
                 } else {

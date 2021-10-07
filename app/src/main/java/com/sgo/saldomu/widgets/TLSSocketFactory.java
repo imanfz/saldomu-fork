@@ -46,7 +46,7 @@ public class TLSSocketFactory extends SSLSocketFactory {
 
     public TLSSocketFactory(KeyStore truststore) throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException, UnrecoverableKeyException {
         super(truststore);
-        Timber.d("isi truststore:"+truststore.toString());
+        Timber.d("isi truststore:%s", truststore.toString());
         this.keyStore = truststore;
     }
 

@@ -81,7 +81,7 @@ public class FragmentDenom extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         Bundle bundle = getArguments();
-        Timber.d("isi bundle : " +bundle.toString());
+        Timber.d("isi bundle : %s", bundle.toString());
         memberCode = bundle.getString(DefineValue.MEMBER_CODE, "");
 
         obj = DataManager.getInstance().getSACDMCommMod();
@@ -97,33 +97,30 @@ public class FragmentDenom extends BaseFragment {
         bankProductAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ProductBankSpinner.setAdapter(bankProductAdapter);
 
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                nestedScrollView.scrollTo(0, 0);
-                Fragment frag = new FragmentDenomInputItemList();
+        submitBtn.setOnClickListener(v -> {
+            nestedScrollView.scrollTo(0, 0);
+            Fragment frag = new FragmentDenomInputItemList();
 
-                Bundle bundle1 = new Bundle();
-                bundle1.putString(WebParams.BANK_NAME, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankName());
-                bundle1.putString(WebParams.BANK_GATEWAY, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankGateway());
-                bundle1.putString(WebParams.BANK_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankCode());
-                bundle1.putString(WebParams.PRODUCT_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getProductCode());
-                bundle1.putString(WebParams.MEMBER_REMARK, memberCode);
-                bundle1.putString(WebParams.STORE_NAME, StoreNameTextview.getText().toString());
-                bundle1.putString(WebParams.STORE_ADDRESS, StoreAddressTextview.getText().toString());
+            Bundle bundle1 = new Bundle();
+            bundle1.putString(WebParams.BANK_NAME, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankName());
+            bundle1.putString(WebParams.BANK_GATEWAY, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankGateway());
+            bundle1.putString(WebParams.BANK_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankCode());
+            bundle1.putString(WebParams.PRODUCT_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getProductCode());
+            bundle1.putString(WebParams.MEMBER_REMARK, memberCode);
+            bundle1.putString(WebParams.STORE_NAME, StoreNameTextview.getText().toString());
+            bundle1.putString(WebParams.STORE_ADDRESS, StoreAddressTextview.getText().toString());
 
-                if (bundle.getBoolean(DefineValue.IS_FAVORITE) == true) {
-                    bundle1.putBoolean(DefineValue.IS_FAVORITE, true);
-                    bundle1.putString(DefineValue.CUST_ID, bundle.getString(DefineValue.CUST_ID));
-                    bundle1.putString(DefineValue.NOTES, bundle.getString(DefineValue.NOTES));
-                    bundle1.putString(DefineValue.TX_FAVORITE_TYPE, DefineValue.B2B);
-                    bundle1.putString(DefineValue.PRODUCT_TYPE, DefineValue.DENOM_B2B);
-                }
-
-                frag.setArguments(bundle1);
-
-                SwitchFragment(frag, DenomSCADMActivity.DENOM_PAYMENT, true);
+            if (bundle.getBoolean(DefineValue.IS_FAVORITE) == true) {
+                bundle1.putBoolean(DefineValue.IS_FAVORITE, true);
+                bundle1.putString(DefineValue.CUST_ID, bundle.getString(DefineValue.CUST_ID));
+                bundle1.putString(DefineValue.NOTES, bundle.getString(DefineValue.NOTES));
+                bundle1.putString(DefineValue.TX_FAVORITE_TYPE, DefineValue.B2B);
+                bundle1.putString(DefineValue.PRODUCT_TYPE, DefineValue.DENOM_B2B);
             }
+
+            frag.setArguments(bundle1);
+
+            SwitchFragment(frag, DenomSCADMActivity.DENOM_PAYMENT, true);
         });
     }
 
@@ -145,7 +142,7 @@ public class FragmentDenom extends BaseFragment {
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.MEMBER_ID_SCADM, obj.getMember_id_scadm());
 
-            Timber.d("isi params sent get bank list denom:" + params.toString());
+            Timber.d("isi params sent get bank list denom:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_LIST_BANK_DENOM_SCADM, params,
                     new ObjListeners() {
@@ -155,8 +152,9 @@ public class FragmentDenom extends BaseFragment {
 
                                 Gson gson = new Gson();
                                 jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
-                                Timber.d("isi response get bank list denom:" + response.toString());
+                                Timber.d("isi response get bank list denom:%s", response.toString());
                                 String code = response.getString(WebParams.ERROR_CODE);
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                     if (bankProductList.size() > 0) {
@@ -176,23 +174,17 @@ public class FragmentDenom extends BaseFragment {
                                     getDenomList();
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
-                                    String msg = response.getString(WebParams.ERROR_MESSAGE);
-                                    showDialog(msg);
-//                            showDialogUpdate(msg);
+                                    showDialog(message);
                                 }
 
                             } catch (JSONException e) {
@@ -212,7 +204,7 @@ public class FragmentDenom extends BaseFragment {
                     });
         } catch (Exception e) {
             e.printStackTrace();
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
 
     }
@@ -229,7 +221,7 @@ public class FragmentDenom extends BaseFragment {
             params.put(WebParams.MEMBER_REMARK, memberCode);
             params.put(WebParams.MEMBER_ID_SCADM, obj.getMember_id_scadm());
 
-            Timber.d("isi params sent get denom list:" + params.toString());
+            Timber.d("isi params sent get denom list:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_DENOM_LIST, params,
                     new ObjListeners() {
@@ -239,28 +231,24 @@ public class FragmentDenom extends BaseFragment {
                                 Gson gson = new Gson();
                                 jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
 
-                                Timber.d("isi response get denom list:" + response.toString());
+                                Timber.d("isi response get denom list:%s", response.toString());
                                 String code = response.getString(WebParams.ERROR_CODE);
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     StoreNameTextview.setText(response.getString(WebParams.STORE_NAME));
                                     StoreAddressTextview.setText(response.getString(WebParams.STORE_ADDRESS));
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
-                                    String msg = response.getString(WebParams.ERROR_MESSAGE);
-                                    showDialog(msg);
+                                    showDialog(message);
                                 }
 
                             } catch (JSONException e) {
@@ -280,7 +268,7 @@ public class FragmentDenom extends BaseFragment {
                     });
         } catch (Exception e) {
             e.printStackTrace();
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
 
     }
@@ -302,12 +290,9 @@ public class FragmentDenom extends BaseFragment {
         Title.setText(getString(R.string.error));
         Message.setText(msg);
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                getActivity().onBackPressed();
-            }
+        btnDialogOTP.setOnClickListener(view -> {
+            dialog.dismiss();
+            getActivity().onBackPressed();
         });
 
         dialog.show();

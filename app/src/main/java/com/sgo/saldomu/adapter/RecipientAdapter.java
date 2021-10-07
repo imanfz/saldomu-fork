@@ -8,6 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import com.sgo.saldomu.Beans.RecepientModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -18,8 +20,6 @@ import java.util.List;
  * Created by thinkpad on 3/15/2015.
  */
 public class RecipientAdapter extends BaseAdapter {
-
-    private static final String failed = "F";
 
     private Context mContext;
     private LayoutInflater mInflater;
@@ -64,25 +64,13 @@ public class RecipientAdapter extends BaseAdapter {
         }
         int sdk = android.os.Build.VERSION.SDK_INT;
         if(mObject.get(position).getStatus().equals(DefineValue.FAILED)){
-            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                holder.backgroundLayout.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.rounded_background_red));
-            } else {
-                holder.backgroundLayout.setBackground( mContext.getResources().getDrawable(R.drawable.rounded_background_red));
-            }
+            holder.backgroundLayout.setBackground( ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.rounded_background_red, null));
         }
         else if(mObject.get(position).getIs_member_temp().equals(DefineValue.STRING_YES)){
-            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                holder.backgroundLayout.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.rounded_background_orange));
-            } else {
-                holder.backgroundLayout.setBackground( mContext.getResources().getDrawable(R.drawable.rounded_background_orange));
-            }
+            holder.backgroundLayout.setBackground( ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.rounded_background_orange, null));
         }
         else {
-            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                holder.backgroundLayout.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.rounded_background_green) );
-            } else {
-                holder.backgroundLayout.setBackground( mContext.getResources().getDrawable(R.drawable.rounded_background_green));
-            }
+            holder.backgroundLayout.setBackground( ResourcesCompat.getDrawable(mContext.getResources(), R.drawable.rounded_background_green, null));
         }
 
         holder.name.setText(mObject.get(position).getName());
@@ -91,7 +79,7 @@ public class RecipientAdapter extends BaseAdapter {
         return view;
     }
 
-    private class ViewHolder {
+    private static class ViewHolder {
 //        public ImageView avatar;
         public TextView name, dest;
         public LinearLayout backgroundLayout;

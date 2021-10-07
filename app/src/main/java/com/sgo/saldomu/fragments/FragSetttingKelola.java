@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -76,7 +77,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
     TextView tvDetailMemberName, tvCategoryName, tvCommName, tvAddress, tvTutupSekarangLabel;
     View llMemberDetail;
     Button btnSettingLokasi;
-    Switch swTutupToko;
+    SwitchCompat swTutupToko;
     EasyAdapter lvSettingAdapter;
     String[] menuItems;
     FragmentManager fragmentManager;
@@ -122,58 +123,48 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
         swTutupToko = v.findViewById(R.id.swTutupToko);
 
-        lvSetting.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String tag = "";
-                Fragment newFragment = null;
-                String menuName = ((TextView) view.findViewById(R.id.txtTitleList)).getText().toString();
-                fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-                    @Override
-                    public void onBackStackChanged() {
-                        InitializeTitle();
-                    }
-                });
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        lvSetting.setOnItemClickListener((parent, view, position, id) -> {
+            String tag = "";
+            Fragment newFragment = null;
+            String menuName = ((TextView) view.findViewById(R.id.txtTitleList)).getText().toString();
+            fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.addOnBackStackChangedListener(() -> InitializeTitle());
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-                if (menuName.equals(getString(R.string.setup_agent_open_hour))) {
-                    newFragment = new FragWaktuBeroperasi();
-                    tag = FragWaktuBeroperasi.TAG;
-                    setActionBarTitle(getString(R.string.setup_agent_open_hour));
-                } else if (menuName.equals(getString(R.string.setup_tutup_manual))) {
-                    newFragment = new FragTutupManual();
-                    tag = FragTutupManual.TAG;
-                    setActionBarTitle(getString(R.string.setup_tutup_manual));
-                }
-
-                fragmentTransaction.replace(R.id.bbs_content, newFragment, tag).addToBackStack(tag);
-                fragmentTransaction.commitAllowingStateLoss();
-
-
+            if (menuName.equals(getString(R.string.setup_agent_open_hour))) {
+                newFragment = new FragWaktuBeroperasi();
+                tag = FragWaktuBeroperasi.TAG;
+                setActionBarTitle(getString(R.string.setup_agent_open_hour));
+            } else if (menuName.equals(getString(R.string.setup_tutup_manual))) {
+                newFragment = new FragTutupManual();
+                tag = FragTutupManual.TAG;
+                setActionBarTitle(getString(R.string.setup_tutup_manual));
             }
+
+            fragmentTransaction.replace(R.id.bbs_content, newFragment, tag).addToBackStack(tag);
+            fragmentTransaction.commitAllowingStateLoss();
+
+
         });
 
         btnSettingLokasi.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getContext(), BbsMemberLocationActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra(DefineValue.MEMBER_ID, memberId);
-                        intent.putExtra(DefineValue.SHOP_ID, shopId);
-                        intent.putExtra(DefineValue.SHOP_NAME, shopName);
-                        intent.putExtra("memberType", memberType);
-                        intent.putExtra("memberName", agentName);
-                        intent.putExtra("commName", commName);
-                        intent.putExtra("province", province);
-                        intent.putExtra("district", district);
-                        intent.putExtra("address", address);
-                        intent.putExtra("category", category);
-                        intent.putExtra("isMobility", isMobility);
-                        getActivity().startActivityForResult(intent, MainPage.REQUEST_FINISH, null);
-                        //getActivity().finish();
+                v1 -> {
+                    Intent intent = new Intent(getContext(), BbsMemberLocationActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(DefineValue.MEMBER_ID, memberId);
+                    intent.putExtra(DefineValue.SHOP_ID, shopId);
+                    intent.putExtra(DefineValue.SHOP_NAME, shopName);
+                    intent.putExtra("memberType", memberType);
+                    intent.putExtra("memberName", agentName);
+                    intent.putExtra("commName", commName);
+                    intent.putExtra("province", province);
+                    intent.putExtra("district", district);
+                    intent.putExtra("address", address);
+                    intent.putExtra("category", category);
+                    intent.putExtra("isMobility", isMobility);
+                    getActivity().startActivityForResult(intent, MainPage.REQUEST_FINISH, null);
+                    //getActivity().finish();
 
-                    }
                 }
         );
 
@@ -333,17 +324,15 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
 
                                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
+                                        (dialog, which) -> {
 
-                                                getActivity().finish();
-                                    /*FragmentManager fm = getFragmentManager();
-                                    if (fm.getBackStackEntryCount() > 0) {
-                                        fm.popBackStack();
-                                    } else {
+                                            getActivity().finish();
+                                /*FragmentManager fm = getFragmentManager();
+                                if (fm.getBackStackEntryCount() > 0) {
+                                    fm.popBackStack();
+                                } else {
 
-                                    }*/
-                                            }
+                                }*/
                                         });
 
                                 alertDialog.show();
@@ -436,22 +425,18 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getString(R.string.alertbox_gps_warning))
                 .setCancelable(false)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                .setPositiveButton(R.string.yes, (dialog, id) -> {
 
-                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivityForResult(ilocation, RC_GPS_REQUEST);
+                    Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivityForResult(ilocation, RC_GPS_REQUEST);
 
-                    }
                 })
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
+                .setNegativeButton(R.string.no, (dialog, id) -> {
+                    dialog.cancel();
 
-                        swTutupToko.setOnClickListener(null);
-                        swTutupToko.setChecked(false);
-                        swTutupToko.setOnCheckedChangeListener(switchListener);
-                    }
+                    swTutupToko.setOnClickListener(null);
+                    swTutupToko.setChecked(false);
+                    swTutupToko.setOnCheckedChangeListener(switchListener);
                 });
         final AlertDialog alert = builder.create();
         alert.show();

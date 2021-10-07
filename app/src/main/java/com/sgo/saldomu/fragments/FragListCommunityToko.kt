@@ -14,6 +14,7 @@ import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.coreclass.WebParams
+import com.sgo.saldomu.databinding.FragListItemBinding
 import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
@@ -21,7 +22,6 @@ import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.EBDCommunityModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.frag_list_item.*
 import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
@@ -30,10 +30,17 @@ class FragListCommunityToko : BaseFragment() {
 
     private val ebdCommunityModelArrayList = ArrayList<EBDCommunityModel>()
     private var adapterEBDCommunityList: AdapterEBDCommunityList? = null
+    private var binding: FragListItemBinding? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        v = inflater.inflate(R.layout.frag_list_item, container, false)
+        binding = FragListItemBinding.inflate(inflater,container,false)
+        v = binding!!.root
         return v
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -56,8 +63,8 @@ class FragListCommunityToko : BaseFragment() {
                 tokoPurchaseOrderActivity.switchContent(fragment, getString(R.string.list_po), true, tokoPurchaseOrderActivity.FRAG_INPUT_ITEM_TAG)
             }
         })
-        recyclerView.adapter = adapterEBDCommunityList
-        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        binding!!.recyclerView.adapter = adapterEBDCommunityList
+        binding!!.recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         getListCommunity()
     }
 

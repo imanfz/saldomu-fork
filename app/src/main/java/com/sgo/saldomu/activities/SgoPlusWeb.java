@@ -68,17 +68,14 @@ import timber.log.Timber;
 public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDialogOkCallback {
 
     private WebView webview;
-    private String app_name = "SGO Plus Payment Gateaway";
     private String SGO_PLUS_URL = "";
     private String masterDomainSGOplus;
     private String userID;
-    private String accessKey;
     private String devDomainSGOPlus = MyApiClient.domainSgoPlusDev;
     private String prodDomainSGOPlus = MyApiClient.domainSgoPlusProd;
     private String bankName;
     private String bankProduct;
     private String bankCode;
-    Boolean isBCA;
     private Boolean isDisconnected;
     private Intent mIntent;
     private ProgressDialog out;
@@ -90,7 +87,6 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         isDisconnected = !isOnline();
 
@@ -109,7 +105,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         String transType = mIntent.getStringExtra(DefineValue.TRANSACTION_TYPE);
         String shareType = mIntent.getStringExtra(DefineValue.SHARE_TYPE);
         String totalAmount = mIntent.getStringExtra(DefineValue.TOTAL_AMOUNT);
-        Timber.d("isi intent:" + mIntent.getExtras().toString());
+        Timber.d("isi intent:%s", mIntent.getExtras().toString());
 
         //if(MyApiClient.PROD_FAILURE_FLAG && topUpType.equals(CoreApp.PULSA))masterDomainSGOplus = prodDomainSGOPlus;
         if (MyApiClient.IS_PROD) {
@@ -136,7 +132,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
             }
         }
 
-        Timber.d("sgo+ urlnya:" + SGO_PLUS_URL);
+        Timber.d("sgo+ urlnya:%s", SGO_PLUS_URL);
         loadUrl(sp.getString(DefineValue.USER_NAME, ""), SGO_PLUS_URL, paymentId, userID, totalAmount,
                 fee, amount, reportType, comm_id, transType, commCode, shareType);
         setResult(MainPage.RESULT_NORMAL);
@@ -208,14 +204,14 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Timber.d("isi url tombol-tombolnya:" + url);
+                Timber.d("isi url tombol-tombolnya:%s", url);
                 if (URLUtil.isValidUrl(url)) {
                     if (url.contains("isclose=1")) {
                         setResult(MainPage.RESULT_BALANCE);
                         if (reportType.equalsIgnoreCase(DefineValue.BBS_CASHIN) || reportType.equalsIgnoreCase(DefineValue.BBS_MEMBER_OTP)
                                 || reportType.equalsIgnoreCase(DefineValue.BBS_CASHOUT)) {
                             getTrxStatusBBS(userName, DateTimeFormat.getCurrentDateTime(), payment_id, userId, totalAmount,
-                                    fee, amount, reportType, commId, transType, shareType, commCode);
+                                    fee, amount, reportType, commId, commCode);
                         } else {
                             getTrxStatus(userName, DateTimeFormat.getCurrentDateTime(), payment_id, userId, totalAmount,
                                     fee, amount, reportType, commId, transType, shareType);
@@ -236,7 +232,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                 Toast.makeText(activity, description, Toast.LENGTH_SHORT).show();
                 isDisconnected = true;
                 invalidateOptionsMenu();
-                Timber.d("isi error code :" + String.valueOf(errorCode));
+                Timber.d("isi error code :%s", String.valueOf(errorCode));
                 String message = "";
                 if (errorCode > ERROR_IO)
                     message = getString(R.string.webview_err_connect);
@@ -278,7 +274,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
     public void getTrxStatusBBS(final String userName, final String date, final String txId, final String userId,
                                 final String totalAmount, final String fee, final String amount, final String reportType,
-                                final String comm_id, final String transtype, final String shareType, String commCode) {
+                                final String comm_id, String commCode) {
         try {
             out = DefinedDialog.CreateProgressDialog(this, null);
             out.show();
@@ -290,7 +286,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.USER_ID, userId);
 
-            Timber.d("isi params sent get Trx Status bbs:" + params.toString());
+            Timber.d("isi params sent get Trx Status bbs:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_TRX_STATUS_BBS, params,
                     new ResponseListener() {
@@ -300,7 +296,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                                 Gson gson = new Gson();
                                 GetTrxStatusReportModel model = gson.fromJson(object, GetTrxStatusReportModel.class);
                                 String code = model.getError_code();
-
+                                String message = model.getError_message();
                                 JSONObject response = new JSONObject(gson.toJson(model));
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
@@ -314,27 +310,21 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                                             response, response.optString(WebParams.COMM_CODE, ""), response.optString(WebParams.MEMBER_CODE, ""),
                                             response.optString(WebParams.ORDER_ID, ""), model);
                                 } else if (code.equals("0288")) {
-                                    Timber.d("isi error sent trx status bbs:" + response.toString());
-                                    String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                                    Toast.makeText(SgoPlusWeb.this, code_msg, Toast.LENGTH_LONG).show();
+                                    Timber.d("isi error sent trx status bbs:%s", response.toString());
+                                    Toast.makeText(SgoPlusWeb.this, message, Toast.LENGTH_LONG).show();
                                     setResult(MainPage.RESULT_RETRY);
                                     finish();
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(SgoPlusWeb.this, message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(SgoPlusWeb.this, message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(SgoPlusWeb.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(SgoPlusWeb.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(SgoPlusWeb.this);
-                                }else {
-                                    String msg = model.getError_message();
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(SgoPlusWeb.this);
+                                } else {
                                     if (code.equals("0003")) {
                                         showReportBillerDialog(userName, date, txId, userId, totalAmount, fee, amount,
                                                 DefineValue.FAILED, getString(R.string.transaction_failed_tx_id), reportType,
@@ -342,7 +332,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                                                 response.optString(WebParams.COMM_CODE, ""), response.optString(WebParams.MEMBER_CODE, ""),
                                                 response.optString(WebParams.ORDER_ID, ""), model);
                                     } else
-                                        showDialog(msg);
+                                        showDialog(message);
                                 }
 
                             } catch (JSONException e) {
@@ -363,7 +353,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -388,7 +378,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                 params.put(WebParams.IS_DETAIL, DefineValue.STRING_YES);
             }
 
-            Timber.d("isi params sent get Trx Status:" + params.toString());
+            Timber.d("isi params sent get Trx Status:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
                     new ResponseListener() {
@@ -399,7 +389,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
                             String code = model.getError_code();
                             String message = model.getError_message();
-                            Timber.d("isi respons sent get Trx Status:" + object.toString());
+                            Timber.d("isi respons sent get Trx Status:%s", object.toString());
 
                             try {
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
@@ -412,17 +402,14 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                                             model.getComm_code(), model.getMember_code(), model.getOrder_id(), model);
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(SgoPlusWeb.this, message);
-                                }else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(SgoPlusWeb.this, message);
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(SgoPlusWeb.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(SgoPlusWeb.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + object.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(SgoPlusWeb.this);
+                                    Timber.d("isi response maintenance:%s", object.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(SgoPlusWeb.this);
                                 } else {
                                     if (code.equals("0003")) {
                                         showReportBillerDialog(userName, date, txId, userId, totalAmount, fee, amount,
@@ -450,7 +437,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -471,12 +458,9 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         Title.setText(getString(R.string.error));
         Message.setText(msg);
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                SgoPlusWeb.this.finish();
-            }
+        btnDialogOTP.setOnClickListener(view -> {
+            dialog.dismiss();
+            SgoPlusWeb.this.finish();
         });
 
         dialog.show();
@@ -506,7 +490,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount));
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount));
 
-        Boolean txStat = false;
+        boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
 //            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));

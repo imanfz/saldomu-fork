@@ -180,55 +180,51 @@ public class CameraActivity extends Activity implements View.OnClickListener {
     private void takePhoto() {
         optionView.setVisibility(View.GONE);
         cameraPreview.setEnabled(false);
-        cameraPreview.takePhoto(new Camera.PictureCallback() {
-            @Override
-            public void onPictureTaken(final byte[] data, Camera camera) {
-                camera.stopPreview();
-                //子线程处理图片，防止ANR
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            File originalFile = getOriginalFile();
-                            FileOutputStream originalFileOutputStream = new FileOutputStream(originalFile);
-                            originalFileOutputStream.write(data);
-                            originalFileOutputStream.close();
+        cameraPreview.takePhoto((data, camera) -> {
+            camera.stopPreview();
+            //子线程处理图片，防止ANR
+            new Thread(() -> {
+                try {
+                    File originalFile = getOriginalFile();
+                    FileOutputStream originalFileOutputStream = new FileOutputStream(originalFile);
+                    originalFileOutputStream.write(data);
+                    originalFileOutputStream.close();
 
-                            Bitmap bitmap = BitmapFactory.decodeFile(originalFile.getPath());
+                    Bitmap bitmap = BitmapFactory.decodeFile(originalFile.getPath());
 
-                            //计算裁剪位置
-                            float left, top, right, bottom;
-                            if (type == TYPE_COMPANY_PORTRAIT) {
-                                left = (float) cropView.getLeft() / (float) cameraPreview.getWidth();
-                                top = ((float) containerView.getTop() - (float) cameraPreview.getTop()) / (float) cameraPreview.getHeight();
-                                right = (float) cropView.getRight() / (float) cameraPreview.getWidth();
-                                bottom = (float) containerView.getBottom() / (float) cameraPreview.getHeight();
+                    //计算裁剪位置
+                    float left, top, right, bottom;
+                    if (type == TYPE_COMPANY_PORTRAIT) {
+                        left = (float) cropView.getLeft() / (float) cameraPreview.getWidth();
+                        top = ((float) containerView.getTop() - (float) cameraPreview.getTop()) / (float) cameraPreview.getHeight();
+                        right = (float) cropView.getRight() / (float) cameraPreview.getWidth();
+                        bottom = (float) containerView.getBottom() / (float) cameraPreview.getHeight();
 
-                            } else {
-                                left = ((float) containerView.getLeft() - (float) cameraPreview.getLeft()) / (float) cameraPreview.getWidth();
-                                top = (float) cropView.getTop() / (float) cameraPreview.getHeight();
-                                right = (float) containerView.getRight() / (float) cameraPreview.getWidth();
-                                bottom = (float) cropView.getBottom() / (float) cameraPreview.getHeight();
-                            }
+                    } else {
+                        left = ((float) containerView.getLeft() - (float) cameraPreview.getLeft()) / (float) cameraPreview.getWidth();
+                        top = (float) cropView.getTop() / (float) cameraPreview.getHeight();
+                        right = (float) containerView.getRight() / (float) cameraPreview.getWidth();
+                        bottom = (float) cropView.getBottom() / (float) cameraPreview.getHeight();
+                    }
 
-                            //裁剪及保存到文件
-                            Bitmap cropBitmap;
-                            if (bitmap.getWidth() < bitmap.getHeight()) {
-                                Matrix mat = new Matrix();
-                                mat.preRotate(270);
-                                cropBitmap = Bitmap.createBitmap(bitmap,
-                                        (int) ((left) * (float) bitmap.getWidth()),
-                                        (int) ((top) * (float) bitmap.getHeight()),
-                                        (int) ((right - left) * (float) bitmap.getWidth()),
-                                        (int) ((bottom - top) * (float) bitmap.getHeight()), mat, true);
-                            } else {
+                    //裁剪及保存到文件
+                    Bitmap cropBitmap;
+                    if (bitmap.getWidth() < bitmap.getHeight()) {
+                        Matrix mat = new Matrix();
+                        mat.preRotate(270);
+                        cropBitmap = Bitmap.createBitmap(bitmap,
+                                (int) ((left) * (float) bitmap.getWidth()),
+                                (int) ((top) * (float) bitmap.getHeight()),
+                                (int) ((right - left) * (float) bitmap.getWidth()),
+                                (int) ((bottom - top) * (float) bitmap.getHeight()), mat, true);
+                    } else {
 //                                cropBitmap = Bitmap.createBitmap(bitmap,
 //                                        (int) ((left) * (float) bitmap.getWidth()),
 //                                        (int) ((top) * (float) bitmap.getHeight()),
 //                                        (int) ((right - left - 0.12f) * (float) bitmap.getWidth()),
 //                                        (int) ((bottom - top + 0.1f) * (float) bitmap.getHeight()));
 
-                                cropBitmap = Bitmap.createBitmap(bitmap, 0, 0, cameraPreview.getWidth(), cameraPreview.getHeight());
+                        cropBitmap = Bitmap.createBitmap(bitmap, 0, 0, cameraPreview.getWidth(), cameraPreview.getHeight());
 
 //                                int width = (int) ((right - left - 0.12f) * (float) bitmap.getWidth());
 //                                if (width < 0) {
@@ -248,37 +244,27 @@ public class CameraActivity extends Activity implements View.OnClickListener {
 //                                        y,
 //                                        width,
 //                                        height);
-                            }
-
-
-                            final File cropFile = getCropFile();
-                            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(cropFile));
-                            cropBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-                            bos.flush();
-                            bos.close();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    resultView.setVisibility(View.VISIBLE);
-                                }
-                            });
-                            return;
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                optionView.setVisibility(View.VISIBLE);
-                                cameraPreview.setEnabled(true);
-                            }
-                        });
                     }
-                }).start();
 
-            }
+
+                    final File cropFile = getCropFile();
+                    BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(cropFile));
+                    cropBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                    bos.flush();
+                    bos.close();
+                    runOnUiThread(() -> resultView.setVisibility(View.VISIBLE));
+                    return;
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(() -> {
+                    optionView.setVisibility(View.VISIBLE);
+                    cameraPreview.setEnabled(true);
+                });
+            }).start();
+
         });
     }
 

@@ -14,13 +14,10 @@ import timber.log.Timber;
 
 public class ScanQRUtils  {
 
-    private Context mContext;
-
     private static ScanQRUtils instance = null;
 
     private ScanQRUtils(Context mContext){
 
-        this.mContext = mContext;
     }
 
     public static ScanQRUtils getInstance(Context mContext){
@@ -38,9 +35,9 @@ public class ScanQRUtils  {
     public Bitmap generateQRCode(String codeQr, String sourceAcct, String sourceName){
 
 
-        Bitmap bitmap = null;
+        Bitmap bitmap;
         String value = encryptedValue(codeQr,sourceAcct,sourceName);
-        Timber.d("isi qr value:"+value);
+        Timber.d("isi qr value:%s", value);
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
 
         try {

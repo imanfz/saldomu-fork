@@ -301,7 +301,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                     //currentLongitude = lastLocation.getLongitude();
                 }
 
-                Timber.d("Location Found" + lastLocation.toString());
+                Timber.d("Location Found%s", lastLocation.toString());
                 //viewPager.getAdapter().notifyDataSetChanged();
                 //getCompleteLocationAddress();
                 //searchToko(lastLocation.getLatitude(), lastLocation.getLongitude());
@@ -624,16 +624,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                     alertDialog.setMessage(tempMessage);
 
                                     alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    dialog.dismiss();
+                                            (dialog, which) -> {
+                                                dialog.dismiss();
 
-                                                    Intent i = new Intent(getApplicationContext(), MainPage.class);
-                                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                    startActivity(i);
-                                                    finish();
+                                                Intent i = new Intent(getApplicationContext(), MainPage.class);
+                                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                startActivity(i);
+                                                finish();
 
-                                                }
                                             });
                                     alertDialog.show();
                                 } else {
@@ -651,54 +649,50 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                         alertDialog.setMessage(tempMessage);
 
                                         alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
+                                                (dialog, which) -> {
+                                                    dialog.dismiss();
 
-                                                        Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
-                                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                        i.putExtra(DefineValue.CATEGORY_ID, categoryId);
-                                                        i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
-                                                        i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, currentLatitude);
-                                                        i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, currentLongitude);
-                                                        i.putExtra(DefineValue.BBS_PRODUCT_NAME, bbsProductName);
-                                                        i.putExtra(DefineValue.BBS_SCHEME_CODE, bbsSchemeCode);
+                                                    Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
+                                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    i.putExtra(DefineValue.CATEGORY_ID, categoryId);
+                                                    i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+                                                    i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, currentLatitude);
+                                                    i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, currentLongitude);
+                                                    i.putExtra(DefineValue.BBS_PRODUCT_NAME, bbsProductName);
+                                                    i.putExtra(DefineValue.BBS_SCHEME_CODE, bbsSchemeCode);
 
-                                                        if (mobility.equals(DefineValue.STRING_YES)) {
+                                                    if (mobility.equals(DefineValue.STRING_YES)) {
 
-                                                            i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
-                                                            i.putExtra(DefineValue.AMOUNT, amount);
-                                                            i.putExtra(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
+                                                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                                                        i.putExtra(DefineValue.AMOUNT, amount);
+                                                        i.putExtra(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
 
 
-                                                        } else {
-                                                            i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
-                                                            i.putExtra(DefineValue.AMOUNT, "");
-
-                                                        }
-
-                                                        startActivity(i);
-                                                        finish();
+                                                    } else {
+                                                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
+                                                        i.putExtra(DefineValue.AMOUNT, "");
 
                                                     }
+
+                                                    startActivity(i);
+                                                    finish();
+
                                                 });
 
 
                                         alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
+                                                (dialog, which) -> {
+                                                    dialog.dismiss();
 
-                                                        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                                                        SecurePreferences.Editor mEditor = prefs.edit();
-                                                        mEditor.remove(DefineValue.BBS_AGENT_MOBILITY);
-                                                        mEditor.remove(DefineValue.BBS_TX_ID);
-                                                        mEditor.remove(DefineValue.AMOUNT);
-                                                        mEditor.apply();
+                                                    SecurePreferences prefs1 = CustomSecurePref.getInstance().getmSecurePrefs();
+                                                    SecurePreferences.Editor mEditor1 = prefs1.edit();
+                                                    mEditor1.remove(DefineValue.BBS_AGENT_MOBILITY);
+                                                    mEditor1.remove(DefineValue.BBS_TX_ID);
+                                                    mEditor1.remove(DefineValue.AMOUNT);
+                                                    mEditor1.apply();
 
-                                                        finish();
+                                                    finish();
 
-                                                    }
                                                 });
                                         alertDialog.show();
 
@@ -860,11 +854,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 alertDialog.setTitle(getString(R.string.alertbox_title_warning));
                 alertDialog.setMessage(getString(R.string.alertbox_message_warning));
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                finish();
-                            }
+                        (dialog, which) -> {
+                            dialog.dismiss();
+                            finish();
                         });
                 alertDialog.show();
                 //}
@@ -878,11 +870,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 alertDialog.setTitle(getString(R.string.alertbox_title_warning));
                 alertDialog.setMessage(getString(R.string.alertbox_message_phone_permission_warning));
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                finish();
-                            }
+                        (dialog, which) -> {
+                            dialog.dismiss();
+                            finish();
                         });
                 alertDialog.show();
                 //}
@@ -1189,41 +1179,39 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                         alertDialog.setMessage(tempMessage);
 
                                         alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
+                                                (dialog, which) -> {
+                                                    dialog.dismiss();
 
-                                                /*SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                                                SecurePreferences.Editor mEditor = prefs.edit();
-                                                mEditor.putString(DefineValue.BBS_TX_ID, "");
-                                                mEditor.apply();
+                                            /*SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                            SecurePreferences.Editor mEditor = prefs.edit();
+                                            mEditor.putString(DefineValue.BBS_TX_ID, "");
+                                            mEditor.apply();
 
-                                                clicked = false;
+                                            clicked = false;
 
-                                                searchToko(currentLatitude,currentLongitude);*/
+                                            searchToko(currentLatitude,currentLongitude);*/
 
-                                                        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                                                        SecurePreferences.Editor mEditor = prefs.edit();
-                                                        mEditor.putString(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
-                                                        mEditor.putString(DefineValue.BBS_TX_ID, "");
-                                                        mEditor.putString(DefineValue.AMOUNT, amount);
-                                                        mEditor.apply();
+                                                    SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                                    SecurePreferences.Editor mEditor = prefs.edit();
+                                                    mEditor.putString(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                                                    mEditor.putString(DefineValue.BBS_TX_ID, "");
+                                                    mEditor.putString(DefineValue.AMOUNT, amount);
+                                                    mEditor.apply();
 
-                                                        Intent i = new Intent(BbsSearchAgentActivity.this, BbsSearchAgentActivity.class);
-                                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                        i.putExtra(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
-                                                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
-                                                        i.putExtra(DefineValue.AMOUNT, amount);
-                                                        i.putExtra(DefineValue.CATEGORY_ID, categoryId);
-                                                        i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
-                                                        i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, currentLatitude);
-                                                        i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, currentLongitude);
-                                                        i.putExtra(DefineValue.BBS_PRODUCT_NAME, bbsProductName);
-                                                        i.putExtra(DefineValue.BBS_SCHEME_CODE, bbsSchemeCode);
-                                                        startActivity(i);
-                                                        finish();
+                                                    Intent i = new Intent(BbsSearchAgentActivity.this, BbsSearchAgentActivity.class);
+                                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    i.putExtra(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
+                                                    i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                                                    i.putExtra(DefineValue.AMOUNT, amount);
+                                                    i.putExtra(DefineValue.CATEGORY_ID, categoryId);
+                                                    i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+                                                    i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, currentLatitude);
+                                                    i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, currentLongitude);
+                                                    i.putExtra(DefineValue.BBS_PRODUCT_NAME, bbsProductName);
+                                                    i.putExtra(DefineValue.BBS_SCHEME_CODE, bbsSchemeCode);
+                                                    startActivity(i);
+                                                    finish();
 
-                                                    }
                                                 });
 
                                         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
@@ -1291,11 +1279,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getString(R.string.alertbox_waiting_agent_approval))
                     .setCancelable(false)
-                    .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                            dialog.dismiss();
-                        }
-                    })
+                    .setPositiveButton(getString(R.string.ok), (dialog, id) -> dialog.dismiss())
             ;
             final AlertDialog alert = builder.create();
             alert.show();

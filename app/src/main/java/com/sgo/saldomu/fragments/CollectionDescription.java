@@ -118,7 +118,7 @@ public class CollectionDescription extends BaseFragment implements ReportBillerD
         shareType = args.getString(DefineValue.SHARE_TYPE, "");
         topuptype = args.getString(DefineValue.TRANSACTION_TYPE, "");
         isPIN = args.getString(DefineValue.AUTHENTICATION_TYPE, "").equals(DefineValue.AUTH_TYPE_PIN);
-        Timber.d("isi args:" + args.toString());
+        Timber.d("isi args:%s", args.toString());
 
 
         if (topuptype.equals(DefineValue.SMS_BANKING) || (topuptype.equals(DefineValue.EMONEY) && !isPIN)) {
@@ -178,12 +178,7 @@ public class CollectionDescription extends BaseFragment implements ReportBillerD
     }
 
     private void changeTextBtnSub() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + max_token_resend + ")");
-            }
-        });
+        getActivity().runOnUiThread(() -> btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + max_token_resend + ")"));
     }
 
 
@@ -271,7 +266,7 @@ public class CollectionDescription extends BaseFragment implements ReportBillerD
             params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenValue, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params insertTrx Collection:" + params.toString());
+            Timber.d("isi params insertTrx Collection:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
@@ -341,7 +336,7 @@ public class CollectionDescription extends BaseFragment implements ReportBillerD
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params resendToken Collection:" + params.toString());
+            Timber.d("isi params resendToken Collection:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(url, params,
                     new ResponseListener() {
@@ -561,12 +556,7 @@ public class CollectionDescription extends BaseFragment implements ReportBillerD
     }
 
 
-    private Button.OnClickListener cancelListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            getFragmentManager().popBackStack();
-        }
-    };
+    private Button.OnClickListener cancelListener = view -> getFragmentManager().popBackStack();
 
 
     private void switchActivityIB(Intent mIntent) {

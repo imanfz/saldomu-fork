@@ -75,28 +75,15 @@ public class HelpAdapter extends BaseAdapter {
 
             view.setTag(holder);
 
-            holder.phone.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                    callIntent.setData(Uri.parse("tel:"+ holder.phone.getText().toString()));
-                    context.startActivity(callIntent);
-                }
+            holder.phone.setOnClickListener(view12 -> {
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:"+ holder.phone.getText().toString()));
+                context.startActivity(callIntent);
             });
 
-            holder.tvCopy.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    copyRefNo(data.get(position).getPhone());
-                }
-            });
+            holder.tvCopy.setOnClickListener(view1 -> copyRefNo(data.get(position).getPhone()));
 
-            holder.whatsapp.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    redirectToWhatsapp(data.get(position).getWhatsappPhone());
-                }
-            });
+            holder.whatsapp.setOnClickListener(v -> redirectToWhatsapp(data.get(position).getWhatsappPhone()));
         } else {
             view = convertView;
             holder = (ViewHolder)view.getTag();
@@ -136,7 +123,7 @@ public class HelpAdapter extends BaseAdapter {
                     = "https://api.whatsapp.com/send?phone="+ NoHPFormat.formatTo62(phoneNo)
                     +"&text="+ encodedMsg;
 
-            Timber.wtf("Isi redirect msg whatsapp..."+redirect);
+            Timber.wtf("Isi redirect msg whatsapp...%s", redirect);
 
             Uri uri = Uri.parse(redirect);
             Intent i = new Intent(Intent.ACTION_VIEW, uri);

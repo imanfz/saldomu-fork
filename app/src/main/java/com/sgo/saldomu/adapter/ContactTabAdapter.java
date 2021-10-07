@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.sgo.saldomu.fragments.FragFAQ;
 import com.sgo.saldomu.fragments.FragHelp;
 
+import timber.log.Timber;
+
 /**
  * Created by thinkpad on 1/14/2016.
  */
@@ -26,7 +28,7 @@ public class ContactTabAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Log.v("POSITION", "position: " + position);
+        Timber.tag("POSITION").v("position: %s", position);
         if(position == 0) {
             return FragHelp.newInstance();
         }

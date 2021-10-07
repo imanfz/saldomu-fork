@@ -21,6 +21,8 @@ import com.sgo.saldomu.R;
 
 import java.util.Set;
 
+import timber.log.Timber;
+
 /**
  * Created by Lenovo on 19/04/2018.
  */
@@ -72,12 +74,9 @@ public class DevicesList extends Activity {
 
         // Initialize the button to perform device discovery
         Button scanButton = (Button) findViewById(R.id.button_scan);
-        scanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                doDiscovery();
-                v.setVisibility(View.GONE);
-            }
+        scanButton.setOnClickListener(v -> {
+            doDiscovery();
+            v.setVisibility(View.GONE);
         });
 
         // Initialize array adapters. One for already paired devices and
@@ -138,7 +137,7 @@ public class DevicesList extends Activity {
      * Start device discover with the BluetoothAdapter
      */
     private void doDiscovery() {
-        if (DEBUG) Log.d(TAG, "doDiscovery()");
+        if (DEBUG) Timber.tag(TAG).d("doDiscovery()");
 
         // Indicate scanning in the title
         setProgressBarIndeterminateVisibility(true);
@@ -169,7 +168,7 @@ public class DevicesList extends Activity {
             String info = ((TextView) v).getText().toString();
             String noDevices = getResources().getText(R.string.none_paired).toString();
             String noNewDevice = getResources().getText(R.string.none_found).toString();
-            Log.i("tag", info);
+            Timber.tag("tag").i(info);
 
             if (! info.equals(noDevices) && ! info.equals(noNewDevice)) {
                 String address = info.substring(info.length() - 17);

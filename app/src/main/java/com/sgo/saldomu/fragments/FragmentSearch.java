@@ -102,9 +102,9 @@ public class FragmentSearch extends Fragment {
                     while (pCur.moveToNext()) {
                         String phoneNo = pCur.getString(pCur.getColumnIndex(
                                 ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        Timber.i("Name: " + name);
+                        Timber.i("Name: %s", name);
                         String finalPhoneNo = CustomStringUtil.filterPhoneNo(phoneNo);
-                        Timber.i("Phone Number: " + finalPhoneNo);
+                        Timber.i("Phone Number: %s", finalPhoneNo);
                         contactLists.add(new ContactList(name, finalPhoneNo));
                     }
                     pCur.close();

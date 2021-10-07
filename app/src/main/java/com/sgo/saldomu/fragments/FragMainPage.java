@@ -142,12 +142,7 @@ public class FragMainPage extends Fragment {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        tabs.setOnCenterItemClickListener(new TitlePageIndicator.OnCenterItemClickListener() {
-            @Override
-            public void onCenterItemClick(int position) {
-                getCurrentAdapternya().mCurrentFragment.goToTop();
-            }
-        });
+        tabs.setOnCenterItemClickListener(position -> getCurrentAdapternya().mCurrentFragment.goToTop());
 
         tabs.setVisibility(View.GONE);
     }
@@ -157,19 +152,13 @@ public class FragMainPage extends Fragment {
         final AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getActivity().getString(R.string.level_dialog_agent),
                 getActivity().getString(R.string.level_dialog_agent1), getActivity().getString(R.string.level_dialog_btn_ok),
                 getActivity().getString(R.string.cancel), false);
-        dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent mI = new Intent(getActivity(), MyProfileNewActivity.class);
-                getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
-            }
+        dialog_frag.setOkListener((dialog, which) -> {
+            Intent mI = new Intent(getActivity(), MyProfileNewActivity.class);
+            getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
         });
-        dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog_frag.dismiss();
-                pager.setCurrentItem(1);
-            }
+        dialog_frag.setCancelListener((dialog, which) -> {
+            dialog_frag.dismiss();
+            pager.setCurrentItem(1);
         });
 
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();

@@ -14,6 +14,8 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import timber.log.Timber;
+
 /**
  * Created by yuddistirakiki on 6/13/17.
  */
@@ -44,7 +46,7 @@ public class PrefixOperatorValidator {
                 int end = operatorModels.size() - 1;
                 while (start <= end) {
                     int mid = (start + end) / 2;
-                    Log.wtf("operator validation","operator validation");
+                    Timber.tag("operator validation").wtf("operator validation");
                     int cIdx = number.compareTo(operatorModels.get(mid).prefix);
                     if (cIdx == 0) {
                         return operatorModels.get(mid);

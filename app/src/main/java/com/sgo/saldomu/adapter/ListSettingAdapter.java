@@ -94,54 +94,52 @@ public class ListSettingAdapter extends BaseAdapter {
 
         }
 
-        holder.tvListName.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        holder.tvListName.setOnClickListener(v -> {
 
-                if (stepApprove.equals(DefineValue.STRING_NO)) {
-                    if (position == 2) {
-                        Intent intent = new Intent(context.getApplicationContext(), BbsMemberLocationActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra(DefineValue.MEMBER_ID, memberId);
-                        intent.putExtra(DefineValue.SHOP_ID, shopId);
-                        intent.putExtra(DefineValue.SHOP_NAME, shopName);
-                        intent.putExtra("memberType", memberType);
-                        intent.putExtra("memberName", agentName);
-                        intent.putExtra("commName", commName);
-                        intent.putExtra("province", province);
-                        intent.putExtra("district", district);
-                        intent.putExtra("address", address);
-                        intent.putExtra("category", category);
-                        inflater.getContext().startActivity(intent);
-                    } else if (position == 3) {
-                        Intent intent = new Intent(context.getApplicationContext(), BbsSetupShopClosedActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra(DefineValue.MEMBER_ID, memberId);
-                        intent.putExtra(DefineValue.SHOP_ID, shopId);
-                        intent.putExtra(DefineValue.FLAG_APPROVE, flagApprove);
-                        inflater.getContext().startActivity(intent);
-                    }
-                } else {
-                    if (position == 2) {
-                        Intent intent = new Intent(context.getApplicationContext(), BbsSetupShopClosedActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra(DefineValue.MEMBER_ID, memberId);
-                        intent.putExtra(DefineValue.SHOP_ID, shopId);
-                        intent.putExtra(DefineValue.FLAG_APPROVE, flagApprove);
-                        inflater.getContext().startActivity(intent);
-                    }
-                }
-
-                if (position == 0) {
-
-                } else if (position == 1) {
-
-                } else if (position == 2) {
-
-
+            if (stepApprove.equals(DefineValue.STRING_NO)) {
+                if (position == 2) {
+                    Intent intent = new Intent(context.getApplicationContext(), BbsMemberLocationActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(DefineValue.MEMBER_ID, memberId);
+                    intent.putExtra(DefineValue.SHOP_ID, shopId);
+                    intent.putExtra(DefineValue.SHOP_NAME, shopName);
+                    intent.putExtra("memberType", memberType);
+                    intent.putExtra("memberName", agentName);
+                    intent.putExtra("commName", commName);
+                    intent.putExtra("province", province);
+                    intent.putExtra("district", district);
+                    intent.putExtra("address", address);
+                    intent.putExtra("category", category);
+                    inflater.getContext().startActivity(intent);
                 } else if (position == 3) {
-
-
+                    Intent intent = new Intent(context.getApplicationContext(), BbsSetupShopClosedActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(DefineValue.MEMBER_ID, memberId);
+                    intent.putExtra(DefineValue.SHOP_ID, shopId);
+                    intent.putExtra(DefineValue.FLAG_APPROVE, flagApprove);
+                    inflater.getContext().startActivity(intent);
                 }
+            } else {
+                if (position == 2) {
+                    Intent intent = new Intent(context.getApplicationContext(), BbsSetupShopClosedActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(DefineValue.MEMBER_ID, memberId);
+                    intent.putExtra(DefineValue.SHOP_ID, shopId);
+                    intent.putExtra(DefineValue.FLAG_APPROVE, flagApprove);
+                    inflater.getContext().startActivity(intent);
+                }
+            }
+
+            if (position == 0) {
+
+            } else if (position == 1) {
+
+            } else if (position == 2) {
+
+
+            } else if (position == 3) {
+
+
             }
         });
 

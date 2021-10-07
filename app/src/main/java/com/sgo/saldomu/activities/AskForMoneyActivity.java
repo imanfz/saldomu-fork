@@ -214,7 +214,7 @@ public class AskForMoneyActivity extends BaseActivity {
         else
             txtNumberRecipients.setText(String.valueOf(phoneRetv.getRecipients().length));
 
-        Timber.d("isi length recipients:" + phoneRetv.getRecipients().length);
+        Timber.d("isi length recipients:%s", phoneRetv.getRecipients().length);
     }
 
     private class TempObjectData {
@@ -261,7 +261,7 @@ public class AskForMoneyActivity extends BaseActivity {
                                 break;
                             }
                             finalNumber = NoHPFormat.formatTo62(finalNumber);
-                            Timber.v("final number:" + finalNumber);
+                            Timber.v("final number:%s", finalNumber);
                             mTempObjectDataList.add(new TempObjectData(finalNumber, DefineValue.IDR, amount, chip.getEntry().getDisplayName()));
                         }
 
@@ -339,7 +339,7 @@ public class AskForMoneyActivity extends BaseActivity {
                                             getString(R.string.askfriends_dialog_text_amount) + " : " + amount + "\n" +
                                             getString(R.string.askfriends_dialog_text_desc) + " : " + _message + "\n";
                                 } catch (JSONException e) {
-                                    Timber.d("error" + e.toString());
+                                    Timber.d("error%s", e.toString());
                                     e.printStackTrace();
                                 }
                                 showDialog(messageDialog);
@@ -364,7 +364,7 @@ public class AskForMoneyActivity extends BaseActivity {
                         @Override
                         public void onError(Throwable throwable) {
 
-                            Log.wtf("asd2", "asd2");
+                            Timber.tag("asd2").wtf("asd2");
                         }
 
                         @Override
@@ -374,7 +374,7 @@ public class AskForMoneyActivity extends BaseActivity {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -459,7 +459,7 @@ public class AskForMoneyActivity extends BaseActivity {
         else if (density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
         else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
 
-        Timber.wtf("url prof pic:" + _url_profpic);
+        Timber.wtf("url prof pic:%s", _url_profpic);
 
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);

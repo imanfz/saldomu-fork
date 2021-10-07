@@ -59,19 +59,11 @@ public class LevelClass {
             final AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getActivity().getString(R.string.level_dialog_title),
                     getActivity().getString(R.string.level_dialog_message), getActivity().getString(R.string.level_dialog_btn_ok),
                     getActivity().getString(R.string.cancel), false);
-            dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent mI = new Intent(getActivity(), UpgradeMemberActivity.class);
-                    getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
-                }
+            dialog_frag.setOkListener((dialog, which) -> {
+                Intent mI = new Intent(getActivity(), UpgradeMemberActivity.class);
+                getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
             });
-            dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog_frag.dismiss();
-                }
-            });
+            dialog_frag.setCancelListener((dialog, which) -> dialog_frag.dismiss());
 
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
             Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");

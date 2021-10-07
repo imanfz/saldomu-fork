@@ -61,18 +61,15 @@ public class BankProductSelectionBottomSheet extends BottomSheetDialogFragment {
 
         productBankExLV.setAdapter(bankProductAdapter);
 
-        productBankExLV.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+        productBankExLV.setOnGroupClickListener((parent, v, groupPosition, id) -> {
 
-                if (!listDataHeader2.get(groupPosition).getProduct_type().equals("ATM") &&
-                        !listDataHeader2.get(groupPosition).getProduct_type().equals("MANDIRI_ATM")) {
-                    listener.onClick(listDataHeader2.get(groupPosition));
-                    dismiss();
-                }
-
-                return false;
+            if (!listDataHeader2.get(groupPosition).getProduct_type().equals("ATM") &&
+                    !listDataHeader2.get(groupPosition).getProduct_type().equals("MANDIRI_ATM")) {
+                listener.onClick(listDataHeader2.get(groupPosition));
+                dismiss();
             }
+
+            return false;
         });
     }
 
@@ -101,7 +98,7 @@ public class BankProductSelectionBottomSheet extends BottomSheetDialogFragment {
             bankProductAdapter.notifyDataSetChanged();
             productBankExLV.expandGroup(listDataHeader2.size()-1);
         }catch(Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 }

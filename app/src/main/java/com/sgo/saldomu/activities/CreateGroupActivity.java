@@ -101,12 +101,7 @@ public class CreateGroupActivity extends BaseActivity {
 
     }
 
-    private Button.OnClickListener btnCancelListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            finish();
-        }
-    };
+    private Button.OnClickListener btnCancelListener = v -> finish();
 
     private Button.OnClickListener btnSaveListener = new Button.OnClickListener() {
         @Override
@@ -137,8 +132,6 @@ public class CreateGroupActivity extends BaseActivity {
                 } else {
                     members = "";
                 }
-
-                Timber.d("test json:" + members);
                 sentData(members);
             } else {
                 Toast.makeText(getApplicationContext(), "Input Group Name!", Toast.LENGTH_LONG).show();
@@ -164,7 +157,7 @@ public class CreateGroupActivity extends BaseActivity {
             params.put(WebParams.MEMBERS, members);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params sent add group:" + params.toString());
+            Timber.d("isi params sent add group:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_ADD_GROUP, params,
                     new ObjListeners() {
@@ -172,21 +165,19 @@ public class CreateGroupActivity extends BaseActivity {
                         public void onResponses(JSONObject response) {
                             try {
                                 String code = response.getString(WebParams.ERROR_CODE);
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
                                 String count = response.getString(WebParams.COUNT);
 
                                 if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
-                                    Timber.d("isi params sent add group:" + response.toString());
+                                    Timber.d("isi params sent add group:%s", response.toString());
                                     Toast.makeText(getApplicationContext(), "Group " + groupName + " Created!", Toast.LENGTH_LONG).show();
                                     finish();
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(CreateGroupActivity.this, message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(CreateGroupActivity.this, message);
                                 } else {
-                                    Timber.d("isi error sent add group:" + response.toString());
-                                    code = response.getString(WebParams.ERROR_MESSAGE);
-                                    Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                                    Timber.d("isi error sent add group:%s", response.toString());
+                                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -205,7 +196,7 @@ public class CreateGroupActivity extends BaseActivity {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 

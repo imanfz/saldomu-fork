@@ -10,6 +10,9 @@ data class QrisParsingModel(
         @field:SerializedName("merchant_pan")
         val merchantPan: String? = null,
 
+        @field:SerializedName("merchant_domain")
+        val merchantDomain: String? = null,
+
         @field:SerializedName("merchant_details")
         val merchantDetails: String? = null,
 

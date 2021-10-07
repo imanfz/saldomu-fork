@@ -163,17 +163,15 @@ public class BbsMemberShopDetailActivity extends BaseActivity {
             finish();
         });
 
-        ivCategory.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), BbsMerchantCategoryActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra(DefineValue.MEMBER_ID, memberId);
-                intent.putExtra(DefineValue.SHOP_ID, shopId);
-                intent.putExtra(DefineValue.FLAG_APPROVE, flagApprove);
-                intent.putExtra(DefineValue.SETUP_OPEN_HOUR, setupOpenHour);
-                startActivity(intent);
-                finish();
-            }
+        ivCategory.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), BbsMerchantCategoryActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra(DefineValue.MEMBER_ID, memberId);
+            intent.putExtra(DefineValue.SHOP_ID, shopId);
+            intent.putExtra(DefineValue.FLAG_APPROVE, flagApprove);
+            intent.putExtra(DefineValue.SETUP_OPEN_HOUR, setupOpenHour);
+            startActivity(intent);
+            finish();
         });
 
         ivCloseShop.setOnClickListener(v -> {

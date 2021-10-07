@@ -39,7 +39,7 @@ public class MainFragmentAdapter extends FragmentStatePagerAdapter implements Ic
 
     @Override
     public Fragment getItem(int position) {
-        Timber.v("position: " + position);
+        Timber.v("position: %s", position);
         return mListFrag.get(position);
     }
 

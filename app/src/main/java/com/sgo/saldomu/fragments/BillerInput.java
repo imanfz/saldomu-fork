@@ -55,6 +55,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
+import timber.log.Timber;
 
 /*
   Created by Administrator on 3/4/2015.
@@ -302,14 +303,11 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
                         _denomData.add(mListDenomData.get(i).getItemName());
                     }
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            spinWheelDenom.clearAnimation();
-                            spinWheelDenom.setVisibility(View.GONE);
-                            spin_denom.setVisibility(View.VISIBLE);
-                            adapterDenom.notifyDataSetChanged();
-                        }
+                    getActivity().runOnUiThread(() -> {
+                        spinWheelDenom.clearAnimation();
+                        spinWheelDenom.setVisibility(View.GONE);
+                        spin_denom.setVisibility(View.VISIBLE);
+                        adapterDenom.notifyDataSetChanged();
                     });
                 }
             };
@@ -354,12 +352,9 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         }
     };
 
-    private Button.OnClickListener cekSaldoEmoney = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(getActivity(), NFCActivity.class);
-            startActivity(intent);
-        }
+    private Button.OnClickListener cekSaldoEmoney = v -> {
+        Intent intent = new Intent(getActivity(), NFCActivity.class);
+        startActivity(intent);
     };
 
     private RadioGroup.OnCheckedChangeListener radioListener = new RadioGroup.OnCheckedChangeListener() {
@@ -500,18 +495,18 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
 
             byte[] selectEmoneyResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
                     "00A40400080000000000000001"));
-            getActivity().runOnUiThread(() -> Log.d("SELECT_RESPONSE : ", Converter.Companion.toHex(selectEmoneyResponse)));
+            getActivity().runOnUiThread(() -> Timber.tag("SELECT_RESPONSE : ").d(Converter.Companion.toHex(selectEmoneyResponse)));
 
             byte[] cardAttirbuteResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
                     "00F210000B"));
-            getActivity().runOnUiThread(() -> Log.d("CARD_ATTRIBUTE : ", Converter.Companion.toHex(cardAttirbuteResponse)));
+            getActivity().runOnUiThread(() -> Timber.tag("CARD_ATTRIBUTE : ").d(Converter.Companion.toHex(cardAttirbuteResponse)));
 
-            getActivity().runOnUiThread(() -> Log.d("UUID : ", Converter.Companion.toHex(tag.getId())));
+            getActivity().runOnUiThread(() -> Timber.tag("UUID : ").d(Converter.Companion.toHex(tag.getId())));
 
             byte[] cardInfoResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
                     "00B300003F"));
             getActivity().runOnUiThread(() -> {
-                Log.d("CARD_INFO : ", Converter.Companion.toHex(cardInfoResponse));
+                Timber.tag("CARD_INFO : ").d(Converter.Companion.toHex(cardInfoResponse));
                 cardInfo = Converter.Companion.toHex(cardInfoResponse);
                 et_payment_remark.setText(cardInfo.substring(0, 16));
             });
@@ -521,10 +516,10 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
                     "00B500000A"));
             getActivity().runOnUiThread(() -> {
 
-                Log.d("LAST_BALANCE : ", Converter.Companion.toHex(lastBalanceResponse));
+                Timber.tag("LAST_BALANCE : ").d(Converter.Companion.toHex(lastBalanceResponse));
                 cardBalance = Converter.Companion.toHex(lastBalanceResponse);
 //                    cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
-                Log.d("SALDO : ", String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8))));
+                Timber.tag("SALDO : ").d(String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8))));
             });
         } catch (IOException e) {
             e.printStackTrace();

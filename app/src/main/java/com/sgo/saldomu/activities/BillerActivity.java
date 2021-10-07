@@ -88,11 +88,11 @@ public class BillerActivity extends BaseActivity {
         if (intent.hasExtra(DefineValue.BILLER_ID_NUMBER)) {
             IdNumber = intent.getStringExtra(DefineValue.BILLER_ID_NUMBER);
         }
-        Timber.d("isi biller activity " + intent.getExtras().toString());
+        Timber.d("isi biller activity %s", intent.getExtras().toString());
         initializeToolbar();
         getBillerData();
 
-        Log.wtf("onCreate BillerActivity", "onCreate BillerActivity");
+        Timber.tag("onCreate BillerActivity").wtf("onCreate BillerActivity");
     }
 
     private void getBillerData() {
@@ -218,14 +218,14 @@ public class BillerActivity extends BaseActivity {
                 } else {
                     mLBM = new ListBillerMerchant();
                     tag = BillerInput.TAG;
-                    Log.wtf("ListBillerMerchant ", "ListBillerMerchant");
+                    Timber.tag("ListBillerMerchant ").wtf("ListBillerMerchant");
                 }
             }
         }
 
         if (IdNumber != null) {
             mArgs.putString(DefineValue.BILLER_ID_NUMBER, IdNumber);
-            Log.wtf("IdNumber ", "IdNumber");
+            Timber.tag("IdNumber ").wtf(IdNumber);
         }
 
         setToolbarTitle(getString(R.string.biller_ab_title) + " - " + _biller_merchant_name);
@@ -236,7 +236,7 @@ public class BillerActivity extends BaseActivity {
         fragmentTransaction.replace(R.id.biller_content, mLBM, tag);
         fragmentTransaction.commitAllowingStateLoss();
         setResult(MainPage.RESULT_NORMAL);
-        Log.wtf("initializeBiller ", "initializeBiller");
+        Timber.tag("initializeBiller ").wtf("initializeBiller");
     }
 
     @Override
@@ -247,11 +247,6 @@ public class BillerActivity extends BaseActivity {
     public void setToolbarTitle(String _title) {
         setActionBarTitle(_title);
     }
-
-//    public void updateDenom(String comm_id, String comm_name) {
-//        if (mWorkFragment != null)
-//            mWorkFragment.getDenomRetail(comm_id, comm_name);
-//    }
 
     public void switchContent(Fragment mFragment, String fragName, String next_frag_title, Boolean isBackstack, String tag) {
 

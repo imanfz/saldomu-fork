@@ -42,7 +42,6 @@ import timber.log.Timber;
 public class UpdateLocationService extends JobService implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    private Activity mActivity;
 
     static public final String TAG = "UpdateLocationService";
     private Location mLastLocation;
@@ -90,7 +89,7 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
             if (mLastLocation == null) {
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
             } else {
-                Timber.d("Location Service Location Found" + mLastLocation.toString());
+                Timber.d("Location Service Location Found%s", mLastLocation.toString());
 
                 latitude = mLastLocation.getLatitude();
                 longitude = mLastLocation.getLongitude();
@@ -120,7 +119,7 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.i("LOG_CONNECT_FAILED", "Connection failed: ConnectionResult.getErrorCode() = "
+        Timber.tag("LOG_CONNECT_FAILED").i("Connection failed: ConnectionResult.getErrorCode() = "
                 + connectionResult.getErrorCode());
     }
 
@@ -129,8 +128,8 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
         // Assign the new location
         mLastLocation = location;
 
-        Log.d("Location LAST LONGITUDE", String.valueOf(mLastLocation.getLongitude()));
-        Log.d("Location LAST LATITUDE", String.valueOf(mLastLocation.getLatitude()));
+        Timber.tag("Location LAST LONGITUDE").d(String.valueOf(mLastLocation.getLongitude()));
+        Timber.tag("Location LAST LATITUDE").d(String.valueOf(mLastLocation.getLatitude()));
 
         longitude = mLastLocation.getLongitude();
         latitude = mLastLocation.getLatitude();
@@ -138,7 +137,7 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
         sp.edit().putDouble(DefineValue.LONGITUDE_UPDATED, longitude).apply();
         sp.edit().putDouble(DefineValue.LATITUDE_UPDATED, latitude).apply();
 
-        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+        boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
         if (isAgent)
             updateLocation();
@@ -200,7 +199,6 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
             e.printStackTrace();
         }
 
-        String extraSignature = String.valueOf(latitude) + String.valueOf(longitude);
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_LOCATION,
                 "");
 
@@ -211,22 +209,13 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
         params.put(WebParams.LATITUDE, latitude);
         params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
         params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, ""));
-        Timber.d("params location update: " + params.toString());
+        Timber.d("params location update: %s", params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_LOCATION, params,
                 new ObjListeners() {
                     @Override
                     public void onResponses(JSONObject response) {
-                        try {
-                            String code = response.getString(WebParams.ERROR_CODE);
-                            if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = response.getString(WebParams.ERROR_MESSAGE);
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginMain(getmActivity(), message);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+
                     }
 
                     @Override
@@ -241,9 +230,4 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
                 });
 
     }
-
-    private Activity getmActivity() {
-        return mActivity;
-    }
-
 }

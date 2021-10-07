@@ -22,19 +22,11 @@ import com.sgo.saldomu.models.retrofit.ReportDataModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReportListEspayAdapter extends ArrayAdapter<ReportDataModel>{
+public class ReportListEspayAdapter extends ArrayAdapter<ReportDataModel> {
 
     private Context context;
     private int layoutResourceId;
-    private ArrayList<ReportListEspayModel> data = null;
     List<ReportDataModel> reportListModel;
-
-//    public ReportListEspayAdapter(Context context, int resource, ArrayList<ReportListEspayModel> objects) {
-//        super(context, resource, objects);
-//        this.layoutResourceId = resource;
-//        this.context = context;
-//        this.data = objects;
-//    }
 
     public ReportListEspayAdapter(Context context, int resource, List<ReportDataModel> reportListModel) {
         super(context, resource, reportListModel);
@@ -49,9 +41,8 @@ public class ReportListEspayAdapter extends ArrayAdapter<ReportDataModel>{
         View row = convertView;
         ListHolder holder;
 
-        if(row == null)
-        {
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+        if (row == null) {
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             row = inflater.inflate(layoutResourceId, parent, false);
 
             holder = new ListHolder();
@@ -66,10 +57,8 @@ public class ReportListEspayAdapter extends ArrayAdapter<ReportDataModel>{
             holder.tv_product_name = row.findViewById(R.id.text_product_name);
 
             row.setTag(holder);
-        }
-        else
-        {
-            holder = (ListHolder)row.getTag();
+        } else {
+            holder = (ListHolder) row.getTag();
         }
 
 //        ReportListEspayModel itemnya = data.get(position);
@@ -83,33 +72,28 @@ public class ReportListEspayAdapter extends ArrayAdapter<ReportDataModel>{
         Double total = Double.parseDouble(itemnya.getAmount()) + Double.parseDouble(itemnya.getAdmin_fee()) + Double.parseDouble(itemnya.getAdditional_fee());
 
         holder.tv_amount.setText(CurrencyFormat.format(total));
-        if(!itemnya.getDescription().equals(""))
-        {
+        if (!itemnya.getDescription().equals("")) {
             holder.tv_desc.setVisibility(View.VISIBLE);
             holder.tv_desc.setText(itemnya.getTx_description());
-        }
-        else if (itemnya.getBuss_scheme_code().equalsIgnoreCase(DefineValue.QRS)){
+        } else if (itemnya.getBuss_scheme_code().equalsIgnoreCase(DefineValue.QRS)) {
             holder.tv_desc.setVisibility(View.VISIBLE);
             holder.tv_desc.setText(itemnya.getMerchant_name());
-        }else
+        } else
             holder.tv_desc.setVisibility(View.GONE);
 //        if(!itemnya.getRemark().equals("")) holder.tv_remark.setText(itemnya.getRemark());
 //        else holder.tv_remark.setVisibility(View.GONE);
         holder.tv_tx_status.setText(itemnya.getTx_status());
         holder.tv_product_name.setText(itemnya.getProduct_name());
-        if(itemnya.getProduct_name().equalsIgnoreCase("UNIK"))
-        {
+        if (itemnya.getProduct_name().equalsIgnoreCase("UNIK")) {
             holder.tv_product_name.setText(context.getString(R.string.appname));
-        }
-        else {
+        } else {
             holder.tv_product_name.setText(itemnya.getProduct_name());
         }
         return row;
     }
 
-    class ListHolder
-    {
-        TextView tv_date,tv_buss_scheme_name,tv_comm_name,tv_ccy,tv_amount,tv_desc,tv_remark, tv_tx_status, tv_product_name;
+    class ListHolder {
+        TextView tv_date, tv_buss_scheme_name, tv_comm_name, tv_ccy, tv_amount, tv_desc, tv_tx_status, tv_product_name;
     }
 
 }

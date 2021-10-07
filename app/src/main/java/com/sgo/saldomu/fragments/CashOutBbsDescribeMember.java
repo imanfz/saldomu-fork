@@ -143,39 +143,31 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
 //        layoutCode.setVisibility(View.GONE);
 
         handlerWS = new Handler();
-        runnableWS = new Runnable() {
-            @Override
-            public void run() {
-                sentListMemberATC();
-            }
-        };
+        runnableWS = () -> sentListMemberATC();
         handlerWS.post(runnableWS);
 
-        btnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (InetHandler.isNetworkAvailable(getActivity())) {
-                    if (getProduct_h2h().equalsIgnoreCase(DefineValue.STRING_YES)) {
-                        if (isPIN) {
-                            Intent i = new Intent(getActivity(), InsertPIN.class);
-                            if (pin_attempt != -1 && pin_attempt < 2)
-                                i.putExtra(DefineValue.ATTEMPT, pin_attempt);
-                            startActivityForResult(i, MainPage.REQUEST_FINISH);
-                        } else if (isOTP) {
-                            if (inputValidation()) {
-                                OTPMemberATC(tokenValue.getText().toString(), txId);
-                            }
-                        } else {
-                            Toast.makeText(getActivity(), "Authentication type kosong", Toast.LENGTH_LONG).show();
+        btnOk.setOnClickListener(v -> {
+            if (InetHandler.isNetworkAvailable(getActivity())) {
+                if (getProduct_h2h().equalsIgnoreCase(DefineValue.STRING_YES)) {
+                    if (isPIN) {
+                        Intent i = new Intent(getActivity(), InsertPIN.class);
+                        if (pin_attempt != -1 && pin_attempt < 2)
+                            i.putExtra(DefineValue.ATTEMPT, pin_attempt);
+                        startActivityForResult(i, MainPage.REQUEST_FINISH);
+                    } else if (isOTP) {
+                        if (inputValidation()) {
+                            OTPMemberATC(tokenValue.getText().toString(), txId);
                         }
-                    } else if (getProduct_h2h().equalsIgnoreCase(DefineValue.STRING_NO)) {
-                        changeToSGOPlus(txId, product_code, product_name, bank_code, amount, fee, total, bank_name);
+                    } else {
+                        Toast.makeText(getActivity(), "Authentication type kosong", Toast.LENGTH_LONG).show();
                     }
+                } else if (getProduct_h2h().equalsIgnoreCase(DefineValue.STRING_NO)) {
+                    changeToSGOPlus(txId, product_code, product_name, bank_code, amount, fee, total, bank_name);
+                }
 //                    else
 //                        Toast.makeText(getActivity(), "on click producth2h:" + String.valueOf(tempResponse), Toast.LENGTH_SHORT).show();
-                } else {
-                    DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
-                }
+            } else {
+                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
             }
         });
         btnCancel.setOnClickListener(btnCancelListener);
@@ -207,29 +199,16 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
         startActivity(intent);
     }
 
-    Button.OnClickListener btnCancelListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (InetHandler.isNetworkAvailable(getActivity())) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(getString(R.string.cashoutmember_cancel_message))
-                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                sentRejectConfirmCashout();
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            } else
-                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
-        }
+    Button.OnClickListener btnCancelListener = v -> {
+        if (InetHandler.isNetworkAvailable(getActivity())) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(getString(R.string.cashoutmember_cancel_message))
+                    .setPositiveButton(getString(R.string.ok), (dialog, which) -> sentRejectConfirmCashout())
+                    .setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.dismiss());
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else
+            DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
     };
 
     Button.OnClickListener resendListener = new Button.OnClickListener() {
@@ -245,12 +224,7 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
     };
 
     public void changeTextBtnSub() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + max_token_resend + ")");
-            }
-        });
+        getActivity().runOnUiThread(() -> btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + max_token_resend + ")"));
     }
 
     @Override
@@ -272,7 +246,7 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
             params.put(WebParams.CUSTOMER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params sent list member atc:" + params.toString());
+            Timber.d("isi params sent list member atc:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_BBS_LIST_MEMBER_A2C, params,
                     new ObjListeners() {
@@ -319,28 +293,23 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
                                     comm_code = response.optString(WebParams.COMM_CODE, "");
                                     setPayment(getProduct_h2h());
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), error_message);
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), error_message);
                                 } else if (code.equals(ErrorDefinition.NO_TRANSACTION)) {
                                     loading.setVisibility(View.GONE);
                                     tvAlert.setText(getString(R.string.cashoutmember_alert_no_tx));
                                     handlerWS.postDelayed(runnableWS, 60000);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
                                     Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                                     handlerWS.postDelayed(runnableWS, 60000);
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } catch (ParseException e) {
+                            } catch (JSONException | ParseException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -362,7 +331,7 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -420,7 +389,7 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.SENDER_ID, "GOMOBILE");
             params.put(WebParams.RECEIVER_ID, "GOWORLD");
-            Timber.d("isi params sent otp member ATC:" + params.toString());
+            Timber.d("isi params sent otp member ATC:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
@@ -440,8 +409,7 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
 //                                additonalFee = model.getAdditional_fee();
                                 getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""), txId, userPhoneID);
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(ErrorDefinition.ERROR_CODE_WRONG_TOKEN)) {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                             } else if (code.equals(ErrorDefinition.WRONG_PIN_CASHOUT)) {
@@ -452,14 +420,12 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
                                     i.putExtra(DefineValue.ATTEMPT, pin_attempt);
                                 startActivityForResult(i, MainPage.REQUEST_FINISH);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 getActivity().finish();
@@ -478,7 +444,7 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -494,7 +460,7 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.TX_ID, txId);
 
-            Timber.d("isi params sent reject confirm cashout:" + params.toString());
+            Timber.d("isi params sent reject confirm cashout:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REJECT_CONFIRM_CASHOUT, params,
                     new ResponseListener() {
@@ -503,24 +469,20 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE) || code.equals(WebParams.NO_DATA_CODE)) {
                                 getActivity().finish();
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                code = model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -536,7 +498,7 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -550,7 +512,7 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params sent resend token:" + params.toString());
+            Timber.d("isi params sent resend token:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_RESEND_TOKEN_LKD, params,
                     new ResponseListener() {
@@ -559,31 +521,25 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 max_token_resend = max_token_resend - 1;
                                 changeTextBtnSub();
                                 Toast.makeText(getActivity(), getString(R.string.reg2_notif_text_resend_token), Toast.LENGTH_SHORT).show();
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                code = model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
                             if (max_token_resend == 0) {
                                 btnResend.setEnabled(false);
-
-
                                 Toast.makeText(getActivity(), getString(R.string.reg2_notif_max_resend_token_empty), Toast.LENGTH_LONG).show();
                             }
                         }
@@ -600,7 +556,7 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -617,7 +573,7 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.USER_ID, userId);
 
-            Timber.d("isi params sent get Trx Status bbs:" + params.toString());
+            Timber.d("isi params sent get Trx Status bbs:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_TRX_STATUS_BBS, params,
                     new ResponseListener() {
@@ -626,6 +582,7 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
                             try {
                                 GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
                                 String code = model.getError_code();
+                                String message = model.getError_message();
                                 if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
 
                                     String txstatus = model.getTx_status();
@@ -644,20 +601,15 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
                                             response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.MEMBER_PHONE, ""),
                                             response.optString(WebParams.ADDITIONAL_FEE, "0"), model);
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    String message = model.getError_message();
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + object.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                    Timber.d("isi response maintenance:%s", object.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
-                                    String msg = model.getError_message();
 //                            if(code.equals("0003")){
 //                                showReportBillerDialog(userName, DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),
 //                                        txId, userId,response.optString(WebParams.TX_BANK_NAME,""),response.optString(WebParams.PRODUCT_NAME,""),
@@ -670,7 +622,7 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
 //                                        response.optString(WebParams.MEMBER_SHOP_NAME,""), response.optString(WebParams.OTP_MEMBER,""));
 //                            }
 //                            else
-                                    showDialog(msg);
+                                    showDialog(message);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -689,7 +641,7 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -713,7 +665,7 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount));
         args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(additional_fee));
 
-        Boolean txStat = false;
+        boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
@@ -766,12 +718,9 @@ public class CashOutBbsDescribeMember extends BaseFragment implements ReportBill
         Title.setText(getString(R.string.error));
         Message.setText(msg);
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                //SgoPlusWeb.this.finish();
-            }
+        btnDialogOTP.setOnClickListener(view -> {
+            dialog.dismiss();
+            //SgoPlusWeb.this.finish();
         });
 
         dialog.show();

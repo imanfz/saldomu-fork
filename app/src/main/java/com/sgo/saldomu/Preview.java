@@ -8,6 +8,8 @@ import android.view.SurfaceView;
 
 import java.io.IOException;
 
+import timber.log.Timber;
+
 public class Preview extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "Preview";
     private SurfaceHolder mHolder;
@@ -27,7 +29,7 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
             mCamera.setPreviewDisplay(holder);
             mCamera.startPreview();
         } catch (IOException e) {
-            Log.d(TAG, "Error setting camera preview: " + e.getMessage());
+            Timber.tag(TAG).d("Error setting camera preview: %s", e.getMessage());
         }
     }
 
@@ -45,7 +47,7 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
             mCamera.setPreviewDisplay(holder);
             mCamera.startPreview();
         } catch (IOException e) {
-            Log.d(TAG, "Error starting camera preview: " + e.getMessage());
+            Timber.tag(TAG).d("Error starting camera preview: %s", e.getMessage());
         }
     }
 

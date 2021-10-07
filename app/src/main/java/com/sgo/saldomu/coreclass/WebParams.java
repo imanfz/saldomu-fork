@@ -751,4 +751,6 @@ public class WebParams {
     public static String STEP_APPROVE = "step_approve";
     public static String MEMBER_CODE_KEYIN = "member_code_keyin";
     public static String SHOP_CLOSED = "shop_closed";
+    public static String DEVICE_KEY = "device_key";
+    public static String REFERENCE_NUMBER = "reference_number";
 }

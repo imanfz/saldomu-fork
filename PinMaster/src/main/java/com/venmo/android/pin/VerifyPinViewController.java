@@ -23,32 +23,19 @@ class VerifyPinViewController extends BaseViewController {
 
     @Override
     OnCommitListener provideListener() {
-        return new OnCommitListener() {
-            @Override
-            public void onPinCommit(PinputView view, final String submission) {
-                validate(submission);
-            }
-        };
+        return (view, submission) -> validate(submission);
     }
 
     private void validate(final String submission) {
         final Validator validator = getConfig().getValidator();
         if (validator instanceof AsyncValidator) {
             getOutAndInAnim(mPinputView, mProgressBar).start();
-            runAsync(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        final boolean valid = validator.isValid(submission);
-                        postToMain(new Runnable() {
-                            @Override
-                            public void run() {
-                                handleAsyncValidation(valid);
-                            }
-                        });
-                    } catch (Exception e) {
-                        generalErrorAsync(mPinFragment.getString(R.string.async_save_error));
-                    }
+            runAsync(() -> {
+                try {
+                    final boolean valid = validator.isValid(submission);
+                    postToMain(() -> handleAsyncValidation(valid));
+                } catch (Exception e) {
+                    generalErrorAsync(mPinFragment.getString(R.string.async_save_error));
                 }
             });
         } else {

@@ -81,7 +81,7 @@
                     android:layout_toRightOf="@id/tv_saldo"
                     android:src="@drawable/ic_refresh_balance" />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switch_set_agent_online"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

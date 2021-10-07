@@ -51,25 +51,19 @@ public class BbsMerchantCommunityList extends BaseActivity {
 
         ListView lvCommunityList = (ListView) findViewById(R.id.lvCommunityList);
 
-        lvCommunityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        lvCommunityList.setOnItemClickListener((parent, view, position, id) -> {
 
-            }
         });
 
         merchantCommunityListModel = new ArrayList<>();
         bbsMerchantCommunityListAdapter = new BbsMerchantCommunityListAdapter(BbsMerchantCommunityList.this, merchantCommunityListModel);
         lvCommunityList.setAdapter(bbsMerchantCommunityListAdapter);
 
-        lvCommunityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(BbsMerchantCommunityList.this, BbsMemberLocationActivity.class);
-                intent.putExtra(DefineValue.MEMBER_ID, merchantCommunityListModel.get(position).getMemberId());
-                intent.putExtra(DefineValue.SHOP_ID, merchantCommunityListModel.get(position).getShopId());
-                startActivity(intent);
-            }
+        lvCommunityList.setOnItemClickListener((parent, view, position, id) -> {
+            Intent intent = new Intent(BbsMerchantCommunityList.this, BbsMemberLocationActivity.class);
+            intent.putExtra(DefineValue.MEMBER_ID, merchantCommunityListModel.get(position).getMemberId());
+            intent.putExtra(DefineValue.SHOP_ID, merchantCommunityListModel.get(position).getShopId());
+            startActivity(intent);
         });
 
         String extraSignature = DefineValue.STRING_YES;

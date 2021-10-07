@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import com.google.gson.JsonObject
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.CustomSecurePref
@@ -288,7 +289,10 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                 Toast.makeText(this@DetailMemberToVerifyActivity, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show()
 
                 if (flag == KTP_TYPE) {
-                    camera_ktp_paspor_via_agent.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
+                    camera_ktp_paspor_via_agent.setImageDrawable(
+                        ResourcesCompat.getDrawable(
+                            resources, R.drawable.camera_retry, null
+                        ));
                 }
             }
         }

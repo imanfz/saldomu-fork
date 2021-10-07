@@ -277,11 +277,9 @@ public class UnderlinePageIndicator extends View implements PageIndicator {
         mViewPager = viewPager;
         mViewPager.setOnPageChangeListener(this);
         invalidate();
-        post(new Runnable() {
-            @Override public void run() {
-                if (mFades) {
-                    post(mFadeRunnable);
-                }
+        post(() -> {
+            if (mFades) {
+                post(mFadeRunnable);
             }
         });
     }

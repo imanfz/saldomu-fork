@@ -130,31 +130,23 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
             simpleHolder.icon.setImageResource(mNotif.getImage());
         }
 
-        simpleHolder.btnReject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                simpleHolder.btnReject.setEnabled(false);
-                simpleHolder.btnReject.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        simpleHolder.btnReject.setEnabled(true);
-                    }
-                }, 3000);
+        simpleHolder.btnReject.setOnClickListener(v -> {
+            simpleHolder.btnReject.setEnabled(false);
+            simpleHolder.btnReject.postDelayed(() -> simpleHolder.btnReject.setEnabled(true), 3000);
 
-                String req_id = "", trx_id = "", from = "", amount = "", ccy_id = "";
+            String req_id = "", trx_id = "", from = "", amount = "", ccy_id = "";
 
-                try {
-                    JSONObject notif_detail = mNotif.getNotif_detail();
-                    req_id = notif_detail.getString(WebParams.REQUEST_ID);
-                    trx_id = notif_detail.getString(WebParams.TRX_ID);
-                    from = notif_detail.getString(WebParams.FROM);
-                    amount = notif_detail.getString(WebParams.AMOUNT);
-                    ccy_id = notif_detail.getString(WebParams.CCY_ID);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                showDialog(req_id, trx_id, from, amount, ccy_id);
+            try {
+                JSONObject notif_detail = mNotif.getNotif_detail();
+                req_id = notif_detail.getString(WebParams.REQUEST_ID);
+                trx_id = notif_detail.getString(WebParams.TRX_ID);
+                from = notif_detail.getString(WebParams.FROM);
+                amount = notif_detail.getString(WebParams.AMOUNT);
+                ccy_id = notif_detail.getString(WebParams.CCY_ID);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+            showDialog(req_id, trx_id, from, amount, ccy_id);
         });
 
         if (mNotif.getNotif_type() == NotificationActivity.TYPE_TRANSFER && mNotif.getNotif_detail() != null) {

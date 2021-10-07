@@ -38,7 +38,7 @@ public class LocaleManager {
 
         boolean isBahasa = CustomSecurePref.getInstance().getBoolean(DefineValue.IS_BAHASA);
 
-        Timber.d("Locale Manager IS BAHASA ===== "+isBahasa);
+        Timber.d("Locale Manager IS BAHASA ===== %s", isBahasa);
 
         language = DefineValue.LANGUAGE_CODE_IND;
 
@@ -60,7 +60,7 @@ public class LocaleManager {
 //        }else{
             isBahasa = true;
 //        }
-        Timber.d("SET LANGUAGE PREFERENCE : "+ localeKey);
+        Timber.d("SET LANGUAGE PREFERENCE : %s", localeKey);
 
         CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, isBahasa);
     }
@@ -73,7 +73,7 @@ public class LocaleManager {
      */
     private static Context updateResources(Context context, String language) {
 
-        Timber.d("UPDATE RESOURCE LANGUAGE : "+ language);
+        Timber.d("UPDATE RESOURCE LANGUAGE : %s", language);
         Locale locale = new Locale(language);
         Locale.setDefault(locale);
         Resources res = context.getResources();

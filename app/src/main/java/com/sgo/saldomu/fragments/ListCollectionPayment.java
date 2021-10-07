@@ -86,44 +86,41 @@ public class ListCollectionPayment extends ListFragment {
 
         ListView listView1 = (ListView) v.findViewById(android.R.id.list);
         listView1.setAdapter(adapter);
-        listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Fragment mFrag;
+        listView1.setOnItemClickListener((parent, view, position, id) -> {
+            Fragment mFrag;
 
-                Bundle mbun = getArguments();
-                String title;
+            Bundle mbun = getArguments();
+            String title;
 
-                final GsonBuilder gsonBuilder = new GsonBuilder();
-                gsonBuilder.setPrettyPrinting();
-                final Gson gson = gsonBuilder.create();
+            final GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.setPrettyPrinting();
+            final Gson gson = gsonBuilder.create();
 
-                if (_listType.get(position).equalsIgnoreCase("Internet Banking")) {
-                    String listBankIBJson = gson.toJson(listBankIB);
-                    Timber.d("isi json build:" + listBankIBJson);
-                    mbun.putString(DefineValue.BANKLIST_DATA, listBankIBJson);
-                    mbun.putString(DefineValue.TRANSACTION_TYPE, DefineValue.INTERNET_BANKING);
+            if (_listType.get(position).equalsIgnoreCase("Internet Banking")) {
+                String listBankIBJson = gson.toJson(listBankIB);
+                Timber.d("isi json build:%s", listBankIBJson);
+                mbun.putString(DefineValue.BANKLIST_DATA, listBankIBJson);
+                mbun.putString(DefineValue.TRANSACTION_TYPE, DefineValue.INTERNET_BANKING);
 
-                    title = getToolbarTitle() + "-" + getString(R.string.internetBanking_ab_title);
-                } else if (_listType.get(position).equalsIgnoreCase("SMS Banking")) {
-                    String listBankSMSJson = gson.toJson(listBankSMS);
-                    mbun.putString(DefineValue.BANKLIST_DATA, listBankSMSJson);
-                    mbun.putString(DefineValue.TRANSACTION_TYPE, DefineValue.SMS_BANKING);
+                title = getToolbarTitle() + "-" + getString(R.string.internetBanking_ab_title);
+            } else if (_listType.get(position).equalsIgnoreCase("SMS Banking")) {
+                String listBankSMSJson = gson.toJson(listBankSMS);
+                mbun.putString(DefineValue.BANKLIST_DATA, listBankSMSJson);
+                mbun.putString(DefineValue.TRANSACTION_TYPE, DefineValue.SMS_BANKING);
 
-                    title = getToolbarTitle() + "-" + getString(R.string.smsBanking_ab_title);
-                } else {
-                    String listBankScashJson = gson.toJson(listBankScash);
-                    mbun.putString(DefineValue.BANKLIST_DATA, listBankScashJson);
-                    mbun.putString(DefineValue.TRANSACTION_TYPE, DefineValue.EMONEY);
+                title = getToolbarTitle() + "-" + getString(R.string.smsBanking_ab_title);
+            } else {
+                String listBankScashJson = gson.toJson(listBankScash);
+                mbun.putString(DefineValue.BANKLIST_DATA, listBankScashJson);
+                mbun.putString(DefineValue.TRANSACTION_TYPE, DefineValue.EMONEY);
 
-                    title = getToolbarTitle() + "-" + getString(R.string.scash);
-                }
-
-                mFrag = new CollectionInput();
-                mFrag.setArguments(mbun);
-                switchFragment(mFrag, title, true);
-
+                title = getToolbarTitle() + "-" + getString(R.string.scash);
             }
+
+            mFrag = new CollectionInput();
+            mFrag.setArguments(mbun);
+            switchFragment(mFrag, title, true);
+
         });
     }
 
@@ -240,7 +237,7 @@ public class ListCollectionPayment extends ListFragment {
             for (int j = 0; j < _mdata.length(); j++) {
                 boolean flagSame = false;
                 if (_listType.size() > 0) {
-                    Timber.d("list type length flagSame:" + Integer.toString(_listType.size()));
+                    Timber.d("list type length flagSame:%s", Integer.toString(_listType.size()));
                     for (String a_listType : _listType) {
                         if (a_listType.equalsIgnoreCase(_mdata.getJSONObject(j).getString(WebParams.PRODUCT_TYPE))) {
                             flagSame = true;
@@ -290,7 +287,7 @@ public class ListCollectionPayment extends ListFragment {
             else _listType.set(i, "S-Cash");
 
         }
-        Timber.d("list type length:" + Integer.toString(_listType.size()));
+        Timber.d("list type length:%s", Integer.toString(_listType.size()));
         adapter.notifyDataSetChanged();
     }
 
@@ -304,7 +301,7 @@ public class ListCollectionPayment extends ListFragment {
             params.put(WebParams.TYPE, DefineValue.BANKLIST_TYPE_ALL);
             params.put(WebParams.USER_ID, userID);
 
-            Timber.d("isi params bank collection:" + params.toString());
+            Timber.d("isi params bank collection:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BANK_ACCOUNT_COLLECTION, params,
                     new ResponseListener() {
@@ -314,6 +311,7 @@ public class ListCollectionPayment extends ListFragment {
                             BBSRetrieveBankModel model = gson.fromJson(object, BBSRetrieveBankModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 JSONArray mData = null;
                                 try {
@@ -324,12 +322,10 @@ public class ListCollectionPayment extends ListFragment {
                                     e.printStackTrace();
                                 }
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else {
                                 code = model.getError_code() + ":" + model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), code + ":" + message, Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -346,7 +342,7 @@ public class ListCollectionPayment extends ListFragment {
                     });
 
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 

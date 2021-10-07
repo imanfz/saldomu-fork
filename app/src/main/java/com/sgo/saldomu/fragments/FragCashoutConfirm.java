@@ -144,12 +144,7 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
                 btnProcess.setEnabled(false);
-                btnProcess.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        btnProcess.setEnabled(true);
-                    }
-                }, 2000);
+                btnProcess.postDelayed(() -> btnProcess.setEnabled(true), 2000);
 
                 if (isOTP) {
                     if (inputValidation()) {
@@ -209,34 +204,29 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
                                 Gson gson = new Gson();
                                 jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("isi response confirm cashout:"+response.toString());
+                                    Timber.d("isi response confirm cashout:%s", response.toString());
                                     showReportBillerDialog(name, response.optString(WebParams.RC_DTIME), userPhoneID, txId, bankName, accNo,
                                             accName, ccyId + " " + CurrencyFormat.format(nominal),
                                             ccyId + " " + CurrencyFormat.format(fee), ccyId + " " + CurrencyFormat.format(total),
                                             response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response);
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 }
                                 else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
-                                    code = response.getString(WebParams.ERROR_MESSAGE);
-                                    showDialogError(code);
+                                    showDialogError(message);
                                 }else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 }else {
-                                    Timber.d("isi error confirm cashout:"+response.toString());
-                                    String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                                    Timber.d("isi error confirm cashout:%s", response.toString());
                                     if(isPIN && code.equals(ErrorDefinition.WRONG_PIN_CASHOUT)){
                                         Intent i = new Intent(getActivity(), InsertPIN.class);
                                         pin_attempt = pin_attempt - 1;
@@ -249,7 +239,7 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
                                         mListener.TransResult(false);
                                     }
 
-                                    Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -271,7 +261,7 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
                         }
                     });
         }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 

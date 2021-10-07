@@ -14,7 +14,7 @@
         android:paddingRight="30dp"
         >
 
-        <Switch
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/swMobilityAgent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

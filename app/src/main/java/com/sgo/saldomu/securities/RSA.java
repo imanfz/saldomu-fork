@@ -96,10 +96,10 @@ public class RSA {
     }
 
     public static String encrypt(String strKey, String data) {
-        Timber.d("key: " + strKey);
+        Timber.d("key: %s", strKey);
         strKey = Md5.hashMd5(strKey);
-        Timber.d("md5 key: " + strKey);
-        Timber.d("data: " + data);
+        Timber.d("md5 key: %s", strKey);
+        Timber.d("data: %s", data);
         String strIv = BuildConfig.AES_ENCRYPT_IV;
         String encryptedValue = "";
         try {
@@ -113,7 +113,7 @@ public class RSA {
 
             encryptedValue = Base64.encodeToString(encryptedCiperBytes, Base64.DEFAULT);
             encryptedValue = encryptedValue.trim();
-            Timber.d("encrypt data: " + encryptedValue);
+            Timber.d("encrypt data: %s", encryptedValue);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -165,7 +165,7 @@ public class RSA {
 
             decryptedValue = new String(original);
 
-            Timber.d("decrypt data: " + decryptedValue);
+            Timber.d("decrypt data: %s", decryptedValue);
         } catch (Exception e) {
             e.printStackTrace();
         }

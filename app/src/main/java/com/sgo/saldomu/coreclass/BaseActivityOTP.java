@@ -67,8 +67,7 @@ public abstract class BaseActivityOTP extends BaseActivity {
             else unregisterReceiver(myReceiver);
         }
         else {
-            Timber.d(currentFragment.toString()
-                    + " must implement OnFragmentInteractionListener");
+            Timber.d("%s must implement OnFragmentInteractionListener", currentFragment.toString());
             try {
                 unregisterReceiver(myReceiver);
             } catch (IllegalArgumentException e) {

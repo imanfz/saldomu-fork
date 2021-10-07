@@ -62,12 +62,7 @@ public class ListInvoiceAdapter extends RecyclerView.Adapter<ListInvoiceAdapter.
         holder.tv_created_at.setText(docListArrayList.get(position).getCreated_at());
         holder.tv_partner.setText(docListArrayList.get(position).getPartner());
 
-        holder.layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onClick(docListArrayList.get(position));
-            }
-        });
+        holder.layout.setOnClickListener(view -> listener.onClick(docListArrayList.get(position)));
     }
 
     @Override

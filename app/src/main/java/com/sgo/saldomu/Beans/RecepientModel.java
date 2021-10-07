@@ -12,14 +12,6 @@ public class RecepientModel {
     private String status;
     private String is_member_temp;
 
-    public RecepientModel(String _tx_id, String _name, String _number, String _status, String _is_member_temp){
-        setTx_id(_tx_id);
-        setName(_name);
-        setNumber(_number);
-        setStatus(_status);
-        setIs_member_temp(_is_member_temp);
-    }
-
     public RecepientModel(String _tx_id, String _name, PayfriendDataTrfModel obj){
         setTx_id(_tx_id);
         setName(_name);

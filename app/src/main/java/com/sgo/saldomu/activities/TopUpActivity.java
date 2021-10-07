@@ -32,7 +32,6 @@ import timber.log.Timber;
 public class TopUpActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks {
 
     FragmentManager fragmentManager;
-    String transaction_type;
     Boolean is_full_activity = false;
     boolean isSMSBanking = false;
     private SMSclass smSclass;
@@ -43,8 +42,6 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
         super.onCreate(savedInstanceState);
 
         Intent i = getIntent();
-        transaction_type = i.getStringExtra(DefineValue.TRANSACTION_TYPE);
-        Boolean isTagihan = i.getBooleanExtra(DefineValue.TAGIHAN,false);
         is_full_activity = i.getBooleanExtra(DefineValue.IS_ACTIVITY_FULL,false);
         initializeToolbar();
 
@@ -52,19 +49,6 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
             if (savedInstanceState != null) {
                 return;
             }
-
-//            if(isTagihan) {
-//                if (transaction_type != null && !transaction_type.isEmpty()) {
-//                    if (transaction_type.equals(DefineValue.SMS_BANKING)) {
-//                        initializeSMSBanking();
-//                    }
-//                }
-//            }
-//            else {
-
-//                if(!is_full_activity && i.getStringExtra(DefineValue.PRODUCT_TYPE).equals(DefineValue.BANKLIST_TYPE_SMS))
-//                    initializeSMSBanking();
-//            }
 
             Fragment mFrag;
             Bundle mArgs = i.getExtras();
@@ -115,13 +99,10 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
     private void initializeSmsClass(){
         smSclass = new SMSclass(this);
 
-        smSclass.isSimExists(new SMSclass.SMS_SIM_STATE() {
-            @Override
-            public void sim_state(Boolean isExist, String msg) {
-                if(!isExist){
-                    Toast.makeText(TopUpActivity.this,msg,Toast.LENGTH_SHORT).show();
-                    TopUpActivity.this.finish();
-                }
+        smSclass.isSimExists((isExist, msg) -> {
+            if(!isExist){
+                Toast.makeText(TopUpActivity.this,msg,Toast.LENGTH_SHORT).show();
+                TopUpActivity.this.finish();
             }
         });
 
@@ -181,8 +162,8 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Timber.d("isi request code:"+ String.valueOf(requestCode));
-        Timber.d("isi result Code:"+ String.valueOf(resultCode));
+        Timber.d("isi request code:%s", String.valueOf(requestCode));
+        Timber.d("isi result Code:%s", String.valueOf(resultCode));
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == MainPage.REQUEST_FINISH) {
             if (resultCode == MainPage.RESULT_BALANCE) {

@@ -1781,6 +1781,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="remaining_balance">Remaining Balance</string>
     <string name="no_reference">Reference Number</string>
     <string name="tip">Tip</string>
+    <string name="transaction_fee">Transaction Fee</string>
     <string name="acquire_name">Name of the acquirer</string>
     <string name="listatm_topup_bni_3">Input Virtual Account no.</string>
     <string name="user_id">User ID</string>
@@ -1788,4 +1789,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="show_verification_code">Please show your verification code to the staff.</string>
     <string name="check">Check</string>
     <string name="invoice_failed">Invoice Failed</string>
+    <string name="invoice_exist">Invoice Exist</string>
 </resources>

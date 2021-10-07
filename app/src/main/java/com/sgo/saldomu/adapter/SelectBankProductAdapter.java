@@ -29,17 +29,12 @@ public class SelectBankProductAdapter extends BaseExpandableListAdapter {
     private Context mContext;
     private List<listBankModel> mListDataHeader;
     private HashMap<String, listBankModel> mListDataChild;
-    boolean is_expanded;
-    private static final int NORMAL_VIEW = 0;
-    private static final int ATM_VIEW = 1;
-    private static final int OTHER_ATM_VIEW = 2;
 
     public SelectBankProductAdapter(Context context, List<listBankModel> listDataHeader,
                                     HashMap<String, listBankModel> listChildData) {
         this.mContext = context;
         this.mListDataHeader = listDataHeader;
         this.mListDataChild = listChildData;
-        this.is_expanded = false;
     }
 
     static class ViewHolder {
@@ -111,14 +106,11 @@ public class SelectBankProductAdapter extends BaseExpandableListAdapter {
         tvTitleATM.setText(childDataWrapper.getBank_name());
         tvPinAccount.setText(childDataWrapper.getNoVA());
 
-        ivCopyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("Copy to Clip Board", tvPinAccount.getText());
-                clipboard.setPrimaryClip(clip);
-                Toast.makeText(mContext, "Coppied to ClipBoard", Toast.LENGTH_SHORT).show();
-            }
+        ivCopyButton.setOnClickListener(v -> {
+            ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Copy to Clip Board", tvPinAccount.getText());
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(mContext, "Coppied to ClipBoard", Toast.LENGTH_SHORT).show();
         });
 
         TextView tv_fee = layout_view_child.findViewById(R.id.fee_deskripsi);

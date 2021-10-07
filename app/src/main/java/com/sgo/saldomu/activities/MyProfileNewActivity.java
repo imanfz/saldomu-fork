@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -240,7 +241,7 @@ public class MyProfileNewActivity extends BaseActivity {
         btn1 = v.findViewById(R.id.button1);
         btn2 = v.findViewById(R.id.button2);
         btn2.setEnabled(false);
-        btn2.setBackground(getResources().getDrawable(R.drawable.rounded_background_button_disabled));
+        btn2.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_background_button_disabled, null));
         lytVerifiedMember = v.findViewById(R.id.lyt_verifying_member);
         cb_termsncond = v.findViewById(R.id.cb_termnsncond);
 
@@ -258,18 +259,15 @@ public class MyProfileNewActivity extends BaseActivity {
 
             builder1.setPositiveButton(
                     getString(R.string.level_dialog_btn_ok),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            finish();
-                            Intent intent = new Intent(MyProfileNewActivity.this, UpgradeAgentActivity.class);
-                            startActivity(intent);
-                        }
+                    (dialog, id) -> {
+                        finish();
+                        Intent intent12 = new Intent(MyProfileNewActivity.this, UpgradeAgentActivity.class);
+                        startActivity(intent12);
                     });
 
             builder1.setNegativeButton(
                     getString(R.string.cancel),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
+                    (dialog, id) -> {
 //                            tv_dob.setEnabled(false);
 //                            if (is_first_time) {
 //                                RESULT = MainPage.RESULT_FIRST_TIME;
@@ -279,8 +277,7 @@ public class MyProfileNewActivity extends BaseActivity {
 //                                Intent intent1 = new Intent(MyProfileNewActivity.this, MainPage.class);
 //                                startActivity(intent1);
 //                            }
-                            dialog.dismiss();
-                        }
+                        dialog.dismiss();
                     });
 
             androidx.appcompat.app.AlertDialog alert11 = builder1.create();
@@ -322,16 +319,13 @@ public class MyProfileNewActivity extends BaseActivity {
             startActivity(intent1);
         }
 
-        cb_termsncond.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    btn2.setEnabled(true);
-                    btn2.setBackground(getResources().getDrawable(R.drawable.rounded_background_blue));
-                } else {
-                    btn2.setEnabled(false);
-                    btn2.setBackground(getResources().getDrawable(R.drawable.rounded_background_button_disabled));
-                }
+        cb_termsncond.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                btn2.setEnabled(true);
+                btn2.setBackground(ResourcesCompat.getDrawable(getResources(),R.drawable.rounded_background_blue,null));
+            } else {
+                btn2.setEnabled(false);
+                btn2.setBackground(ResourcesCompat.getDrawable(getResources(),R.drawable.rounded_background_button_disabled,null));
             }
         });
 
@@ -350,7 +344,7 @@ public class MyProfileNewActivity extends BaseActivity {
 
         Calendar c = Calendar.getInstance();
         dateNow = fromFormat.format(c.getTime());
-        Timber.d("date now profile:" + dateNow);
+        Timber.d("date now profile:%s", dateNow);
 
         dpd = DatePickerDialog.newInstance(
                 dobPickerSetListener,
@@ -415,34 +409,22 @@ public class MyProfileNewActivity extends BaseActivity {
         }
     };
 
-    private TextView.OnClickListener member_basic_click = new TextView.OnClickListener() {
-        @Override
-        public void onClick(View v) {
+    private TextView.OnClickListener member_basic_click = v -> {
+    };
+
+    private TextView.OnClickListener verified_member_click = v -> {
+
+    };
+
+    private Button.OnClickListener nextListener = v -> {
+        if (inputValidation()) {
+            sendDataUpdate();
         }
     };
 
-    private TextView.OnClickListener verified_member_click = new TextView.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-        }
-    };
-
-    private Button.OnClickListener nextListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (inputValidation()) {
-                sendDataUpdate();
-            }
-        }
-    };
-
-    private Button.OnClickListener submitListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (ValidationPhoto() && bankValidation()) {
-                sentExecCust();
-            }
+    private Button.OnClickListener submitListener = v -> {
+        if (ValidationPhoto() && bankValidation()) {
+            sentExecCust();
         }
     };
 
@@ -453,7 +435,7 @@ public class MyProfileNewActivity extends BaseActivity {
             Timber.d("masuk date picker dob");
             try {
                 date_dob = fromFormat.format(toFormat2.parse(dedate));
-                Timber.d("masuk date picker dob masuk tanggal : " + date_dob);
+                Timber.d("masuk date picker dob masuk tanggal : %s", date_dob);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -509,9 +491,7 @@ public class MyProfileNewActivity extends BaseActivity {
             a.setCancelable(true);
             a.setTitle("Choose Profile Picture");
             a.setAdapter(new ArrayAdapter<>(MyProfileNewActivity.this, android.R.layout.simple_list_item_1, items),
-                    new DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface dialog, int which) {
+                    (dialog, which) -> {
 //                            if (which == 0) {
 //                                if (set_result_photo == RESULT_CAMERA_KTP) {
 //                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_KTP);
@@ -521,18 +501,17 @@ public class MyProfileNewActivity extends BaseActivity {
 //                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_TTD);
 //                                }
 //                            } else
-                            if (which == 0) {
-                                if (set_result_photo == RESULT_CAMERA_KTP || set_result_photo == RESULT_CAMERA_TTD) {
+                        if (which == 0) {
+                            if (set_result_photo == RESULT_CAMERA_KTP || set_result_photo == RESULT_CAMERA_TTD) {
 //                                    CameraActivity.openCertificateCamera(MyProfileNewActivity.this, CameraActivity.TYPE_COMPANY_PORTRAIT);
-                                    Intent i = new Intent(MyProfileNewActivity.this, CameraViewActivity.class);
-                                    startActivityForResult(i, set_result_photo);
+                                Intent i = new Intent(MyProfileNewActivity.this, CameraViewActivity.class);
+                                startActivityForResult(i, set_result_photo);
 
-                                } else {
-                                    pickAndCameraUtil.runCamera(set_result_photo);
-                                }
+                            } else {
+                                pickAndCameraUtil.runCamera(set_result_photo);
                             }
-
                         }
+
                     }
             );
             a.create();
@@ -569,7 +548,6 @@ public class MyProfileNewActivity extends BaseActivity {
             btn1.setVisibility(View.VISIBLE);
 
         } else {
-            Timber.d("TEST Log lvl...." + levelClass.isLevel1QAC());
             if (levelClass.isLevel1QAC() && !isRegisteredLevel) {
                 lytVerifiedMember.setVisibility(View.VISIBLE);
             }
@@ -656,8 +634,7 @@ public class MyProfileNewActivity extends BaseActivity {
                                 sp.edit().putString(DefineValue.IS_FIRST, DefineValue.NO).apply();
                                 finish();
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(MyProfileNewActivity.this, message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(MyProfileNewActivity.this, message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
@@ -683,7 +660,7 @@ public class MyProfileNewActivity extends BaseActivity {
                     });
 
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -734,7 +711,7 @@ public class MyProfileNewActivity extends BaseActivity {
                     compare = dob.compareTo(now);
                 }
             }
-            Timber.d("compare date:" + Integer.toString(compare));
+            Timber.d("compare date:%s", Integer.toString(compare));
         }
 
         if (et_nama.getText().toString().length() == 0) {
@@ -753,12 +730,7 @@ public class MyProfileNewActivity extends BaseActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.myprofile_validation_date_empty))
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
+                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
             AlertDialog dialog = builder.create();
             dialog.show();
             return false;
@@ -766,12 +738,7 @@ public class MyProfileNewActivity extends BaseActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.myprofile_validation_date))
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
+                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
             AlertDialog dialog = builder.create();
             dialog.show();
             return false;
@@ -914,25 +881,22 @@ public class MyProfileNewActivity extends BaseActivity {
         params.put(WebParams.COMM_ID, request2);
         params.put(WebParams.TYPE, request3);
         params.put(WebParams.CUST_ID, request4);
-        Timber.d("params upload foto ktp: " + params.toString());
-        Timber.d("params upload foto type: " + flag);
+        Timber.d("params upload foto ktp: %s", params.toString());
+        Timber.d("params upload foto type: %s", flag);
 
 //                RequestBody.create(MediaType.parse("image/*"), photoFile);
         RequestBody requestFile = new ProgressRequestBody(photoFile,
-                new ProgressRequestBody.UploadCallbacks() {
-                    @Override
-                    public void onProgressUpdate(int percentage) {
-                        switch (flag) {
-                            case KTP_TYPE:
-                                pb1.setProgress(percentage);
-                                break;
-                            case SELFIE_TYPE:
-                                pb2.setProgress(percentage);
-                                break;
-                            case TTD_TYPE:
-                                pb3.setProgress(percentage);
-                                break;
-                        }
+                percentage -> {
+                    switch (flag) {
+                        case KTP_TYPE:
+                            pb1.setProgress(percentage);
+                            break;
+                        case SELFIE_TYPE:
+                            pb2.setProgress(percentage);
+                            break;
+                        case TTD_TYPE:
+                            pb3.setProgress(percentage);
+                            break;
                     }
                 });
 
@@ -940,52 +904,43 @@ public class MyProfileNewActivity extends BaseActivity {
                 requestFile);
 
         RetrofitService.getInstance().MultiPartRequest(MyApiClient.LINK_UPLOAD_KTP, params, filePart,
-                new ObjListener() {
-                    @Override
-                    public void onResponses(JsonObject object) {
+                object -> {
 
-                        UploadFotoModel model = gson.fromJson(object, UploadFotoModel.class);
+                    UploadFotoModel model = gson.fromJson(object, UploadFotoModel.class);
 
-                        String error_code = model.getError_code();
-                        String error_message = model.getError_message();
-                        if (error_code.equalsIgnoreCase("0000")) {
+                    String error_code = model.getError_code();
+                    String error_message = model.getError_message();
+                    if (error_code.equalsIgnoreCase("0000")) {
 
-                            switch (flag) {
-                                case KTP_TYPE:
-                                    pb1.setProgress(100);
-                                    BlinkingEffectClass.blink(layoutKTP);
-                                    break;
-                                case SELFIE_TYPE:
-                                    pb2.setProgress(100);
-                                    BlinkingEffectClass.blink(layoutSelfie);
-                                    break;
-                                case TTD_TYPE:
-                                    pb3.setProgress(100);
-                                    BlinkingEffectClass.blink(layoutTTD);
-                                    break;
-                            }
+                        switch (flag) {
+                            case KTP_TYPE:
+                                pb1.setProgress(100);
+                                BlinkingEffectClass.blink(layoutKTP);
+                                break;
+                            case SELFIE_TYPE:
+                                pb2.setProgress(100);
+                                BlinkingEffectClass.blink(layoutSelfie);
+                                break;
+                            case TTD_TYPE:
+                                pb3.setProgress(100);
+                                BlinkingEffectClass.blink(layoutTTD);
+                                break;
+                        }
 
-                            Timber.d("onsuccess upload foto type: " + flag);
+                        Timber.d("onsuccess upload foto type: %s", flag);
 //                                Timber.d("isi response Upload Foto:"+ response.toString());
 
-                        } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
-
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(MyProfileNewActivity.this, error_message);
-                        } else if (error_code.equals(DefineValue.ERROR_9333)) {
-                            Timber.d("isi response app data:" + model.getApp_data());
-                            final AppDataModel appModel = model.getApp_data();
-                            AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                            alertDialogUpdateApp.showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
-                        } else if (error_code.equals(DefineValue.ERROR_0066)) {
-                            Timber.d("isi response maintenance:" + object.toString());
-                            AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                            alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this);
-                        } else {
-                            Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-
-
-                        }
+                    } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
+                        AlertDialogLogout.getInstance().showDialoginActivity(MyProfileNewActivity.this, error_message);
+                    } else if (error_code.equals(DefineValue.ERROR_9333)) {
+                        Timber.d("isi response app data:%s", model.getApp_data());
+                        final AppDataModel appModel = model.getApp_data();
+                        AlertDialogUpdateApp.getInstance().showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                    } else if (error_code.equals(DefineValue.ERROR_0066)) {
+                        Timber.d("isi response maintenance:%s", object.toString());
+                        AlertDialogMaintenance.getInstance().showDialogMaintenance(MyProfileNewActivity.this);
+                    } else {
+                        Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -1050,7 +1005,7 @@ public class MyProfileNewActivity extends BaseActivity {
             params.put(WebParams.BANK_CODE, bankCode);
             params.put(WebParams.SOURCE_ACCT_NO, et_acctNo.getText().toString());
 
-            Timber.d("isi params execute customer:" + params.toString());
+            Timber.d("isi params execute customer:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_EXEC_CUST, params,
                     new ResponseListener() {
@@ -1059,6 +1014,7 @@ public class MyProfileNewActivity extends BaseActivity {
                             SentExecCustModel model = gson.fromJson(object, SentExecCustModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
 //                                Timber.d("response execute customer:"+response.toString());
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 SecurePreferences.Editor mEdit = sp.edit();
@@ -1077,31 +1033,22 @@ public class MyProfileNewActivity extends BaseActivity {
                                 mEdit.putString(DefineValue.USER_NAME, et_nama.getText().toString());
                                 mEdit.putString(DefineValue.MEMBER_NAME, et_nama.getText().toString());
 //                            mEdit.putInt(DefineValue.LEVEL_VALUE, response.optInt(WebParams.MEMBER_LEVEL, 1));
-                                if (model.getAllow_member_level().equals(DefineValue.STRING_YES))
-                                    mEdit.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, true);
-                                else
-                                    mEdit.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, false);
+                                mEdit.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, model.getAllow_member_level().equals(DefineValue.STRING_YES));
 
                                 mEdit.apply();
                                 DialogSuccessUploadPhoto();
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
 //                                    Timber.d("isi response autologout:"+response.toString());
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(MyProfileNewActivity.this, message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(MyProfileNewActivity.this, message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this);
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(MyProfileNewActivity.this);
                             } else {
-                                code = model.getError_message();
-
-                                Toast.makeText(MyProfileNewActivity.this, code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(MyProfileNewActivity.this, message, Toast.LENGTH_LONG).show();
                                 getFragmentManager().popBackStack();
                             }
                         }
@@ -1118,7 +1065,7 @@ public class MyProfileNewActivity extends BaseActivity {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -1167,7 +1114,7 @@ public class MyProfileNewActivity extends BaseActivity {
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params get Bank cashout:" + params.toString());
+            Timber.d("isi params get Bank cashout:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BANKCASHOUT, params,
                     new ResponseListener() {
@@ -1177,26 +1124,24 @@ public class MyProfileNewActivity extends BaseActivity {
                             Gson gson = new Gson();
                             jsonModel model = gson.fromJson(object.toString(), jsonModel.class);
 
-                            Log.e("getBankCashout", object.get("bank_cashout").toString());
+                            Timber.tag("getBankCashout").e(object.get("bank_cashout").toString());
 
                             Type type = new TypeToken<List<BankCashoutModel>>() {
                             }.getType();
                             Gson gson2 = new Gson();
                             listBankCashOut = gson2.fromJson(object.get("bank_cashout"), type);
 
-                            Log.e("getBankCashout", listBankCashOut.toString());
+                            Timber.tag("getBankCashout").e(listBankCashOut.toString());
 
                             adapter.updateAdapter(listBankCashOut);
-
-                            if (object.get("error_code").equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                            String code = model.getError_code();
+                            if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
-                            } else if (object.get("error_code").equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this);
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(MyProfileNewActivity.this);
                             }
                         }
 
@@ -1213,7 +1158,7 @@ public class MyProfileNewActivity extends BaseActivity {
                     });
 
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 

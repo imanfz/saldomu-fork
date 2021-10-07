@@ -184,25 +184,22 @@ public class BBSRegisterAcct extends BaseFragment {
         RealmResults<List_BBS_City> results = realm.where(List_BBS_City.class).findAllAsync();
         list_name_bbs_cities = new ArrayList<>();
         list_bbs_cities = new ArrayList<>();
-        results.addChangeListener(new RealmChangeListener<RealmResults<List_BBS_City>>() {
-            @Override
-            public void onChange(RealmResults<List_BBS_City> element) {
-                if (getActivity() != null && !getActivity().isFinishing()) {
-                    for (List_BBS_City bbsCity : element) {
-                        list_bbs_cities.add(bbsCity);
-                        list_name_bbs_cities.add(bbsCity.getCity_name());
-                    }
+        results.addChangeListener(element -> {
+            if (getActivity() != null && !getActivity().isFinishing()) {
+                for (List_BBS_City bbsCity : element) {
+                    list_bbs_cities.add(bbsCity);
+                    list_name_bbs_cities.add(bbsCity.getCity_name());
+                }
 
-                    ArrayAdapter<String> city_adapter = new ArrayAdapter<String>
-                            (getActivity(), android.R.layout.simple_selectable_list_item, list_name_bbs_cities);
+                ArrayAdapter<String> city_adapter = new ArrayAdapter<String>
+                        (getActivity(), android.R.layout.simple_selectable_list_item, list_name_bbs_cities);
 
-                    city_textview_autocomplete.setText("KOTA JAKARTA");
+                city_textview_autocomplete.setText("KOTA JAKARTA");
 //                    city_textview_autocomplete.setThreshold(1);
-                    city_textview_autocomplete.setAdapter(city_adapter);
+                city_textview_autocomplete.setAdapter(city_adapter);
 
-                    if (bundle.containsKey(DefineValue.BENEF_CITY)) {
-                        city_textview_autocomplete.setText(bundle.getString(DefineValue.BENEF_CITY));
-                    }
+                if (bundle.containsKey(DefineValue.BENEF_CITY)) {
+                    city_textview_autocomplete.setText(bundle.getString(DefineValue.BENEF_CITY));
                 }
             }
         });
@@ -360,7 +357,7 @@ public class BBSRegisterAcct extends BaseFragment {
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
-            Timber.d("isi params retreive bank:" + params.toString());
+            Timber.d("isi params retreive bank:%s", params.toString());
 
             spSourceAcct.setVisibility(View.GONE);
             progBarBank.setVisibility(View.VISIBLE);
@@ -374,6 +371,7 @@ public class BBSRegisterAcct extends BaseFragment {
                                 BBSRetrieveBankModel model = getGson().fromJson(object, BBSRetrieveBankModel.class);
 
                                 String code = model.getError_code();
+                                String message = model.getError_message();
                                 listDataBank.clear();
                                 adapterDataBank.clear();
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
@@ -390,17 +388,14 @@ public class BBSRegisterAcct extends BaseFragment {
                                         }
                                     }
                                 }else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + object.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                    Timber.d("isi response maintenance:%s", object.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
-                                    code = model.getError_message();
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                                 }
 
 
@@ -422,7 +417,7 @@ public class BBSRegisterAcct extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient: " + e.getMessage());
+            Timber.d("httpclient: %s", e.getMessage());
         }
     }
 
@@ -443,7 +438,7 @@ public class BBSRegisterAcct extends BaseFragment {
 
             if (benefAcctType.equalsIgnoreCase(TYPE_ACCT))
                 params.put(WebParams.BENEF_ACCT_CITY, benefAcctCity);
-            Timber.d("isi params sentReqAcct:" + params.toString());
+            Timber.d("isi params sentReqAcct:%s", params.toString());
 
             progdialog.show();
 
@@ -454,7 +449,7 @@ public class BBSRegisterAcct extends BaseFragment {
                             BBSRegAcctModel response = getGson().fromJson(object, BBSRegAcctModel.class);
 
                             String code = response.getError_code();
-
+                            String message = response.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 Bundle bundle = new Bundle();
                                 bundle.putString(DefineValue.COMMUNITY_NAME, dataComm.getComm_name());
@@ -473,17 +468,14 @@ public class BBSRegisterAcct extends BaseFragment {
 
                                 actionListener.OnSuccessReqAcct(bundle);
                             }else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + response.getApp_data());
+                                Timber.d("isi response app data:%s", response.getApp_data());
                                 final AppDataModel appModel = response.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + response.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", response.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                code = response.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -498,7 +490,7 @@ public class BBSRegisterAcct extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient: " + e.getMessage());
+            Timber.d("httpclient: %s", e.getMessage());
         }
     }
 
