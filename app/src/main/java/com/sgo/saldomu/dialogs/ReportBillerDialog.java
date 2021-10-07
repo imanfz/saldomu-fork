@@ -70,7 +70,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     private static final String SALDO_AGEN = "SALDO AGEN";
 
     private OnDialogOkCallback callback;
-    private Boolean isActivity = false;
     private String trx_id, buss_scheme_code, type, imgFilename;
     private ViewToBitmap viewToBitmap;
     private LinearLayout contentInvoice;
@@ -78,18 +77,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     private ImageView saveimage;
     private ImageView shareimage;
     private ImageView printStruk;
-    private static final int recCodeShareImage = 11;
-    private static final int recCodeSaveImage = 12;
 
-    private LevelClass levelClass;
     private Boolean isAgent;
     SecurePreferences sp;
 
     Bundle args;
-
-    byte FONT_TYPE;
-    private static BluetoothSocket btsocket;
-    private static OutputStream outputStream;
 
     private BluetoothAdapter mBluetoothAdapter = null;
     // Member object for the services
@@ -110,7 +102,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 mService.connect(btDevice);
                 countRetry++;
             }
-            Log.d("Run Thread : ", "printbluetooth");
+            Timber.tag("Run Thread : ").d("printbluetooth");
 
             //yessi, dibawah ini tuk cek max try berapa kali
             //if ( countRetry < maxRetry )
@@ -157,8 +149,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.isActivity = getArguments().getBoolean(DefineValue.IS_ACTIVE, false);
-
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -194,11 +184,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         ViewStub stub = view.findViewById(R.id.stub);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        levelClass = new LevelClass(getActivity(), sp);
+
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
         args = getArguments();
-        Timber.d("isi args report:" + args.toString());
+        Timber.d("isi args report:%s", args.toString());
 
         type = args.getString(DefineValue.REPORT_TYPE, "");
         buss_scheme_code = args.getString(DefineValue.BUSS_SCHEME_CODE);
@@ -484,9 +474,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 View inflated = stub.inflate();
 
                 TextView tv_report_type = inflated.findViewById(R.id.dialog_topup_transaction_type);
-                TextView tv_user_id = inflated.findViewById(R.id.tv_user_id);
-                TextView tv_nama = inflated.findViewById(R.id.tv_name);
-                TextView tv_useerid_value = inflated.findViewById(R.id.dialog_topup_userid_value);
+                TextView tv_userid_value = inflated.findViewById(R.id.dialog_topup_userid_value);
                 TextView tv_name_value = inflated.findViewById(R.id.dialog_topup_name_value);
                 TextView tv_bank_product = inflated.findViewById(R.id.dialog_topup_productbank_value);
                 TextView tv_fee = inflated.findViewById(R.id.dialog_topup_fee_value);
@@ -508,7 +496,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 }
 
                 tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
-                tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
+                tv_userid_value.setText(args.getString(DefineValue.USERID_PHONE));
                 tv_name_value.setText(args.getString(DefineValue.USER_NAME));
                 tv_bank_product.setText(args.getString(DefineValue.BANK_PRODUCT));
                 tv_fee.setText(fee);
@@ -550,7 +538,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_destinationEmonValue = inflated.findViewById(R.id.tv_destination_no_emon_value);
                 View viewAdditional = inflated.findViewById(R.id.view_additionalFee);
                 View viewEmon = inflated.findViewById(R.id.view_destination_no_emon);
-                TableLayout tableLayoutDestination = inflated.findViewById(R.id.billertoken_layout_destination);
 
                 TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
                 mTableLayout.setVisibility(View.VISIBLE);
@@ -707,8 +694,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 View inflated = stub.inflate();
                 inflated.setVisibility(View.VISIBLE);
 
-                LinearLayout trAlias = (TableRow) inflated.findViewById(R.id.trAlias);
-                View lineAlias = inflated.findViewById(R.id.lineAlias);
                 TextView tv_detail = inflated.findViewById(R.id.dialog_report_trans_detail_value);
                 TextView tv_user_id = inflated.findViewById(R.id.dialog_report_trans_user_id);
                 TextView tv_user_name = inflated.findViewById(R.id.dialog_report_trans_user_name);
@@ -745,8 +730,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 View inflated = stub.inflate();
                 inflated.setVisibility(View.VISIBLE);
 
-                LinearLayout trAlias = (TableRow) inflated.findViewById(R.id.trAlias);
-                View lineAlias = inflated.findViewById(R.id.lineAlias);
                 TextView tv_detail = inflated.findViewById(R.id.dialog_report_trans_detail_value);
                 TextView tv_user_id = inflated.findViewById(R.id.dialog_report_trans_user_id);
                 TextView tv_user_name = inflated.findViewById(R.id.dialog_report_trans_user_name);
@@ -1031,6 +1014,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_trx_id_ref = inflated.findViewById(R.id.dialog_report_trx_id_ref);
                 View line_trx_id_ref = inflated.findViewById(R.id.line_dialog_report_trx_id_ref);
                 TextView tv_terminal_id = inflated.findViewById(R.id.dialog_report_terminal_id);
+                TextView tv_label_fee = inflated.findViewById(R.id.dialog_label_report_fee);
                 TextView tv_fee = inflated.findViewById(R.id.dialog_report_fee);
                 TextView tv_amount = inflated.findViewById(R.id.dialog_report_amount);
                 TextView tv_total_amount = inflated.findViewById(R.id.dialog_report_total_amount);
@@ -1058,6 +1042,12 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tr_trx_id_ref.setVisibility(View.GONE);
                     line_trx_id_ref.setVisibility(View.GONE);
                 }
+                if (args.getString(DefineValue.INDICATOR_TYPE).equals("1")){
+                    tv_label_fee.setText(getResources().getString(R.string.tip));
+                } else {
+                    tv_label_fee.setText(getResources().getString(R.string.transaction_fee));
+                }
+
                 tv_fee.setText(fee);
                 tv_amount.setText(amount);
                 tv_total_amount.setText(total_amount);
@@ -1076,69 +1066,45 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         shareimage = view.findViewById(R.id.img_share);
         printStruk = view.findViewById(R.id.img_print);
 
-        saveimage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveimage.setEnabled(false);
-                saveimage.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        saveimage.setEnabled(true);
-                    }
-                }, 3000);
-                reqPermissionSaveorShareImage(false);
-            }
+        saveimage.setOnClickListener(view13 -> {
+            saveimage.setEnabled(false);
+            saveimage.postDelayed(() -> saveimage.setEnabled(true), 3000);
+            reqPermissionSaveorShareImage(false);
         });
 
-        shareimage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                shareimage.setEnabled(false);
-                shareimage.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        shareimage.setEnabled(true);
-                    }
-                }, 4000);
-                reqPermissionSaveorShareImage(true);
-            }
+        shareimage.setOnClickListener(view12 -> {
+            shareimage.setEnabled(false);
+            shareimage.postDelayed(() -> shareimage.setEnabled(true), 4000);
+            reqPermissionSaveorShareImage(true);
         });
 
-        printStruk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // If Bluetooth is not on, request that it be enabled.
-                // setupChat() will then be called during onActivityResult
-                if (!mBluetoothAdapter.isEnabled()) {
-                    Intent enableIntent = new Intent(
-                            BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivityForResult(enableIntent, DevicesList.REQUEST_ENABLE_BT);
-                    // Otherwise, setup the session
+        printStruk.setOnClickListener(view1 -> {
+            // If Bluetooth is not on, request that it be enabled.
+            // setupChat() will then be called during onActivityResult
+            if (!mBluetoothAdapter.isEnabled()) {
+                Intent enableIntent = new Intent(
+                        BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableIntent, DevicesList.REQUEST_ENABLE_BT);
+                // Otherwise, setup the session
+            } else {
+                if (mService == null)
+                    mService = new BluetoothService(mHandler);//监听
+
+                printStruk.setEnabled(false);
+                printStruk.postDelayed(() -> printStruk.setEnabled(true), 4000);
+
+                String perms = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+                if (EasyPermissions.hasPermissions(getContext(), perms)) {
+                    String[] separated = trx_id.split("\n");
+                    imgFilename = separated[0];
+
+                    countRetry = 0;
+
+                    connect();
+
                 } else {
-                    if (mService == null)
-                        mService = new BluetoothService(mHandler);//监听
-
-                    printStruk.setEnabled(false);
-                    printStruk.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            printStruk.setEnabled(true);
-                        }
-                    }, 4000);
-
-                    String perms = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-                    if (EasyPermissions.hasPermissions(getContext(), perms)) {
-                        String[] separated = trx_id.split("\n");
-                        imgFilename = separated[0];
-
-                        countRetry = 0;
-
-                        connect();
-
-                    } else {
-                        EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_save_image_permission),
-                                RC_REQUEST_WRITE_EXTERNAL_STORAGE_AND_PRINT, perms);
-                    }
+                    EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_save_image_permission),
+                            RC_REQUEST_WRITE_EXTERNAL_STORAGE_AND_PRINT, perms);
                 }
             }
         });
@@ -1481,7 +1447,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.d(TAG, "onActivityResult Select Printer " + requestCode + "--" + resultCode);
+        Timber.tag(TAG).d("onActivityResult Select Printer " + requestCode + "--" + resultCode);
 
         switch (requestCode) {
             case DevicesList.REQUEST_CONNECT_DEVICE: {
@@ -1510,7 +1476,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     mService = new BluetoothService(mHandler);
                 } else {
                     // User did not enable Bluetooth or an error occured
-                    Log.d(TAG, "BT not enabled"); }
+                    Timber.tag(TAG).d("BT not enabled"); }
                 break;
             }
 
@@ -1550,10 +1516,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             switch (msg.what) {
                 case DevicesList.MESSAGE_STATE_CHANGE:
 //                    String message = "Yessi is doing research \n\n";
-                    Log.d("arg1:", String.valueOf(msg.arg1));
+                    Timber.tag("arg1:").d(String.valueOf(msg.arg1));
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
-                            Log.d("arg - connected:", String.valueOf(msg.arg1));
+                            Timber.tag("arg - connected:").d(String.valueOf(msg.arg1));
                             if (runnable != null)
                                 handler.removeCallbacks(runnable);
                             printStrukImage();
@@ -1562,7 +1528,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                             if (countRetry > maxRetry) {
                                 //toast ke user, minta restart bluetooth hp dan printer
                                 handler.removeCallbacks(runnable);
-                                Toast.makeText(getContext(), "Restart bluetooth Handphone dan Printer Anda", Toast.LENGTH_LONG);
+                                Toast.makeText(getContext(), "Restart bluetooth Handphone dan Printer Anda", Toast.LENGTH_LONG).show();
                             }
                             break;
                         case BluetoothService.STATE_LISTEN:
@@ -1570,7 +1536,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                             if (countRetry > maxRetry) {
                                 //toast ke user, minta restart bluetooth hp dan printer
                                 handler.removeCallbacks(runnable);
-                                Toast.makeText(getContext(), "Restart bluetooth Handphone dan Printer Anda", Toast.LENGTH_LONG);
+                                Toast.makeText(getContext(), "Restart bluetooth Handphone dan Printer Anda", Toast.LENGTH_LONG).show();
                             }
                             break;
                     }
@@ -1583,7 +1549,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     break;
                 case DevicesList.MESSAGE_DEVICE_NAME:
 //                    String message2 = "Yessi is doing research device \n\n";
-                    Log.d("arg1 - device-name:", String.valueOf(msg.arg1));
+                    Timber.tag("arg1 - device-name:").d(String.valueOf(msg.arg1));
                     if (runnable != null)
                         handler.removeCallbacks(runnable);
                     break;
@@ -1608,7 +1574,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     private void SendDataString(String data) {
 
         if (mService.getState() != BluetoothService.STATE_CONNECTED) {
-            Log.d("Srvc State Bluetooth :", String.valueOf(mService.getState()));
+            Timber.tag("Srvc State Bluetooth :").d(String.valueOf(mService.getState()));
             Toast.makeText(getContext(), R.string.not_connected, Toast.LENGTH_SHORT)
                     .show();
             return;

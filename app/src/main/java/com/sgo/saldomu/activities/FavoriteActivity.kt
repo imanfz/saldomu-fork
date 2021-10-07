@@ -16,6 +16,7 @@ import com.sgo.saldomu.fragments.FavoriteFragment
 import com.sgo.saldomu.models.retrofit.FavoriteModel
 import com.sgo.saldomu.widgets.BaseActivity
 import kotlinx.android.synthetic.main.activity_favorite.*
+import timber.log.Timber
 
 private const val TAG = "FavoriteActivity"
 
@@ -170,19 +171,19 @@ class FavoriteActivity : BaseActivity() {
 
     fun countPageAgent() {
         if (isAgentTOP || isAgentBDK) {
-            PAGE_COUNTagent = PAGE_COUNTagent + 1
-            tabTitlesAgent = tabTitlesAgent + tabTitlesAgentB2B
+            PAGE_COUNTagent += 1
+            tabTitlesAgent += tabTitlesAgentB2B
         }
         if (isAgentDGI) {
-            PAGE_COUNTagent = PAGE_COUNTagent + 1
-            tabTitlesAgent = tabTitlesAgent + tabTitlesAgentDGI
+            PAGE_COUNTagent += 1
+            tabTitlesAgent += tabTitlesAgentDGI
         }
         if (isAgentCTR) {
-            PAGE_COUNTagent = PAGE_COUNTagent + 1
-            tabTitlesAgent = tabTitlesAgent + tabTitlesAgentCTR
+            PAGE_COUNTagent += 1
+            tabTitlesAgent += tabTitlesAgentCTR
         }
 
-        Log.d(TAG, "count page agent : " + PAGE_COUNTagent)
+        Timber.tag(TAG).d("count page agent : %s", PAGE_COUNTagent)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

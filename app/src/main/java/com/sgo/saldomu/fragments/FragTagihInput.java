@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import com.securepreferences.SecurePreferences;
@@ -69,7 +70,7 @@ public class FragTagihInput extends BaseFragment {
     String commCodeTagih, balanceCollector, commNamePG, anchorNamePG, memberCode, txIdPG, anchorId;
     private ArrayList<TagihModel> anchorDataList = new ArrayList<>();
     private ArrayList<TagihCommunityModel> communityDataList = new ArrayList<>();
-    private Switch favoriteSwitch;
+    private SwitchCompat favoriteSwitch;
     private EditText notesEditText;
 
     @Nullable
@@ -120,7 +121,7 @@ public class FragTagihInput extends BaseFragment {
             params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_ANCHOR_COMMUNITIES);
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("param LINK_GET_ANCHOR_COMMUNITIES : " + params);
+            Timber.d("param LINK_GET_ANCHOR_COMMUNITIES : %s", params);
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_ANCHOR_COMMUNITIES, params, new ObjListeners() {
                 @Override
                 public void onResponses(JSONObject response) {
@@ -173,7 +174,7 @@ public class FragTagihInput extends BaseFragment {
                 }
             });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -271,7 +272,7 @@ public class FragTagihInput extends BaseFragment {
                     anchorId = anchorDataList.get(position - 1).getId();
 
                 }
-                Timber.d("anchor_id : " + anchorId);
+                Timber.d("anchor_id : %s", anchorId);
             }
 
             @Override
@@ -289,12 +290,12 @@ public class FragTagihInput extends BaseFragment {
         communityDataList.clear();
         communityDataList.addAll(anchorDataList.get(pos).getListCommunity());
 //                _realm.where(TagihCommunityModel.class).findAll();
-        Log.d("mainpage", "id : " + communityDataList.get(0).getId());
+        Timber.tag("mainpage").d("id : %s", communityDataList.get(0).getId());
         communityNameArrayList.clear();
         communityNameArrayList.add(getString(R.string.community_default));
         for (int i = 0; i < communityDataList.size(); i++) {
             communityNameArrayList.add(communityDataList.get(i).getComm_name());
-            Timber.d("comm code tagih : " + communityDataList.get(i).getComm_code());
+            Timber.d("comm code tagih : %s", communityDataList.get(i).getComm_code());
         }
         communityAdapter.notifyDataSetChanged();
 
@@ -369,25 +370,21 @@ public class FragTagihInput extends BaseFragment {
                                     try {
                                         jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
                                         String code = response.getString(WebParams.ERROR_CODE);
+                                        String message = response.getString(WebParams.ERROR_MESSAGE);
                                         if (code.equals(WebParams.SUCCESS_CODE)) {
                                             balanceCollector = response.getString(WebParams.AMOUNT);
                                             tv_saldo_collector.setText(CurrencyFormat.format(balanceCollector));
                                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                            test.showDialoginActivity(getActivity(), message);
+                                            AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                         } else if (code.equals(DefineValue.ERROR_9333)) {
-                                            Timber.d("isi response app data:" + model.getApp_data());
+                                            Timber.d("isi response app data:%s", model.getApp_data());
                                             final AppDataModel appModel = model.getApp_data();
-                                            AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                            alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                            AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                         } else if (code.equals(DefineValue.ERROR_0066)) {
-                                            Timber.d("isi response maintenance:" + response.toString());
-                                            AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                            alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                            Timber.d("isi response maintenance:%s", response.toString());
+                                            AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                         } else {
-                                            code = response.getString(WebParams.ERROR_MESSAGE);
-                                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                         }
 
                                     } catch (JSONException e) {
@@ -408,7 +405,7 @@ public class FragTagihInput extends BaseFragment {
                 }
             }
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -422,7 +419,7 @@ public class FragTagihInput extends BaseFragment {
         params.put(WebParams.MEMBER_CODE, et_memberCode.getText().toString());
         params.put(WebParams.COMM_CODE, commCodeTagih);
         params.put(WebParams.USER_ID, userPhoneID);
-        Timber.d("params list invoice DGI : " + params.toString());
+        Timber.d("params list invoice DGI : %s", params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_LIST_INVOICE_DGI, params,
                 new ObjListeners() {
@@ -431,7 +428,7 @@ public class FragTagihInput extends BaseFragment {
                         try {
                             dismissProgressDialog();
                             jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
-                            Timber.d("response list invoice DGI : " + response.toString());
+                            Timber.d("response list invoice DGI : %s", response.toString());
                             String code = response.getString(WebParams.ERROR_CODE);
                             String error_message = response.getString(WebParams.ERROR_MESSAGE);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
@@ -463,14 +460,12 @@ public class FragTagihInput extends BaseFragment {
                                 TagihActivity ftf = (TagihActivity) getActivity();
                                 ftf.switchContent(newFrag, "List Invoice", true);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + response.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", response.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                             }
@@ -503,7 +498,7 @@ public class FragTagihInput extends BaseFragment {
         params.put(WebParams.MEMBER_CODE, et_memberCode.getText().toString());
         params.put(WebParams.COMM_CODE, commCodeTagih);
         params.put(WebParams.USER_ID, userPhoneID);
-        Timber.d("params first OTP tagih DGI : " + params.toString());
+        Timber.d("params first OTP tagih DGI : %s", params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQ_FIRST_OTP, params,
                 new ObjListeners() {
@@ -512,7 +507,7 @@ public class FragTagihInput extends BaseFragment {
                         try {
                             dismissProgressDialog();
                             jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
-                            Timber.d("response first OTP tagih DGI  : " + response.toString());
+                            Timber.d("response first OTP tagih DGI  : %s", response.toString());
                             String code = response.getString(WebParams.ERROR_CODE);
                             String error_message = response.getString(WebParams.ERROR_MESSAGE);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
@@ -540,14 +535,12 @@ public class FragTagihInput extends BaseFragment {
                                 ftf.switchContent(newFrag, "First OTP Tagih", true);
 
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + response.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", response.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                             }

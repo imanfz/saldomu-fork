@@ -104,77 +104,69 @@ public class FragCancelTrxRequest extends DialogFragment {
         btnCancel   = v.findViewById(R.id.btnCancel);
         etReason    = v.findViewById(R.id.etReason);
 
-        btnProses.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String reason       = etReason.getText().toString().trim();
-                Boolean hasError    = false;
+        btnProses.setOnClickListener(v12 -> {
+            String reason       = etReason.getText().toString().trim();
+            Boolean hasError    = false;
 
-                if ( reason.equals("") ) {
-                    hasError = true;
-                    etReason.setError(getString(R.string.err_empty_cancel_reason));
-                }
+            if ( reason.equals("") ) {
+                hasError = true;
+                etReason.setError(getString(R.string.err_empty_cancel_reason));
+            }
 
-                if ( !hasError ) {
-                    //call webservice
+            if ( !hasError ) {
+                //call webservice
 
-                    progdialog              = DefinedDialog.CreateProgressDialog(getContext());
+                progdialog              = DefinedDialog.CreateProgressDialog(getContext());
 
-                    String extraSignature   = txId;
-                    HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CANCEL_SEARCH_AGENT,
-                            extraSignature);
+                String extraSignature   = txId;
+                HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CANCEL_SEARCH_AGENT,
+                        extraSignature);
 
-                    params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-                    params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-                    params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-                    params.put(WebParams.TX_ID, txId);
-                    params.put(WebParams.CUST_ID, userId);
-                    params.put(WebParams.TX_REMARKS, reason);
-                    params.put(WebParams.USER_ID, userId);
+                params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+                params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+                params.put(WebParams.TX_ID, txId);
+                params.put(WebParams.CUST_ID, userId);
+                params.put(WebParams.TX_REMARKS, reason);
+                params.put(WebParams.USER_ID, userId);
 
-                    RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CANCEL_SEARCH_AGENT, params,
-                            new ObjListeners() {
-                                @Override
-                                public void onResponses(JSONObject response) {
-                                    try {
+                RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CANCEL_SEARCH_AGENT, params,
+                        new ObjListeners() {
+                            @Override
+                            public void onResponses(JSONObject response) {
+                                try {
 
-                                        String code = response.getString(WebParams.ERROR_CODE);
-                                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                                            cpl.onSuccessCancelTrx();
-                                        } else {
-                                            Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
-                                        }
-
-                                        getDialog().dismiss();
-
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
+                                    String code = response.getString(WebParams.ERROR_CODE);
+                                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                        cpl.onSuccessCancelTrx();
+                                    } else {
+                                        Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                                     }
+
+                                    getDialog().dismiss();
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
+                            }
 
-                                @Override
-                                public void onError(Throwable throwable) {
+                            @Override
+                            public void onError(Throwable throwable) {
 
-                                }
+                            }
 
-                                @Override
-                                public void onComplete() {
-                                    if ( progdialog.isShowing())
-                                        progdialog.dismiss();
-                                }
-                            });
+                            @Override
+                            public void onComplete() {
+                                if ( progdialog.isShowing())
+                                    progdialog.dismiss();
+                            }
+                        });
 
-                }
-                //getDialog().dismiss();
             }
+            //getDialog().dismiss();
         });
 
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getDialog().dismiss();
-            }
-        });
+        btnCancel.setOnClickListener(v1 -> getDialog().dismiss());
 
 
         // Inflate the layout for this fragment

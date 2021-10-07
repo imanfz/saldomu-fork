@@ -35,17 +35,6 @@
         android:visibility="invisible"
         android:layout_alignTop="@id/pin_pinputview" />
 
-    <!--<com.venmo.android.pin.view.PinKeyboardView-->
-        <!--android:id="@+id/pin_keyboard"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@id/pin_pinputview"-->
-        <!--android:layout_marginTop="32dp"-->
-        <!--android:background="@android:color/transparent"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--pin:textColor="@color/pin_dark_grey"-->
-        <!--pin:keyBackground="@drawable/pin_key_selector" />-->
-
     <FrameLayout android:id="@+id/fl_key"
                  android:layout_below="@id/pin_pinputview"
                  android:layout_marginTop="20dp"

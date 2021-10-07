@@ -86,7 +86,7 @@ class FavoriteAdapter(internal var listener: FavoriteListener) : RecyclerView.Ad
         }
 
         holder.itemLinearLayout.setOnLongClickListener {
-            Log.e("model.product_type : ", "s")
+            Timber.tag("model.product_type : ").e("s")
             listener.onDeleteFavorite(model)
             return@setOnLongClickListener true
         }

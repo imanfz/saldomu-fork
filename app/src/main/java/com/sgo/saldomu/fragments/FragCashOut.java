@@ -107,15 +107,11 @@ public class FragCashOut extends BaseFragment {
                 @Override
                 public void run() {
                     if(FragCashOut.this.isVisible()) {
-                        getActivity().runOnUiThread(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                if (FragCashOut.this.isVisible()) {
-                                    balance = MyApiClient.CCY_VALUE + " " + CurrencyFormat.format(sp.getString(DefineValue.BALANCE_AMOUNT, ""));
-                                    Timber.d("refresh balance:"+balance);
-                                    txtBalance.setText(balance);
-                                }
+                        getActivity().runOnUiThread(() -> {
+                            if (FragCashOut.this.isVisible()) {
+                                balance = MyApiClient.CCY_VALUE + " " + CurrencyFormat.format(sp.getString(DefineValue.BALANCE_AMOUNT, ""));
+                                Timber.d("refresh balance:%s", balance);
+                                txtBalance.setText(balance);
                             }
                         });
                     }
@@ -222,7 +218,7 @@ public class FragCashOut extends BaseFragment {
                 }
             }
 
-            Timber.d("isi params req cashout:" + params.toString());
+            Timber.d("isi params req cashout:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQUEST_CASHOUT, params,
                     new ObjListeners() {
@@ -232,8 +228,9 @@ public class FragCashOut extends BaseFragment {
                                 Gson gson = new Gson();
                                 jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("isi response req cashout:"+response.toString());
+                                    Timber.d("isi response req cashout:%s", response.toString());
 
                                     sp_bank.setSelection(0);
                                     etAccNo.setText("");
@@ -261,30 +258,21 @@ public class FragCashOut extends BaseFragment {
                                     switchContent(i,FragCashoutConfirm.TAG);
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:"+response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 }else {
-                                    Timber.d("isi error req cashout:"+response.toString());
+                                    Timber.d("isi error req cashout:%s", response.toString());
                                     String code_msg = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                     builder.setMessage(code_msg)
-                                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    dialog.dismiss();
-                                                }
-                                            });
+                                            .setPositiveButton(getString(R.string.ok), (dialog, which) -> dialog.dismiss());
                                     AlertDialog dialog = builder.create();
                                     dialog.show();
                                 }
@@ -310,7 +298,7 @@ public class FragCashOut extends BaseFragment {
                         }
                     });
         }catch (Exception e){
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -389,7 +377,7 @@ public class FragCashOut extends BaseFragment {
                 params.put(WebParams.MEMBER_ID, memberIDLogin );
                 params.put(WebParams.USER_ID, userPhoneID);
 
-                Timber.d("isi params get Bank cashout:" + params.toString());
+                Timber.d("isi params get Bank cashout:%s", params.toString());
 
                 RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BANKCASHOUT, params,
                         new ResponseListener() {
@@ -399,25 +387,23 @@ public class FragCashOut extends BaseFragment {
                                 Gson gson = new Gson();
                                 jsonModel model = gson.fromJson(object.toString(), jsonModel.class);
 
-                                Log.e("getBankCashout", object.get("bank_cashout").toString());
+                                Timber.tag("getBankCashout").e(object.get("bank_cashout").toString());
 
                                 Type type = new TypeToken<List<BankCashoutModel>>() {}.getType();
                                 Gson gson2 = new Gson();
                                 listBankCashOut = gson2.fromJson(object.get("bank_cashout"), type);
 
-                                Log.e("getBankCashout", listBankCashOut.toString());
+                                Timber.tag("getBankCashout").e(listBankCashOut.toString());
 
                                 adapter.updateAdapter(listBankCashOut);
 
                                 if (object.get("error_code").equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (object.get("error_code").equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + object.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                    Timber.d("isi response maintenance:%s", object.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 }
                             }
 
@@ -434,7 +420,7 @@ public class FragCashOut extends BaseFragment {
                         });
             }
         }catch(Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 }

@@ -95,7 +95,7 @@ class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.Start
         params.put(WebParams.MEMBER_ID, memberIDLogin)
         params.put(WebParams.IS_AGENT, levelAgent)
         params.put(WebParams.USER_ID, userPhoneID)
-        Timber.d("params list file : " + params.toString())
+        Timber.d("params list file : $params")
 
 
         RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LIST_FILE, params, object : ResponseListener {
@@ -104,27 +104,30 @@ class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.Start
                 val code = model.error_code
                 val message = model.error_message
 
-                if (code == WebParams.SUCCESS_CODE) {
+                when (code) {
+                    WebParams.SUCCESS_CODE -> {
+                        val type = object : TypeToken<List<StarterKitFileModel>>() {
+                        }.type
+                        val list = gson.fromJson<List<StarterKitFileModel>>(response.get(WebParams.STARTER_KITS), type)
 
-                    val type = object : TypeToken<List<StarterKitFileModel>>() {
-                    }.type
-                    val list = gson.fromJson<List<StarterKitFileModel>>(response.get(WebParams.STARTER_KITS), type)
-
-                    starterKitListFileAdapter?.updateData(list)
-                    dismissProgressDialog()
-                } else if (code == WebParams.LOGOUT_CODE) {
-                    switchLogout()
-                } else if (code == DefineValue.ERROR_9333) run {
-                    Timber.d("isi response app data:" + model.app_data)
-                    val appModel = model.app_data
-                    val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                    alertDialogUpdateApp.showDialogUpdate(this@StarterKitActivityKotlin, appModel.type, appModel.packageName, appModel.downloadUrl)
-                } else if (code == DefineValue.ERROR_0066) run {
-                    Timber.d("isi response maintenance:" + response.toString())
-                    val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                    alertDialogMaintenance.showDialogMaintenance(this@StarterKitActivityKotlin)
-                } else {
-                    Toast.makeText(this@StarterKitActivityKotlin, message, Toast.LENGTH_SHORT).show()
+                        starterKitListFileAdapter?.updateData(list)
+                        dismissProgressDialog()
+                    }
+                    WebParams.LOGOUT_CODE -> {
+                        switchLogout()
+                    }
+                    DefineValue.ERROR_9333 -> run {
+                        Timber.d("isi response app data:" + model.app_data)
+                        val appModel = model.app_data
+                        AlertDialogUpdateApp.getInstance().showDialogUpdate(this@StarterKitActivityKotlin, appModel.type, appModel.packageName, appModel.downloadUrl)
+                    }
+                    DefineValue.ERROR_0066 -> run {
+                        Timber.d("isi response maintenance:$response")
+                        AlertDialogMaintenance.getInstance().showDialogMaintenance(this@StarterKitActivityKotlin)
+                    }
+                    else -> {
+                        Toast.makeText(this@StarterKitActivityKotlin, message, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
 
@@ -137,11 +140,11 @@ class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.Start
     }
 
     override fun onClick(model: StarterKitFileModel) {
-        Log.e(StarterKitActivityKotlin.TAG, "onClick: ")
+        Timber.tag(TAG).e("onClick: ")
         getDownloadFile(model)
     }
 
-    fun getDownloadFile(starterKitFileModel: StarterKitFileModel) {
+    private fun getDownloadFile(starterKitFileModel: StarterKitFileModel) {
         showProgressDialog()
 
         extraSignature = memberIDLogin + levelMember + levelAgent
@@ -162,40 +165,45 @@ class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.Start
                 object : ResponseListener {
                     override fun onResponses(response: JsonObject) {
                         dismissProgressDialog()
-                        Log.e(StarterKitActivityKotlin.TAG, "getDownloadFile : $response")
+                        Timber.tag(TAG).e("getDownloadFile : " + response)
 
                         val model = getGson().fromJson(response, jsonModel::class.java)
 
-                        when (model.error_code) {
+                        val code = model.error_code
+                        val message = model.error_message
+                        when (code) {
                             WebParams.SUCCESS_CODE -> {
-                                message = response.get(WebParams.MESSAGE).toString()
                                 dialogSuccess(message)
                             }
                             WebParams.LOGOUT_CODE -> {
-                                val message = model.error_message
-                                val test = AlertDialogLogout.getInstance()
-                                test.showDialoginActivity(this@StarterKitActivityKotlin, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(this@StarterKitActivityKotlin, message)
                             }
                             WebParams.ERROR_9333 -> {
                                 Timber.d("isi response app data:" + model.app_data)
                                 val appModel = model.app_data
-                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(this@StarterKitActivityKotlin, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(
+                                    this@StarterKitActivityKotlin,
+                                    appModel.type,
+                                    appModel.packageName,
+                                    appModel.downloadUrl
+                                )
                             }
                             WebParams.ERROR_0066 -> {
-                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(this@StarterKitActivityKotlin)
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(this@StarterKitActivityKotlin)
                             }
                             else -> {
-                                val msg = model.error_message
-                                Toast.makeText(this@StarterKitActivityKotlin, msg, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this@StarterKitActivityKotlin,
+                                    message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
                     }
 
                     override fun onError(throwable: Throwable) {
                         dismissProgressDialog()
-                        Log.d("onErrorDownloadFile", "onErrorDownloadFile")
+                        Timber.tag("onErrorDownloadFile").d("onErrorDownloadFile")
                     }
 
                     override fun onComplete() {
@@ -205,7 +213,7 @@ class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.Start
     }
 
     private fun dialogSuccess(msg: String) {
-        var dialognya = DefinedDialog.MessageDialog(this, this!!.getString(R.string.dialog_download_title),
+        val dialognya = DefinedDialog.MessageDialog(this, this!!.getString(R.string.dialog_download_title),
                 msg
         ) {}
 

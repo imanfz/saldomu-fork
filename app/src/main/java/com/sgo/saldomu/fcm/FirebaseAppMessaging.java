@@ -66,14 +66,14 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        Timber.d("From: " + remoteMessage.getFrom());
+        Timber.d("From: %s", remoteMessage.getFrom());
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
 
-            Timber.d("Message data payload: " + remoteMessage.getData());
+            Timber.d("Message data payload: %s", remoteMessage.getData());
             if (remoteMessage.getData().containsKey(WebParams.SYNC_CODE)) {
                 switch (Integer.valueOf(remoteMessage.getData().get(WebParams.SYNC_CODE))) {
                     case SYNC_BBS_DATA:
@@ -103,7 +103,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                         mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, jsonObj2.toString());
                         mEditor.apply();
                     } catch (JSONException e) {
-                        Timber.d("JSONException FCM Messaging OptionData: " + e.getMessage());
+                        Timber.d("JSONException FCM Messaging OptionData: %s", e.getMessage());
                     }
 
                     if (flagLogin.equals(DefineValue.STRING_YES)) {
@@ -144,7 +144,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException FCM Messaging OptionData: " + e.getMessage());
+                            Timber.d("JSONException FCM Messaging OptionData: %s", e.getMessage());
                         }
                     }
                 }
@@ -260,7 +260,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             }
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
 
                     }
@@ -329,7 +329,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             }
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
 
                     }
@@ -410,7 +410,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             }
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
 
                     }
@@ -459,7 +459,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                         );
                             }
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
                     }
                     break;
@@ -522,7 +522,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                         );
                             }
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
                     }
                     break;
@@ -560,7 +560,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                     );
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
 
 
@@ -595,7 +595,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                     );
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
 
 
@@ -637,7 +637,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                     );
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
 
 
@@ -663,7 +663,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                             }
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
                     }
                     break;
@@ -719,7 +719,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                         );
                             }
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
                     }
                     break;
@@ -750,7 +750,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                         );
                             }
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
                     }
                     break;
@@ -790,7 +790,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
         }
 
 
-        Timber.d("Debug 2: " + msg.toString());
+        Timber.d("Debug 2: %s", msg.toString());
 
         String CHANNEL_ID = "my_channel_01";// The id of the channel.
         CharSequence name = "channel_name";// The user-visible name of the channel.

@@ -325,7 +325,7 @@
                         android:textSize="@dimen/abc_text_size_medium_material"
                         android:textStyle="bold" />
 
-                    <Switch
+                    <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/favorite_switch"
                         android:layout_alignParentRight="true"
                         android:layout_width="wrap_content"

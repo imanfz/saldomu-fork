@@ -272,7 +272,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
         params.put(WebParams.COMM_CODE, sp.getString(DefineValue.COMM_CODE_DGI, ""));
         params.put(WebParams.USER_COMM_CODE, sp.getString(DefineValue.COMMUNITY_CODE, ""));
         params.put(WebParams.USER_ID, userPhoneID);
-        Timber.d("params confirm payment DGI : " + params.toString());
+        Timber.d("params confirm payment DGI : %s", params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_PAYMENT_DGI, params,
                 new ObjListeners() {
@@ -284,18 +284,16 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
 
                             String code = response.getString(WebParams.ERROR_CODE);
                             String error_message = response.getString(WebParams.ERROR_MESSAGE);
-                            Timber.d("response confirm payment DGI : " + response.toString());
+                            Timber.d("response confirm payment DGI : %s", response.toString());
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 sentInquiry();
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + response.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", response.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                             }
@@ -332,7 +330,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
             params.put(WebParams.COMM_CODE, sp.getString(DefineValue.COMM_CODE_DGI, ""));
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            Timber.d("isi params InquiryTrx DGI:" + params.toString());
+            Timber.d("isi params InquiryTrx DGI:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQ_TOKEN_SGOL, params,
                     new ObjListeners() {
@@ -432,7 +430,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.KODE_OTP, kode_otp);
 
-            Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());
+            Timber.d("isi params insertTrxTOpupSGOL:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(link, params,
                     new ObjListeners() {
@@ -520,7 +518,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.KODE_OTP, kode_otp);
 
-            Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());
+            Timber.d("isi params insertTrxTOpupSGOL:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP_NEW, params,
                     new ObjListeners() {
@@ -583,7 +581,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
 
     }
@@ -696,7 +694,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
 
                     @Override
                     public void onError(Throwable throwable) {
-                        Log.e("onResponse fav DGI", throwable.getLocalizedMessage());
+                        Timber.tag("onResponse fav DGI").e(throwable.getLocalizedMessage());
                         throwable.printStackTrace();
                     }
 
@@ -789,12 +787,9 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
         Title.setText(getString(R.string.error));
         Message.setText(msg);
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                //SgoPlusWeb.this.finish();
-            }
+        btnDialogOTP.setOnClickListener(view -> {
+            dialog.dismiss();
+            //SgoPlusWeb.this.finish();
         });
 
         dialog.show();

@@ -174,23 +174,20 @@ public class FragListInvoiceTagih extends BaseFragment {
             if (lbl_total_pay_amount.getText().toString().equalsIgnoreCase("0")) {
                 Toast.makeText(getActivity(), "Tidak ada invoice yang dibayarkan", Toast.LENGTH_SHORT).show();
             } else {
-                PaymentRemarkDialog dialog = PaymentRemarkDialog.newDialog(new PaymentRemarkDialog.onTap() {
-                    @Override
-                    public void onOK(String msg, String s, String dedate) {
-                        paymentRemark = msg;
-                        if (s.isEmpty()) {
-                            noId = "";
-                        } else
-                            noId = s;
+                PaymentRemarkDialog dialog = PaymentRemarkDialog.newDialog((msg, s, dedate) -> {
+                    paymentRemark = msg;
+                    if (s.isEmpty()) {
+                        noId = "";
+                    } else
+                        noId = s;
 
-                        if (dedate.isEmpty()) {
-                            due_date = "";
-                        } else
-                            due_date = dedate;
+                    if (dedate.isEmpty()) {
+                        due_date = "";
+                    } else
+                        due_date = dedate;
 
-                        checkOutPayment(msg, noId, due_date);
-                        bundle.putString(DefineValue.REMARK, paymentRemark);
-                    }
+                    checkOutPayment(msg, noId, due_date);
+                    bundle.putString(DefineValue.REMARK, paymentRemark);
                 }, paymentCode);
                 dialog.show(getFragmentManager(), "paymentremark dialog");
             }
@@ -515,7 +512,7 @@ public class FragListInvoiceTagih extends BaseFragment {
         params.put(WebParams.DUE_DATE, due_date);
 
 
-        Timber.d("params list invoice DGI : " + params.toString());
+        Timber.d("params list invoice DGI : %s", params.toString());
 
         DataManager.getInstance().setListInvoice(temp);
         DataManager.getInstance().setInvoiceParam(params);
@@ -553,7 +550,7 @@ public class FragListInvoiceTagih extends BaseFragment {
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params get Bank cashout:" + params.toString());
+            Timber.d("isi params get Bank cashout:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BANKCASHOUT, params,
                     new ResponseListener() {
@@ -565,7 +562,7 @@ public class FragListInvoiceTagih extends BaseFragment {
                             String code = model.getError_code();
                             String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-                                Log.e("getBankCashout", object.get("bank_cashout").toString());
+                                Timber.tag("getBankCashout").e(object.get("bank_cashout").toString());
                                 try {
                                     JSONArray mArrayPaymentMethod = new JSONArray(object.get("bank_cashout").toString());
                                     bankBillerModelArrayList.clear();

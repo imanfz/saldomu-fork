@@ -275,21 +275,18 @@ public class RetrofitService {
 //            throw new AssertionError(e);
 //        }
 
-        builder.addInterceptor(new Interceptor() {
-            @Override
-            public Response intercept(@NonNull Chain chain) throws IOException {
+        builder.addInterceptor(chain -> {
 
-                Request.Builder builder1 = chain.request().newBuilder();
+            Request.Builder builder1 = chain.request().newBuilder();
 
-                builder1.header("Content-Type", "application/x-www-form-urlencoded");
+            builder1.header("Content-Type", "application/x-www-form-urlencoded");
 //                if (inApps){
-                builder1.addHeader("Authorization", "Basic " + getBasicAuth());
+            builder1.addHeader("Authorization", "Basic " + getBasicAuth());
 //                }
 
-                Request url = builder1.build();
+            Request url = builder1.build();
 
-                return chain.proceed(url);
-            }
+            return chain.proceed(url);
         });
         return builder.build();
     }
@@ -365,7 +362,7 @@ public class RetrofitService {
 
 
         String hash = SHA.SHA1(msgnya);
-        Timber.d("isi sha1 signatureFCM : " + hash);
+        Timber.d("isi sha1 signatureFCM : %s", hash);
 
         HashMap<String, Object> params = new HashMap<>();
         params.put(WebParams.RQ_UUID, uuidnya);

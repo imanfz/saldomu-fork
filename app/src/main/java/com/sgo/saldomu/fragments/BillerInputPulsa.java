@@ -4,12 +4,9 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -35,8 +32,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -131,7 +130,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
     private TextView tv_detail_item_price;
     private TextView tv_detail_admin_fee;
     private TextView tv_detail_total;
-    private Switch favoriteSwitch;
+    private SwitchCompat favoriteSwitch;
     private EditText notesEditText;
     private ImageButton contactListImageButton;
 
@@ -145,7 +144,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
     private String denom_item_id;
     private double additional_fee;
     String value_pin = "";
-    private String amount_desire = "";
+    private final String amount_desire = "";
     private int attempt;
     private int failed;
 
@@ -153,10 +152,10 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
     private BillerItem mBillerData;
     private List<DenomDataItem> mListDenomData;
     private List<BankBillerItem> mListBankBiller;
-    private ArrayList<String> _data = new ArrayList<>();
+    private final ArrayList<String> _data = new ArrayList<>();
     private ArrayList<String> _denomData;
     private ArrayAdapter<String> adapterDenom;
-    private ArrayList<ContactList> contactList = new ArrayList<>();
+    private final ArrayList<ContactList> contactList = new ArrayList<>();
     private boolean is_display_amount;
     private boolean is_input_amount;
     private String tx_id;
@@ -312,24 +311,24 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
 
         if (BillerIdNumber != null) {
 
-            if (BillerIdNumber.prefix_name.toLowerCase().equalsIgnoreCase("telkomsel")) {
-                img_operator.setBackground(getResources().getDrawable(R.drawable.telkomsel));
-            } else if (BillerIdNumber.prefix_name.toLowerCase().equalsIgnoreCase("xl")) {
-                img_operator.setBackground(getResources().getDrawable(R.drawable.xl));
-            } else if (BillerIdNumber.prefix_name.toLowerCase().equalsIgnoreCase("indosat")) {
-                img_operator.setBackground(getResources().getDrawable(R.drawable.indosat));
-            } else if (BillerIdNumber.prefix_name.toLowerCase().equalsIgnoreCase("three")) {
-                img_operator.setBackground(getResources().getDrawable(R.drawable.three));
-            } else if (BillerIdNumber.prefix_name.toLowerCase().equalsIgnoreCase("smart")) {
-                img_operator.setBackground(getResources().getDrawable(R.drawable.smartfren));
-            } else if (BillerIdNumber.prefix_name.toLowerCase().equalsIgnoreCase("axis")) {
-                img_operator.setBackground(getResources().getDrawable(R.drawable.axis));
+            if (BillerIdNumber.prefix_name.equalsIgnoreCase("telkomsel")) {
+                img_operator.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.telkomsel, null));
+            } else if (BillerIdNumber.prefix_name.equalsIgnoreCase("xl")) {
+                img_operator.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.xl, null));
+            } else if (BillerIdNumber.prefix_name.equalsIgnoreCase("indosat")) {
+                img_operator.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.indosat, null));
+            } else if (BillerIdNumber.prefix_name.equalsIgnoreCase("three")) {
+                img_operator.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.three, null));
+            } else if (BillerIdNumber.prefix_name.equalsIgnoreCase("smart")) {
+                img_operator.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.smartfren, null));
+            } else if (BillerIdNumber.prefix_name.equalsIgnoreCase("axis")) {
+                img_operator.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.axis, null));
             } else
                 img_operator.setVisibility(View.GONE);
 
             if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
                 for (int i = 0; i < _data.size(); i++) {
-                    Timber.d("_data" + _data.get(i));
+                    Timber.d("_data%s", _data.get(i));
                     if (_data != null) {
                         if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase())) {
                             biller_comm_id = Objects.requireNonNull(billerItemList.get(i)).getCommId();
@@ -375,7 +374,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                 if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) {
                     for (BillerItem object : billerItemList) {
 
-                        Log.e(TAG, "billerItemList : " + object.getCommName());
+                        Timber.tag(TAG).e("billerItemList : %s", object.getCommName());
 
                         if (!object.getCommId().equals("")) {
                             biller_comm_id = object.getCommId();
@@ -566,7 +565,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         }
     }
 
-    private Spinner.OnItemSelectedListener spinnerDenomListener = new Spinner.OnItemSelectedListener() {
+    private final Spinner.OnItemSelectedListener spinnerDenomListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
             if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
@@ -586,7 +585,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         }
     };
 
-    private Spinner.OnItemSelectedListener spinnerPaymentListener = new Spinner.OnItemSelectedListener() {
+    private final Spinner.OnItemSelectedListener spinnerPaymentListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
             Object item = adapterView.getItemAtPosition(position);
@@ -625,13 +624,14 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
 
-            Timber.d("isi params sent inquiry biller:" + params.toString());
+            Timber.d("isi params sent inquiry biller:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INQUIRY_BILLER, params, new ResponseListener() {
                 @Override
                 public void onResponses(JsonObject object) {
                     InqBillerModel model = getGson().fromJson(object, InqBillerModel.class);
                     String code = model.getError_code();
+                    String message = model.getError_message();
                     if (code.equals(WebParams.SUCCESS_CODE)) {
                         setIs_input_amount(model.getBiller_input_amount().equals(DefineValue.STRING_YES));
                         is_display_amount = model.getBiller_display_amount().equals(DefineValue.STRING_YES);
@@ -655,21 +655,17 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                         tv_detail_item_price.setText(getString(R.string.rp_) + " " + CurrencyFormat.format(amount));
                         tv_detail_admin_fee.setText(getString(R.string.rp_) + " " + CurrencyFormat.format(fee));
                     } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                        AlertDialogLogout dialogLogout = AlertDialogLogout.getInstance();
-                        dialogLogout.showDialoginActivity(getActivity(), model.getError_message());
+                        AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), model.getError_message());
                     } else if (code.equals(DefineValue.ERROR_9333)) {
-                        Timber.d("isi response app data:" + model.getApp_data());
+                        Timber.d("isi response app data:%s", model.getApp_data());
                         final AppDataModel appModel = model.getApp_data();
-                        AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                        alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                        AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                     } else if (code.equals(DefineValue.ERROR_0066)) {
-                        Timber.d("isi response maintenance:" + object.toString());
-                        AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                        alertDialogMaintenance.showDialogMaintenance(getActivity());
+                        Timber.d("isi response maintenance:%s", object.toString());
+                        AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                     } else {
-                        code = model.getError_code() + " : " + model.getError_message();
                         if (isVisible()) {
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), code + " : " + message, Toast.LENGTH_LONG).show();
                             getFragmentManager().popBackStack();
                         }
                         layout_detail.setVisibility(View.GONE);
@@ -688,7 +684,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                 }
             });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -704,7 +700,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         layout_detail_add_fee.setVisibility(View.GONE);
     }
 
-    private RadioGroup.OnCheckedChangeListener radioListener = new RadioGroup.OnCheckedChangeListener() {
+    private final RadioGroup.OnCheckedChangeListener radioListener = new RadioGroup.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             switch (checkedId) {
@@ -732,16 +728,13 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         }
     };
 
-    private Button.OnClickListener onShowContactListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if ((ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)) {
-                showListContact();
-            } else {
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{ Manifest.permission.READ_CONTACTS},
-                        RC_READ_CONTACTS);
-            }
+    private final Button.OnClickListener onShowContactListener = v -> {
+        if ((ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)) {
+            showListContact();
+        } else {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    RC_READ_CONTACTS);
         }
     };
 
@@ -762,7 +755,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         startActivityForResult(intent, RC_READ_CONTACTS);
     }
 
-    private Button.OnClickListener submitInputListener = new Button.OnClickListener() {
+    private final Button.OnClickListener submitInputListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (InetHandler.isNetworkAvailable(getActivity())) {
@@ -811,7 +804,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
     }
 
     private void initRealm() {
-        Log.v(TAG, "initRealm()");
+        Timber.tag(TAG).v("initRealm()");
 
         RealmResults<BillerItem> realmResults = realm.where(BillerItem.class).equalTo("billerType", biller_type_code).findAll();
 
@@ -820,7 +813,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
 
         billerItemList.addAll(realmResults);
         for (BillerItem item : billerItemList) {
-            Log.v(TAG, "_data " + item.getCommName());
+            Timber.tag(TAG).v("_data %s", item.getCommName());
             _data.add(item.getCommName());
         }
     }
@@ -888,13 +881,14 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                     params.put(WebParams.ADDITIONAL_FEE, "0");
             }
 
-            Timber.d("isi params sent payment biller:" + params.toString());
+            Timber.d("isi params sent payment biller:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_PAYMENT_BILLER, params, new ResponseListener() {
                 @Override
                 public void onResponses(JsonObject object) {
                     sentPaymentBillerModel = getGson().fromJson(object, SentPaymentBillerModel.class);
                     String code = sentPaymentBillerModel.getError_code();
+                    String message = sentPaymentBillerModel.getError_message();
                     if (code.equals(WebParams.SUCCESS_CODE)) {
                         if (mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)) {
                             submitBiller(bank_code, product_code, -1);
@@ -905,21 +899,17 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                             sentDataReqToken(tx_id, product_code, biller_comm_code, sentPaymentBillerModel.getMerchant_type(), bank_code, attempt);
                         }
                     } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                        AlertDialogLogout dialogLogout = AlertDialogLogout.getInstance();
-                        dialogLogout.showDialoginActivity(getActivity(), sentPaymentBillerModel.getError_message());
+                        AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), sentPaymentBillerModel.getError_message());
                     } else if (code.equals(DefineValue.ERROR_9333)) {
                         Timber.d("isi response app data:%s", sentPaymentBillerModel.getApp_data());
                         final AppDataModel appModel = sentPaymentBillerModel.getApp_data();
-                        AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                        alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                        AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                     } else if (code.equals(DefineValue.ERROR_0066)) {
                         Timber.d("isi response maintenance:%s", object.toString());
-                        AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                        alertDialogMaintenance.showDialogMaintenance(getActivity());
+                        AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                     } else {
-                        code = sentPaymentBillerModel.getError_code() + " : " + sentPaymentBillerModel.getError_message();
                         if (isVisible()) {
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), code + " : " + message, Toast.LENGTH_LONG).show();
                             getFragmentManager().popBackStack();
                         }
                         dismissProgressDialog();
@@ -953,7 +943,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params regtoken Sgo+:" + params.toString());
+            Timber.d("isi params regtoken Sgo+:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REQ_TOKEN_SGOL, params,
                     new ResponseListener() {
@@ -962,6 +952,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 if (mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_SMS))
                                     showDialog(product_code, bank_code);
@@ -971,30 +962,23 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                                     submitBiller(bank_code, product_code, attempt);
 
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(ErrorDefinition.WRONG_PIN_BILLER)) {
-                                code = model.getError_message();
-                                showDialogError(code);
-
+                                showDialogError(message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                String code_msg = model.getError_message();
                                 switch (code) {
                                     case "0059":
                                         showDialogSMS(mTempBank.getBank_name());
                                         break;
                                     case ErrorDefinition.ERROR_CODE_LESS_BALANCE:
-                                        String message_dialog = "\"" + code_msg + "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
+                                        String message_dialog = "\"" + message + "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
 
                                         AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
                                                 message_dialog, getString(R.string.ok), getString(R.string.cancel), false);
@@ -1008,8 +992,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                                         dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
                                         break;
                                     default:
-                                        code = model.getError_code() + " : " + model.getError_message();
-                                        Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getActivity(), code + " : " + message, Toast.LENGTH_LONG).show();
                                         getFragmentManager().popBackStack();
                                         break;
                                 }
@@ -1028,7 +1011,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -1103,18 +1086,15 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         if (levelClass.isLevel1QAC())
             btnDialogOTP.setText(getString(R.string.ok));
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        btnDialogOTP.setOnClickListener(view -> {
 
-                if (!levelClass.isLevel1QAC()) {
-                    Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
-                    newIntent.putExtra(DefineValue.BANK_NAME, _nama_bank);
-                    switchActivity(newIntent);
-                }
-
-                dialog.dismiss();
+            if (!levelClass.isLevel1QAC()) {
+                Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
+                newIntent.putExtra(DefineValue.BANK_NAME, _nama_bank);
+                switchActivity(newIntent);
             }
+
+            dialog.dismiss();
         });
 
         dialog.show();
@@ -1206,50 +1186,47 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         Observable<JsonObject> observable1 = RetrofitService.getInstance().PostObjectRequest2(MyApiClient.LINK_GET_BILLER_DENOM, params("PLS"));
         Observable<JsonObject> observable2 = RetrofitService.getInstance().PostObjectRequest2(MyApiClient.LINK_GET_BILLER_DENOM, params("HP"));
 
-        Observable.zip(observable1, observable2, new BiFunction<JsonObject, JsonObject, Object>() {
-            @Override
-            public Object apply(JsonObject jsonObject, JsonObject jsonObject2) throws Exception {
-                Log.e(TAG, "BiFunction observe 1 : " + jsonObject.toString());
-                Log.e(TAG, "BiFunction observe 2: " + jsonObject2.toString());
+        Observable.zip(observable1, observable2, (BiFunction<JsonObject, JsonObject, Object>) (jsonObject, jsonObject2) -> {
+            Timber.tag(TAG).e("BiFunction observe 1 : %s", jsonObject.toString());
+            Timber.tag(TAG).e("BiFunction observe 2: %s", jsonObject2.toString());
 
-                Gson gson = new Gson();
-                BillerDenomResponse response = gson.fromJson(jsonObject, BillerDenomResponse.class);
-                BillerDenomResponse response2 = gson.fromJson(jsonObject2, BillerDenomResponse.class);
+            Gson gson = new Gson();
+            BillerDenomResponse response = gson.fromJson(jsonObject, BillerDenomResponse.class);
+            BillerDenomResponse response2 = gson.fromJson(jsonObject2, BillerDenomResponse.class);
 
-                realm.beginTransaction();
-                if (response.getErrorCode().equals(WebParams.SUCCESS_CODE)) {
-                    for (BillerItem item : response.getBiller()) {
-                        _data.add(item.getCommName());
+            realm.beginTransaction();
+            if (response.getErrorCode().equals(WebParams.SUCCESS_CODE)) {
+                for (BillerItem item : response.getBiller()) {
+                    _data.add(item.getCommName());
+                }
+
+                billerItemList.addAll(response.getBiller());
+
+                realm.copyToRealmOrUpdate(response.getBiller());
+                if (args.getString(DefineValue.CUST_ID, "") != "") {
+                    et_payment_remark.setText(NoHPFormat.formatTo08(args.getString(DefineValue.CUST_ID, "")));
+
+                    checkOperator();
+                    if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
+                        showChoosePayment();
                     }
-
-                    billerItemList.addAll(response.getBiller());
-
-                    realm.copyToRealmOrUpdate(response.getBiller());
-                    if (args.getString(DefineValue.CUST_ID, "") != "") {
-                        et_payment_remark.setText(NoHPFormat.formatTo08(args.getString(DefineValue.CUST_ID, "")));
-
-                        checkOperator();
-                        if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
-                            showChoosePayment();
-                        }
-                    }
-                } else {
-                    Toast.makeText(getContext(), response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                 }
-                if (response2.getErrorCode().equals(WebParams.SUCCESS_CODE)) {
-                    realm.copyToRealmOrUpdate(response2.getBiller());
-                } else {
-                    Toast.makeText(getContext(), response.getErrorMessage(), Toast.LENGTH_SHORT).show();
-                }
-
-                realm.commitTransaction();
-
-                if (_data.isEmpty()) {
-                    initRealm();
-                }
-
-                return true;
+            } else {
+                Toast.makeText(getContext(), response.getErrorMessage(), Toast.LENGTH_SHORT).show();
             }
+            if (response2.getErrorCode().equals(WebParams.SUCCESS_CODE)) {
+                realm.copyToRealmOrUpdate(response2.getBiller());
+            } else {
+                Toast.makeText(getContext(), response.getErrorMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+            realm.commitTransaction();
+
+            if (_data.isEmpty()) {
+                initRealm();
+            }
+
+            return true;
         }).subscribe();
     }
 
@@ -1266,7 +1243,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
     private void onSaveToFavorite() {
         showProgressDialog();
         extraSignature = cust_id + biller_type_code + "BIL";
-        Log.e("extraSignature params ", extraSignature);
+        Timber.tag("extraSignature params ").e(extraSignature);
         String url = MyApiClient.LINK_TRX_FAVORITE_SAVE;
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(url, extraSignature);
         params.put(WebParams.USER_ID, userPhoneID);
@@ -1277,7 +1254,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         params.put(WebParams.NOTES, notesEditText.getText().toString());
         params.put(WebParams.DENOM_ITEM_ID, item_id);
 
-        Log.e("params ", params.toString());
+        Timber.tag("params ").e(params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(url, params,
                 new ObjListeners() {
@@ -1285,20 +1262,18 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                     public void onResponses(JSONObject response) {
                         try {
                             jsonModel model = RetrofitService.getInstance().getGson().fromJson(response.toString(), jsonModel.class);
-                            Log.e("onResponses ", response.toString());
+                            Timber.tag("onResponses ").e(response.toString());
                             String code = response.getString(WebParams.ERROR_CODE);
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 sentInsertTransTopup(value_pin);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + response.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", response.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
@@ -1309,7 +1284,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
 
                     @Override
                     public void onError(Throwable throwable) {
-                        Log.e("onResponses ", throwable.getLocalizedMessage());
+                        Timber.tag("onResponses ").e(throwable.getLocalizedMessage());
                         throwable.printStackTrace();
                     }
 
@@ -1340,7 +1315,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
             params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncryptCommID(biller_comm_id, uuid, dateTime, userPhoneID, tokenValue, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());
+            Timber.d("isi params insertTrxTOpupSGOL:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
@@ -1349,20 +1324,14 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                             SentPaymentBillerModel model = getGson().fromJson(response, SentPaymentBillerModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-
                                 getTrxStatus(tx_id, biller_comm_id);
                                 setResultActivity();
-
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else {
-
-                                code = model.getError_code() + " : " + model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                                String message = model.getError_message();
+                                Toast.makeText(getActivity(), code + " : " + message, Toast.LENGTH_LONG).show();
 
                                 if (isPIN && message.equals("PIN tidak sesuai")) {
                                     Intent i = new Intent(getActivity(), InsertPIN.class);
@@ -1395,7 +1364,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -1453,7 +1422,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         if (is_input_amount) _isi_amount_desired = amount_desire;
 
         i.putExtra(DefineValue.AMOUNT_DESIRED, _isi_amount_desired);
-        Timber.d("isi args:" + args.toString());
+        Timber.d("isi args:%s", args.toString());
         btn_submit.setEnabled(true);
 
         if (getActivity() == null)
@@ -1486,6 +1455,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                             GetTrxStatusModel model = getGson().fromJson(response, GetTrxStatusModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
 
                             if (!model.getOn_error()) {
                                 if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
@@ -1495,21 +1465,16 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                                             sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
                                             txstatus, model);
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    String message = model.getError_message();
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
-                                    String msg = model.getError_message();
-                                    showDialog(msg);
+                                    showDialog(message);
                                 }
                             } else {
                                 Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_SHORT).show();
@@ -1528,7 +1493,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 

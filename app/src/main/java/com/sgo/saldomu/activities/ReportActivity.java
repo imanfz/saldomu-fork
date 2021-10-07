@@ -27,9 +27,8 @@ import java.util.List;
  */
 
 public class ReportActivity extends BaseActivity {
-    FragmentManager fragmentManager;
+
     private ReportTabAdapter currentAdapternya;
-    SecurePreferences sp;
     private View currentView;
     private InformationDialog dialogI;
 
@@ -70,7 +69,7 @@ public class ReportActivity extends BaseActivity {
 
             tabs = (TabPageIndicator) findViewById(R.id.report_tabs_activity);
             pager = (ViewPager) findViewById(R.id.report_pager_activity);
-            adapternya = new ReportTabAdapter(getSupportFragmentManager(), this, mList, titles);
+            adapternya = new ReportTabAdapter(getSupportFragmentManager(), mList, titles);
 //            setTargetFragment(this, 0);
             pager.setAdapter(adapternya);
             pager.setPageMargin(pageMargin);
@@ -79,18 +78,6 @@ public class ReportActivity extends BaseActivity {
 
             setCurrentAdapternya(adapternya);
         }
-    }
-
-    private View getCurrentView() {
-        return currentView;
-    }
-
-    private void setCurrentView(View currentView) {
-        this.currentView = currentView;
-    }
-
-    public ReportTabAdapter getCurrentAdapternya() {
-        return currentAdapternya;
     }
 
     private void setCurrentAdapternya(ReportTabAdapter currentAdapternya) {

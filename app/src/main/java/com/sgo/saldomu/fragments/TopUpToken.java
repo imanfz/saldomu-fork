@@ -107,7 +107,7 @@ public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDia
         shareType = args.getString(DefineValue.SHARE_TYPE, "");
         String ccy_id = args.getString(DefineValue.CCY_ID, "");
 
-        Timber.d("isi args:" + args.toString());
+        Timber.d("isi args:%s", args.toString());
 
         mAmount = v.findViewById(R.id.reqTopup_amount);
         mAmount.setText(ccy_id + ". " + CurrencyFormat.format(jumlahnya));
@@ -212,12 +212,7 @@ public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDia
     };
 
     private void changeTextBtnSub() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + max_token_resend + ")");
-            }
-        });
+        getActivity().runOnUiThread(() -> btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + max_token_resend + ")"));
     }
 
     private void changeToSGOPlus(String _tx_id, String _product_code, String _product_name, String _comm_code) {
@@ -265,7 +260,7 @@ public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDia
             params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenValue.getText().toString(), subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());
+            Timber.d("isi params insertTrxTOpupSGOL:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
@@ -274,6 +269,7 @@ public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDia
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 getActivity().setResult(MainPage.RESULT_BALANCE);
 
@@ -281,24 +277,18 @@ public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDia
                                         bankName, productName, fee, jumlahnya);
 
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             }else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-
+                                Toast.makeText(getActivity(), code+ ":" +message, Toast.LENGTH_LONG).show();
                                 if (!code.equals(ErrorDefinition.ERROR_CODE_WRONG_TOKEN))
                                     getFragmentManager().popBackStack();
-                                code = model.getError_code() + ":" + model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -315,16 +305,11 @@ public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDia
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
-    private Button.OnClickListener cancelListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            getFragmentManager().popBackStack();
-        }
-    };
+    private Button.OnClickListener cancelListener = view -> getFragmentManager().popBackStack();
 
     private void requestResendToken() {
         try {
@@ -354,7 +339,7 @@ public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDia
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params resendTokenSGOL:" + params.toString());
+            Timber.d("isi params resendTokenSGOL:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(url, params,
                     new ResponseListener() {
@@ -363,30 +348,22 @@ public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDia
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-
                                 max_token_resend = max_token_resend - 1;
-
                                 changeTextBtnSub();
                                 Toast.makeText(getActivity(), getString(R.string.reg2_notif_text_resend_token), Toast.LENGTH_SHORT).show();
-
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             }else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                code = model.getError_message();
-
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -403,7 +380,7 @@ public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDia
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
 
 
@@ -425,7 +402,7 @@ public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDia
             params.put(WebParams.TX_TYPE, DefineValue.ESPAY);
             params.put(WebParams.USER_ID, userId);
 
-            Timber.d("isi params sent get Trx Status:" + params.toString());
+            Timber.d("isi params sent get Trx Status:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
                     new ResponseListener() {
@@ -444,17 +421,14 @@ public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDia
 //                                        ,response.getString(WebParams.TX_REMARK), response.optString(WebParams.BUSS_SCHEME_CODE),
 //                                        response.optString(WebParams.BUSS_SCHEME_NAME));
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             }else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
                                 showDialog(message);
                             }
@@ -473,7 +447,7 @@ public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDia
                     }
             );
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -494,12 +468,9 @@ public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDia
         Title.setText(getString(R.string.error));
         Message.setText(msg);
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                //SgoPlusWeb.this.finish();
-            }
+        btnDialogOTP.setOnClickListener(view -> {
+            dialog.dismiss();
+            //SgoPlusWeb.this.finish();
         });
 
         dialog.show();

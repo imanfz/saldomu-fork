@@ -369,7 +369,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                 currentLatitude = lastLocation.getLatitude();
                 currentLongitude = lastLocation.getLongitude();
                 btnApprove.setEnabled(true);
-                Timber.d("Location Found" + lastLocation.toString());
+                Timber.d("Location Found%s", lastLocation.toString());
                 googleApiClient.disconnect();
             }
         } catch (SecurityException se) {

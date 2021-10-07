@@ -91,120 +91,112 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
         btnProses = (Button) findViewById(R.id.btnProses);
         tvDate = (TextView) findViewById(R.id.tvDate);
 
-        tbOpenClosed.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    llSetupHourForm.setVisibility(View.VISIBLE);
-                    llSetupHourFormEnd.setVisibility(View.VISIBLE);
-                    llHourForm.setVisibility(View.VISIBLE);
-                    isClosed = false;
-                    tvOpen24Hours.setText(getString(R.string.set_shop_opening_date));
-                } else {
-                    llSetupHourForm.setVisibility(View.GONE);
-                    llSetupHourFormEnd.setVisibility(View.GONE);
-                    llHourForm.setVisibility(View.GONE);
-                    isClosed = true;
-                    tvOpen24Hours.setText(getString(R.string.set_shop_closing_date));
-                }
+        tbOpenClosed.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                llSetupHourForm.setVisibility(View.VISIBLE);
+                llSetupHourFormEnd.setVisibility(View.VISIBLE);
+                llHourForm.setVisibility(View.VISIBLE);
+                isClosed = false;
+                tvOpen24Hours.setText(getString(R.string.set_shop_opening_date));
+            } else {
+                llSetupHourForm.setVisibility(View.GONE);
+                llSetupHourFormEnd.setVisibility(View.GONE);
+                llHourForm.setVisibility(View.GONE);
+                isClosed = true;
+                tvOpen24Hours.setText(getString(R.string.set_shop_closing_date));
             }
         });
 
         btnProses.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
+                v -> {
 
 
-                        String shopDate = new Gson().toJson(selectedDates);
-                        Boolean hasError = false;
+                    String shopDate = new Gson().toJson(selectedDates);
+                    Boolean hasError = false;
 
-                        if (shopDate.equals("")) {
+                    if (shopDate.equals("")) {
+                        hasError = true;
+                        Toast.makeText(getApplication(), R.string.err_empty_shop_date, Toast.LENGTH_SHORT).show();
+                    }
+
+                    if (!isClosed) {
+
+                        if (shopStartOpenHour.equals("") || shopEndOpenHour.equals("")) {
                             hasError = true;
-                            Toast.makeText(getApplication(), R.string.err_empty_shop_date, Toast.LENGTH_SHORT).show();
-                        }
-
-                        if (!isClosed) {
-
-                            if (shopStartOpenHour.equals("") || shopEndOpenHour.equals("")) {
-                                hasError = true;
-                                Toast.makeText(getApplication(), R.string.err_empty_shop_hour, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        if (!hasError) {
-                            progdialog = DefinedDialog.CreateProgressDialog(BbsRegisterOpenClosedShopActivity.this, "");
-                            HashMap<String, Object> params = new HashMap<>();
-                            UUID rcUUID = UUID.randomUUID();
-                            String dtime = DateTimeFormat.getCurrentDateTime();
-
-
-                            params.put(WebParams.RC_UUID, rcUUID);
-                            params.put(WebParams.RC_DATETIME, dtime);
-                            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-                            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-                            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-                            params.put(WebParams.SHOP_ID, shopId);
-                            params.put(WebParams.MEMBER_ID, memberId);
-                            params.put(WebParams.SHOP_STATUS, shopStatus);
-                            params.put(WebParams.SHOP_REMARK, shopRemark);
-                            if (!isClosed) {
-                                params.put(WebParams.SHOP_START_OPEN_HOUR, shopStartOpenHour);
-                                params.put(WebParams.SHOP_END_OPEN_HOUR, shopEndOpenHour);
-                            }
-                            params.put(WebParams.SHOP_DATE, shopDate);
-
-                            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.APP_ID + shopStatus));
-
-                            params.put(WebParams.SIGNATURE, signature);
-
-                            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REGISTER_OPEN_CLOSE_TOKO, params,
-                                    new ObjListeners() {
-                                        @Override
-                                        public void onResponses(JSONObject response) {
-                                            try {
-
-                                                String code = response.getString(WebParams.ERROR_CODE);
-                                                if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                                                    //                                    Intent intent=new Intent(BbsRegisterOpenClosedShopActivity.this, .class);
-                                                    //                                    //intent.putExtra("PersonID", personDetailsModelArrayList.get(position).getId());
-                                                    //                                    startActivity(intent);
-                                                } else {
-                                                    Toast.makeText(getApplication(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
-                                                }
-
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable throwable) {
-
-                                        }
-
-                                        @Override
-                                        public void onComplete() {
-
-                                            progdialog.dismiss();
-                                        }
-                                    });
+                            Toast.makeText(getApplication(), R.string.err_empty_shop_hour, Toast.LENGTH_SHORT).show();
                         }
                     }
 
+                    if (!hasError) {
+                        progdialog = DefinedDialog.CreateProgressDialog(BbsRegisterOpenClosedShopActivity.this, "");
+                        HashMap<String, Object> params = new HashMap<>();
+                        UUID rcUUID = UUID.randomUUID();
+                        String dtime = DateTimeFormat.getCurrentDateTime();
+
+
+                        params.put(WebParams.RC_UUID, rcUUID);
+                        params.put(WebParams.RC_DATETIME, dtime);
+                        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+                        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+                        params.put(WebParams.SHOP_ID, shopId);
+                        params.put(WebParams.MEMBER_ID, memberId);
+                        params.put(WebParams.SHOP_STATUS, shopStatus);
+                        params.put(WebParams.SHOP_REMARK, shopRemark);
+                        if (!isClosed) {
+                            params.put(WebParams.SHOP_START_OPEN_HOUR, shopStartOpenHour);
+                            params.put(WebParams.SHOP_END_OPEN_HOUR, shopEndOpenHour);
+                        }
+                        params.put(WebParams.SHOP_DATE, shopDate);
+
+                        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.APP_ID + shopStatus));
+
+                        params.put(WebParams.SIGNATURE, signature);
+
+                        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REGISTER_OPEN_CLOSE_TOKO, params,
+                                new ObjListeners() {
+                                    @Override
+                                    public void onResponses(JSONObject response) {
+                                        try {
+
+                                            String code = response.getString(WebParams.ERROR_CODE);
+                                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                                //                                    Intent intent=new Intent(BbsRegisterOpenClosedShopActivity.this, .class);
+                                                //                                    //intent.putExtra("PersonID", personDetailsModelArrayList.get(position).getId());
+                                                //                                    startActivity(intent);
+                                            } else {
+                                                Toast.makeText(getApplication(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                            }
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable throwable) {
+
+                                    }
+
+                                    @Override
+                                    public void onComplete() {
+
+                                        progdialog.dismiss();
+                                    }
+                                });
+                    }
                 }
         );
     }
 
-    Button.OnClickListener btnShopDateListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            OpenCloseDatePickerFragment openCloseDatePickerFragment = new OpenCloseDatePickerFragment();
-            Bundle args = new Bundle();
-            args.putSerializable("selectDates", selectedDates);
-            args.putSerializable("listDates", listDates);
-            openCloseDatePickerFragment.setArguments(args);
-            openCloseDatePickerFragment.show(getFragmentManager(), OpenCloseDatePickerFragment.TAG);
-        }
+    Button.OnClickListener btnShopDateListener = v -> {
+        OpenCloseDatePickerFragment openCloseDatePickerFragment = new OpenCloseDatePickerFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("selectDates", selectedDates);
+        args.putSerializable("listDates", listDates);
+        openCloseDatePickerFragment.setArguments(args);
+        openCloseDatePickerFragment.show(getFragmentManager(), OpenCloseDatePickerFragment.TAG);
     };
 
     Button.OnClickListener btnOpenHourListener = new Button.OnClickListener() {

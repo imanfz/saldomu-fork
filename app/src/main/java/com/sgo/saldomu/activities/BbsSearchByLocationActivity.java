@@ -3,7 +3,6 @@ package com.sgo.saldomu.activities;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -17,7 +16,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,10 +26,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -45,12 +40,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.widgets.BaseActivity;
-import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import timber.log.Timber;
 
 public class BbsSearchByLocationActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
@@ -76,20 +72,13 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
                 // notify user
                 AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
                 dialog.setMessage("Location not enabled!");
-                dialog.setPositiveButton("Open location settings", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(myIntent);
-                    }
+                dialog.setPositiveButton("Open location settings", (paramDialogInterface, paramInt) -> {
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(myIntent);
                 });
-                dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                dialog.setNegativeButton("Cancel", (paramDialogInterface, paramInt) -> {
+                    // TODO Auto-generated method stub
 
-                    @Override
-                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                        // TODO Auto-generated method stub
-
-                    }
                 });
                 dialog.show();
             }
@@ -120,7 +109,7 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
         } catch (IOException ioException) {
             // Catch network or other I/O problems.
             //errorMessage = "Catch : Network or other I/O problems - No geocoder available";
-            Log.d("onIOException ", "Catch : Network or other I/O problems - No geocoder available");
+            Timber.tag("onIOException ").d("Catch : Network or other I/O problems - No geocoder available");
         }
     }
 
@@ -191,21 +180,13 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {
             changeMap(mLastLocation);
-            Log.d(TAG, "ON connected");
-
+            Timber.tag(TAG).d("ON connected");
         } else
             try {
                 LocationServices.FusedLocationApi.removeLocationUpdates(
@@ -229,7 +210,7 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.i(TAG, "Connection suspended");
+        Timber.tag(TAG).i("Connection suspended");
         mGoogleApiClient.connect();
     }
 
@@ -253,30 +234,27 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d(TAG, "OnMapReady");
+        Timber.tag(TAG).d("OnMapReady");
         mMap = googleMap;
 
-        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-            @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
-                Log.d("Camera postion change" + "", cameraPosition + "");
-                mCenterLatLong = cameraPosition.target;
+        mMap.setOnCameraChangeListener(cameraPosition -> {
+            Timber.tag("Camera postion change" + "").d(cameraPosition + "");
+            mCenterLatLong = cameraPosition.target;
 
 
-                mMap.clear();
+            mMap.clear();
 
-                try {
+            try {
 
-                    Location mLocation = new Location("");
-                    mLocation.setLatitude(mCenterLatLong.latitude);
-                    mLocation.setLongitude(mCenterLatLong.longitude);
+                Location mLocation = new Location("");
+                mLocation.setLatitude(mCenterLatLong.latitude);
+                mLocation.setLongitude(mCenterLatLong.longitude);
 
-                    //startIntentService(mLocation);
-                    //mLocationMarkerText.setText("Lat : " + mCenterLatLong.latitude + "," + "Long : " + mCenterLatLong.longitude);
+                //startIntentService(mLocation);
+                //mLocationMarkerText.setText("Lat : " + mCenterLatLong.latitude + "," + "Long : " + mCenterLatLong.longitude);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -287,7 +265,6 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            return;
         }
 //        mMap.setMyLocationEnabled(true);
 //        mMap.getUiSettings().setMyLocationButtonEnabled(true);
@@ -325,7 +302,7 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
     }
 
     private void changeMap(Double latitude, Double longitude) {
-        Log.d(TAG, "Reaching map" + mMap);
+        Timber.tag(TAG).d("Reaching map%s", mMap);
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -369,7 +346,7 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
 
     private void changeMap(Location location) {
 
-        Log.d(TAG, "Reaching map" + mMap);
+        Timber.tag(TAG).d("Reaching map%s", mMap);
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

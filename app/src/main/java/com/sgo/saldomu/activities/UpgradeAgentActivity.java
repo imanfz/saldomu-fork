@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -79,12 +80,8 @@ public class UpgradeAgentActivity extends BaseActivity {
     Button btn_proses;
     TextView tv_pb_siup, tv_pb_npwp, tv_reject_siup, tv_reject_npwp;
     private int RESULT;
-    private Integer proses;
     private Integer set_result_photo;
     RelativeLayout layout_siup, layout_npwp;
-//    private String contactCenter;
-//    private String listContactPhone = "";
-//    private String listAddress = "";
     private EditText et_mothersName;
     String reject_siup, reject_npwp, remark_siup, remark_npwp;
     CheckBox cb_termsncond;
@@ -114,7 +111,7 @@ public class UpgradeAgentActivity extends BaseActivity {
         cameraNPWP = v.findViewById(R.id.camera_npwp);
         btn_proses = v.findViewById(R.id.button_proses);
         btn_proses.setEnabled(false);
-        btn_proses.setBackground(getResources().getDrawable(R.color.grey_300));
+        btn_proses.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.grey_300, null));
         tv_pb_siup = v.findViewById(R.id.tv_pb1_upgradeAgent);
         tv_pb_npwp = v.findViewById(R.id.tv_pb2_upgradeAgent);
         tv_reject_siup = v.findViewById(R.id.tv_respon_reject_siup);
@@ -145,16 +142,13 @@ public class UpgradeAgentActivity extends BaseActivity {
 
         initializeToolbar();
 
-        cb_termsncond.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    btn_proses.setEnabled(true);
-                    btn_proses.setBackground(getResources().getDrawable(R.color.colorPrimaryDark));
-                }else{
-                    btn_proses.setEnabled(false);
-                    btn_proses.setBackground(getResources().getDrawable(R.color.grey_300));
-                }
+        cb_termsncond.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                btn_proses.setEnabled(true);
+                btn_proses.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.colorPrimaryDark, null));
+            } else {
+                btn_proses.setEnabled(false);
+                btn_proses.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.grey_300, null));
             }
         });
 
@@ -194,12 +188,9 @@ public class UpgradeAgentActivity extends BaseActivity {
         }
     };
 
-    private Button.OnClickListener prosesListener = new ImageButton.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (validationPhoto()) {
-                sentExecAgent();
-            }
+    private Button.OnClickListener prosesListener = v -> {
+        if (validationPhoto()) {
+            sentExecAgent();
         }
     };
 
@@ -233,23 +224,20 @@ public class UpgradeAgentActivity extends BaseActivity {
             a.setCancelable(true);
             a.setTitle("Choose Profile Picture");
             a.setAdapter(new ArrayAdapter<>(UpgradeAgentActivity.this, android.R.layout.simple_list_item_1, items),
-                    new DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (which == 0) {
-                                if (set_result_photo == RESULT_CAMERA_SIUP) {
-                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_SIUP);
-                                } else if (set_result_photo == RESULT_CAMERA_NPWP) {
-                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_NPWP);
-                                }
-                            } else if (which == 1) {
-                                pickAndCameraUtil.runCamera(set_result_photo);
+                    (dialog, which) -> {
+                        if (which == 0) {
+                            if (set_result_photo == RESULT_CAMERA_SIUP) {
+                                pickAndCameraUtil.chooseGallery(RESULT_GALLERY_SIUP);
+                            } else if (set_result_photo == RESULT_CAMERA_NPWP) {
+                                pickAndCameraUtil.chooseGallery(RESULT_GALLERY_NPWP);
+                            }
+                        } else if (which == 1) {
+                            pickAndCameraUtil.runCamera(set_result_photo);
 //                                Intent intent=new Intent(getApplicationContext(),CameraViewActivity.class);
 //                                startActivityForResult(intent,set_result_photo);
 
-                            }
-
                         }
+
                     }
             );
             a.create();
@@ -322,19 +310,16 @@ public class UpgradeAgentActivity extends BaseActivity {
                 .getSignature2(MyApiClient.LINK_UPLOAD_SIUP_NPWP, extraSignature);
 
         RequestBody requestFile = new ProgressRequestBody(photoFile,
-                new ProgressRequestBody.UploadCallbacks() {
-                    @Override
-                    public void onProgressUpdate(int percentage) {
-                        switch (_type) {
-                            case SIUP_TYPE:
-                                pbSIUP.setProgress(percentage);
-                                break;
-                            case NPWP_TYPE:
-                                pbNPWP.setProgress(percentage);
-                                break;
-                        }
-
+                percentage -> {
+                    switch (_type) {
+                        case SIUP_TYPE:
+                            pbSIUP.setProgress(percentage);
+                            break;
+                        case NPWP_TYPE:
+                            pbNPWP.setProgress(percentage);
+                            break;
                     }
+
                 });
 //                RequestBody.create(MediaType.parse("image/*"), photoFile);
 
@@ -351,64 +336,57 @@ public class UpgradeAgentActivity extends BaseActivity {
 //            params.put(WebParams.USER_IMAGES, photoFile);
         params.put(WebParams.COMM_ID, commid);
         params.put(WebParams.TYPE, flags);
-        Timber.d("params upload foto: " + params.toString());
-        Timber.d("params upload foto type: " + flag);
+        Timber.d("params upload foto: %s", params.toString());
+        Timber.d("params upload foto type: %s", flag);
 
         RetrofitService.getInstance().MultiPartRequest(MyApiClient.LINK_UPLOAD_SIUP_NPWP, params, filePart,
-                new ObjListener() {
-                    @Override
-                    public void onResponses(JsonObject object) {
+                object -> {
 
-                        Gson gson = new Gson();
-                        jsonModel model = gson.fromJson(object, jsonModel.class);
+                    Gson gson = new Gson();
+                    jsonModel model = gson.fromJson(object, jsonModel.class);
 
-                        String error_code = model.getError_code();
-                        String error_message = model.getError_message();
-                        if (error_code.equalsIgnoreCase("0000")) {
-                            switch (_type) {
-                                case SIUP_TYPE:
-                                    pbSIUP.setProgress(100);
-                                    BlinkingEffectClass.blink(layout_siup);
-                                    break;
-                                case NPWP_TYPE:
-                                    pbNPWP.setProgress(100);
-                                    BlinkingEffectClass.blink(layout_npwp);
-                                    break;
-                            }
-
-                        } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(UpgradeAgentActivity.this, error_message);
-                        } else if (error_code.equals(DefineValue.ERROR_9333)) {
-                            Timber.d("isi response app data:" + model.getApp_data());
-                            final AppDataModel appModel = model.getApp_data();
-                            AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                            alertDialogUpdateApp.showDialogUpdate(UpgradeAgentActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
-                        } else if (error_code.equals(DefineValue.ERROR_0066)) {
-                            Timber.d("isi response maintenance:" + object.toString());
-                            AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                            alertDialogMaintenance.showDialogMaintenance(UpgradeAgentActivity.this);
-                        }else {
-
-                            Timber.d("Masuk failure");
-                            if (MyApiClient.PROD_FAILURE_FLAG) {
-                                Timber.d("Masuk if prod failure flag");
-                                Toast.makeText(UpgradeAgentActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                if (flag == SIUP_TYPE) {
-                                    Timber.d("masuk failure siup");
-                                    pbSIUP.setProgress(0);
-                                    tv_pb_siup.setText("0 %");
-                                }
-                                if (flag == NPWP_TYPE) {
-                                    Timber.d("masuk failure npwp");
-                                    pbNPWP.setProgress(0);
-                                    tv_pb_npwp.setText("0 %");
-                                }
-                            } else {
-                                Toast.makeText(UpgradeAgentActivity.this, error_message, Toast.LENGTH_SHORT).show();
-                            }
-
+                    String error_code = model.getError_code();
+                    String error_message = model.getError_message();
+                    if (error_code.equalsIgnoreCase("0000")) {
+                        switch (_type) {
+                            case SIUP_TYPE:
+                                pbSIUP.setProgress(100);
+                                BlinkingEffectClass.blink(layout_siup);
+                                break;
+                            case NPWP_TYPE:
+                                pbNPWP.setProgress(100);
+                                BlinkingEffectClass.blink(layout_npwp);
+                                break;
                         }
+
+                    } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
+                        AlertDialogLogout.getInstance().showDialoginActivity(UpgradeAgentActivity.this, error_message);
+                    } else if (error_code.equals(DefineValue.ERROR_9333)) {
+                        Timber.d("isi response app data:%s", model.getApp_data());
+                        final AppDataModel appModel = model.getApp_data();
+                        AlertDialogUpdateApp.getInstance().showDialogUpdate(UpgradeAgentActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                    } else if (error_code.equals(DefineValue.ERROR_0066)) {
+                        Timber.d("isi response maintenance:%s", object.toString());
+                        AlertDialogMaintenance.getInstance().showDialogMaintenance(UpgradeAgentActivity.this);
+                    } else {
+                        Timber.d("Masuk failure");
+                        if (MyApiClient.PROD_FAILURE_FLAG) {
+                            Timber.d("Masuk if prod failure flag");
+                            Toast.makeText(UpgradeAgentActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                            if (flag == SIUP_TYPE) {
+                                Timber.d("masuk failure siup");
+                                pbSIUP.setProgress(0);
+                                tv_pb_siup.setText("0 %");
+                            }
+                            if (flag == NPWP_TYPE) {
+                                Timber.d("masuk failure npwp");
+                                pbNPWP.setProgress(0);
+                                tv_pb_npwp.setText("0 %");
+                            }
+                        } else {
+                            Toast.makeText(UpgradeAgentActivity.this, error_message, Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 });
 
@@ -429,7 +407,7 @@ public class UpgradeAgentActivity extends BaseActivity {
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.MOTHER_NAME, et_mothersName.getText().toString());
 
-            Timber.d("isi params execute agent:" + params.toString());
+            Timber.d("isi params execute agent:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_EXEC_AGENT, params,
                     new ObjListeners() {
@@ -439,7 +417,8 @@ public class UpgradeAgentActivity extends BaseActivity {
                                 Gson gson = new Gson();
                                 jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                Timber.d("response execute agent:" + response.toString());
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                Timber.d("response execute agent:%s", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     SecurePreferences.Editor mEdit = sp.edit();
                                     mEdit.putBoolean(DefineValue.IS_UPGRADE_AGENT, true);
@@ -452,24 +431,18 @@ public class UpgradeAgentActivity extends BaseActivity {
                                     mEdit.apply();
                                     DialogSuccessUploadPhoto();
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(UpgradeAgentActivity.this, message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(UpgradeAgentActivity.this, message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(UpgradeAgentActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(UpgradeAgentActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(UpgradeAgentActivity.this);
-                                }else {
-                                    code = response.getString(WebParams.ERROR_MESSAGE);
-                                    Toast.makeText(UpgradeAgentActivity.this, code, Toast.LENGTH_LONG).show();
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(UpgradeAgentActivity.this);
+                                } else {
+                                    Toast.makeText(UpgradeAgentActivity.this, message, Toast.LENGTH_LONG).show();
                                     getFragmentManager().popBackStack();
-
                                 }
 
                             } catch (JSONException e) {
@@ -489,7 +462,7 @@ public class UpgradeAgentActivity extends BaseActivity {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 

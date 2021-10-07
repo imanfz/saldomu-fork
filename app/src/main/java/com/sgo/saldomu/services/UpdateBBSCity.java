@@ -68,7 +68,7 @@ public class UpdateBBSCity extends IntentService {
                         public void onResponses(JSONObject response) {
                             try {
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                Timber.d("Isi response get BBS city: "+response.toString());
+                                Timber.d("Isi response get BBS city: %s", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     insertToRealm(response.optJSONArray(WebParams.BBS_CITY));
                                 }else {
@@ -91,7 +91,7 @@ public class UpdateBBSCity extends IntentService {
                         }
                     });
         }catch (Exception e){
-            Log.d("httpclient:",e.getMessage());
+            Timber.tag("httpclient:").d(e.getMessage());
         }
     }
 

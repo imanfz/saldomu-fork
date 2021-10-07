@@ -132,12 +132,7 @@ public class ListBankTopUpFragment extends BaseFragment {
         bankListTopupAdapter = new BankListTopupAdapter(getActivity(), listDataHeader2, bankData -> {
             DataManager.getInstance().setBankData(bankData);
 
-            BankProductSelectionBottomSheet dialogs = BankProductSelectionBottomSheet.newDialog(new BankProductSelectionBottomSheet.OnClick() {
-                @Override
-                public void onClick(listBankModel obj) {
-                    selectAction(obj);
-                }
-            });
+            BankProductSelectionBottomSheet dialogs = BankProductSelectionBottomSheet.newDialog(obj -> selectAction(obj));
             dialogs.show(getFragManager(), "dialog");
         });
 
@@ -231,7 +226,7 @@ public class ListBankTopUpFragment extends BaseFragment {
                 params.put(WebParams.TYPE, DefineValue.BANKLIST_TYPE_ALL);
                 params.put(WebParams.USER_ID, userPhoneID);
 
-                Timber.d("isi params get BankList:" + params.toString());
+                Timber.d("isi params get BankList:%s", params.toString());
 
                 RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BANK_LIST, params,
                         new ResponseListener() {

@@ -18,9 +18,7 @@ import com.sgo.saldomu.widgets.BaseActivity;
 import timber.log.Timber;
 
 public class TagihActivity extends BaseActivity {
-    SecurePreferences sp;
     FragmentManager fragmentManager;
-    Fragment mContent;
     Fragment newFragment = null;
     private String memberCode, commCode, commName, anchorName, txIdPG;
 
@@ -36,7 +34,7 @@ public class TagihActivity extends BaseActivity {
         Intent intent = getIntent();
         Bundle bundle = new Bundle();
         Boolean is_search = intent.getBooleanExtra(DefineValue.IS_SEARCH_DGI, false);
-        Timber.d("is search tagih activity : ", is_search.toString());
+        Timber.d("is search tagih activity : %s", is_search.toString());
         if (intent.hasExtra(DefineValue.MEMBER_CODE_PG)) {
             memberCode = intent.getStringExtra(DefineValue.MEMBER_CODE_PG);
             commCode = intent.getStringExtra(DefineValue.COMM_CODE_PG);
@@ -65,8 +63,6 @@ public class TagihActivity extends BaseActivity {
             }
             newFragment.setArguments(bundle);
         }
-
-        mContent = newFragment;
 
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

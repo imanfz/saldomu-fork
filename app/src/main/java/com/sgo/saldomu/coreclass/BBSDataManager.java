@@ -40,7 +40,7 @@ public class BBSDataManager {
         BBSDataManager bbsDataManager = new BBSDataManager();
         boolean a = bbsDataManager.isMustUpdate();
         boolean b = bbsDataManager.isSameUser();
-        Log.d("bbs data manager", "a: " + a + ", b: " + b);
+        Timber.tag("bbs data manager").d("a: " + a + ", b: " + b);
         if(a || !b) {
             Timber.d("return true data cta must update");
             return true;
@@ -66,7 +66,7 @@ public class BBSDataManager {
         BBSDataManager bbsDataManager = new BBSDataManager();
         boolean a = bbsDataManager.isMustUpdate();
         boolean b = bbsDataManager.isSameUser();
-        Log.d("bbs data manager", "a: " + a + ", b: " + b);
+        Timber.tag("bbs data manager").d("a: " + a + ", b: " + b);
         if(a || !b) {
 //        if(bbsDataManager.isMustUpdate() || !bbsDataManager.isSameUser()) {
             Timber.d("return true data atc must update");
@@ -92,7 +92,7 @@ public class BBSDataManager {
         BBSDataManager bbsDataManager = new BBSDataManager();
         boolean a = bbsDataManager.isMustUpdate();
         boolean b = bbsDataManager.isSameUser();
-        Log.d("bbs data manager", "a: " + a + ", b: " + b);
+        Timber.tag("bbs data manager").d("a: " + a + ", b: " + b);
         if(a || !b) {
 //        if(bbsDataManager.isMustUpdate() || !bbsDataManager.isSameUser()) {
             Timber.d("return true data ctr must update");

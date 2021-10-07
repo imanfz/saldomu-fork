@@ -25,6 +25,8 @@ import java.util.Date;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 
+import timber.log.Timber;
+
 
 public class CameraViewActivity extends AppCompatActivity {
     private static final String TAG = "CameraViewActivity";
@@ -62,7 +64,7 @@ public class CameraViewActivity extends AppCompatActivity {
     private Camera.PictureCallback mPicture = (data, camera) -> {
         File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
         if (pictureFile == null) {
-            Log.d(TAG, "Error creating media file, check storage permissions");
+            Timber.tag(TAG).d("Error creating media file, check storage permissions");
             return;
         }
 
@@ -76,11 +78,11 @@ public class CameraViewActivity extends AppCompatActivity {
             setResult(Activity.RESULT_OK,
                     new Intent().putExtra("imagePath", pictureFile.getAbsolutePath()));
             finish();
-            Log.d(TAG, "File Path: " + pictureFile.getAbsolutePath());
+            Timber.tag(TAG).d("File Path: %s", pictureFile.getAbsolutePath());
         } catch (FileNotFoundException e) {
-            Log.d(TAG, "File not found: " + e.getMessage());
+            Timber.tag(TAG).d("File not found: %s", e.getMessage());
         } catch (IOException e) {
-            Log.d(TAG, "Error accessing file: " + e.getMessage());
+            Timber.tag(TAG).d("Error accessing file: %s", e.getMessage());
         }
     };
 
@@ -99,7 +101,7 @@ public class CameraViewActivity extends AppCompatActivity {
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                Log.d("MyCameraApp", "failed to create directory");
+                Timber.tag("MyCameraApp").d("failed to create directory");
                 return null;
             }
         }

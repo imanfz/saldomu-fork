@@ -50,7 +50,7 @@ import timber.log.Timber;
  * Created by Lenovo Thinkpad on 5/16/2018.
  */
 
-public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAdapter.listener{
+public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAdapter.listener {
     View v;
     SecurePreferences sp;
     private ProgressDialog progdialog;
@@ -72,7 +72,7 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         recyclerView = v.findViewById(R.id.recyclerView);
 
-        userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
+        userPhoneID = sp.getString(DefineValue.USERID_PHONE, "");
 
         scadmCommunityModelArrayList.clear();
 
@@ -98,7 +98,7 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.USER_NAME, userNameLogin);
 
-            Timber.d("isi params get list community denom scadm:" + params.toString());
+            Timber.d("isi params get list community denom scadm:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_LIST_COMMUNITY_DENOM_SCADM, params,
                     new ObjListeners() {
@@ -108,7 +108,8 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
                                 Gson gson = new Gson();
                                 jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                Timber.d("isi response get list community denom scadm:" + response.toString());
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                Timber.d("isi response get list community denom scadm:%s", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                     JSONArray mArrayCommunity = new JSONArray(response.getString(WebParams.COMMUNITY));
@@ -133,24 +134,19 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
                                     listDenomSCADMAdapter.updateData(scadmCommunityModelArrayList);
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
-                                }else {
-                                    Timber.d("Error isi response get list community denom scadm:" + response.toString());
-                                    code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
+                                } else {
+                                    Timber.d("Error isi response get list community denom scadm:%s", response.toString());
 
-                                    showDialog(response.getString(WebParams.ERROR_MESSAGE));
+                                    showDialog(message);
                                 }
 
                             } catch (JSONException e) {
@@ -172,13 +168,13 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
     @Override
     public void onClick(SCADMCommunityModel item) {
-        Bundle bundle=new Bundle();
+        Bundle bundle = new Bundle();
         bundle.putString(DefineValue.MEMBER_ID_SCADM, item.getMember_id_scadm());
         bundle.putString(DefineValue.COMMUNITY_CODE, item.getComm_code());
         bundle.putString(DefineValue.COMMUNITY_ID, item.getComm_id());
@@ -199,7 +195,7 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialog= dialog.findViewById(R.id.btn_dialog_notification_ok);
+        Button btnDialog = dialog.findViewById(R.id.btn_dialog_notification_ok);
         TextView Title = dialog.findViewById(R.id.title_dialog);
         TextView Message = dialog.findViewById(R.id.message_dialog);
 
@@ -207,12 +203,7 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
         Title.setText(getString(R.string.error));
         Message.setText(msg);
 
-        btnDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().finish();
-            }
-        });
+        btnDialog.setOnClickListener(view -> getActivity().finish());
 
         dialog.show();
     }

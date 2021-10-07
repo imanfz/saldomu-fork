@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.chaos.view.PinView;
@@ -97,25 +98,19 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
 
-        btSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (inputValidation()) {
-                    confirmOTP();
-                }
+        btSend.setOnClickListener(view12 -> {
+            if (inputValidation()) {
+                confirmOTP();
             }
         });
 
-        btResend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pinView.setText("");
-                getOTP();
-            }
+        btResend.setOnClickListener(view1 -> {
+            pinView.setText("");
+            getOTP();
         });
 
         if (!btResend.isEnabled())
-            btResend.setBackground(getActivity().getResources().getDrawable(R.color.transparant));
+            btResend.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.transparant, null));
 
     }
 
@@ -134,17 +129,17 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
                         - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(l))) + ":"
                         + (TimeUnit.MILLISECONDS.toSeconds(l)
                         - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(l)));
-                Timber.d("sisa ontick timer " + sisa);
+                Timber.d("sisa ontick timer %s", sisa);
                 allowBackPress = false;
                 btResend.setEnabled(false);
             }
 
             @Override
             public void onFinish() {
-                Timber.d("sisa onfinish timer " + sisa);
+                Timber.d("sisa onfinish timer %s", sisa);
                 allowBackPress = true;
                 btResend.setEnabled(true);
-                btResend.setBackground(getActivity().getResources().getDrawable(R.drawable.rounded_background_blue));
+                btResend.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_background_blue, null));
             }
         }.start();
     }
@@ -199,9 +194,9 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
             uuid = params.get(WebParams.RC_UUID).toString();
             dateTime = params.get(WebParams.RC_DTIME).toString();
             key = uuid + dateTime + BuildConfig.APP_ID + subStringLink + MyApiClient.COMM_ID + user_id;
-            Timber.d("key : " + key);
+            Timber.d("key : %s", key);
             encrypted_pin = RSA.opensslEncryptLogin(key, pin);
-            Timber.d("encrypted pin : " + encrypted_pin);
+            Timber.d("encrypted pin : %s", encrypted_pin);
 
             params.put(WebParams.USER_ID, user_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -209,7 +204,7 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
             params.put(WebParams.IMEI_ID, imeiDevice.toUpperCase());
 
 
-            Timber.d("isi params confirm OTP:" + params.toString());
+            Timber.d("isi params confirm OTP:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params
                     , new ResponseListener() {
@@ -220,7 +215,8 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
 
                             if (!model.getOn_error()) {
                                 String code = model.getError_code();
-                                Timber.d("isi response confirm OTP : " + object.toString());
+                                String message = model.getError_message();
+                                Timber.d("isi response confirm OTP : %s", object.toString());
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     Timber.d("Sukses");
@@ -239,19 +235,16 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
                                     getActivity().finish();
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), model.getError_message());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + object.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                    Timber.d("isi response maintenance:%s", object.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
-                                    Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 }
                             } else {
                                 Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_SHORT).show();
@@ -269,7 +262,7 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -286,7 +279,7 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.DEVICE_NAME, device_name);
 
-            Timber.d("isi params get OTP:" + params.toString());
+            Timber.d("isi params get OTP:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_OTP, params
                     , new ResponseListener() {
@@ -294,11 +287,11 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
                         public void onResponses(JsonObject object) {
                             OTPModel model = getGson().fromJson(object, OTPModel.class);
 
-
                             if (!model.getOn_error()) {
 
                                 String code = model.getError_code();
-                                Timber.d("isi response get OTP : " + object.toString());
+                                String message = model.getError_message();
+                                Timber.d("isi response get OTP : %s", object.toString());
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     pinView.setText("");
@@ -307,21 +300,18 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
                                     initiateCountDownTimerForResendOTP();
                                     Toast.makeText(getActivity(), getString(R.string.resend_verification_code), Toast.LENGTH_LONG).show();
                                     btResend.setEnabled(false);
-                                    btResend.setBackground(getActivity().getResources().getDrawable(R.color.transparant));
+                                    btResend.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.transparant, null));
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), model.getError_message());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + object.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                    Timber.d("isi response maintenance:%s", object.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
-                                    Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 }
                             } else {
                                 Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_SHORT).show();
@@ -339,7 +329,7 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 

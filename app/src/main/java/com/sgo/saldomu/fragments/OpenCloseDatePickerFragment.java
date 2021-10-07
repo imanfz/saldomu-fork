@@ -142,22 +142,16 @@ public class OpenCloseDatePickerFragment extends DialogFragment {
         });
 
         btnYes.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
-                        dpl.onOkDatePickerClick(selectedDates, listDates);
-                        getDialog().dismiss();
-                    }
-
+                v12 -> {
+                    dpl.onOkDatePickerClick(selectedDates, listDates);
+                    getDialog().dismiss();
                 }
         );
 
         btnNo.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
-                        dpl.onCancelDatePickerClick();
-                        getDialog().dismiss();
-                    }
-
+                v1 -> {
+                    dpl.onCancelDatePickerClick();
+                    getDialog().dismiss();
                 }
         );
 

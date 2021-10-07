@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
+import timber.log.Timber;
+
 /**
  * This class does all the work for setting up and managing Bluetooth
  * connections with other devices. It has a thread that listens for
@@ -61,7 +63,7 @@ public class BluetoothService {
      * @param state  An integer defining the current connection state
      */
     private synchronized void setState(int state) {
-        if (DEBUG) Log.d(TAG, "setState() " + mState + " -> " + state);
+        if (DEBUG) Timber.tag(TAG).d("setState() " + mState + " -> " + state);
         mState = state;
 
         // Give the new state to the Handler so the UI Activity can update
@@ -78,7 +80,7 @@ public class BluetoothService {
      * Start the service. Specifically start AcceptThread to begin a
      * session in listening (server) mode. Called by the Activity onResume() */
     public synchronized void start() {
-        if (DEBUG) Log.d(TAG, "start");
+        if (DEBUG) Timber.tag(TAG).d("start");
 
         // Cancel any thread attempting to make a connection
         if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
@@ -99,7 +101,7 @@ public class BluetoothService {
      * @param device  The BluetoothDevice to connect
      */
     public synchronized void connect(BluetoothDevice device) {
-        if (DEBUG) Log.d(TAG, "connect to: " + device);
+        if (DEBUG) Timber.tag(TAG).d("connect to: %s", device);
 
         // Cancel any thread attempting to make a connection
         if (mState == STATE_CONNECTING) {
@@ -121,7 +123,7 @@ public class BluetoothService {
      * @param device  The BluetoothDevice that has been connected
      */
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
-        if (DEBUG) Log.d(TAG, "connected");
+        if (DEBUG) Timber.tag(TAG).d("connected");
 
         // Cancel the thread that completed the connection
         if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
@@ -150,7 +152,7 @@ public class BluetoothService {
      * Stop all threads
      */
     public synchronized void stop() {
-        if (DEBUG) Log.d(TAG, "stop");
+        if (DEBUG) Timber.tag(TAG).d("stop");
         setState(STATE_NONE);
         if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
         if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
@@ -217,14 +219,14 @@ public class BluetoothService {
             try {
                 tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
             } catch (IOException e) {
-                Log.e(TAG, "listen() failed", e);
+                Timber.tag(TAG).e(e, "listen() failed");
             }
             mmServerSocket = tmp;
         }
 
         @Override
         public void run() {
-            if (DEBUG) Log.d(TAG, "BEGIN mAcceptThread" + this);
+            if (DEBUG) Timber.tag(TAG).d("BEGIN mAcceptThread%s", this);
             setName("AcceptThread");
             BluetoothSocket socket = null;
 
@@ -235,7 +237,7 @@ public class BluetoothService {
                     // successful connection or an exception
                     socket = mmServerSocket.accept();
                 } catch (IOException e) {
-                    Log.e(TAG, "accept() failed", e);
+                    Timber.tag(TAG).e(e, "accept() failed");
                     break;
                 }
 
@@ -254,22 +256,22 @@ public class BluetoothService {
                                 try {
                                     socket.close();
                                 } catch (IOException e) {
-                                    Log.e(TAG, "Could not close unwanted socket", e);
+                                    Timber.tag(TAG).e(e, "Could not close unwanted socket");
                                 }
                                 break;
                         }
                     }
                 }
             }
-            if (DEBUG) Log.i(TAG, "END mAcceptThread");
+            if (DEBUG) Timber.tag(TAG).i("END mAcceptThread");
         }
 
         public void cancel() {
-            if (DEBUG) Log.d(TAG, "cancel " + this);
+            if (DEBUG) Timber.tag(TAG).d("cancel %s", this);
             try {
                 mmServerSocket.close();
             } catch (IOException e) {
-                Log.e(TAG, "close() of server failed", e);
+                Timber.tag(TAG).e(e, "close() of server failed");
             }
         }
     }
@@ -293,14 +295,14 @@ public class BluetoothService {
             try {
                 tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
             } catch (IOException e) {
-                Log.e(TAG, "create() failed", e);
+                Timber.tag(TAG).e(e, "create() failed");
             }
             mmSocket = tmp;
         }
 
         @Override
         public void run() {
-            Log.i(TAG, "BEGIN mConnectThread");
+            Timber.tag(TAG).i("BEGIN mConnectThread");
             setName("ConnectThread");
 
             // Always cancel discovery because it will slow down a connection
@@ -317,7 +319,7 @@ public class BluetoothService {
                 try {
                     mmSocket.close();
                 } catch (IOException e2) {
-                    Log.e(TAG, "unable to close() socket during connection failure", e2);
+                    Timber.tag(TAG).e(e2, "unable to close() socket during connection failure");
                 }
                 // Start the service over to restart listening mode
                 BluetoothService.this.start();
@@ -337,7 +339,7 @@ public class BluetoothService {
             try {
                 mmSocket.close();
             } catch (IOException e) {
-                Log.e(TAG, "close() of connect socket failed", e);
+                Timber.tag(TAG).e(e, "close() of connect socket failed");
             }
         }
     }
@@ -352,7 +354,7 @@ public class BluetoothService {
         private final OutputStream mmOutStream;
 
         public ConnectedThread(BluetoothSocket socket) {
-            Log.d(TAG, "create ConnectedThread");
+            Timber.tag(TAG).d("create ConnectedThread");
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
@@ -362,7 +364,7 @@ public class BluetoothService {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
             } catch (IOException e) {
-                Log.e(TAG, "temp sockets not created", e);
+                Timber.tag(TAG).e(e, "temp sockets not created");
             }
 
             mmInStream = tmpIn;
@@ -371,7 +373,7 @@ public class BluetoothService {
 
         @Override
         public void run() {
-            Log.i(TAG, "BEGIN mConnectedThread");
+            Timber.tag(TAG).i("BEGIN mConnectedThread");
             int bytes;
 
             // Keep listening to the InputStream while connected
@@ -388,20 +390,20 @@ public class BluetoothService {
                     }
                     else
                     {
-                        Log.e(TAG, "disconnected");
+                        Timber.tag(TAG).e("disconnected");
                         connectionLost();
 
                         //add by chongqing jinou
                         if(mState != STATE_NONE)
                         {
-                            Log.e(TAG, "disconnected");
+                            Timber.tag(TAG).e("disconnected");
                             // Start the service over to restart listening mode
                             BluetoothService.this.start();
                         }
                         break;
                     }
                 } catch (IOException e) {
-                    Log.e(TAG, "disconnected", e);
+                    Timber.tag(TAG).e(e, "disconnected");
                     connectionLost();
 
                     //add by chongqing jinou
@@ -428,12 +430,12 @@ public class BluetoothService {
                   byte[] readata = new byte[1];
                   SPPReadTimeout(readata, 1, 5000);
                 }*/
-                Log.i("BTPWRITE", new String(buffer,"GBK"));
+                Timber.tag("BTPWRITE").i(new String(buffer, "GBK"));
                 // Share the sent message back to the UI Activity
                 mHandler.obtainMessage(DevicesList.MESSAGE_WRITE, -1, -1, buffer)
                         .sendToTarget();
             } catch (IOException e) {
-                Log.e(TAG, "Exception during write", e);
+                Timber.tag(TAG).e(e, "Exception during write");
             }
         }
 
@@ -481,7 +483,7 @@ public class BluetoothService {
             try {
                 mmSocket.close();
             } catch (IOException e) {
-                Log.e(TAG, "close() of connect socket failed", e);
+                Timber.tag(TAG).e(e, "close() of connect socket failed");
             }
         }
     }

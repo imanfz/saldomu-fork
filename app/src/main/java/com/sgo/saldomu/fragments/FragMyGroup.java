@@ -99,13 +99,10 @@ public class FragMyGroup extends ListFragment {
         ptrFrameLayout.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-                frame.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        page = Integer.toString(Integer.parseInt(page) + 1);
-                        getGroupList();
-                        ptrFrameLayout.refreshComplete();
-                    }
+                frame.postDelayed(() -> {
+                    page = Integer.toString(Integer.parseInt(page) + 1);
+                    getGroupList();
+                    ptrFrameLayout.refreshComplete();
                 }, 1800);
             }
 
@@ -145,7 +142,7 @@ public class FragMyGroup extends ListFragment {
             params.put(WebParams.COUNT, DefineValue.COUNT);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params get group list:" + params.toString());
+            Timber.d("isi params get group list:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GROUP_LIST, params,
                     new ObjListeners() {
@@ -154,13 +151,14 @@ public class FragMyGroup extends ListFragment {
 
                             try {
                                 String code = response.getString(WebParams.ERROR_CODE);
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
                                 String count = response.getString(WebParams.COUNT);
 
                                 if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
-                                    Timber.d("isi params group list:"+response.toString());
+                                    Timber.d("isi params group list:%s", response.toString());
                                     JSONArray mArrayGroup = new JSONArray(response.getString(WebParams.DATA_GROUP));
                                     for(int i = 0 ; i < mArrayGroup.length() ; i++) {
-                                        String groupid = mArrayGroup.getJSONObject(i).getString(WebParams.GROUP_ID);
+                                        String groupId = mArrayGroup.getJSONObject(i).getString(WebParams.GROUP_ID);
                                         String groupName = mArrayGroup.getJSONObject(i).getString(WebParams.GROUP_NAME);
 //                                String groupDesc = mArrayGroup.getJSONObject(i).getString(WebParams.GROUP_DESC);
 
@@ -169,7 +167,7 @@ public class FragMyGroup extends ListFragment {
                                         // cek apakah ada group id yang sama.. kalau ada tidak dimasukan ke array
                                         if(groups.size() > 0) {
                                             for (int index = 0; index < groups.size(); index++) {
-                                                if (!groups.get(index).getGroupID().equals(groupid)) {
+                                                if (!groups.get(index).getGroupID().equals(groupId)) {
                                                     flagSame = false;
                                                 } else {
                                                     flagSame = true;
@@ -181,7 +179,7 @@ public class FragMyGroup extends ListFragment {
                                         if(!flagSame) {
                                             MyGroupObject myGroupObject = new MyGroupObject();
                                             myGroupObject.setType(0);
-                                            myGroupObject.setGroupID(groupid);
+                                            myGroupObject.setGroupID(groupId);
                                             myGroupObject.setGroupName(groupName);
                                             myGroupObject.setSectionPosition(sectionPosition);
                                             myGroupObject.setListPosition(listPosition++);
@@ -197,7 +195,7 @@ public class FragMyGroup extends ListFragment {
 
                                                     MyGroupObject myMemberObject = new MyGroupObject();
                                                     myMemberObject.setType(1);
-                                                    myMemberObject.setGroupID(groupid);
+                                                    myMemberObject.setGroupID(groupId);
                                                     myMemberObject.setGroupName(groupName);
                                                     myMemberObject.setMemberName(memberName);
                                                     myMemberObject.setMemberProfilePicture(memberProfilePicture);
@@ -214,15 +212,12 @@ public class FragMyGroup extends ListFragment {
                                     myGroupAdapter.notifyDataSetChanged();
                                 }
                                 else if(code.equals(WebParams.LOGOUT_CODE)){
-                                    Timber.d("isi response autologout:"+response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(),message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(),message);
                                 }
                                 else {
-                                    Timber.d("isi error group list:"+response.toString());
-                                    code = response.getString(WebParams.ERROR_MESSAGE);
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    Timber.d("isi error group list:%s", response.toString());
+                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 }
                             }
                             catch (JSONException e) {
@@ -243,7 +238,7 @@ public class FragMyGroup extends ListFragment {
                     });
 
         }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
 
     }

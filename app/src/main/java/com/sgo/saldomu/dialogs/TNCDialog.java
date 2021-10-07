@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.sgo.saldomu.BuildConfig;
@@ -129,13 +130,13 @@ public class TNCDialog extends DialogFragment {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Timber.d("isi url tombol-tombolnya:" + url);
+                Timber.d("isi url tombol-tombolnya:%s", url);
                 view.loadUrl(url);
                 return true;
             }
 
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                Timber.d("isi failing url tombol-tombolnya:" + failingUrl);
+                Timber.d("isi failing url tombol-tombolnya:%s", failingUrl);
             }
 
 
@@ -154,12 +155,12 @@ public class TNCDialog extends DialogFragment {
 
     private void disabledButton() {
         buttonOK.setEnabled(false);
-        buttonOK.setBackground(getResources().getDrawable(R.drawable.rounded_background_button_disabled));
+        buttonOK.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_background_button_disabled, null));
     }
 
     private void enabledButton() {
         buttonOK.setEnabled(true);
-        buttonOK.setBackground(getResources().getDrawable(R.drawable.rounded_background_blue));
+        buttonOK.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_background_blue, null));
     }
 
     private void hideView() {

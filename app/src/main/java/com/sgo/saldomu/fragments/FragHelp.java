@@ -94,7 +94,7 @@ public class FragHelp extends BaseFragment {
 
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params help list:" + params.toString());
+            Timber.d("isi params help list:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_HELP_LIST, params,
                     new ObjListeners() {
@@ -106,7 +106,7 @@ public class FragHelp extends BaseFragment {
                                 String message = response.getString(WebParams.ERROR_MESSAGE);
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("isi params help list:" + response.toString());
+                                    Timber.d("isi params help list:%s", response.toString());
                                     String count = response.getString(WebParams.COUNT);
                                     if (count.equals("0")) {
                                         Timber.d("isi help list kosong");

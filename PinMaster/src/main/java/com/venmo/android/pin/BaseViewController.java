@@ -78,14 +78,11 @@ abstract class BaseViewController {
                 }
             }
         });
-        mKeyboardView.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == ACTION_DOWN && getConfig().shouldVibrateOnKey()) {
-                    VibrationHelper.vibrate(mContext, getConfig().vibrateDuration());
-                }
-                return false;
+        mKeyboardView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == ACTION_DOWN && getConfig().shouldVibrateOnKey()) {
+                VibrationHelper.vibrate(mContext, getConfig().vibrateDuration());
             }
+            return false;
         });
     }
 
@@ -149,12 +146,9 @@ abstract class BaseViewController {
     }
 
     void generalErrorAsync(final String s){
-        postToMain(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(mPinFragment.getActivity(), s, Toast.LENGTH_SHORT).show();
-                resetPinputView();
-            }
+        postToMain(() -> {
+            Toast.makeText(mPinFragment.getActivity(), s, Toast.LENGTH_SHORT).show();
+            resetPinputView();
         });
     }
 

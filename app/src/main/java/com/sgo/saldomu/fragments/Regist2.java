@@ -54,7 +54,7 @@ public class Regist2 extends BaseFragment {
     EditText etToken;
     TextView currEmail;
     Button btnProses, btnCancel;
-    String namaValid, noHPValid, emailValid, authType, token, pass, confPass, memberID, custID = "";
+    String namaValid, noHPValid, emailValid, pass, confPass, memberID;
     String flag_change_pwd, flag_change_pin;
     ProgressDialog progdialog;
 
@@ -75,9 +75,6 @@ public class Regist2 extends BaseFragment {
 
 //        getActivity().getWindow().setBackgroundDrawableResource(R.drawable.background);
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        if (sp.contains(DefineValue.SENDER_ID)) {
-            custID = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
-        }
 
         Bundle args = getArguments();
         if (args != null) {
@@ -109,12 +106,9 @@ public class Regist2 extends BaseFragment {
         }
     };
 
-    Button.OnClickListener btnCancelClickListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            DefineValue.NOBACK = false;
-            getFragmentManager().popBackStack();
-        }
+    Button.OnClickListener btnCancelClickListener = view -> {
+        DefineValue.NOBACK = false;
+        getFragmentManager().popBackStack();
     };
 
     public boolean inputValidation() {
@@ -143,7 +137,7 @@ public class Regist2 extends BaseFragment {
             params.put(WebParams.IS_SMS, DefineValue.STRING_YES);
             params.put(WebParams.IS_EMAIL, DefineValue.STRING_NO);
 
-            Timber.d("isi params reg2:" + params.toString());
+            Timber.d("isi params reg2:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REG_STEP2, params,
                     new ResponseListener() {
@@ -224,16 +218,10 @@ public class Regist2 extends BaseFragment {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                 builder.setTitle(getActivity().getResources().getString(R.string.logout)).setMessage(model.getError_message())
                                         .setCancelable(false)
-                                        .setPositiveButton(getActivity().getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                            }
-                                        });
+                                        .setPositiveButton(getActivity().getResources().getString(R.string.ok), (dialog, which) -> dialog.dismiss());
                             } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
-                                i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
                                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 switchActivityPIN(i);
                             }
@@ -251,7 +239,7 @@ public class Regist2 extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -309,14 +297,13 @@ public class Regist2 extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
     private void check() {
         if (flag_change_pwd.equals(DefineValue.STRING_YES)) {
             Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
-            i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             switchActivityPIN(i);
         } else if (flag_change_pin.equals(DefineValue.STRING_YES)) {
@@ -357,14 +344,11 @@ public class Regist2 extends BaseFragment {
         Message2.setTextSize(getResources().getDimension(R.dimen.abc_text_size_small_material));
         Message3.setText(getResources().getString(R.string.regist2_notif_message_3));
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                Fragment test = new Login();
-                switchFragment(test, "Login", false);
-                dialog.dismiss();
-            }
+        btnDialogOTP.setOnClickListener(view -> {
+            getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            Fragment test = new Login();
+            switchFragment(test, "Login", false);
+            dialog.dismiss();
         });
 
         dialog.show();
@@ -377,7 +361,6 @@ public class Regist2 extends BaseFragment {
         if (requestCode == LoginActivity.ACTIVITY_RESULT) {
             Timber.d("isi regist 2 resultcode:%s", String.valueOf(resultCode));
             if (resultCode == LoginActivity.RESULT_PIN) {
-                Timber.d("isi regist 2 authtype:%s", authType);
 
                 pass = data.getStringExtra(DefineValue.NEW_PASSWORD);
                 confPass = data.getStringExtra(DefineValue.CONFIRM_PASSWORD);

@@ -206,21 +206,15 @@ public class FragPayFriends extends BaseFragment {
         btnGetOTP.setOnClickListener(btnGetOTPListener);
         btnScanQR.setOnClickListener(scanQRListener);
 
-        etAmount.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    setNumberRecipients();
-                }
+        etAmount.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                setNumberRecipients();
             }
         });
 
-        etMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    setNumberRecipients();
-                }
+        etMessage.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                setNumberRecipients();
             }
         });
 
@@ -228,12 +222,12 @@ public class FragPayFriends extends BaseFragment {
         phoneRetv.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Timber.d("before Text Change:" + s.toString());
+                Timber.d("before Text Change:%s", s.toString());
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Timber.d("on Text Change:" + s.toString());
+                Timber.d("on Text Change:%s", s.toString());
                 if (phoneRetv.hasFocus()) {
                     if (phoneRetv.getSortedRecipients().length == 0) {
                         txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
@@ -246,7 +240,7 @@ public class FragPayFriends extends BaseFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                Timber.d("after Text Change:" + s.toString());
+                Timber.d("after Text Change:%s", s.toString());
             }
         });
 
@@ -305,7 +299,7 @@ public class FragPayFriends extends BaseFragment {
         else
             txtNumberRecipients.setText(String.valueOf(phoneRetv.getRecipients().length));
 
-        Timber.d("isi length recipients:" + String.valueOf(phoneRetv.getRecipients().length));
+        Timber.d("isi length recipients:%s", String.valueOf(phoneRetv.getRecipients().length));
     }
 
     private class TempObjectData {
@@ -355,25 +349,17 @@ public class FragPayFriends extends BaseFragment {
         }
     }
 
-    private Button.OnClickListener scanQRListener = new Button.OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-
-            switchViewToScanQR();
-        }
-
-    };
+    private final Button.OnClickListener scanQRListener = v -> switchViewToScanQR();
 
 
-    private Button.OnClickListener btnGetOTPListener = new Button.OnClickListener() {
+    private final Button.OnClickListener btnGetOTPListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (InetHandler.isNetworkAvailable(getActivity())) {
                 if (inputValidation()) {
 
-                    Timber.d("isi length recipients button:" + String.valueOf(phoneRetv.getRecipients().length));
-                    Timber.d("isi length sort recipients button:" + String.valueOf(phoneRetv.getSortedRecipients().length));
+                    Timber.d("isi length recipients button:%s", String.valueOf(phoneRetv.getRecipients().length));
+                    Timber.d("isi length sort recipients button:%s", String.valueOf(phoneRetv.getSortedRecipients().length));
                     phoneRetv.requestFocus();
                     String amount = NumberTextWatcherForThousand.trimCommaOfString(etAmount.getText().toString());
                     String message = etMessage.getText().toString();
@@ -383,7 +369,7 @@ public class FragPayFriends extends BaseFragment {
                     String finalNumber, finalName;
 
                     String check = phoneRetv.getText().toString();
-                    if ((!check.isEmpty()) && check.substring(check.length() - 1).equals(","))
+                    if ((!check.isEmpty()) && check.endsWith(","))
                         phoneRetv.setText(check.substring(0, check.length() - 1));
 
                     chips = new DrawableRecipientChip[phoneRetv.getSortedRecipients().length];
@@ -402,7 +388,7 @@ public class FragPayFriends extends BaseFragment {
                             }
 
                             finalNumber = NoHPFormat.formatTo62(chip.getEntry().getDestination());
-                            Log.e("finalNumber : ", finalNumber);
+                            Timber.tag("finalNumber : ").e(finalNumber);
                             listName.add(chip.getEntry().getDisplayName());
                             phoneNumberList.add(finalName);
                             phoneNumberJsonArr.put(finalNumber);
@@ -416,9 +402,9 @@ public class FragPayFriends extends BaseFragment {
                             String testJson = gson.toJson(mTempObjectDataList);
                             String nameJson = gson.toJson(listName);
 //                            phoneNumberString = gson.toJson(phoneNumberJsonArr);
-                            Log.e("phoneNumberJsonArr ", phoneNumberJsonArr.toString());
+                            Timber.tag("phoneNumberJsonArr ").e(phoneNumberJsonArr.toString());
                             phoneNumberString = phoneNumberJsonArr.toString();
-                            Log.e("phoneNumberJsonArr 2 ", phoneNumberString);
+                            Timber.tag("phoneNumberJsonArr 2 ").e(phoneNumberString);
                             //  Timber.v("isi json build", testJson + numberJson);
                             sentData(message, testJson, nameJson);
                         } else {
@@ -521,13 +507,10 @@ public class FragPayFriends extends BaseFragment {
 
                                         AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
                                                 message_dialog, getString(R.string.ok), getString(R.string.cancel), false);
-                                        dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Intent mI = new Intent(getActivity(), TopUpActivity.class);
-                                                mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                                                getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
-                                            }
+                                        dialog_frag.setOkListener((dialog, which) -> {
+                                            Intent mI = new Intent(getActivity(), TopUpActivity.class);
+                                            mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                                            getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
                                         });
                                         dialog_frag.setTargetFragment(FragPayFriends.this, 0);
                                         dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
@@ -586,24 +569,21 @@ public class FragPayFriends extends BaseFragment {
             //clear data in edit text
 
 
-            btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
+            btnDialogOTP.setOnClickListener(view -> {
+                dialog.dismiss();
 
-                    Intent i = new Intent(getActivity(), PayFriendsActivity.class);
+                Intent i = new Intent(getActivity(), PayFriendsActivity.class);
 
-                    i.putExtra(WebParams.DATA_TRANSFER, _data_transfer);
-                    i.putExtra(WebParams.DATA, _nameJson);
-                    i.putExtra(WebParams.MESSAGE, _message);
-                    i.putExtra(DefineValue.TRANSACTION_TYPE, isNotification);
-                    i.putExtra(DefineValue.CONFIRM_PAYFRIEND, true);
-                    i.putExtra(WebParams.DATA_MAPPER, _data_mapper);
+                i.putExtra(WebParams.DATA_TRANSFER, _data_transfer);
+                i.putExtra(WebParams.DATA, _nameJson);
+                i.putExtra(WebParams.MESSAGE, _message);
+                i.putExtra(DefineValue.TRANSACTION_TYPE, isNotification);
+                i.putExtra(DefineValue.CONFIRM_PAYFRIEND, true);
+                i.putExtra(WebParams.DATA_MAPPER, _data_mapper);
 //                    i.putExtra(WebParams.CUSTOMER_ID, phoneNumberList.toString());
-                    i.putExtra(WebParams.CUSTOMER_ID, phoneNumberString);
+                i.putExtra(WebParams.CUSTOMER_ID, phoneNumberString);
 
-                    switchActivity(i);
-                }
+                switchActivity(i);
             });
 
             dialog.show();
@@ -680,7 +660,7 @@ public class FragPayFriends extends BaseFragment {
         else if (density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
         else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
 
-        Timber.wtf("url prof pic:" + _url_profpic);
+        Timber.wtf("url prof pic:%s", _url_profpic);
 
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);

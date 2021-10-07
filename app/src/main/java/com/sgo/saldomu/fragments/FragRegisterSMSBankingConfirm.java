@@ -70,29 +70,28 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        cust_id = sp.getString(DefineValue.CUST_ID,"");
+        userID = sp.getString(DefineValue.USERID_PHONE, "");
+        cust_id = sp.getString(DefineValue.CUST_ID, "");
 
         tvNo = v.findViewById(R.id.rsb_value_no);
         tvName = v.findViewById(R.id.rsb_value_name);
-        tvTglLahir  = v.findViewById(R.id.rsb_value_tgl);
+        tvTglLahir = v.findViewById(R.id.rsb_value_tgl);
         etToken = v.findViewById(R.id.rsb_value_token);
         layout_dll = v.findViewById(R.id.layout_dll);
         btnConfirm = v.findViewById(R.id.btn_confirm);
         btnConfirm.setOnClickListener(btnConfTokenListener);
 
         Bundle bundle = this.getArguments();
-        if(bundle != null) {
-            String bank_name = bundle.getString(DefineValue.BANK_NAME,"");
-            Timber.d("isi bundle:"+bundle.toString());
-            if(bank_name.toLowerCase().contains("jatim")) {
+        if (bundle != null) {
+            String bank_name = bundle.getString(DefineValue.BANK_NAME, "");
+            Timber.d("isi bundle:%s", bundle.toString());
+            if (bank_name.toLowerCase().contains("jatim")) {
                 isJatim = true;
-                no_hp = bundle.getString(DefineValue.USERID_PHONE,"");
-                token_id = bundle.getString(DefineValue.TOKEN,"");
+                no_hp = bundle.getString(DefineValue.USERID_PHONE, "");
+                token_id = bundle.getString(DefineValue.TOKEN, "");
                 layout_dll.setVisibility(View.GONE);
                 tvNo.setText(no_hp);
-            }
-            else {
+            } else {
                 acc_no = bundle.getString(WebParams.ACCT_NO);
                 acc_name = bundle.getString(WebParams.ACCT_NAME);
                 tgl_lahir = bundle.getString(WebParams.TGL_LAHIR);
@@ -116,7 +115,7 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
     private Button.OnClickListener btnConfTokenListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(InetHandler.isNetworkAvailable(getActivity())) {
+            if (InetHandler.isNetworkAvailable(getActivity())) {
                 if (inputValidation()) {
                     if (etToken.getText().toString().equals(token_id)) {
                         if (isJatim)
@@ -125,8 +124,8 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
                             confirmTokenSB();
                     } else Toast.makeText(getActivity(), "Wrong Token!", Toast.LENGTH_SHORT).show();
                 }
-            }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            } else
+                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -145,10 +144,10 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
 
             HashMap<String, Object> params;
             String url;
-            if(!isJatim) {
+            if (!isJatim) {
                 params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TOKEN_SB);
                 url = MyApiClient.LINK_CONFIRM_TOKEN_SB;
-            }else {
+            } else {
                 params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TOKEN_JATIM);
                 url = MyApiClient.LINK_CONFIRM_TOKEN_JATIM;
             }
@@ -158,7 +157,7 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            if(!isJatim){
+            if (!isJatim) {
                 params.put(WebParams.ACCT_NO, acc_no);
                 params.put(WebParams.ACCT_NAME, acc_name);
                 params.put(WebParams.CCY_ID, ccy_id);
@@ -169,22 +168,17 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
                         @Override
                         public void onResponses(JSONObject response) {
                             progdialog.dismiss();
-                            Timber.d("isi response confirm token SB:"+response.toString());
-
-                            String code;
+                            Timber.d("isi response confirm token SB:%s", response.toString());
                             try {
-                                code = response.getString(WebParams.ERROR_CODE);
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     Toast.makeText(getActivity(), "Success!", Toast.LENGTH_LONG).show();
                                     getActivity().finish();
-                                }
-                                else if(code.equals(WebParams.LOGOUT_CODE)){
-                                    Timber.d("isi response autologout:"+response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(),message);
-                                }
-                                else {
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
+                                } else {
                                     Toast.makeText(getActivity(), "Failed!", Toast.LENGTH_LONG).show();
                                 }
                             } catch (JSONException e) {
@@ -206,7 +200,7 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:"+e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -226,16 +220,14 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
                         public void onResponses(JSONObject response) {
                             try {
                                 String code = response.getString(WebParams.ERROR_CODE);
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     token_id = response.getString(WebParams.TOKEN_ID);
-                                }
-                                else if(code.equals(WebParams.LOGOUT_CODE)){
-                                    Timber.d("isi response autologout:"+response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(),message);
-                                }else {
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
+                                } else {
+                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -256,7 +248,7 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:"+e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -272,12 +264,12 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
         toggleMyBroadcastReceiver(false);
     }
 
-    private void toggleMyBroadcastReceiver(Boolean _on){
+    private void toggleMyBroadcastReceiver(Boolean _on) {
         if (getActivity() == null)
             return;
 
         RegisterSMSBankingActivity fca = (RegisterSMSBankingActivity) getActivity();
-        fca.togglerBroadcastReceiver(_on,myReceiver);
+        fca.togglerBroadcastReceiver(_on, myReceiver);
     }
 
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
@@ -291,52 +283,51 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
             String[] kode = context.getResources().getStringArray(R.array.broadcast_kode_compare);
             String[] code = context.getResources().getStringArray(R.array.broadcast_kode_compare_en);
 
-            if(mBundle != null){
+            if (mBundle != null) {
                 Object[] pdus = (Object[]) mBundle.get("pdus");
                 assert pdus != null;
                 mSMS = new SmsMessage[pdus.length];
 
-                for (int i = 0; i < mSMS.length ; i++){
-                    mSMS[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
+                for (int i = 0; i < mSMS.length; i++) {
+                    mSMS[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
                     strMessage += mSMS[i].getMessageBody();
                     strMessage += "\n";
                 }
 
                 String[] words = strMessage.split(" ");
-                for (int i = 0 ; i <words.length;i++)
-                {
-                    if(_kode_otp.equalsIgnoreCase("")){
-                        if(words[i].equalsIgnoreCase(kode[0])||words[i].equalsIgnoreCase(code[0])){
-                            if(words[i+1].equalsIgnoreCase(kode[1])||words[i-1].equalsIgnoreCase(kode[1])){
-                                if(words[i+2].equalsIgnoreCase(kode[4]))
-                                    _kode_otp = words[i+3];
+                for (int i = 0; i < words.length; i++) {
+                    if (_kode_otp.equalsIgnoreCase("")) {
+                        if (words[i].equalsIgnoreCase(kode[0]) || words[i].equalsIgnoreCase(code[0])) {
+                            if (words[i + 1].equalsIgnoreCase(kode[1]) || words[i - 1].equalsIgnoreCase(kode[1])) {
+                                if (words[i + 2].equalsIgnoreCase(kode[4]))
+                                    _kode_otp = words[i + 3];
                                 else
-                                    _kode_otp = words[i+2];
-                                _kode_otp =  _kode_otp.replace(".","").replace(" ","");
+                                    _kode_otp = words[i + 2];
+                                _kode_otp = _kode_otp.replace(".", "").replace(" ", "");
                             }
                         }
                     }
 
-                    if(_member_code.equals("")){
-                        if(words[i].equalsIgnoreCase(kode[3])){
-                            if(words[i+1].equalsIgnoreCase(kode[4]))
-                                _member_code = words[i+2];
+                    if (_member_code.equals("")) {
+                        if (words[i].equalsIgnoreCase(kode[3])) {
+                            if (words[i + 1].equalsIgnoreCase(kode[4]))
+                                _member_code = words[i + 2];
                             else
-                                _member_code = words[i+1];
+                                _member_code = words[i + 1];
                         }
 
                     }
                 }
 
-                insertTokenEdit(_kode_otp,_member_code);
+                insertTokenEdit(_kode_otp, _member_code);
                 //Toast.makeText(context,strMessage,Toast.LENGTH_SHORT).show();
             }
         }
     };
 
-    private void insertTokenEdit(String _kode_otp, String _member_kode){
-        Timber.d("isi _kode_otp, _member_kode, member kode session:"+_kode_otp+ " / " +_member_kode +" / "+ sp.getString(DefineValue.MEMBER_CODE,""));
-        if(no_hp.equals(_member_kode)){
+    private void insertTokenEdit(String _kode_otp, String _member_kode) {
+        Timber.d("isi _kode_otp, _member_kode, member kode session:" + _kode_otp + " / " + _member_kode + " / " + sp.getString(DefineValue.MEMBER_CODE, ""));
+        if (no_hp.equals(_member_kode)) {
             etToken.setText(_kode_otp);
         }
     }

@@ -296,7 +296,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.Conne
 
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(this);
-        Timber.d("GPS Test checkPlayServices : " + String.valueOf(result));
+        Timber.d("GPS Test checkPlayServices : %s", String.valueOf(result));
         if (result != ConnectionResult.SUCCESS) {
             if (googleAPI.isUserResolvableError(result)) {
                 Toast.makeText(this, "GOOGLE API LOCATION CONNECTION FAILED", Toast.LENGTH_SHORT).show();
@@ -312,19 +312,15 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.Conne
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.alertbox_gps_warning))
                 .setCancelable(false)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                .setPositiveButton(R.string.yes, (dialog, id) -> {
 
-                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivityForResult(ilocation, RC_GPS_REQUEST);
+                    Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivityForResult(ilocation, RC_GPS_REQUEST);
 
-                    }
                 })
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
-                        startActivity(new Intent(getApplicationContext(), MainPage.class));
-                    }
+                .setNegativeButton(R.string.no, (dialog, id) -> {
+                    dialog.cancel();
+                    startActivity(new Intent(getApplicationContext(), MainPage.class));
                 });
         final AlertDialog alert = builder.create();
         alert.show();
@@ -336,10 +332,10 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.Conne
             createLocationRequest();
         }
 
-        Timber.d("GPS Test googleapiclient : " + mGoogleApiClient.toString());
+        Timber.d("GPS Test googleapiclient : %s", mGoogleApiClient.toString());
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
-            Timber.d("GPS Test googleapiclient connect : " + mGoogleApiClient.toString());
+            Timber.d("GPS Test googleapiclient connect : %s", mGoogleApiClient.toString());
         }
 
     }

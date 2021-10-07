@@ -210,6 +210,7 @@ public class FragMerchantCategory extends Fragment {
                                         jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
 
                                         String code = response.getString(WebParams.ERROR_CODE);
+                                        String message = response.getString(WebParams.ERROR_MESSAGE);
                                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                             if (setupOpenHour.equals(DefineValue.STRING_YES)) {
@@ -227,16 +228,14 @@ public class FragMerchantCategory extends Fragment {
                                                 startActivity(intent);
                                             }
                                         } else if (code.equals(DefineValue.ERROR_9333)) {
-                                            Timber.d("isi response app data:" + model.getApp_data());
+                                            Timber.d("isi response app data:%s", model.getApp_data());
                                             final AppDataModel appModel = model.getApp_data();
-                                            AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                            alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                            AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                         } else if (code.equals(DefineValue.ERROR_0066)) {
-                                            Timber.d("isi response maintenance:" + response.toString());
-                                            AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                            alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                            Timber.d("isi response maintenance:%s", response.toString());
+                                            AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                         } else {
-                                            Toast.makeText(getActivity(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                         }
 
                                     } catch (JSONException e) {

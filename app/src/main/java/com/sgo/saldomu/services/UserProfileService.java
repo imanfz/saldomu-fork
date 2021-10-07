@@ -30,16 +30,13 @@ public class UserProfileService extends Service {
 
     private MyHandler mHandler = new MyHandler();
 
-    private Runnable callUserProfile = new Runnable() {
-        @Override
-        public void run() {
-            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-            if(mainPageContext != null) {
+    private Runnable callUserProfile = () -> {
+        Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        if(mainPageContext != null) {
 //                UserProfileHandler mBH = new UserProfileHandler(mainPageContext);
 //                mBH.sentUserProfile();
-            }
-            Timber.i("Service jalankan call UserProfile Service");
         }
+        Timber.i("Service jalankan call UserProfile Service");
     };
 
     @Override

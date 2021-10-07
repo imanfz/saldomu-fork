@@ -213,7 +213,7 @@
                     android:text="@string/set_online"
                     android:textSize="@dimen/abc_text_size_small_material" />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/swSettingOnline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

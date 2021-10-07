@@ -184,14 +184,11 @@ public class FragPulsaAgent extends Fragment {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    spinWheelMember.clearAnimation();
-                                    spinWheelMember.setVisibility(View.GONE);
-                                    spin_member.setVisibility(View.VISIBLE);
-                                    adapterMember.notifyDataSetChanged();
-                                }
+                            getActivity().runOnUiThread(() -> {
+                                spinWheelMember.clearAnimation();
+                                spinWheelMember.setVisibility(View.GONE);
+                                spin_member.setVisibility(View.VISIBLE);
+                                adapterMember.notifyDataSetChanged();
                             });
                         }
                     };
@@ -200,12 +197,7 @@ public class FragPulsaAgent extends Fragment {
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(act);
                 builder.setTitle("Alert").setMessage("Member DAP is Empty")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
+                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
 
                 AlertDialog dialog = builder.create();
                 dialog.show();
@@ -252,15 +244,12 @@ public class FragPulsaAgent extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                spinWheelDenom.clearAnimation();
-                                spinWheelDenom.setVisibility(View.GONE);
-                                spin_denom.setVisibility(View.VISIBLE);
-                                adapterDenom.notifyDataSetChanged();
+                        getActivity().runOnUiThread(() -> {
+                            spinWheelDenom.clearAnimation();
+                            spinWheelDenom.setVisibility(View.GONE);
+                            spin_denom.setVisibility(View.VISIBLE);
+                            adapterDenom.notifyDataSetChanged();
 
-                            }
                         });
                     }
                 };
@@ -334,14 +323,11 @@ public class FragPulsaAgent extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                spinWheelNominal.clearAnimation();
-                                spinWheelNominal.setVisibility(View.GONE);
-                                spin_nominal.setVisibility(View.VISIBLE);
-                                adapterNominal.notifyDataSetChanged();
-                            }
+                        getActivity().runOnUiThread(() -> {
+                            spinWheelNominal.clearAnimation();
+                            spinWheelNominal.setVisibility(View.GONE);
+                            spin_nominal.setVisibility(View.VISIBLE);
+                            adapterNominal.notifyDataSetChanged();
                         });
                     }
                 };
@@ -369,7 +355,7 @@ public class FragPulsaAgent extends Fragment {
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userID);
 
-            Timber.d("isi params sent Denom DAP" + params.toString());
+            Timber.d("isi params sent Denom DAP%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_DENOM_DAP, params,
                     new ResponseListener() {
@@ -379,18 +365,15 @@ public class FragPulsaAgent extends Fragment {
                             DenomModel model = gson.fromJson(object, DenomModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 String denom_data = gson.toJson(model.getDenom_data());
                                 if (catalog_id.equals("")) initializeDenom(denom_data);
                                 else initializeNominal(denom_data);
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else {
-
-                                code = model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -406,7 +389,7 @@ public class FragPulsaAgent extends Fragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient" + e.getMessage());
+            Timber.d("httpclient%s", e.getMessage());
         }
     }
 

@@ -43,7 +43,6 @@ import timber.log.Timber;
 public class SMSclass {
 
     private Context mContext;
-    private TelephonyManager telephonyManager;
     private BroadcastReceiver receiverSent;
     private BroadcastReceiver receiverDelivered;
 
@@ -89,7 +88,6 @@ public class SMSclass {
 
     public SMSclass(Context _context, BroadcastReceiver simListener) {
         this.setmContext(_context);
-        telephonyManager = (TelephonyManager) getmContext().getSystemService(Context.TELEPHONY_SERVICE);
         if (simListener != null)
             simStateReceiver = simListener;
     }
@@ -258,63 +256,12 @@ public class SMSclass {
         return Settings.Secure.getString(CoreApp.getAppContext().getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
-
-    /**
-     * Return iccid untuk lollipop 5.1 keatas akan diambil iccid di simcard 1,
-     * sedangkan lollipop 5.1 kebawah default ambil iccid di simcard 1 juga.
-     * Terkecuali kondisi dimana simcard dimasukkan hanya di slot 2, maka otomatis ambil
-     * iccid di slot ke 2
-     *
-     * @return iccid di simcard slot 1
-     */
-
     public Context getmContext() {
         return mContext;
     }
 
     public void setmContext(Context mContext) {
         this.mContext = mContext;
-    }
-
-
-    public class SimInfo {
-        private int id_;
-        private String display_name;
-        private String icc_id;
-        private int slot;
-
-        public SimInfo(int id_, String display_name, String icc_id, int slot) {
-            this.id_ = id_;
-            this.display_name = display_name;
-            this.icc_id = icc_id;
-            this.slot = slot;
-        }
-
-        public int getId_() {
-            return id_;
-        }
-
-        public String getDisplay_name() {
-            return display_name;
-        }
-
-        public String getIcc_id() {
-            return icc_id;
-        }
-
-        public int getSlot() {
-            return slot;
-        }
-
-        @Override
-        public String toString() {
-            return "SimInfo{" +
-                    "id_=" + id_ +
-                    ", display_name='" + display_name + '\'' +
-                    ", icc_id='" + icc_id + '\'' +
-                    ", slot=" + slot +
-                    '}';
-        }
     }
 
     private int getIndexActiveSIMSlot() {
@@ -387,8 +334,7 @@ public class SMSclass {
                 c.close();
             }
         } catch (Exception e) {
-            Timber.e("log>>>" + e.toString());
-            Timber.e("log>>>" + e.getMessage());
+            Timber.e("log>>>%s", e.getMessage());
         }
     }
 
@@ -433,11 +379,7 @@ public class SMSclass {
             Object result = checkOpMethod.invoke(appOpsManager, args);
 
             return result;
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return null;
@@ -467,11 +409,7 @@ public class SMSclass {
             setModeMethod.invoke(appOpsManager, args);
 
             return true;
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return false;
@@ -511,25 +449,20 @@ public class SMSclass {
             method = Class.forName("com.android.internal.telephony.ISms$Stub").getDeclaredMethod("asInterface", IBinder.class);
             method.setAccessible(true);
             Object stubObj = method.invoke(null, param);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                method = stubObj.getClass().getMethod("sendText", String.class, String.class, String.class, PendingIntent.class, PendingIntent.class);
-                method.invoke(stubObj, toNum, centerNum, smsText, sentIntent, deliveryIntent);
-            } else {
-                method = stubObj.getClass().getMethod("sendText", String.class, String.class, String.class, String.class, PendingIntent.class, PendingIntent.class);
-                method.invoke(stubObj, ctx.getPackageName(), toNum, centerNum, smsText, sentIntent, deliveryIntent);
-            }
+            method = stubObj.getClass().getMethod("sendText", String.class, String.class, String.class, String.class, PendingIntent.class, PendingIntent.class);
+            method.invoke(stubObj, ctx.getPackageName(), toNum, centerNum, smsText, sentIntent, deliveryIntent);
 
             return true;
         } catch (ClassNotFoundException e) {
-            Timber.e("ClassNotFoundException:" + e.getMessage());
+            Timber.e("ClassNotFoundException:%s", e.getMessage());
         } catch (NoSuchMethodException e) {
-            Timber.e("NoSuchMethodException:" + e.getMessage());
+            Timber.e("NoSuchMethodException:%s", e.getMessage());
         } catch (InvocationTargetException e) {
-            Timber.e("InvocationTargetException:" + e.getMessage());
+            Timber.e("InvocationTargetException:%s", e.getMessage());
         } catch (IllegalAccessException e) {
-            Timber.e("IllegalAccessException:" + e.getMessage());
+            Timber.e("IllegalAccessException:%s", e.getMessage());
         } catch (Exception e) {
-            Timber.e("Exception:" + e.getMessage());
+            Timber.e("Exception:%s", e.getMessage());
         }
         return false;
     }

@@ -46,7 +46,7 @@
                         android:text="@string/setup_shop_hour"
                         android:layout_weight="1"
                         />
-                    <Switch
+                    <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/swOpen24Hours"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                         android:text="@string/setting_tutup_toko"
                         android:layout_weight="1"
                         />
-                    <Switch
+                    <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/swTutupToko"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

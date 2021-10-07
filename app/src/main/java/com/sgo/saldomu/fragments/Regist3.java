@@ -56,15 +56,13 @@ import timber.log.Timber;
  */
 public class Regist3 extends BaseFragment {
 
-    SecurePreferences sp;
     Button btnResend, btnSubmit, btnCancel;
     String noHPValue, namaValue, emailValue, authType, custID, token, pass, confPass, memberID, emailToken;
     int max_resend_sms;// max_resend_email;
     EditText TokenValue;
-    TextView mNoHPValue, mNamaValue, mEmail, txtToken;
+    TextView mNoHPValue, mNamaValue, mEmail;
     ProgressDialog progdialog;
     View v, layout_resend;
-    Boolean isFacebook;
     Activity act;
 
     @Override
@@ -93,7 +91,6 @@ public class Regist3 extends BaseFragment {
 //            max_resend_email = 3;
         }
 
-        txtToken = v.findViewById(R.id.token_text);
         TokenValue = v.findViewById(R.id.reg2_token_value);
         mNoHPValue = v.findViewById(R.id.reg2_noHP_value);
         mNoHPValue.setText(noHPValue);
@@ -158,15 +155,6 @@ public class Regist3 extends BaseFragment {
             alertDialog.show();
         }
     };
-
-    private void switchActivity(Intent i) {
-        if (getActivity() == null)
-            return;
-
-        LoginActivity fca = (LoginActivity) getActivity();
-        fca.switchActivity(i);
-    }
-
 
     private void switchActivityPIN(Intent i) {
         /*if (getActivity() == null)
@@ -398,12 +386,7 @@ public class Regist3 extends BaseFragment {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                 builder.setTitle(getActivity().getResources().getString(R.string.logout)).setMessage(model.getError_message())
                                         .setCancelable(false)
-                                        .setPositiveButton(getActivity().getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                            }
-                                        });
+                                        .setPositiveButton(getActivity().getResources().getString(R.string.ok), (dialog, which) -> dialog.dismiss());
                             } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
@@ -513,14 +496,11 @@ public class Regist3 extends BaseFragment {
         Message2.setTextSize(getResources().getDimension(R.dimen.abc_text_size_small_material));
         Message3.setText(getResources().getString(R.string.regist2_notif_message_3));
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStack(null, android.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                Fragment test = new Login();
-                switchFragment(test, "Login", false);
-                dialog.dismiss();
-            }
+        btnDialogOTP.setOnClickListener(view -> {
+            getActivity().getSupportFragmentManager().popBackStack(null, android.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            Fragment test = new Login();
+            switchFragment(test, "Login", false);
+            dialog.dismiss();
         });
 
         dialog.show();
@@ -537,12 +517,7 @@ public class Regist3 extends BaseFragment {
     private void showDialogEmptyToken() {
         AlertDialog.Builder builder = new AlertDialog.Builder(act);
         builder.setMessage(getString(R.string.reg3_notif_max_resend_token_empty))
-                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                })
+                .setPositiveButton(getString(R.string.ok), (dialogInterface, i) -> dialogInterface.dismiss())
                 .show();
     }
 
@@ -595,7 +570,7 @@ public class Regist3 extends BaseFragment {
                             }
                         }
                     }
-                    Timber.d("isi words:" + words[i]);
+                    Timber.d("isi words:%s", words[i]);
                 }
                 TokenValue.setText(_kode_otp + _member_code);
             }

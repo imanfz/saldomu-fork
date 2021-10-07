@@ -89,19 +89,11 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
         btnOk = view.findViewById(R.id.btnOK);
         btnCancel = view.findViewById(R.id.btnCancel);
 
-        btnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btnOk.setEnabled(false);
-                sentAsk4MoneyReject();
-            }
+        btnOk.setOnClickListener(v -> {
+            btnOk.setEnabled(false);
+            sentAsk4MoneyReject();
         });
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        btnCancel.setOnClickListener(v -> dismiss());
 
         return view;
     }
@@ -133,7 +125,7 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
 //            params.put(WebParams.RC_DTIME, dtime);
 //            params.put(WebParams.SIGNATURE, signature);
 
-            Timber.d("isi params ask for money reject:" + params.toString());
+            Timber.d("isi params ask for money reject:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ASK4MONEY_REJECT, params,
                     new ResponseListener() {
@@ -143,28 +135,23 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
                             jsonModel model = gson.fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 if (mListener != null) {
                                     mListener.onItemSelected(true);
                                 }
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
-                            }else {
-                                code = model.getError_code() + " : " + model.getError_message();
-
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
+                            } else {
                                 if (!getActivity().isFinishing()) {
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), code + " : " + message, Toast.LENGTH_LONG).show();
                                 }
                             }
                         }
@@ -181,7 +168,7 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
                     });
 
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 

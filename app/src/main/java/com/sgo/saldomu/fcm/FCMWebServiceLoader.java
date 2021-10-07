@@ -90,7 +90,7 @@ public class FCMWebServiceLoader {
 
     private void sentTokenToServer(Boolean isSync, HashMap<String, Object> requestParams) {
 
-        Timber.d("isi params reg token fcm to server : " + requestParams);
+        Timber.d("isi params reg token fcm to server : %s", requestParams);
 
         RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REG_TOKEN_FCM, requestParams,
                 new ResponseListener() {

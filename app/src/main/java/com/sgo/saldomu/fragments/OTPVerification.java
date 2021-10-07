@@ -86,26 +86,20 @@ public class OTPVerification extends BaseFragment {
 
         tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME + " (" +BuildConfig.VERSION_CODE +")");
 
-        btn_send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (inputValidation()) {
+        btn_send.setOnClickListener(view -> {
+            if (inputValidation()) {
 
-                    user_id = NoHPFormat.formatTo62(et_phone_value.getText().toString());
-                    getOTP();
-                }
+                user_id = NoHPFormat.formatTo62(et_phone_value.getText().toString());
+                getOTP();
             }
         });
 
-        btn_warn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment newFrag = new FragHelp();
-                Bundle bundle = new Bundle();
-                bundle.putBoolean(DefineValue.NOT_YET_LOGIN,true);
-                newFrag.setArguments(bundle);
-                switchFragment(newFrag, "Help", true);
-            }
+        btn_warn.setOnClickListener(v -> {
+            Fragment newFrag = new FragHelp();
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(DefineValue.NOT_YET_LOGIN,true);
+            newFrag.setArguments(bundle);
+            switchFragment(newFrag, "Help", true);
         });
 
     }
@@ -124,7 +118,7 @@ public class OTPVerification extends BaseFragment {
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.DEVICE_NAME, getDeviceName());
 
-            Timber.d("isi params get OTP:" + params.toString());
+            Timber.d("isi params get OTP:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_OTP, params
                     , new ResponseListener() {
@@ -135,7 +129,8 @@ public class OTPVerification extends BaseFragment {
                             if (!model.getOn_error()) {
 
                                 String code = model.getError_code();
-                                Timber.d("isi response get OTP : "+object.toString());
+                                String message = model.getError_message();
+                                Timber.d("isi response get OTP : %s", object.toString());
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     Timber.d("Sukses");
@@ -147,20 +142,17 @@ public class OTPVerification extends BaseFragment {
                                     mFragment.setArguments(mBun);
                                     switchFragment(mFragment, "OtpConfirmation", true);
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), model.getError_message());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), model.getError_message());
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + object.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                    Timber.d("isi response maintenance:%s", object.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 }
                                 else {
-                                    Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 }
                             } else {
                                 Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_SHORT).show();
@@ -178,7 +170,7 @@ public class OTPVerification extends BaseFragment {
                         }
                     } );
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
             Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }

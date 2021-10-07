@@ -25,8 +25,6 @@ import com.balysv.materialripple.MaterialRippleLayout;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -158,7 +156,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         intentData = getIntent();
 
         if (intentData.hasExtra(DefineValue.BBS_TX_ID)) {
-            Timber.d("isi intent amount oncreate " + intentData.getStringExtra(DefineValue.AMOUNT));
+            Timber.d("isi intent amount oncreate %s", intentData.getStringExtra(DefineValue.AMOUNT));
 
             txId = intentData.getStringExtra(DefineValue.BBS_TX_ID);
             categoryName = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
@@ -201,30 +199,28 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         });
 
         btnCancel.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
+                v -> {
 
-                        androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(BbsMapViewByMemberActivity.this).create();
-                        alertDialog.setCanceledOnTouchOutside(false);
-                        alertDialog.setCancelable(false);
-                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                    AlertDialog alertDialog = new AlertDialog.Builder(BbsMapViewByMemberActivity.this).create();
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.setCancelable(false);
+                    alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
-                        String cancelMessage = getString(R.string.message_notif_cancel_trx);
-                        String newCancelMessage = cancelMessage.replace("[CANCEL_FEE]", DefineValue.IDR + " " + CurrencyFormat.format(cancelFee));
+                    String cancelMessage = getString(R.string.message_notif_cancel_trx);
+                    String newCancelMessage = cancelMessage.replace("[CANCEL_FEE]", DefineValue.IDR + " " + CurrencyFormat.format(cancelFee));
 
-                        alertDialog.setMessage(newCancelMessage);
+                    alertDialog.setMessage(newCancelMessage);
 
-                        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
-                                (dialog, which) -> {
-                                    progDialog = DefinedDialog.CreateProgressDialog(BbsMapViewByMemberActivity.this, "");
-                                    cancelTransactionMember();
-                                });
-                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
-                                (dialog, which) -> dialog.dismiss());
-                        alertDialog.show();
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
+                            (dialog, which) -> {
+                                progDialog = DefinedDialog.CreateProgressDialog(BbsMapViewByMemberActivity.this, "");
+                                cancelTransactionMember();
+                            });
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
+                            (dialog, which) -> dialog.dismiss());
+                    alertDialog.show();
 
 
-                    }
                 }
         );
 
@@ -481,7 +477,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         params.put(WebParams.LATITUDE, memberLatitude);
         params.put(WebParams.LONGITUDE, memberLongitude);
         params.put(WebParams.USER_ID, userPhoneID);
-        Timber.d("params update member : ", params.toString());
+        Timber.d("params update member : %s", params.toString());
         handler.removeCallbacks(runnable2);
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_LOCATION_MEMBER, params,
                 new ObjListeners() {
@@ -657,7 +653,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
             if (intentData.hasExtra(DefineValue.BBS_TX_ID)) {
 
-                Timber.d("isi intent amount onresume " + intentData.getStringExtra(DefineValue.AMOUNT));
+                Timber.d("isi intent amount onresume %s", intentData.getStringExtra(DefineValue.AMOUNT));
                 txId = intentData.getStringExtra(DefineValue.BBS_TX_ID);
                 categoryName = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
                 amount = intentData.getStringExtra(DefineValue.AMOUNT);
@@ -712,10 +708,6 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 //            rqParams.put("units", "metric");
 //            rqParams.put("mode", DefineValue.GMAP_MODE);
 //            rqParams.put("language", Locale.getDefault().getLanguage() );
-
-
-            String tempParams = nextParams;
-            tempParams += "&destination=" + targetLatitude.toString() + "," + targetLongitude.toString();
 
             HashMap<String, Object> query = MyApiClient.googleDestination();
             query.put("origin", dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString());
@@ -831,6 +823,5 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     @Override
     public void onBackPressed() {
         disabledBackPressed();
-        return;
     }
 }

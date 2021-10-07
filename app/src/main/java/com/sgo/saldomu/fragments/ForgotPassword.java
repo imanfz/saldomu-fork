@@ -8,11 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -159,22 +157,20 @@ public class ForgotPassword extends BaseFragment {
                             ForgorPasswordModel model = getGson().fromJson(object, ForgorPasswordModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 //                                    Timber.d("response forgot password" + response.toString());
                                 showDialog(getString(R.string.forgotpass_text_message_success));
                                 sp.edit().remove(DefineValue.USER_PASSWORD).apply();
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
 //                                    Timber.d("error forgot password" + response.toString());
-                                String codemessage = model.getError_message();
                                 switch (code) {
                                     case "0097":
                                         attempt = model.getFailed_attempt();
@@ -185,16 +181,16 @@ public class ForgotPassword extends BaseFragment {
                                         else
                                             CallPINinput(failed - attempt);
 
-                                        Toast.makeText(getActivity(), codemessage, Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                         break;
                                     case "0133":
-                                        showDialog(codemessage);
+                                        showDialog(message);
                                         break;
                                     default:
                                         if (MyApiClient.PROD_FAILURE_FLAG) {
                                             Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                                         } else
-                                            Toast.makeText(getActivity(), codemessage, Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                         break;
                                 }
 
@@ -215,7 +211,7 @@ public class ForgotPassword extends BaseFragment {
 
 
         } catch (Exception e) {
-            Timber.d("httpclient" + e.getMessage());
+            Timber.d("httpclient%s", e.getMessage());
         }
     }
 
@@ -237,12 +233,9 @@ public class ForgotPassword extends BaseFragment {
         Message.setText(message_error);
 //        getHelpPin(progBar, Message);
 
-        btnDialogOK.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            }
+        btnDialogOK.setOnClickListener(view -> {
+            dialog.dismiss();
+            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         });
 
         dialog.show();

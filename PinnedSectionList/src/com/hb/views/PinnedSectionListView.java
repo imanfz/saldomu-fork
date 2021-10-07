@@ -343,11 +343,9 @@ public class PinnedSectionListView extends ListView {
 	@Override
 	public void onRestoreInstanceState(Parcelable state) {
 		super.onRestoreInstanceState(state);
-		post(new Runnable() {
-			@Override public void run() { // restore pinned view after configuration change
-			    recreatePinnedShadow();
-			}
-		});
+		post(() -> { // restore pinned view after configuration change
+            recreatePinnedShadow();
+        });
 	}
 
 	@Override

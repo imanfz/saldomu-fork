@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import com.hb.views.PinnedSectionListView;
 import com.sgo.saldomu.Beans.MyGroupObject;
 import com.sgo.saldomu.R;
@@ -88,7 +90,7 @@ public class MyGroupAdapter extends BaseAdapter implements PinnedSectionListView
                 GlideManager.sharedInstance().initializeGlide(context, R.drawable.user_unknown_menu, null, holder.qc_pic);
             else
                 GlideManager.sharedInstance().initializeGlide(context, myGroupObject.getMemberProfilePicture()
-                        , context.getResources().getDrawable(R.drawable.user_unknown_menu), holder.qc_pic);
+                        , ResourcesCompat.getDrawable(context.getResources(), R.drawable.user_unknown_menu, null), holder.qc_pic);
 //                mPic.load(myGroupObject.getMemberProfilePicture())
 //                    .error(R.drawable.user_unknown_menu)
 //                    .placeholder(R.drawable.progress_animation)

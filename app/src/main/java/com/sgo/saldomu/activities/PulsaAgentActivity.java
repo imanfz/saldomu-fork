@@ -77,7 +77,7 @@ public class PulsaAgentActivity extends BaseActivity {
 
 
     public void togglerBroadcastReceiver(Boolean _on, BroadcastReceiver _myreceiver){
-        Log.wtf("masuk turnOnBR","oke");
+        Timber.tag("masuk turnOnBR").wtf("oke");
         if(_on){
             IntentFilter filter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
             registerReceiver(_myreceiver,filter);
@@ -92,7 +92,7 @@ public class PulsaAgentActivity extends BaseActivity {
     public void switchContent(Fragment mFragment,String fragName,String next_frag_title,Boolean isBackstack) {
 
         if(isBackstack){
-            Timber.d("backstack", "masuk");
+            Timber.d("backstack %s", "masuk");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.pulsa_agent_content, mFragment, fragName)
@@ -100,7 +100,7 @@ public class PulsaAgentActivity extends BaseActivity {
                     .commit();
         }
         else {
-            Timber.d("bukan backstack","masuk");
+            Timber.d("bukan backstack %s","masuk");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.pulsa_agent_content, mFragment, fragName)

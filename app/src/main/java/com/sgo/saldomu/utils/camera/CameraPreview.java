@@ -12,6 +12,8 @@ import android.view.SurfaceView;
 
 import java.util.List;
 
+import timber.log.Timber;
+
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 
     private static String TAG = CameraPreview.class.getName();
@@ -72,7 +74,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 camera.startPreview();
                 focus();
             } catch (Exception e) {
-                Log.d(TAG, "Error setting camera preview: " + e.getMessage());
+                Timber.tag(TAG).d("Error setting camera preview: %s", e.getMessage());
                 try {
                     Camera.Parameters parameters = camera.getParameters();
                     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {

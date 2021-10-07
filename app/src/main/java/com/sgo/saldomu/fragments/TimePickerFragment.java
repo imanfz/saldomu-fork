@@ -1,7 +1,6 @@
 package com.sgo.saldomu.fragments;
 
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
@@ -34,16 +33,8 @@ public class TimePickerFragment extends DialogFragment {
     }
     //TimePickerListener mListener;
 
-    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        //remove the check that verfis if your activity has the DialogListener Attached because you want to attach it into your list view onClick()
-    }
-
     public static final String TAG = "TimePicker";
     private int position = 0;
-    private TimePicker tpStartHour, tpEndHour;
     TextView etStartHour, etEndHour;
     Button btnYes, btnNo;
     String startTime = "", endTime = "", NamaHari = "";
@@ -94,8 +85,7 @@ public class TimePickerFragment extends DialogFragment {
         }
 
         etStartHour.setOnClickListener(
-            new View.OnClickListener() {
-                public void onClick(View v) {
+                v -> {
 
                     int defStartHour    = 0;
                     int defStartMinute  = 0;
@@ -105,118 +95,97 @@ public class TimePickerFragment extends DialogFragment {
                     }
 
                     // Perform action on click
-                    TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), new TimePickerDialog.OnTimeSetListener() {
-                        @Override
-                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), (view12, hourOfDay, minute) -> {
 
-                            iStartHour      = hourOfDay;
-                            iStartMinute    = minute;
+                        iStartHour = hourOfDay;
+                        iStartMinute = minute;
 
-                            String hourData = String.valueOf(hourOfDay);
-                            if ( hourData.length() == 1 ) {
-                                hourData = "0" + hourData;
-                            }
-
-                            String minuteData = String.valueOf(minute);
-                            if ( minuteData.length() == 1 ) {
-                                minuteData = "0" + minuteData;
-                            }
-
-                            startTime   = hourData + ":" + minuteData;
-                            etStartHour.setText(startTime);
+                        String hourData = String.valueOf(hourOfDay);
+                        if (hourData.length() == 1) {
+                            hourData = "0" + hourData;
                         }
+
+                        String minuteData = String.valueOf(minute);
+                        if (minuteData.length() == 1) {
+                            minuteData = "0" + minuteData;
+                        }
+
+                        startTime = hourData + ":" + minuteData;
+                        etStartHour.setText(startTime);
                     }, defStartHour, defStartMinute, true);
                     timePickerDialog.show();
                 }
-            }
         );
 
         etEndHour.setOnClickListener(
-                new View.OnClickListener() {
+                v -> {
+
+                    int defEndHour    = 0;
+                    int defEndMinute  = 0;
+                    if ( !endTime.isEmpty() ) {
+                        defEndHour        = iEndHour;
+                        defEndMinute      = iEndMinute;
+                    }
+
+                    // Perform action on click
+                    TimePickerDialog timePickerDialog2 = new TimePickerDialog(v.getContext(), (view1, hourOfDay, minute) -> {
 
 
+                        iEndHour = hourOfDay;
+                        iEndMinute = minute;
 
-                    public void onClick(View v) {
-
-                        int defEndHour    = 0;
-                        int defEndMinute  = 0;
-                        if ( !endTime.isEmpty() ) {
-                            defEndHour        = iEndHour;
-                            defEndMinute      = iEndMinute;
+                        String hourData = String.valueOf(hourOfDay);
+                        if (hourData.length() == 1) {
+                            hourData = "0" + hourData;
                         }
 
-                        // Perform action on click
-                        TimePickerDialog timePickerDialog2 = new TimePickerDialog(v.getContext(), new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        String minuteData = String.valueOf(minute);
+                        if (minuteData.length() == 1) {
+                            minuteData = "0" + minuteData;
+                        }
 
-
-                                iEndHour      = hourOfDay;
-                                iEndMinute    = minute;
-
-                                String hourData = String.valueOf(hourOfDay);
-                                if ( hourData.length() == 1 ) {
-                                    hourData = "0" + hourData;
-                                }
-
-                                String minuteData = String.valueOf(minute);
-                                if ( minuteData.length() == 1 ) {
-                                    minuteData = "0" + minuteData;
-                                }
-
-                                endTime = hourData + ":" + minuteData;
-                                etEndHour.setText(endTime);
-                            }
-                        }, defEndHour, defEndMinute, true);
-                        timePickerDialog2.show();
-                    }
+                        endTime = hourData + ":" + minuteData;
+                        etEndHour.setText(endTime);
+                    }, defEndHour, defEndMinute, true);
+                    timePickerDialog2.show();
                 }
         );
 
         btnYes.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
+                v -> {
 
-                        int iStartTime  = iStartHour + iStartMinute;
-                        int iEndTime    = iEndHour + iEndMinute;
+                    int iStartTime  = iStartHour + iStartMinute;
+                    int iEndTime    = iEndHour + iEndMinute;
 
-                        if ( iStartTime >= iEndTime ) {
-                            androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).create();
-                            alertDialog.setCanceledOnTouchOutside(false);
-                            alertDialog.setTitle(getString(R.string.alertbox_title_information));
-                            alertDialog.setCancelable(false);
+                    if ( iStartTime >= iEndTime ) {
+                        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                        alertDialog.setCancelable(false);
 
-                            alertDialog.setMessage(getString(R.string.err_start_time_must_lower_than_end_time));
-
+                        alertDialog.setMessage(getString(R.string.err_start_time_must_lower_than_end_time));
 
 
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
 
-                                            dialog.dismiss();
-                                        }
-                                    });
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                (dialog, which) -> dialog.dismiss());
 
-                            alertDialog.show();
-                        } else {
-                            try {
-                                tpl.onOkTimePickerClick(position, startTime, endTime, iStartHour, iStartMinute, iEndHour, iEndMinute);
-                                getDialog().dismiss();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                        alertDialog.show();
+                    } else {
+                        try {
+                            tpl.onOkTimePickerClick(position, startTime, endTime, iStartHour, iStartMinute, iEndHour, iEndMinute);
+                            getDialog().dismiss();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 }
         );
 
         btnNo.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
-                        tpl.onCancelTimePickerClick(position);
-                        getDialog().dismiss();
-                    }
+                v -> {
+                    tpl.onCancelTimePickerClick(position);
+                    getDialog().dismiss();
                 }
         );
     }

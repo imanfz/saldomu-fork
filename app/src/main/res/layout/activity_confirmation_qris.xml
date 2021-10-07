@@ -42,6 +42,24 @@
                     android:textColor="@color/grey_700"
                     android:textSize="@dimen/text_size_large_material" />
 
+                <TextView
+                    android:id="@+id/tv_merchant_domain_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="ID.CO.CONTOH.WWW"
+                    android:textColor="@color/grey_700"
+                    android:textSize="@dimen/text_size_large_material" />
+
+                <TextView
+                    android:id="@+id/tv_merchant_pan_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="123456789012345678"
+                    android:textColor="@color/grey_700"
+                    android:textSize="@dimen/text_size_large_material" />
+
             </LinearLayout>
 
             <LinearLayout

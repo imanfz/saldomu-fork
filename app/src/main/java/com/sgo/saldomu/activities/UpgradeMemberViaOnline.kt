@@ -639,7 +639,8 @@ class UpgradeMemberViaOnline : BaseActivity() {
                             val gson = Gson()
                             val model = gson.fromJson(jsonObject.toString(), jsonModel::class.java)
 
-                            Log.e("getBankCashout", jsonObject.get("bank_cashout").toString())
+                            Timber.tag("getBankCashout")
+                                .e(jsonObject.get("bank_cashout").toString())
 
                             val type = object : TypeToken<List<BankCashoutModel>>() {
 
@@ -647,7 +648,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
                             val gson2 = Gson()
                             listBankCashOut = gson2.fromJson(jsonObject.get("bank_cashout"), type)
 
-                            Log.e("getBankCashout", listBankCashOut.toString())
+                            Timber.tag("getBankCashout").e(listBankCashOut.toString())
 
                             bankAdapter.updateAdapter(listBankCashOut)
                         }

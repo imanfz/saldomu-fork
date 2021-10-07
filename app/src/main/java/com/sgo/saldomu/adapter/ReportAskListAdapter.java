@@ -26,15 +26,7 @@ public class ReportAskListAdapter extends ArrayAdapter<ReportDataModel> {
 
     private Context context;
     private int layoutResourceId;
-    private ArrayList<ReportAskListModel> data = null;
     List<ReportDataModel> reportListModel;
-
-//    public ReportAskListAdapter(Context context, int resource, ArrayList<ReportAskListModel> objects) {
-//        super(context, resource, objects);
-//        this.layoutResourceId = resource;
-//        this.context = context;
-//        this.data = objects;
-//    }
 
     public ReportAskListAdapter(Context context, int resource, List<ReportDataModel> reportListModel) {
         super(context, resource, reportListModel);

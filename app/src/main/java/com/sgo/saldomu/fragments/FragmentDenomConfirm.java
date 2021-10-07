@@ -117,7 +117,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         Bundle bundle = getArguments();
         assert bundle != null;
         if (bundle != null) {
-            Timber.d("isi bundle : " + bundle.toString());
+            Timber.d("isi bundle : %s", bundle.toString());
             bankGateway = bundle.getString(WebParams.BANK_GATEWAY, "");
             bankName = bundle.getString(WebParams.BANK_NAME, "");
             attempt = bundle.getInt(DefineValue.ATTEMPT, -1);
@@ -163,16 +163,13 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
             }
         });
 
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitBtn.setEnabled(false);
+        submitBtn.setOnClickListener(v -> {
+            submitBtn.setEnabled(false);
 //                sentInquiry();
-                if (isFav) {
-                    onSaveToFavorite();
-                } else
-                    confirmToken();
-            }
+            if (isFav) {
+                onSaveToFavorite();
+            } else
+                confirmToken();
         });
 
 
@@ -248,7 +245,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         i.putExtra(DefineValue.CALLBACK_URL, (DefineValue.CALLBACK_URL));
         i.putExtra(DefineValue.REPORT_TYPE, DefineValue.TOPUP);
         i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.TOPUP_IB_TYPE);
-        Timber.d("isi args:" + i.toString());
+        Timber.d("isi args:%s", i.toString());
 //        btn_next.setEnabled(true);
         startActivityForResult(i, MainPage.REQUEST_FINISH);
     }
@@ -350,7 +347,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         params.put(WebParams.MEMBER_REMARK, memberCode);
         params.put(WebParams.PROMO_CODE, promoCode);
 
-        Timber.d("isi params sent get denom invoke:" + params.toString());
+        Timber.d("isi params sent get denom invoke:%s", params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_DENOM_INVOKE_NEW, params,
                 new ObjListeners() {
@@ -409,7 +406,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, commIDLogin);
-            Timber.d("isi params InquiryTrx denom scadm:" + params.toString());
+            Timber.d("isi params InquiryTrx denom scadm:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQ_TOKEN_SGOL, params,
                     new ObjListeners() {
@@ -597,7 +594,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -666,13 +663,10 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         Title.setText(getString(R.string.error));
         Message.setText(msg);
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismissProgressDialog();
-                dialog.dismiss();
-                getActivity().onBackPressed();
-            }
+        btnDialogOTP.setOnClickListener(view -> {
+            dismissProgressDialog();
+            dialog.dismiss();
+            getActivity().onBackPressed();
         });
 
         dialog.show();
@@ -738,7 +732,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
 
     private void onSaveToFavorite() {
         extraSignature = cust_id + product_type + tx_favorite_type;
-        Log.e("extraSignature params ", extraSignature);
+        Timber.tag("extraSignature params ").e(extraSignature);
         String url = MyApiClient.LINK_TRX_FAVORITE_SAVE;
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(url, extraSignature);
         params.put(WebParams.USER_ID, userPhoneID);
@@ -749,7 +743,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         params.put(WebParams.NOTES, notes);
         params.put(WebParams.DENOM_ITEM_ID, "");
 
-        Log.e("params fav b2btopup :", params.toString());
+        Timber.tag("params fav b2btopup :").e(params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(url, params,
                 new ObjListeners() {
@@ -757,20 +751,18 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                     public void onResponses(JSONObject response) {
                         try {
                             jsonModel model = RetrofitService.getInstance().getGson().fromJson(response.toString(), jsonModel.class);
-                            Log.e("onResponse fav b2btopup", response.toString());
+                            Timber.tag("onResponse fav b2btopup").e(response.toString());
                             String code = response.getString(WebParams.ERROR_CODE);
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + response.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", response.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
@@ -781,7 +773,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
 
                     @Override
                     public void onError(Throwable throwable) {
-                        Log.e("onResponse fav b2btopup", throwable.getLocalizedMessage());
+                        Timber.tag("onResponse fav b2btopup").e(throwable.getLocalizedMessage());
                         throwable.printStackTrace();
                     }
 

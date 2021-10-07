@@ -15,6 +15,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
@@ -66,7 +67,7 @@ public class FragTopUpSCADM extends BaseFragment {
     private ArrayList<listBankModel> scadmListBankTopUp = new ArrayList<>();
     private ArrayList<String> spinnerContentStrings = new ArrayList<>();
     private ArrayAdapter<String> arrayAdapter;
-    private Switch favoriteSwitch;
+    private SwitchCompat favoriteSwitch;
     private EditText notesEditText;
 
     @Nullable
@@ -117,25 +118,22 @@ public class FragTopUpSCADM extends BaseFragment {
         et_jumlah.addTextChangedListener(new NumberTextWatcherForThousand(et_jumlah));
         amount = NumberTextWatcherForThousand.trimCommaOfString(et_jumlah.getText().toString());
 
-        btn_next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        btn_next.setOnClickListener(view -> {
 
-                amount = NumberTextWatcherForThousand.trimCommaOfString(et_jumlah.getText().toString());
-                if (inputValidation()) {
-                    if (!member_code.equals(userPhoneID)) {
-                        member_code = NoHPFormat.formatTo62(et_membercode.getText().toString());
-                    } else
-                        member_code = et_membercode.getText().toString();
+            amount = NumberTextWatcherForThousand.trimCommaOfString(et_jumlah.getText().toString());
+            if (inputValidation()) {
+                if (!member_code.equals(userPhoneID)) {
+                    member_code = NoHPFormat.formatTo62(et_membercode.getText().toString());
+                } else
+                    member_code = et_membercode.getText().toString();
 
-                    if (selectedProductCode.equalsIgnoreCase("SCASH")) {
-                        sentInsertTopUpSCASH();
-                    } else
-                        sentInsertTopUp();
-
-                }
+                if (selectedProductCode.equalsIgnoreCase("SCASH")) {
+                    sentInsertTopUpSCASH();
+                } else
+                    sentInsertTopUp();
 
             }
+
         });
 
         favoriteSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -198,7 +196,7 @@ public class FragTopUpSCADM extends BaseFragment {
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.MEMBER_ID_SCADM, member_id_scadm);
 
-            Timber.d("isi params get list bank topup scadm:" + params.toString());
+            Timber.d("isi params get list bank topup scadm:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_LIST_BANK_TOPUP_SCADM, params,
                     new ObjListeners() {
@@ -208,7 +206,8 @@ public class FragTopUpSCADM extends BaseFragment {
                                 Gson gson = new Gson();
                                 jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                Timber.d("isi response get list bank topup scadm:" + response.toString());
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                Timber.d("isi response get list bank topup scadm:%s", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                     JSONArray mArrayBank = new JSONArray(response.getString(WebParams.BANK));
@@ -235,24 +234,19 @@ public class FragTopUpSCADM extends BaseFragment {
                                     arrayAdapter.notifyDataSetChanged();
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
-                                    Timber.d("Error isi response get list bank topup scadm:" + response.toString());
-                                    code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
+                                    Timber.d("Error isi response get list bank topup scadm:%s", response.toString());
 
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), code+ ":" +message, Toast.LENGTH_LONG).show();
                                     getActivity().finish();
                                 }
                             } catch (JSONException e) {
@@ -275,7 +269,7 @@ public class FragTopUpSCADM extends BaseFragment {
                     });
 
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -298,7 +292,7 @@ public class FragTopUpSCADM extends BaseFragment {
             params.put(WebParams.PAYMENT_REMARK, et_pesan.getText().toString());
             params.put(WebParams.MEMBER_REMARK, member_code);
 
-            Timber.d("isi params confirm topup scadm:" + params.toString());
+            Timber.d("isi params confirm topup scadm:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_TOPUP_SCADM_NEW, params,
                     new ObjListeners() {
@@ -364,7 +358,7 @@ public class FragTopUpSCADM extends BaseFragment {
                     });
 
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -383,7 +377,7 @@ public class FragTopUpSCADM extends BaseFragment {
             params.put(WebParams.AMOUNT, amount);
             params.put(WebParams.PAYMENT_REMARK, et_pesan.getText().toString());
 
-            Timber.d("isi params confirm topup scadm:" + params.toString());
+            Timber.d("isi params confirm topup scadm:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_TOPUP_SCADM, params,
                     new ObjListeners() {
@@ -449,7 +443,7 @@ public class FragTopUpSCADM extends BaseFragment {
                     });
 
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
