@@ -53,15 +53,15 @@ public class ListPOTokoAdapter extends RecyclerView.Adapter<ListPOTokoAdapter.Vi
         holder.docNo.setText(docListArrayList.get(position).getDoc_no());
         holder.docStatus.setText(docListArrayList.get(position).getDoc_status());
         holder.totalAmount.setText(mContext.getString(R.string.currency) + CurrencyFormat.format(docListArrayList.get(position).getNett_amount()));
-        holder.dueDate.setText(docListArrayList.get(position).getDue_date());
+        holder.issueDate.setText(docListArrayList.get(position).getIssue_date());
         holder.paidStatus.setText(docListArrayList.get(position).getPaid_status_remark());
         holder.partner.setText(docListArrayList.get(position).getPartner());
         holder.layout.setOnClickListener(view -> listener.onClick(docListArrayList.get(position).getDoc_no()));
         holder.cancel.setOnClickListener(view -> listener.onCancel(docListArrayList.get(position).getDoc_no()));
 
-        if (docListArrayList.get(position).getPaid_status().equals(DefineValue.STRING_NO))
-            holder.cancel.setVisibility(View.VISIBLE);
-        else
+//        if (docListArrayList.get(position).getPaid_status().equals(DefineValue.STRING_NO))
+//            holder.cancel.setVisibility(View.VISIBLE);
+//        else
             holder.cancel.setVisibility(View.GONE);
     }
 
@@ -76,7 +76,7 @@ public class ListPOTokoAdapter extends RecyclerView.Adapter<ListPOTokoAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView docNo, docStatus, totalAmount, dueDate, paidStatus, partner;
+        TextView docNo, docStatus, totalAmount, issueDate, paidStatus, partner;
         Button cancel;
         LinearLayout layout;
 
@@ -85,7 +85,7 @@ public class ListPOTokoAdapter extends RecyclerView.Adapter<ListPOTokoAdapter.Vi
             docNo = itemView.findViewById(R.id.tv_docNo);
             docStatus = itemView.findViewById(R.id.tv_docStatus);
             totalAmount = itemView.findViewById(R.id.tv_totalAmount);
-            dueDate = itemView.findViewById(R.id.tv_due_date);
+            issueDate = itemView.findViewById(R.id.tv_issued_date);
             paidStatus = itemView.findViewById(R.id.tv_paid_status);
             cancel = itemView.findViewById(R.id.btn_cancel_po);
             partner = itemView.findViewById(R.id.tv_partner);
