@@ -191,6 +191,7 @@
     <TableRow>
 
         <TextView
+            android:id="@+id/dialog_label_report_fee"
             android:layout_weight="1"
             android:padding="3dip"
             android:text="@string/topup_token_fee" />
