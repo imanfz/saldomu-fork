@@ -112,20 +112,14 @@ public class BankListTopupAdapter extends RecyclerView.Adapter<BankListTopupAdap
             holder.pinAccOthers.setText(temp_other_atm.getNoVa());
         }
 
+        holder.parent.setOnClickListener(v -> {
 
-
-
-        holder.parent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (listDataHeader.get(position).getHeader().equals(context.getString(R.string.other_bank))) {
-                    if (holder.otherATM.getVisibility() == View.GONE){
-                        holder.otherATM.setVisibility(View.VISIBLE);
-                    }else holder.otherATM.setVisibility(View.GONE);
-                }else {
-                    listener.onClick(listDataHeader.get(position).getBankData());
-                }
+            if (listDataHeader.get(position).getHeader().equals(context.getString(R.string.other_bank))) {
+                if (holder.otherATM.getVisibility() == View.GONE){
+                    holder.otherATM.setVisibility(View.VISIBLE);
+                }else holder.otherATM.setVisibility(View.GONE);
+            }else {
+                listener.onClick(listDataHeader.get(position).getBankData());
             }
         });
 

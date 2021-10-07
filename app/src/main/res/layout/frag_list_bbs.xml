@@ -24,7 +24,7 @@
 
 
 
-        <Switch
+        <androidx.appcompat.widget.SwitchCompat
             android:layout_gravity="center_vertical"
             android:id="@+id/swSettingOnline"
             android:layout_width="wrap_content"

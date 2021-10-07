@@ -355,7 +355,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     @Override
                     public void onResponses(JSONObject response) {
 
-                        Timber.d("isi response sent request cash in:" + response.toString());
+                        Timber.d("isi response sent request cash in:%s", response.toString());
 
                         try {
                             String code = response.getString(WebParams.ERROR_CODE);
@@ -591,20 +591,16 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
         if (isMobility.equals(DefineValue.STRING_NO)) {
             // Setting onclick event listener for the map
-            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            mMap.setOnMapClickListener(point -> {
 
-                @Override
-                public void onMapClick(LatLng point) {
-
-                    // clearing map and generating new marker points if user clicks on map more than two times
-                    mMap.clear();
-                    selectedLat = point.latitude;
-                    selectedLong = point.longitude;
-                    mMap.addMarker(new MarkerOptions().position(point).title(memberDefaultAddress));
-                    mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                // clearing map and generating new marker points if user clicks on map more than two times
+                mMap.clear();
+                selectedLat = point.latitude;
+                selectedLong = point.longitude;
+                mMap.addMarker(new MarkerOptions().position(point).title(memberDefaultAddress));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
 
-                }
             });
         }
     }
@@ -701,7 +697,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         } catch (IOException ioException) {
             // Catch network or other I/O problems.
             //errorMessage = "Catch : Network or other I/O problems - No geocoder available";
-            Log.d("onIOException ", "Catch : Network or other I/O problems - No geocoder available");
+            Timber.tag("onIOException ").d("Catch : Network or other I/O problems - No geocoder available");
         } catch (IllegalArgumentException illegalArgumentException) {
             // Catch invalid latitude or longitude values.
             //errorMessage = "Catch : Invalid latitude or longitude values";
@@ -833,7 +829,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                         selectedLong = defaultLong;
                     }
                 }
-                Timber.d("Location Found" + lastLocation.toString());
+                Timber.d("Location Found%s", lastLocation.toString());
                 //googleApiClient.disconnect();
 
                 if (mMap == null) {

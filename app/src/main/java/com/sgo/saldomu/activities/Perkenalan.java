@@ -112,7 +112,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
 
                     // Get new Instance ID token
                     String token = task.getResult().getToken();
-                    Timber.d("Token intro : " + token);
+                    Timber.d("Token intro : %s", token);
                     SecurePreferences.Editor mEditor = sp.edit();
                     mEditor.putString(DefineValue.FCM_ID, token);
                     mEditor.putString(DefineValue.FCM_ENCRYPTED, Md5.hashMd5(token));
@@ -372,7 +372,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         params.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID, ""));
         params.put(WebParams.IS_POS, sp.getString(DefineValue.IS_POS, DefineValue.STRING_NO));
         params.put(WebParams.IMEI_ID, imeiDevice.toUpperCase());
-        Timber.d("isi param pin login:" + params);
+        Timber.d("isi param pin login:%s", params);
 
         RetrofitService.getInstance().PostJsonObjRequest(link, params, new ObjListeners() {
             @Override
@@ -435,7 +435,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         if (sp.getString(DefineValue.FCM_ID, "") != null)
             params.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID, ""));
 
-        Timber.d("isi params login:" + params.toString());
+        Timber.d("isi params login:%s", params.toString());
 
         RetrofitService.getInstance().PostObjectRequest(link, params, new ResponseListener() {
             @Override
@@ -475,14 +475,12 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
                 } else if (code.equals(DefineValue.ERROR_0002)) {
                     showDialog(getString(R.string.login_failed_wrong_id));
                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                    Timber.d("isi response app data:" + loginModel.getApp_data());
+                    Timber.d("isi response app data:%s", loginModel.getApp_data());
                     final AppDataModel appModel = loginModel.getApp_data();
-                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                    alertDialogUpdateApp.showDialogUpdate(Perkenalan.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                    AlertDialogUpdateApp.getInstance().showDialogUpdate(Perkenalan.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                    Timber.d("isi response maintenance:" + response.toString());
-                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                    alertDialogMaintenance.showDialogMaintenance(Perkenalan.this);
+                    Timber.d("isi response maintenance:%s", response.toString());
+                    AlertDialogMaintenance.getInstance().showDialogMaintenance(Perkenalan.this);
                 } else if (code.equals("0324")) {
                     sp.edit().remove(DefineValue.PREVIOUS_LOGIN_USER_ID).apply();
                     showDialog(loginModel.getError_message());
@@ -702,12 +700,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         Message.setText(message);
 
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        btnDialogOTP.setOnClickListener(view -> dialog.dismiss());
 
         dialog.show();
     }
@@ -716,7 +709,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         if (model != null) {
             for (int i = 0; i < model.size(); i++) {
                 if (model.get(i).getCommId().equals(MyApiClient.COMM_ID)) {
-                    Timber.w("check comm id yg bener: " + model.get(i).getCommId());
+                    Timber.w("check comm id yg bener: %s", model.get(i).getCommId());
                     return true;
                 }
             }
@@ -769,7 +762,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 

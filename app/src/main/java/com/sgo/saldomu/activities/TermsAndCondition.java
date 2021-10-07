@@ -28,7 +28,6 @@ import timber.log.Timber;
 
 public class TermsAndCondition extends BaseActivity {
     private WebView webview_privacypolicy;
-    SecurePreferences sp;
     private ProgressBar progbar;
     private Boolean isDisconnected;
 
@@ -41,7 +40,6 @@ public class TermsAndCondition extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initializeToolbar();
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         progbar = findViewById(R.id.progbar);
 

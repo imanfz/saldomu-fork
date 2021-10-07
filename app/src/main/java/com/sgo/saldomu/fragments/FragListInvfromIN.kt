@@ -95,7 +95,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             }
         }
 
-        var paymentOptionsAdapter = ArrayAdapter(activity!!, R.layout.layout_spinner_list_cust, paymentListOption)
+        val paymentOptionsAdapter = ArrayAdapter(activity!!, R.layout.layout_spinner_list_cust, paymentListOption)
         paymentOptionsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner_bank_produk.adapter = paymentOptionsAdapter
         spinner_bank_produk.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -152,7 +152,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             val paidstats = mArrayDoc.getJSONObject(i).getString(WebParams.PAID_STATUS)
             val paidstatsRemark = mArrayDoc.getJSONObject(i).getString(WebParams.PAID_STATUS_REMARK)
             val promoListJsonArray = mArrayDoc.getJSONObject(i).getJSONArray(WebParams.PROMO)
-            var promoArrayList = ArrayList<PromoCanvasserModel>()
+            val promoArrayList = ArrayList<PromoCanvasserModel>()
             for (i in 0 until promoListJsonArray.length()) {
                 total_disc = promoListJsonArray.getJSONObject(i).getString(WebParams.TOTAL_DISC)
                 var promo = PromoCanvasserModel()
@@ -205,8 +205,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
     }
 
-
-    fun requestPayment(obj: ListPOModel) {
+    private fun requestPayment(obj: ListPOModel) {
 
         try {
 
@@ -255,19 +254,16 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
                                         val message = response.getString(WebParams.ERROR_MESSAGE)
-                                        val test = AlertDialogLogout.getInstance()
-                                        test.showDialoginActivity(activity, message)
+                                        AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                                     }
                                     DefineValue.ERROR_9333 -> {
                                         Timber.d("isi response app data:%s", model.app_data)
                                         val appModel = model.app_data
-                                        val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                        alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                        AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                                     }
                                     DefineValue.ERROR_0066 -> {
                                         Timber.d("isi response maintenance:$response")
-                                        val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                        alertDialogMaintenance.showDialogMaintenance(activity)
+                                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         Timber.d("isi error request payment canvasser:$response")

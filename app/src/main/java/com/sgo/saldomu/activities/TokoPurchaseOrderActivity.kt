@@ -7,7 +7,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.ToggleKeyboard
-import com.sgo.saldomu.fragments.*
+import com.sgo.saldomu.fragments.FragListCommunityToko
+import com.sgo.saldomu.fragments.FragListPromoCodeToko
+import com.sgo.saldomu.fragments.FragOrderConfirmToko
 import com.sgo.saldomu.widgets.BaseActivity
 import timber.log.Timber
 
@@ -58,21 +60,21 @@ class TokoPurchaseOrderActivity : BaseActivity() {
         if (isBackstack) {
             Timber.d("backstack")
             supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.toko_po_content, mFragment, tag)
-                    .addToBackStack(tag)
-                    .commitAllowingStateLoss()
+                .beginTransaction()
+                .replace(R.id.toko_po_content, mFragment, tag)
+                .addToBackStack(tag)
+                .commitAllowingStateLoss()
         } else {
             Timber.d("bukan backstack")
             supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.toko_po_content, mFragment, tag)
-                    .commitAllowingStateLoss()
+                .beginTransaction()
+                .replace(R.id.toko_po_content, mFragment, tag)
+                .commitAllowingStateLoss()
         }
         initializeToolbar(fragName)
     }
 
-    fun addFragment(mFragment: Fragment, fragName: String, tag: String){
+    fun addFragment(mFragment: Fragment, fragName: String, tag: String) {
         ToggleKeyboard.hide_keyboard(this)
         supportFragmentManager.beginTransaction().add(R.id.toko_po_content, mFragment, tag).commit()
         initializeToolbar(fragName)

@@ -28,7 +28,6 @@ import com.sgo.saldomu.widgets.BaseActivity;
  */
 public class SocialPromoActivity extends BaseActivity {
 
-    private SecurePreferences sp;
     private int RESULT;
 //    WebView webView;
 
@@ -37,7 +36,6 @@ public class SocialPromoActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         initializeToolbar();
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         Intent i = getIntent();
 

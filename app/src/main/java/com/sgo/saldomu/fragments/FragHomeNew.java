@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -124,7 +125,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Biller_Type_Data_Model mBillerTypeDataDATA;
     private EditMenuModel editMenuModel;
     private Realm realm;
-    private Switch swSettingOnline;
+    private SwitchCompat swSettingOnline;
     private TextView tvSettingOnline;
     String shopStatus, isDormant, agentSchemeCode, memberSchemeCode, agentBillerCode, agentEBDCode, agentTrxCode;
     Boolean isAgent, isShowB2b = false, isAvailBiller = false, isB2BEratelToko = false, isB2BEratelCanvasser = false;
@@ -246,16 +247,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
         }
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Timber.d("masuk gridhomeonitemclicklistener");
+        gridView.setOnItemClickListener((parent, view1, position, id) -> {
+            Timber.d("masuk gridhomeonitemclicklistener");
 
-                String menuItemName = ((TextView) view.findViewById(R.id.grid_text)).getText().toString();
-                Timber.d("menuItemName : %s", menuItemName);
-                onClickMenuItem(menuItemName);
-            }
-
+            String menuItemName = ((TextView) view1.findViewById(R.id.grid_text)).getText().toString();
+            Timber.d("menuItemName : %s", menuItemName);
+            onClickMenuItem(menuItemName);
         });
 
         if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
@@ -269,11 +266,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         if (getLvlClass() != null)
             getLvlClass().refreshData();
 
-        refreshBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                getBalance(true);
-            }
-        });
+        refreshBtn.setOnClickListener(v -> getBalance(true));
 
         if (!sp.getBoolean(DefineValue.SAME_BANNER, false))
             getPromoList();
@@ -462,7 +455,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, ""));
 
-            Timber.d("isi params get promo list:" + params.toString());
+            Timber.d("isi params get promo list:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_PROMO_LIST, params,
                     new ObjListeners() {
@@ -474,7 +467,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 String message = response.getString(WebParams.ERROR_MESSAGE);
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("isi params promo list:" + response.toString());
+                                    Timber.d("isi params promo list:%s", response.toString());
                                     String count = response.getString(WebParams.COUNT);
                                     if (!count.equals("0")) {
                                         JSONArray mArrayPromo = new JSONArray(response.getString(WebParams.PROMO_DATA));
@@ -580,14 +573,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 e.printStackTrace();
             }
         }
-        carouselView.setImageListener(new ImageListener() {
-            @Override
-            public void setImageForPosition(int position, ImageView imageView) {
-                Glide.with(getActivity())
-                        .load(listPromo.get(position).getImage())
-                        .into(imageView);
-            }
-        });
+        carouselView.setImageListener((position, imageView) -> Glide.with(getActivity())
+                .load(listPromo.get(position).getImage())
+                .into(imageView));
         carouselView.setPageCount(listPromo.size());
         carouselView.setImageClickListener(position -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(listPromo.get(position).getUrl()));
@@ -930,7 +918,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 }
 
                 if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
-                    Timber.d("Receiver AgentShop " + sp.getString(DefineValue.AGENT_SHOP_CLOSED, ""));
+                    Timber.d("Receiver AgentShop %s", sp.getString(DefineValue.AGENT_SHOP_CLOSED, ""));
                     swSettingOnline.setOnCheckedChangeListener(null);
                     swSettingOnline.setChecked(sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO));
                     swSettingOnline.setOnCheckedChangeListener(switchListener);
@@ -1068,22 +1056,18 @@ public class FragHomeNew extends BaseFragmentMainPage {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getString(R.string.alertbox_gps_warning))
                 .setCancelable(false)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                .setPositiveButton(R.string.yes, (dialog, id) -> {
 
-                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivityForResult(ilocation, RC_GPS_REQUEST);
+                    Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivityForResult(ilocation, RC_GPS_REQUEST);
 
-                    }
                 })
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
+                .setNegativeButton(R.string.no, (dialog, id) -> {
+                    dialog.cancel();
 
-                        swSettingOnline.setOnClickListener(null);
-                        swSettingOnline.setChecked(false);
-                        swSettingOnline.setOnCheckedChangeListener(switchListener);
-                    }
+                    swSettingOnline.setOnClickListener(null);
+                    swSettingOnline.setChecked(false);
+                    swSettingOnline.setOnCheckedChangeListener(switchListener);
                 });
         final AlertDialog alert = builder.create();
         alert.show();

@@ -603,7 +603,7 @@ public class FragListInvoiceIndomobil extends BaseFragment {
                             String code = model.getError_code();
                             String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-                                Log.e("getBankCashout", object.get("bank_cashout").toString());
+                                Timber.tag("getBankCashout").e(object.get("bank_cashout").toString());
                                 try {
                                     JSONArray mArrayPaymentMethod = new JSONArray(object.get("bank_cashout").toString());
                                     bankBillerModelArrayList.clear();
@@ -686,6 +686,8 @@ public class FragListInvoiceIndomobil extends BaseFragment {
                     invoiceDGI.setRemain_amount(jsonObject.optString(WebParams.AMOUNT, ""));
                     invoiceDGI.setDue_date(jsonObject.optString(WebParams.DUE_DATE, ""));
                     invoiceDGI.setMember_code(jsonObject.optString(WebParams.MEMBER_CODE, ""));
+                    invoiceDGI.setReference_number(jsonObject.optString(WebParams.REFERENCE_NUMBER, ""));
+                    invoiceDGI.setDevice_key(jsonObject.optString(WebParams.DEVICE_KEY, ""));
 
                     newInvoiceDGIArrayList.add(invoiceDGI);
                     invoiceDGIModelArrayList.add(invoiceDGI);
@@ -693,7 +695,7 @@ public class FragListInvoiceIndomobil extends BaseFragment {
                     enableButton(btnCheck);
                     disableButton(btnDone);
                 } else {
-                    Toast.makeText(getActivity(), "Invoice telah tersedia", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.invoice_exist), Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -822,6 +824,8 @@ public class FragListInvoiceIndomobil extends BaseFragment {
                 parentObject.put(WebParams.MEMBER_NAME, "");
                 parentObject.put(WebParams.AMOUNT, obj.getRemain_amount());
                 parentObject.put(WebParams.DUE_DATE, obj.getDue_date());
+                parentObject.put(WebParams.REFERENCE_NUMBER, obj.getReference_number());
+                parentObject.put(WebParams.DEVICE_KEY, obj.getDevice_key());
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -20,13 +20,10 @@ class CreatePinViewController extends BaseViewController {
 
     @Override
     OnCommitListener provideListener() {
-        return new OnCommitListener() {
-            @Override
-            public void onPinCommit(PinputView view, String submission) {
-                Animator a = getOutAndInAnim(mPinputView, mPinputView);
-                mPinFragment.onPinCreationEntered(submission);
-                a.start();
-            }
+        return (view, submission) -> {
+            Animator a = getOutAndInAnim(mPinputView, mPinputView);
+            mPinFragment.onPinCreationEntered(submission);
+            a.start();
         };
     }
 }

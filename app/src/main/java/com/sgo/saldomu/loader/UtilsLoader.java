@@ -88,20 +88,20 @@ public class UtilsLoader {
                 params.put(WebParams.IS_AUTO, isAuto);
                 params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, ""));
 
-                Timber.d("isi params get Balance Loader:" + params.toString());
-                if (!member_id.isEmpty()) {
+                Timber.d("isi params get Balance Loader:%s", params.toString());
 
-                    RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_SALDO, params,
-                            new ResponseListener() {
-                                @Override
-                                public void onResponses(JsonObject object) {
-                                    Gson gson = new Gson();
+                RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_SALDO, params,
+                        new ResponseListener() {
+                            @Override
+                            public void onResponses(JsonObject object) {
+                                Gson gson = new Gson();
 
-                                    GetBalanceModel model = gson.fromJson(object, GetBalanceModel.class);
+                                GetBalanceModel model = gson.fromJson(object, GetBalanceModel.class);
 
-                                    String code = model.getError_code();
-                                    if (code.equals(WebParams.SUCCESS_CODE)) {
-                                        Timber.v("masuk sini new balance caller Loader");
+                                String code = model.getError_code();
+                                String message = model.getError_message();
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    Timber.v("masuk sini new balance caller Loader");
 //                                        String unread = sp.getString(WebParams.UNREAD_NOTIF, "");
 //                                        if (unread.equals("")) {
 //                                            SecurePreferences.Editor mEditor = sp.edit();
@@ -109,61 +109,55 @@ public class UtilsLoader {
 //
 //                                            mEditor.apply();
 
-                                        setNotifCount(model.getUnread_notif());
+                                    setNotifCount(model.getUnread_notif());
 //                                        }
 
-                                        SecurePreferences.Editor mEditor = sp.edit();
-                                        mEditor.putString(DefineValue.BALANCE_AMOUNT, model.getAmount());
-                                        mEditor.putString(DefineValue.BALANCE_MAX_TOPUP, model.getMax_topup());
-                                        mEditor.putString(DefineValue.BALANCE_CCYID, model.getCcy_id());
-                                        mEditor.putString(DefineValue.BALANCE_REMAIN_LIMIT, model.getRemain_limit());
-                                        mEditor.putString(DefineValue.BALANCE_PERIOD_LIMIT, model.getPeriod_limit());
-                                        mEditor.putString(DefineValue.BALANCE_NEXT_RESET, model.getNext_reset());
-                                        mEditor.putString(DefineValue.IS_DORMANT, model.getIs_dormant());
-                                        mEditor.remove(DefineValue.IS_MANUAL);
-                                        mEditor.apply();
-                                        mEditor.commit();
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    mEditor.putString(DefineValue.BALANCE_AMOUNT, model.getAmount());
+                                    mEditor.putString(DefineValue.BALANCE_MAX_TOPUP, model.getMax_topup());
+                                    mEditor.putString(DefineValue.BALANCE_CCYID, model.getCcy_id());
+                                    mEditor.putString(DefineValue.BALANCE_REMAIN_LIMIT, model.getRemain_limit());
+                                    mEditor.putString(DefineValue.BALANCE_PERIOD_LIMIT, model.getPeriod_limit());
+                                    mEditor.putString(DefineValue.BALANCE_NEXT_RESET, model.getNext_reset());
+                                    mEditor.putString(DefineValue.IS_DORMANT, model.getIs_dormant());
+                                    mEditor.remove(DefineValue.IS_MANUAL);
+                                    mEditor.apply();
+                                    mEditor.commit();
 
-                                        mListener.onSuccess(true);
-                                        Intent i = new Intent(BalanceService.INTENT_ACTION_BALANCE);
-                                        LocalBroadcastManager.getInstance(getmActivity()).sendBroadcast(i);
-                                    } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                        String message = model.getError_message();
-                                        AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                        test.showDialoginMain(getmActivity(), message);
-                                    } else if (code.equals(DefineValue.ERROR_9333)) {
-                                        Timber.d("isi response app data:" + model.getApp_data());
-                                        final AppDataModel appModel = model.getApp_data();
-                                        AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                        alertDialogUpdateApp.showDialogUpdate(getmActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
-                                    } else if (code.equals(DefineValue.ERROR_0066)) {
-                                        Timber.d("isi response maintenance:" + object.toString());
-                                        AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                        alertDialogMaintenance.showDialogMaintenance(getmActivity());
-                                    } else {
-                                        code = model.getError_message();
-                                        Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString(DefineValue.ERROR, code);
-                                        bundle.putString(DefineValue.ERROR_CODE, model.getError_code());
-                                        mListener.onFail(bundle);
-                                    }
+                                    mListener.onSuccess(true);
+                                    Intent i = new Intent(BalanceService.INTENT_ACTION_BALANCE);
+                                    LocalBroadcastManager.getInstance(getmActivity()).sendBroadcast(i);
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    AlertDialogLogout.getInstance().showDialoginMain(getmActivity(), message);
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:%s", model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getmActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:%s", object.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getmActivity());
+                                } else {
+                                    Toast.makeText(getmActivity(), message, Toast.LENGTH_LONG).show();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString(DefineValue.ERROR, code);
+                                    bundle.putString(DefineValue.ERROR_CODE, model.getError_code());
+                                    mListener.onFail(bundle);
                                 }
+                            }
 
-                                @Override
-                                public void onError(Throwable throwable) {
-                                    mListener.onFailure(throwable.toString());
-                                }
+                            @Override
+                            public void onError(Throwable throwable) {
+                                mListener.onFailure(throwable.toString());
+                            }
 
-                                @Override
-                                public void onComplete() {
+                            @Override
+                            public void onComplete() {
 
-                                }
-                            });
-                }
+                            }
+                        });
             }
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -190,7 +184,7 @@ public class UtilsLoader {
     void getFailedPIN(HashMap<String, Object> params, final OnLoadDataListener mListener) {
         try {
 
-            Timber.d("isi params get FailedPin Loader:" + params.toString());
+            Timber.d("isi params get FailedPin Loader:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_FAILED_PIN, params,
                     new ResponseListener() {
@@ -200,23 +194,21 @@ public class UtilsLoader {
                             FailedPinModel model = gson.fromJson(object, FailedPinModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 int attempt = model.getFailed_attempt();
                                 int failed = model.getMax_failed();
                                 if (attempt != -1)
                                     mListener.onSuccess(failed - attempt);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getmActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getmActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getmActivity());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getmActivity());
                             } else {
-                                code = model.getError_message();
-                                Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getmActivity(), message, Toast.LENGTH_LONG).show();
                                 Bundle bundle = new Bundle();
                                 bundle.putString(DefineValue.ERROR, code);
                                 bundle.putString(DefineValue.ERROR_CODE, model.getError_code());
@@ -236,7 +228,7 @@ public class UtilsLoader {
                     });
 
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -254,7 +246,7 @@ public class UtilsLoader {
             HashMap<String, Object> params = RetrofitService.getInstance()
                     .getSignatureSecretKey(MyApiClient.LINK_APP_VERSION, "");
 
-            Timber.d("params get app version:" + params.toString());
+            Timber.d("params get app version:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_APP_VERSION, params
                     , new ResponseListener() {
@@ -264,24 +256,21 @@ public class UtilsLoader {
 
                             if (!model.getOn_error()) {
                                 String code = model.getError_code();
+                                String message = model.getError_message();
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
 //                                    Timber.d("Isi response get App Version:"+response.toString());
 
                                     final AppDataModel appModel = model.getApp_data();
 
                                     if (appModel.getDisable().equals("1")) {
-                                        String message = getmActivity().getResources().getString(R.string.maintenance_message);
-                                        DialogInterface.OnClickListener okListener = new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                getmActivity().finish();
-                                                android.os.Process.killProcess(android.os.Process.myPid());
-                                                System.exit(0);
-                                                getmActivity().getParent().finish();
-                                            }
+                                        DialogInterface.OnClickListener okListener = (dialog, which) -> {
+                                            getmActivity().finish();
+                                            android.os.Process.killProcess(android.os.Process.myPid());
+                                            System.exit(0);
+                                            getmActivity().getParent().finish();
                                         };
                                         AlertDialog alertDialog = DefinedDialog.BuildAlertDialog(getmActivity(), getmActivity().getString(R.string.maintenance),
-                                                message, android.R.drawable.ic_dialog_alert, false,
+                                                getmActivity().getResources().getString(R.string.maintenance_message), android.R.drawable.ic_dialog_alert, false,
                                                 getmActivity().getString(R.string.ok), okListener);
                                         alertDialog.show();
                                     } else {
@@ -290,27 +279,24 @@ public class UtilsLoader {
                                         final String type = appModel.getType();
                                         Timber.d("Isi Version Name / version code:" + DefineValue.VERSION_NAME + " / " + DefineValue.VERSION_CODE);
                                         if (!package_version.equals(DefineValue.VERSION_NAME)) {
-                                            DialogInterface.OnClickListener okListener = new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    if (type.equalsIgnoreCase("1")) {
-                                                        try {
-                                                            getmActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + package_name)));
-                                                        } catch (android.content.ActivityNotFoundException anfe) {
-                                                            getmActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + package_name)));
-                                                        }
-                                                    } else if (type.equalsIgnoreCase("2")) {
-                                                        String download_url = "";
-                                                        download_url = appModel.getDownloadUrl();
-                                                        if (!Patterns.WEB_URL.matcher(download_url).matches())
-                                                            download_url = "http://www.google.com";
-                                                        getmActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(download_url)));
+                                            DialogInterface.OnClickListener okListener = (dialog, which) -> {
+                                                if (type.equalsIgnoreCase("1")) {
+                                                    try {
+                                                        getmActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + package_name)));
+                                                    } catch (android.content.ActivityNotFoundException anfe) {
+                                                        getmActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + package_name)));
                                                     }
-                                                    getmActivity().finish();
-                                                    android.os.Process.killProcess(android.os.Process.myPid());
-                                                    System.exit(0);
-                                                    getmActivity().getParent().finish();
+                                                } else if (type.equalsIgnoreCase("2")) {
+                                                    String download_url = "";
+                                                    download_url = appModel.getDownloadUrl();
+                                                    if (!Patterns.WEB_URL.matcher(download_url).matches())
+                                                        download_url = "http://www.google.com";
+                                                    getmActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(download_url)));
                                                 }
+                                                getmActivity().finish();
+                                                android.os.Process.killProcess(android.os.Process.myPid());
+                                                System.exit(0);
+                                                getmActivity().getParent().finish();
                                             };
                                             AlertDialog alertDialog = DefinedDialog.BuildAlertDialog(getmActivity(), getmActivity().getString(R.string.update),
                                                     getmActivity().getString(R.string.update_msg), android.R.drawable.ic_dialog_alert, false,
@@ -319,23 +305,18 @@ public class UtilsLoader {
                                         }
                                     }
                                 } else if (code.equals("0381")) {
-                                    String message = model.getError_message();
-                                    DialogInterface.OnClickListener okListener = new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            getmActivity().finish();
-                                            android.os.Process.killProcess(android.os.Process.myPid());
-                                            System.exit(0);
-                                            getmActivity().getParent().finish();
-                                        }
+                                    DialogInterface.OnClickListener okListener = (dialog, which) -> {
+                                        getmActivity().finish();
+                                        android.os.Process.killProcess(android.os.Process.myPid());
+                                        System.exit(0);
+                                        getmActivity().getParent().finish();
                                     };
                                     AlertDialog alertDialog = DefinedDialog.BuildAlertDialog(getmActivity(), getmActivity().getString(R.string.maintenance),
                                             message, android.R.drawable.ic_dialog_alert, false,
                                             getmActivity().getString(R.string.ok), okListener);
                                     alertDialog.show();
                                 } else {
-                                    code = model.getError_message();
-                                    Toast.makeText(CoreApp.getAppContext(), code, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(CoreApp.getAppContext(), message, Toast.LENGTH_LONG).show();
                                 }
                             }
                         }
@@ -352,7 +333,7 @@ public class UtilsLoader {
                     });
 
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 

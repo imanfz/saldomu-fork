@@ -132,12 +132,10 @@ public class FragOnProgressAgent extends Fragment {
                                 alertDialog.setTitle(getString(R.string.alertbox_title_information));
                                 alertDialog.setMessage(getString(R.string.alertbox_message_information));
                                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                                getActivity().finish();
+                                        (dialog, which) -> {
+                                            dialog.dismiss();
+                                            getActivity().finish();
 
-                                            }
                                         });
                                 alertDialog.show();
                             }

@@ -43,23 +43,20 @@ public class ListJoinSCADMAdapter extends RecyclerView.Adapter<ListJoinSCADMAdap
         holder.communityCode.setText(scadmCommunityModelArrayList.get(position).getComm_code());
         holder.communityName.setText(scadmCommunityModelArrayList.get(position).getComm_name());
         holder.view.setVisibility(View.VISIBLE);
-        holder.layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        holder.layout.setOnClickListener(view -> {
 //                Toast.makeText(mContext,"on click position"+position, Toast.LENGTH_SHORT).show();
-                Bundle bundle=new Bundle();
-                bundle.putString(DefineValue.COMMUNITY_NAME, scadmCommunityModelArrayList.get(position).getComm_name());
-                bundle.putString(DefineValue.COMMUNITY_CODE, scadmCommunityModelArrayList.get(position).getComm_code());
-                bundle.putString(DefineValue.COMM_ID_SCADM, scadmCommunityModelArrayList.get(position).getComm_id());
-                Fragment mFrag = new FragJoinCommunitySCADM();
-                mFrag.setArguments(bundle);
+            Bundle bundle=new Bundle();
+            bundle.putString(DefineValue.COMMUNITY_NAME, scadmCommunityModelArrayList.get(position).getComm_name());
+            bundle.putString(DefineValue.COMMUNITY_CODE, scadmCommunityModelArrayList.get(position).getComm_code());
+            bundle.putString(DefineValue.COMM_ID_SCADM, scadmCommunityModelArrayList.get(position).getComm_id());
+            Fragment mFrag = new FragJoinCommunitySCADM();
+            mFrag.setArguments(bundle);
 
-                if(mContext == null){
-                    return;
-                }
-                JoinCommunitySCADMActivity ftf = (JoinCommunitySCADMActivity) mContext;
-                ftf.switchContent(mFrag,"Gabung Komunitas",true);
+            if(mContext == null){
+                return;
             }
+            JoinCommunitySCADMActivity ftf = (JoinCommunitySCADMActivity) mContext;
+            ftf.switchContent(mFrag,"Gabung Komunitas",true);
         });
     }
 

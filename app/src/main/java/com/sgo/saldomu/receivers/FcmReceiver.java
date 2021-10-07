@@ -62,7 +62,7 @@ public class FcmReceiver extends BroadcastReceiver {
                         tempIntent.putExtras(tempBundle);
                         context.startActivity(tempIntent);
                     } catch (JSONException e) {
-                        Timber.d("JSONException FCM Receiver OptionData: " + e.getMessage());
+                        Timber.d("JSONException FCM Receiver OptionData: %s", e.getMessage());
                     }
 
                 } else if (modelNotif == FCMManager.VERIFY_ACC) {
@@ -77,7 +77,7 @@ public class FcmReceiver extends BroadcastReceiver {
                             tempIntent.putExtras(tempBundle);
                             context.startActivity(tempIntent);
                         } catch (JSONException e) {
-                            Timber.d("JSONException FCM Receiver OptionData Verifiy Acc: " + e.getMessage());
+                            Timber.d("JSONException FCM Receiver OptionData Verifiy Acc: %s", e.getMessage());
                         }
                     }
                 }

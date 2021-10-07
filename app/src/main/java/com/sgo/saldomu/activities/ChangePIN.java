@@ -111,7 +111,7 @@ public class ChangePIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
             params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, confirmPin, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params change pin:" + params.toString());
+            Timber.d("isi params change pin:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(link, params,
                     new ObjListeners() {
@@ -122,25 +122,22 @@ public class ChangePIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 String message = response.getString(WebParams.ERROR_MESSAGE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("isi params change pin:" + response.toString());
+                                    Timber.d("isi params change pin:%s", response.toString());
                                     Toast.makeText(ChangePIN.this, getString(R.string.changepin_toast_success), Toast.LENGTH_LONG).show();
                                     if (sp.getString(DefineValue.FORCE_CHANGE_PIN, "").equalsIgnoreCase(DefineValue.STRING_YES)) {
                                         sp.edit().putString(DefineValue.FORCE_CHANGE_PIN, DefineValue.STRING_NO).apply();
                                     }
                                     finishChild();
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout", response.toString());
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(ChangePIN.this, message);
+                                    Timber.d("isi response autologout%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(ChangePIN.this, message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(ChangePIN.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(ChangePIN.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(ChangePIN.this);
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(ChangePIN.this);
                                 } else {
                                     Toast.makeText(ChangePIN.this, message, Toast.LENGTH_LONG).show();
                                     tv_title.setText(getResources().getString(R.string.changepin_text_currentpin));
@@ -154,7 +151,7 @@ public class ChangePIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
 
                         @Override
                         public void onError(Throwable throwable) {
-                            Timber.e(throwable.getMessage());
+                            Timber.e(throwable);
                             progdialog.dismiss();
                         }
 
@@ -164,7 +161,7 @@ public class ChangePIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -191,9 +188,9 @@ public class ChangePIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
 
             if (currentPin != null && newPin != null && confirmPin != null)
                 if (currentPin.length() == 6 && newPin.length() == 6 && confirmPin.length() == 6) {
-                    Timber.d("current pin : " + currentPin);
-                    Timber.d("new pin : " + newPin);
-                    Timber.d("confirm pin : " + confirmPin);
+                    Timber.d("current pin : %s", currentPin);
+                    Timber.d("new pin : %s", newPin);
+                    Timber.d("confirm pin : %s", confirmPin);
                     sendChangePin();
                 }
         }

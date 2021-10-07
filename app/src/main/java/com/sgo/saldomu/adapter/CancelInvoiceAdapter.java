@@ -85,16 +85,13 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
         });
 
-        holder.sp_reason.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (!holder.checkBox.isChecked()) {
-                        holder.checkBox.setChecked(true);
-                    }
+        holder.sp_reason.setOnTouchListener((view, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (!holder.checkBox.isChecked()) {
+                    holder.checkBox.setChecked(true);
                 }
-                return false;
             }
+            return false;
         });
 
         holder.sp_reason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -120,30 +117,27 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
         });
         holder.checkBox.setOnCheckedChangeListener(null);
         holder.checkBox.setChecked(item.getSelected());
-        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+        holder.checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
 //                if (reason.equals("LAINNYA")) {
 //                    if (holder.reason_et.getText().toString().isEmpty()) {
 //                        return;
 //                    }
 //                    reason = holder.reason_et.getText().toString();
 //                }
-                item.setSelected(isChecked);
-                if (!isChecked) {
-                    listener.onUncheck(new Invoice(reasonCodeArrayList.get(0), "", item.getDoc_no()));
-                    holder.sp_reason.setVisibility(View.GONE);
-                    holder.reason_et.setVisibility(View.GONE);
-                } else {
-                    reason = holder.sp_reason.getItemAtPosition(0).toString();
-                    listener.onCheck(new Invoice(reasonCodeArrayList.get(0), "", item.getDoc_no()));
-                    holder.sp_reason.setVisibility(View.VISIBLE);
+            item.setSelected(isChecked);
+            if (!isChecked) {
+                listener.onUncheck(new Invoice(reasonCodeArrayList.get(0), "", item.getDoc_no()));
+                holder.sp_reason.setVisibility(View.GONE);
+                holder.reason_et.setVisibility(View.GONE);
+            } else {
+                reason = holder.sp_reason.getItemAtPosition(0).toString();
+                listener.onCheck(new Invoice(reasonCodeArrayList.get(0), "", item.getDoc_no()));
+                holder.sp_reason.setVisibility(View.VISIBLE);
 //                    holder.sp_reason.performClick();
-                }
+            }
 //                else {
 //                    listener.onCheck(new Invoice(String.valueOf(position), reason, item.getDoc_no()));
 //                }
-            }
         });
     }
 

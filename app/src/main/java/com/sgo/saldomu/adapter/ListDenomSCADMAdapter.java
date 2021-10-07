@@ -45,13 +45,7 @@ public class ListDenomSCADMAdapter extends RecyclerView.Adapter<ListDenomSCADMAd
         holder.communityCode.setText(scadmCommunityModelArrayList.get(position).getComm_code());
         holder.communityName.setText(scadmCommunityModelArrayList.get(position).getComm_name());
         holder.view.setVisibility(View.VISIBLE);
-        holder.layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                listener.onClick(scadmCommunityModelArrayList.get(position));
-            }
-        });
+        holder.layout.setOnClickListener(view -> listener.onClick(scadmCommunityModelArrayList.get(position)));
     }
 
     @Override

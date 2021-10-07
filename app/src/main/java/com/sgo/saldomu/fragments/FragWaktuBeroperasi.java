@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -68,7 +69,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
     ArrayList<String> optDates = new ArrayList<>();
     Boolean isSetiapHari = false;
     TextView tvSelectedDate;
-    Switch swTutupToko;
+    SwitchCompat swTutupToko;
     Button btnTanggal, btnSubmit;
     String[] arrClosedType;
     ProgressDialog progdialog, progdialog2;
@@ -193,18 +194,33 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
 
         showTableDays();
 
-        btnTanggal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDateDialog();
+        btnTanggal.setOnClickListener(v -> showDateDialog());
 
+        swTutupToko.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                btnTanggal.setVisibility(View.VISIBLE);
+                trSelectedDate.setVisibility(View.VISIBLE);
+            } else {
+                btnTanggal.setVisibility(View.GONE);
+                trSelectedDate.setVisibility(View.GONE);
             }
         });
 
-        swTutupToko.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+        chkBuka24Jam.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                tlLabelPilihHari.setVisibility(View.GONE);
+                tlLabelPilihSetiapHari.setVisibility(View.GONE);
+                tlLabelPilihJam.setVisibility(View.GONE);
+                tlTutupSetiapTanggal.setVisibility(View.GONE);
+                btnTanggal.setVisibility(View.GONE);
+
+            } else {
+                tlLabelPilihHari.setVisibility(View.VISIBLE);
+                tlLabelPilihSetiapHari.setVisibility(View.VISIBLE);
+                tlLabelPilihJam.setVisibility(View.VISIBLE);
+                //tlTutupSetiapTanggal.setVisibility(View.VISIBLE);
+
+                if (swTutupToko.isChecked()) {
                     btnTanggal.setVisibility(View.VISIBLE);
                     trSelectedDate.setVisibility(View.VISIBLE);
                 } else {
@@ -214,276 +230,241 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
             }
         });
 
-        chkBuka24Jam.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    tlLabelPilihHari.setVisibility(View.GONE);
-                    tlLabelPilihSetiapHari.setVisibility(View.GONE);
-                    tlLabelPilihJam.setVisibility(View.GONE);
-                    tlTutupSetiapTanggal.setVisibility(View.GONE);
-                    btnTanggal.setVisibility(View.GONE);
-
-                } else {
-                    tlLabelPilihHari.setVisibility(View.VISIBLE);
-                    tlLabelPilihSetiapHari.setVisibility(View.VISIBLE);
-                    tlLabelPilihJam.setVisibility(View.VISIBLE);
-                    //tlTutupSetiapTanggal.setVisibility(View.VISIBLE);
-
-                    if (swTutupToko.isChecked()) {
-                        btnTanggal.setVisibility(View.VISIBLE);
-                        trSelectedDate.setVisibility(View.VISIBLE);
-                    } else {
-                        btnTanggal.setVisibility(View.GONE);
-                        trSelectedDate.setVisibility(View.GONE);
-                    }
-                }
-            }
-        });
-
         chkSetiapHari.setOnCheckedChangeListener(new mySetiapHariChangeClicker());
 
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Boolean hasError = false;
-                Boolean isDayFound = false;
-                String errorMessage = "";
+        btnSubmit.setOnClickListener(v -> {
+            Boolean hasError = false;
+            Boolean isDayFound = false;
+            String errorMessage = "";
 
-                if (!chkBuka24Jam.isChecked()) {
-                    for (int pos = 0; pos < setupOpenHours.size(); pos++) {
-                        int intStartText = getId("etStart" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
-                        int intEndText = getId("etEnd" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
-                        int chkHari = getId("chk" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
+            if (!chkBuka24Jam.isChecked()) {
+                for (int pos = 0; pos < setupOpenHours.size(); pos++) {
+                    int intStartText = getId("etStart" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
+                    int intEndText = getId("etEnd" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
+                    int chkHari = getId("chk" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
 
-                        CheckBox checkBox = viewLayout.findViewById(chkHari);
-                        TextView txtStart = viewLayout.findViewById(intStartText);
-                        TextView txtEnd = viewLayout.findViewById(intEndText);
+                    CheckBox checkBox = viewLayout.findViewById(chkHari);
+                    TextView txtStart = viewLayout.findViewById(intStartText);
+                    TextView txtEnd = viewLayout.findViewById(intEndText);
 
-                        if (checkBox.isChecked()) {
-                            if (!txtStart.getText().equals("00:00") && !txtEnd.getText().equals("00:00")) {
-                                isDayFound = true;
-                            } else {
-                                hasError = true;
-                                isDayFound = true;
-                                errorMessage = getString(R.string.err_select_time_of_day);
-                            }
+                    if (checkBox.isChecked()) {
+                        if (!txtStart.getText().equals("00:00") && !txtEnd.getText().equals("00:00")) {
+                            isDayFound = true;
+                        } else {
+                            hasError = true;
+                            isDayFound = true;
+                            errorMessage = getString(R.string.err_select_time_of_day);
                         }
-
                     }
-                } else {
-                    isDayFound = true;
-                }
 
-                if (!isDayFound) {
+                }
+            } else {
+                isDayFound = true;
+            }
+
+            if (!isDayFound) {
+                hasError = true;
+                errorMessage = getString(R.string.err_select_at_least_one_day);
+            }
+
+            if (!hasError && swTutupToko.isChecked()) {
+                if (optDates.size() == 0) {
                     hasError = true;
-                    errorMessage = getString(R.string.err_select_at_least_one_day);
+                    errorMessage = getString(R.string.err_select_at_least_one_date);
                 }
+            }
 
-                if (!hasError && swTutupToko.isChecked()) {
-                    if (optDates.size() == 0) {
-                        hasError = true;
-                        errorMessage = getString(R.string.err_select_at_least_one_date);
-                    }
-                }
+            if (!hasError) {
+                //call web service
+                //to do
+                try {
+                    progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+                    progdialog2.show();
 
-                if (!hasError) {
-                    //call web service
-                    //to do
-                    try {
-                        progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
-                        progdialog2.show();
+                    HashMap<String, Object> params1 = new HashMap<>();
 
-                        HashMap<String, Object> params = new HashMap<>();
+                    UUID rcUUID = UUID.randomUUID();
+                    String dtime = DateTimeFormat.getCurrentDateTime();
+                    String flagAllDay = "";
+                    ArrayList<String> tempDays = new ArrayList<>();
 
-                        UUID rcUUID = UUID.randomUUID();
-                        String dtime = DateTimeFormat.getCurrentDateTime();
-                        String flagAllDay = "";
-                        ArrayList<String> tempDays = new ArrayList<>();
+                    params1.put(WebParams.RC_UUID, rcUUID);
+                    params1.put(WebParams.RC_DATETIME, dtime);
+                    params1.put(WebParams.APP_ID, BuildConfig.APP_ID);
+                    params1.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                    params1.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+                    params1.put(WebParams.SHOP_ID, shopId);
+                    params1.put(WebParams.MEMBER_ID, memberId);
 
-                        params.put(WebParams.RC_UUID, rcUUID);
-                        params.put(WebParams.RC_DATETIME, dtime);
-                        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-                        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-                        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-                        params.put(WebParams.SHOP_ID, shopId);
-                        params.put(WebParams.MEMBER_ID, memberId);
+                    if (chkBuka24Jam.isChecked()) {
+                        params1.put(WebParams.FLAG_ALL_DAY, DefineValue.STRING_YES);
+                        flagAllDay = DefineValue.STRING_YES;
+                    } else {
+                        params1.put(WebParams.FLAG_ALL_DAY, DefineValue.STRING_NO);
+                        flagAllDay = DefineValue.STRING_NO;
 
-                        if (chkBuka24Jam.isChecked()) {
-                            params.put(WebParams.FLAG_ALL_DAY, DefineValue.STRING_YES);
-                            flagAllDay = DefineValue.STRING_YES;
-                        } else {
-                            params.put(WebParams.FLAG_ALL_DAY, DefineValue.STRING_NO);
-                            flagAllDay = DefineValue.STRING_NO;
+                        for (int pos = 0; pos < setupOpenHours.size(); pos++) {
 
-                            for (int pos = 0; pos < setupOpenHours.size(); pos++) {
+                            int intStartText = getId("etStart" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
+                            int intEndText = getId("etEnd" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
+                            int chkHari = getId("chk" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
 
-                                int intStartText = getId("etStart" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
-                                int intEndText = getId("etEnd" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
-                                int chkHari = getId("chk" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
+                            CheckBox checkBox = viewLayout.findViewById(chkHari);
+                            TextView txtStart = viewLayout.findViewById(intStartText);
+                            TextView txtEnd = viewLayout.findViewById(intEndText);
 
-                                CheckBox checkBox = viewLayout.findViewById(chkHari);
-                                TextView txtStart = viewLayout.findViewById(intStartText);
-                                TextView txtEnd = viewLayout.findViewById(intEndText);
-
-                                if (checkBox.isChecked()) {
-                                    if (!txtStart.getText().equals("00:00") && !txtEnd.getText().equals("00:00")) {
-                                        switch (pos) {
-                                            case 0:
-                                                params.put(WebParams.OPEN_START_HOUR_MON, txtStart.getText());
-                                                params.put(WebParams.OPEN_END_HOUR_MON, txtEnd.getText());
-                                                break;
-                                            case 1:
-                                                params.put(WebParams.OPEN_START_HOUR_TUE, txtStart.getText());
-                                                params.put(WebParams.OPEN_END_HOUR_TUE, txtEnd.getText());
-                                                break;
-                                            case 2:
-                                                params.put(WebParams.OPEN_START_HOUR_WED, txtStart.getText());
-                                                params.put(WebParams.OPEN_END_HOUR_WED, txtEnd.getText());
-                                                break;
-                                            case 3:
-                                                params.put(WebParams.OPEN_START_HOUR_THU, txtStart.getText());
-                                                params.put(WebParams.OPEN_END_HOUR_THU, txtEnd.getText());
-                                                break;
-                                            case 4:
-                                                params.put(WebParams.OPEN_START_HOUR_FRI, txtStart.getText());
-                                                params.put(WebParams.OPEN_END_HOUR_FRI, txtEnd.getText());
-                                                break;
-                                            case 5:
-                                                params.put(WebParams.OPEN_START_HOUR_SAT, txtStart.getText());
-                                                params.put(WebParams.OPEN_END_HOUR_SAT, txtEnd.getText());
-                                                break;
-                                            case 6:
-                                                params.put(WebParams.OPEN_START_HOUR_SUN, txtStart.getText());
-                                                params.put(WebParams.OPEN_END_HOUR_SUN, txtEnd.getText());
-                                                break;
-                                        }
+                            if (checkBox.isChecked()) {
+                                if (!txtStart.getText().equals("00:00") && !txtEnd.getText().equals("00:00")) {
+                                    switch (pos) {
+                                        case 0:
+                                            params1.put(WebParams.OPEN_START_HOUR_MON, txtStart.getText());
+                                            params1.put(WebParams.OPEN_END_HOUR_MON, txtEnd.getText());
+                                            break;
+                                        case 1:
+                                            params1.put(WebParams.OPEN_START_HOUR_TUE, txtStart.getText());
+                                            params1.put(WebParams.OPEN_END_HOUR_TUE, txtEnd.getText());
+                                            break;
+                                        case 2:
+                                            params1.put(WebParams.OPEN_START_HOUR_WED, txtStart.getText());
+                                            params1.put(WebParams.OPEN_END_HOUR_WED, txtEnd.getText());
+                                            break;
+                                        case 3:
+                                            params1.put(WebParams.OPEN_START_HOUR_THU, txtStart.getText());
+                                            params1.put(WebParams.OPEN_END_HOUR_THU, txtEnd.getText());
+                                            break;
+                                        case 4:
+                                            params1.put(WebParams.OPEN_START_HOUR_FRI, txtStart.getText());
+                                            params1.put(WebParams.OPEN_END_HOUR_FRI, txtEnd.getText());
+                                            break;
+                                        case 5:
+                                            params1.put(WebParams.OPEN_START_HOUR_SAT, txtStart.getText());
+                                            params1.put(WebParams.OPEN_END_HOUR_SAT, txtEnd.getText());
+                                            break;
+                                        case 6:
+                                            params1.put(WebParams.OPEN_START_HOUR_SUN, txtStart.getText());
+                                            params1.put(WebParams.OPEN_END_HOUR_SUN, txtEnd.getText());
+                                            break;
                                     }
-                                } else {
-                                    tempDays.add(setupOpenHours.get(pos).getKodeHari());
-                                }
-
-
-                            }
-                        }
-
-                        Gson gson = new Gson();
-                        ArrayList<String> tempData = new ArrayList<>();
-                        if (swTutupToko.isChecked()) {
-
-
-                            for (int x = 0; x < optDates.size(); x++) {
-                                String idx = String.valueOf(optDates.get(x));
-                                tempData.add(idx);
-                            }
-                            params.put(WebParams.CLOSED_VALUE, gson.toJson(tempData));
-                            params.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_DATE);
-
-                        } else {
-
-                            if (flagAllDay.equals(DefineValue.STRING_NO)) {
-                                if (tempDays.size() > 0) {
-                                    params.put(WebParams.CLOSED_VALUE, gson.toJson(tempDays));
-                                    params.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_DAY);
-                                } else {
-                                    params.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_NONE);
                                 }
                             } else {
-                                params.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_NONE);
+                                tempDays.add(setupOpenHours.get(pos).getKodeHari());
                             }
 
+
                         }
-
-                        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase() + BuildConfig.APP_ID));
-
-                        params.put(WebParams.SIGNATURE, signature);
-
-                        Log.d("TEST", params.toString());
-
-                        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_SETUP_OPENING_HOUR, params,
-                                new ObjListeners() {
-                                    @Override
-                                    public void onResponses(JSONObject response) {
-
-                                        Timber.d("isi response sent insert open hour:%s", response.toString());
-
-                                        try {
-                                            String code = response.getString(WebParams.ERROR_CODE);
-                                            if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                                                androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).create();
-                                                alertDialog.setCanceledOnTouchOutside(false);
-                                                alertDialog.setTitle(getString(R.string.alertbox_title_information));
-                                                alertDialog.setCancelable(false);
-
-                                                alertDialog.setMessage(getString(R.string.message_notif_update_24_hours_success));
-
-
-                                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                                        (dialog, which) -> {
-                                                            SecurePreferences.Editor mEditor = sp.edit();
-                                                            mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_YES);
-                                                            mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
-                                                            mEditor.apply();
-                                                            Intent i = new Intent(getActivity().getApplicationContext(), MainPage.class);
-                                                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                            startActivity(i);
-                                                            getActivity().finish();
-
-                                                        });
-
-                                                alertDialog.show();
-
-                                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                                String message = response.getString(WebParams.ERROR_MESSAGE);
-                                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                                //test.showDialoginActivity(getApplication(),message);
-                                            } else {
-                                                code = response.getString(WebParams.ERROR_MESSAGE);
-                                                Toast.makeText(getContext(), code, Toast.LENGTH_LONG).show();
-                                            }
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable throwable) {
-
-                                    }
-
-                                    @Override
-                                    public void onComplete() {
-                                        if (progdialog2.isShowing())
-                                            progdialog2.dismiss();
-                                    }
-                                });
-
-                    } catch (Exception e) {
-                        Timber.d("httpclient:" + e.getMessage());
                     }
 
-                } else {
-                    androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).create();
-                    alertDialog.setCanceledOnTouchOutside(false);
-                    alertDialog.setTitle(getString(R.string.alertbox_title_information));
-                    alertDialog.setCancelable(false);
-
-                    alertDialog.setMessage(errorMessage);
+                    Gson gson = new Gson();
+                    ArrayList<String> tempData = new ArrayList<>();
+                    if (swTutupToko.isChecked()) {
 
 
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
+                        for (int x = 0; x < optDates.size(); x++) {
+                            String idx = String.valueOf(optDates.get(x));
+                            tempData.add(idx);
+                        }
+                        params1.put(WebParams.CLOSED_VALUE, gson.toJson(tempData));
+                        params1.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_DATE);
 
-                                    dialog.dismiss();
+                    } else {
 
+                        if (flagAllDay.equals(DefineValue.STRING_NO)) {
+                            if (tempDays.size() > 0) {
+                                params1.put(WebParams.CLOSED_VALUE, gson.toJson(tempDays));
+                                params1.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_DAY);
+                            } else {
+                                params1.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_NONE);
+                            }
+                        } else {
+                            params1.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_NONE);
+                        }
+
+                    }
+
+                    String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase() + BuildConfig.APP_ID));
+
+                    params1.put(WebParams.SIGNATURE, signature);
+
+                    Timber.tag("TEST").d(params1.toString());
+
+                    RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_SETUP_OPENING_HOUR, params1,
+                            new ObjListeners() {
+                                @Override
+                                public void onResponses(JSONObject response) {
+
+                                    Timber.d("isi response sent insert open hour:%s", response.toString());
+
+                                    try {
+                                        String code = response.getString(WebParams.ERROR_CODE);
+                                        if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                                            alertDialog.setCanceledOnTouchOutside(false);
+                                            alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                                            alertDialog.setCancelable(false);
+
+                                            alertDialog.setMessage(getString(R.string.message_notif_update_24_hours_success));
+
+
+                                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                                    (dialog, which) -> {
+                                                        SecurePreferences.Editor mEditor = sp.edit();
+                                                        mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_YES);
+                                                        mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
+                                                        mEditor.apply();
+                                                        Intent i = new Intent(getActivity().getApplicationContext(), MainPage.class);
+                                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                        startActivity(i);
+                                                        getActivity().finish();
+
+                                                    });
+
+                                            alertDialog.show();
+
+                                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                            //test.showDialoginActivity(getApplication(),message);
+                                        } else {
+                                            code = response.getString(WebParams.ERROR_MESSAGE);
+                                            Toast.makeText(getContext(), code, Toast.LENGTH_LONG).show();
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable throwable) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                    if (progdialog2.isShowing())
+                                        progdialog2.dismiss();
                                 }
                             });
 
-                    alertDialog.show();
+                } catch (Exception e) {
+                    Timber.d("httpclient:%s", e.getMessage());
                 }
 
+            } else {
+                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                alertDialog.setCancelable(false);
+
+                alertDialog.setMessage(errorMessage);
+
+
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                        (dialog, which) -> dialog.dismiss());
+
+                alertDialog.show();
             }
+
         });
 
 
@@ -648,12 +629,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
 
 
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                dialog.dismiss();
-                            }
-                        });
+                        (dialog, which) -> dialog.dismiss());
 
                 alertDialog.show();
             }
@@ -786,13 +762,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
 
 
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        getActivity().finish();
-
-                    }
-                });
+                (dialog, which) -> getActivity().finish());
 
         alertDialog.show();
     }

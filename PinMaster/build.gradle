@@ -29,6 +29,7 @@ android.libraryVariants.all { variant ->
 }
 
 dependencies {
+    implementation 'androidx.core:core:1.6.0'
     androidTestImplementation 'com.jayway.android.robotium:robotium-solo:5.6.3'
 }
 

@@ -409,12 +409,7 @@ public class FragRegisterSMSBanking extends BaseFragment {
                                     } else if (!flagDOB) {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                         builder.setTitle("Alert").setMessage(getResources().getString(R.string.rsb_alert_dob))
-                                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
-                                                    }
-                                                });
+                                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
 
                                         AlertDialog alertDialog = builder.create();
                                         alertDialog.show();

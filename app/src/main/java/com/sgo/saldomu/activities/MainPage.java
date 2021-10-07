@@ -175,20 +175,17 @@ public class MainPage extends BaseActivity {
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
         FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            return;
-                        }
-
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-                        SecurePreferences.Editor mEditor = sp.edit();
-                        mEditor.putString(DefineValue.FCM_ID, token);
-                        mEditor.putString(DefineValue.FCM_ENCRYPTED, Md5.hashMd5(token));
-                        mEditor.apply();
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        return;
                     }
+
+                    // Get new Instance ID token
+                    String token = task.getResult().getToken();
+                    SecurePreferences.Editor mEditor = sp.edit();
+                    mEditor.putString(DefineValue.FCM_ID, token);
+                    mEditor.putString(DefineValue.FCM_ENCRYPTED, Md5.hashMd5(token));
+                    mEditor.apply();
                 });
 
         userNameLogin = sp.getString(DefineValue.USER_NAME, "");
@@ -351,7 +348,7 @@ public class MainPage extends BaseActivity {
                 if (intentData.hasExtra("options")) {
                     msgMap.put("options", intentData.getStringExtra("options"));
                 }
-                Timber.d("testing :" + msgMap.toString());
+                Timber.d("testing :%s", msgMap.toString());
 
                 FCMManager fcmManager = new FCMManager(this);
             }
@@ -417,7 +414,7 @@ public class MainPage extends BaseActivity {
             if (intentData.hasExtra("options")) {
                 msgMap.put("options", intentData.getStringExtra("options"));
             }
-            Timber.d("testing :" + msgMap.toString());
+            Timber.d("testing :%s", msgMap.toString());
 
             FCMManager fcmManager = new FCMManager(this);
             Intent intent = fcmManager.checkingAction(type, msgMap);
@@ -565,7 +562,7 @@ public class MainPage extends BaseActivity {
             startActivity(i);
 
         } catch (JSONException e) {
-            Timber.d("Json parsing error: " + e.getMessage());
+            Timber.d("Json parsing error: %s", e.getMessage());
         }
 
 
@@ -585,7 +582,7 @@ public class MainPage extends BaseActivity {
     boolean checkNotificationAction() {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            Timber.d("masuk check notification " + extras.toString());
+            Timber.d("masuk check notification %s", extras.toString());
             if (extras.containsKey("type")) {
                 return true;
             }
@@ -596,7 +593,7 @@ public class MainPage extends BaseActivity {
     boolean checkNotificationNotif() {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            Timber.d("masuk check notification " + extras.toString());
+            Timber.d("masuk check notification %s", extras.toString());
             if (extras.containsKey("type_notif")) {
                 return true;
             }
@@ -846,7 +843,7 @@ public class MainPage extends BaseActivity {
             params.put(WebParams.COMM_ID_PULSA, MyApiClient.COMM_ID_PULSA);
             params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, ""));
 
-            Timber.d("isi params listmember mainpage:" + params.toString());
+            Timber.d("isi params listmember mainpage:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequestDebounce(MyApiClient.LINK_LIST_MEMBER, params
                     , new ResponseListener() {
@@ -982,7 +979,7 @@ public class MainPage extends BaseActivity {
 
 
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -993,8 +990,6 @@ public class MainPage extends BaseActivity {
             callBBSCityService();
             checkAndRunServiceBBS();
             callAgentShopService();
-        } else {
-
         }
         callBBSBirthPlaceService();
     }
@@ -1231,7 +1226,7 @@ public class MainPage extends BaseActivity {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -1400,7 +1395,7 @@ public class MainPage extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        Timber.w("get Back Stack Entry Count:" + getSupportFragmentManager().getBackStackEntryCount());
+        Timber.w("get Back Stack Entry Count:%s", getSupportFragmentManager().getBackStackEntryCount());
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
 //            showLogoutDialog();
             Intent startMain = new Intent(Intent.ACTION_MAIN);

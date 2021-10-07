@@ -188,12 +188,7 @@ public class PulsaAgentDescription extends BaseFragment {
         }
     };
 
-    private Button.OnClickListener cancelListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            getActivity().finish();
-        }
-    };
+    private Button.OnClickListener cancelListener = view -> getActivity().finish();
 
     private Spinner.OnItemSelectedListener spinnerPaymentListener = new Spinner.OnItemSelectedListener() {
         @Override
@@ -276,7 +271,7 @@ public class PulsaAgentDescription extends BaseFragment {
             else
                 params.put(WebParams.PRODUCT_TYPE, DefineValue.BANKLIST_TYPE_EMO);
 
-            Timber.d("isi params sent payment DAP" + params.toString());
+            Timber.d("isi params sent payment DAP%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_PAYMENT_DAP, params,
                     new ResponseListener() {
@@ -285,6 +280,7 @@ public class PulsaAgentDescription extends BaseFragment {
                             InqBillerModel model = getGson().fromJson(object, InqBillerModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                 if (mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)) {
@@ -299,12 +295,9 @@ public class PulsaAgentDescription extends BaseFragment {
                                 }
 
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else {
-                                code = model.getError_code() + " : " + model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), code + " : " + message, Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -322,7 +315,7 @@ public class PulsaAgentDescription extends BaseFragment {
                     });
 
         } catch (Exception e) {
-            Timber.d("httpclient", e.getMessage());
+            Timber.d("httpclient %s", e.getMessage());
         }
     }
 
@@ -334,7 +327,7 @@ public class PulsaAgentDescription extends BaseFragment {
         params.put(WebParams.COMM_ID, MyApiClient.COMM_ID_PULSA);
         params.put(WebParams.USER_ID, userPhoneID);
 
-        Timber.d("isi params sent Bank DAP", params.toString());
+        Timber.d("isi params sent Bank DAP %s", params.toString());
 
         RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BANK_DAP, params,
                 new ResponseListener() {
@@ -431,7 +424,7 @@ public class PulsaAgentDescription extends BaseFragment {
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params reqtoken Sgo+" + params.toString());
+            Timber.d("isi params reqtoken Sgo+%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REQ_TOKEN_SGOL, params,
                     new ResponseListener() {
@@ -440,6 +433,7 @@ public class PulsaAgentDescription extends BaseFragment {
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                 if (mTempBank.getProduct_type().equalsIgnoreCase(DefineValue.BANKLIST_TYPE_SMS)) {
@@ -450,49 +444,37 @@ public class PulsaAgentDescription extends BaseFragment {
                                     changeToConfirmDAP(_amount, _merchant_type, _tx_id, _ccy_id, fee, _bank_code, _product_code);
 
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                String code_msg = model.getError_message();
                                 switch (code) {
                                     case "0059":
                                         showDialogSMS(mTempBank.getBank_name());
                                         break;
                                     case ErrorDefinition.ERROR_CODE_LESS_BALANCE:
-                                        String message_dialog = "\"" + code_msg + "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
+                                        String message_dialog = "\"" + message + "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
 
                                         AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
                                                 message_dialog, getString(R.string.ok), getString(R.string.cancel), false);
-                                        dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Intent mI = new Intent(getActivity(), TopUpActivity.class);
-                                                mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                                                startActivityForResult(mI, MainPage.REQUEST_FINISH);
-                                            }
+                                        dialog_frag.setOkListener((dialog, which) -> {
+                                            Intent mI = new Intent(getActivity(), TopUpActivity.class);
+                                            mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                                            startActivityForResult(mI, MainPage.REQUEST_FINISH);
                                         });
-                                        dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
+                                        dialog_frag.setCancelListener((dialog, which) -> {
 
-                                            }
                                         });
                                         dialog_frag.setTargetFragment(PulsaAgentDescription.this, 0);
                                         dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
                                         break;
                                     default:
-                                        code = model.getError_code() + ":" + model.getError_message();
-                                        Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getActivity(), code+ ":" +message, Toast.LENGTH_LONG).show();
 
                                         break;
                                 }
@@ -512,7 +494,7 @@ public class PulsaAgentDescription extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient", e.getMessage());
+            Timber.d("httpclient %s", e.getMessage());
         }
     }
 
@@ -537,18 +519,15 @@ public class PulsaAgentDescription extends BaseFragment {
         if (levelClass.isLevel1QAC())
             btnDialogOTP.setText(getString(R.string.ok));
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        btnDialogOTP.setOnClickListener(view -> {
 
-                if (!levelClass.isLevel1QAC()) {
-                    Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
-                    newIntent.putExtra(DefineValue.BANK_NAME, _nama_bank);
-                    switchActivity(newIntent);
-                }
-
-                dialog.dismiss();
+            if (!levelClass.isLevel1QAC()) {
+                Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
+                newIntent.putExtra(DefineValue.BANK_NAME, _nama_bank);
+                switchActivity(newIntent);
             }
+
+            dialog.dismiss();
         });
 
         dialog.show();
@@ -578,12 +557,9 @@ public class PulsaAgentDescription extends BaseFragment {
         Title.setText(getResources().getString(R.string.regist1_notif_title_verification));
         Message.setText(getString(R.string.application_name) + " " + getString(R.string.dialog_token_message_sms));
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                changeToConfirmDAP(_amount, _merchant_type, _tx_id, _ccy_id, fee, bank_code, product_code);
-                dialog.dismiss();
-            }
+        btnDialogOTP.setOnClickListener(view -> {
+            changeToConfirmDAP(_amount, _merchant_type, _tx_id, _ccy_id, fee, bank_code, product_code);
+            dialog.dismiss();
         });
 
 

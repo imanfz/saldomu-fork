@@ -56,7 +56,7 @@ public class ListBillerMerchant extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.wtf("onCreate View ListBillerMerchant", "onCreate View ListBillerMerchant");
+        Timber.tag("onCreate View ListBille").wtf("onCreate View ListBillerMerchant");
         v = inflater.inflate(R.layout.frag_list_biller_tab, container, false);
         return v;
     }
@@ -64,7 +64,7 @@ public class ListBillerMerchant extends ListFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.wtf("onActivityCreated ListBillerMerchant", "onActivityCreated ListBillerMerchant");
+        Timber.tag("onActivityCreated ListB").wtf("onActivityCreated ListBillerMerchant");
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         Bundle args = getArguments();

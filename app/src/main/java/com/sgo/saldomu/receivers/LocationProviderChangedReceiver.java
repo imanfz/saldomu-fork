@@ -95,10 +95,8 @@ public class LocationProviderChangedReceiver extends BroadcastReceiver {
                                                 mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
                                             }
 
-                                            Timber.d("UpdateShopClosed Location Service Changed Receiver ShopStatus:" + newShopClosed);
+                                            Timber.d("UpdateShopClosed Location Service Changed Receiver ShopStatus:%s", newShopClosed);
                                             mEditor.apply();
-                                        } else {
-
                                         }
 
                                         Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);

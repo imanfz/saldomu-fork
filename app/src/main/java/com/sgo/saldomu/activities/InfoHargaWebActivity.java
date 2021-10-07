@@ -91,7 +91,7 @@ public class InfoHargaWebActivity extends BaseActivity {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Timber.d("isi url tombol-tombolnya:" + url);
+                Timber.d("isi url tombol-tombolnya:%s", url);
                 view.loadUrl(url);
 
                 return true;

@@ -73,15 +73,26 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
             QrisParsingModel::class.java
         )
         tv_acquire_name_value.text = qrisParsingModel.nnsMemberName
+        tv_merchant_domain_value.text = qrisParsingModel.merchantDomain
+        tv_merchant_pan_value.text = qrisParsingModel.merchantPan
         tv_payment_destination_name_value.text = qrisParsingModel.merchantName
-        tv_payment_destination_city_value.text = qrisParsingModel.merchantCity
+        val paymentDestinationCity =
+            qrisParsingModel.merchantCity + ", " + qrisParsingModel.postalCode + ", " + qrisParsingModel.merchantCountry;
+        tv_payment_destination_city_value.text = paymentDestinationCity
+        if (qrisParsingModel.indicatorType != "01") {
+            tv_label_fee_amount.text = resources.getString(R.string.transaction_fee)
+            edit_text_fee_amount.hint = resources.getString(R.string.transaction_fee)
+        }
+
         val transactionAmount = qrisParsingModel.transactionAmount
         if (transactionAmount != "") {
             edit_text_amount_transfer.setText(transactionAmount)
             edit_text_amount_transfer.isEnabled = false
         } else {
             if (qrisParsingModel.percentage!!.toDouble() != 0.00) {
-                tv_label_fee_amount.append(" " + qrisParsingModel.percentage.toDouble().toInt() + "%")
+                tv_label_fee_amount.append(
+                    " " + qrisParsingModel.percentage.toDouble().toInt() + "%"
+                )
                 percentage = qrisParsingModel.percentage.toDouble() / 100
             }
             edit_text_amount_transfer.requestFocus()
@@ -438,6 +449,7 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
         args.putString(DefineValue.MERCHANT_PAN, response.merchant_pan)
         args.putString(DefineValue.TERMINAL_ID, response.terminal_id)
         args.putString(DefineValue.TRX_ID_REF, response.trx_id_ref)
+        args.putString(DefineValue.INDICATOR_TYPE, response.indicator_type)
 
         dialog.arguments = args
         dialog.show(supportFragmentManager, ReportBillerDialog.TAG)

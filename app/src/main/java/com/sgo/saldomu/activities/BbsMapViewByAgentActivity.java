@@ -193,19 +193,12 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         TextView t = findViewById(R.id.name);
         t.setText(Html.fromHtml(getString(R.string.bbs_trx_detail_agent)));
 
-        btnGetDirection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getDirection();
-            }
-        });
+        btnGetDirection.setOnClickListener(v -> getDirection());
         btnTibaDiLokasi.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
-                        progdialog = DefinedDialog.CreateProgressDialog(BbsMapViewByAgentActivity.this, "");
+                v -> {
+                    progdialog = DefinedDialog.CreateProgressDialog(BbsMapViewByAgentActivity.this, "");
 
-                        confirmTransactionByAgent();
-                    }
+                    confirmTransactionByAgent();
                 }
         );
     }
@@ -387,7 +380,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                 agentLatitude = lastLocation.getLatitude();
                 agentLongitude = lastLocation.getLongitude();
 
-                Timber.d("Location Found" + lastLocation.toString());
+                Timber.d("Location Found%s", lastLocation.toString());
                 updateLocationAgent();
             }
         } catch (SecurityException se) {
@@ -450,7 +443,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
         handler.removeCallbacks(runnable2);
 
-        Timber.d("params update agent : " + params.toString());
+        Timber.d("params update agent : %s", params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_LOCATION_AGENT, params,
                 new ObjListeners() {
@@ -524,13 +517,10 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                 code = response.getString(WebParams.ERROR_MESSAGE);
 //                                Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
                                 InterfaceManager.showConfirmDialog(BbsMapViewByAgentActivity.this, code,
-                                        new ConfirmDialogInterface() {
-                                            @Override
-                                            public void OnOK() {
-                                                Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                                                startActivity(intent);
-                                                finish();
-                                            }
+                                        () -> {
+                                            Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                            startActivity(intent);
+                                            finish();
                                         });
                             }
                         } catch (JSONException e) {
@@ -855,14 +845,11 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
                                 InterfaceManager.showConfirmDialog(BbsMapViewByAgentActivity.this,
                                         response.getString(WebParams.ERROR_MESSAGE),
-                                        new ConfirmDialogInterface() {
-                                            @Override
-                                            public void OnOK() {
-                                                Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                startActivity(intent);
-                                                finish();
-                                            }
+                                        () -> {
+                                            Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(intent);
+                                            finish();
                                         });
 
                             }

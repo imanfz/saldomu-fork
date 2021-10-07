@@ -76,6 +76,7 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
             val docStatus = mArrayDoc.getJSONObject(i).getString(WebParams.DOC_STATUS)
             val nettAmount = mArrayDoc.getJSONObject(i).getString(WebParams.NETT_AMOUNT)
             val dueDate = mArrayDoc.getJSONObject(i).getString(WebParams.DUE_DATE)
+            val issueDate = mArrayDoc.getJSONObject(i).getString(WebParams.ISSUE_DATE)
             val custID = mArrayDoc.getJSONObject(i).getString(WebParams.CUST_ID)
             val memberCode = mArrayDoc.getJSONObject(i).getString(WebParams.MEMBER_CODE)
             val commCode = mArrayDoc.getJSONObject(i).getString(WebParams.COMM_CODE)
@@ -85,6 +86,7 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
             listPOModel.doc_status = docStatus
             listPOModel.nett_amount = nettAmount
             listPOModel.due_date = dueDate
+            listPOModel.issue_date = issueDate
             listPOModel.cust_id = custID
             listPOModel.comm_code = commCode
             listPOModel.member_code = memberCode

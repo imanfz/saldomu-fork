@@ -226,17 +226,17 @@ public class GeneralizeImage {
 
             int orientation = exif.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION, 0);
-            Timber.d("Exif: " + orientation);
+            Timber.d("Exif: %s", orientation);
             Matrix matrix = new Matrix();
             if (orientation == 6) {
                 matrix.postRotate(90);
-                Timber.d("Exif: " + orientation);
+                Timber.d("Exif: %s", orientation);
             } else if (orientation == 3) {
                 matrix.postRotate(180);
-                Timber.d("Exif: " + orientation);
+                Timber.d("Exif: %s", orientation);
             } else if (orientation == 8) {
                 matrix.postRotate(270);
-                Timber.d("Exif: " + orientation);
+                Timber.d("Exif: %s", orientation);
             }
             scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0,
                     scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix,

@@ -126,45 +126,28 @@ public class FragMemberRating extends Fragment {
 //
         }
 
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            public void onRatingChanged(RatingBar ratingBar, float rating,
-                                        boolean fromUser) {
+        ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> userRating = (int) rating);
 
-                userRating = (int) rating;
+        btnCancel.setOnClickListener(v12 -> {
+            isCancel    = DefineValue.STRING_YES;
+            comment     = "";
+            userRating  = Integer.valueOf(defaultRating);
+            submitData();
 
-            }
         });
 
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isCancel    = DefineValue.STRING_YES;
-                comment     = "";
-                userRating  = Integer.valueOf(defaultRating);
+        btnSubmit.setOnClickListener(v1 -> {
+            if ( userRating > 0 ) {
+                isCancel    = DefineValue.STRING_NO;
+                comment     = etComment.getText().toString();
                 submitData();
-
-            }
-        });
-
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if ( userRating > 0 ) {
-                    isCancel    = DefineValue.STRING_NO;
-                    comment     = etComment.getText().toString();
-                    submitData();
-                } else {
-                    AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-                    alertDialog.setTitle(getString(R.string.warning));
-                    alertDialog.setMessage(getString(R.string.err_rating_empty));
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
-                }
+            } else {
+                AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+                alertDialog.setTitle(getString(R.string.warning));
+                alertDialog.setMessage(getString(R.string.err_rating_empty));
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                        (dialog, which) -> dialog.dismiss());
+                alertDialog.show();
             }
         });
 
@@ -193,7 +176,7 @@ public class FragMemberRating extends Fragment {
                     @Override
                     public void onResponses(JSONObject response) {
                         try {
-                            Timber.d("isi params response updatefeedback:"+response.toString());
+                            Timber.d("isi params response updatefeedback:%s", response.toString());
                             String code = response.getString(WebParams.ERROR_CODE);
 
                             // Now remove tvalue from shared preferences
@@ -213,11 +196,9 @@ public class FragMemberRating extends Fragment {
                                     alertDialog.setMessage(getString(R.string.alertbox_thx_for_rating));
                                     alertDialog.setCancelable(false);
                                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    dialog.dismiss();
-                                                    getActivity().finish();
-                                                }
+                                            (dialog, which) -> {
+                                                dialog.dismiss();
+                                                getActivity().finish();
                                             });
                                     alertDialog.show();
                                 } else {
@@ -245,7 +226,7 @@ public class FragMemberRating extends Fragment {
                     }
                 });
 
-        Timber.d("isi params updatefeedback:" + params.toString());
+        Timber.d("isi params updatefeedback:%s", params.toString());
     }
 
     @Override

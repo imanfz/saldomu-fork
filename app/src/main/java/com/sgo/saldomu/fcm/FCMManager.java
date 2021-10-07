@@ -1,5 +1,6 @@
 package com.sgo.saldomu.fcm;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -73,10 +74,10 @@ public class FCMManager {
     final private static String AGENT_TOPIC = "agent";
     final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;
 
-    private Bundle bundleNextLogin = new Bundle();
-    private Context mContext;
+    private final Bundle bundleNextLogin = new Bundle();
+    private final Context mContext;
     private SecurePreferences sp;
-    private BundleToJSON bundleToJSON = new BundleToJSON();
+    private final BundleToJSON bundleToJSON = new BundleToJSON();
 //    final private static String token="";
 
     public FCMManager(Context context) {
@@ -106,7 +107,7 @@ public class FCMManager {
 
     public Intent checkingAction(int type, Map<String, String> data) {
         Intent i = null;
-        Timber.d("isi index type " + String.valueOf(type));
+        Timber.d("isi index type %s", type);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         SecurePreferences.Editor mEditor = null;
@@ -157,7 +158,7 @@ public class FCMManager {
                             }
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
 
                     }
@@ -204,20 +205,12 @@ public class FCMManager {
                             }
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
 
                     }
-
-                    break;
-                case FCMManager.AGENT_LOCATION_SHOP_REJECT_TRANSACTION:
-                    i = new Intent(mContext, MainPage.class);
-
-
                     break;
                 case FCMManager.MEMBER_CONFIRM_CASHOUT_TRANSACTION:
-
-
                     bundleNextLogin.putInt(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
 
                     i = new Intent(mContext, BBSActivity.class);
@@ -250,7 +243,7 @@ public class FCMManager {
                             //}
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
 
                     }
@@ -288,7 +281,7 @@ public class FCMManager {
                             mEditor.apply();
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
                     }
                     break;
@@ -331,7 +324,7 @@ public class FCMManager {
 
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
                     }
                     break;
@@ -359,7 +352,7 @@ public class FCMManager {
 
                             i = new Intent(mContext, UpgradeMemberViaOnline.class);
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
                     }
                     break;
@@ -382,7 +375,7 @@ public class FCMManager {
 
                             i = new Intent(mContext, UpgradeAgentActivity.class);
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
                     }
                     break;
@@ -400,7 +393,7 @@ public class FCMManager {
                             i = new Intent(mContext, SourceOfFundActivity.class);
                             i.putExtras(bundleNextLogin);
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
                     }
                     break;
@@ -430,7 +423,7 @@ public class FCMManager {
                                 i.putExtras(bundleNextLogin);
                             }
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
                     }
                     break;
@@ -448,7 +441,7 @@ public class FCMManager {
                             i = new Intent(mContext, PaymentTokoActivity.class);
                             i.putExtras(bundleNextLogin);
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
                     }
                     break;
@@ -466,7 +459,7 @@ public class FCMManager {
                             i = new Intent(mContext, DocDetailActivity.class);
                             i.putExtras(bundleNextLogin);
                         } catch (JSONException e) {
-                            Timber.d("JSONException: " + e.getMessage());
+                            Timber.d("JSONException: %s", e.getMessage());
                         }
                     }
                     break;
@@ -480,23 +473,20 @@ public class FCMManager {
     }
 
     public Intent checkingAction(int type) {
-        Timber.d("isi index type2 " + String.valueOf(type));
+        Timber.d("isi index type2 %s", type);
         Intent i;
-        switch (type) {
-            case OPEN_PLAYSTORE:
-                Timber.d("masuk open playstore");
-                String appPackageName = mContext.getPackageName(); // getPackageName() from Context or Activity object
+        if (type == OPEN_PLAYSTORE) {
+            Timber.d("masuk open playstore");
+            String appPackageName = mContext.getPackageName(); // getPackageName() from Context or Activity object
 
-                try {
-                    i = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName));
-                } catch (android.content.ActivityNotFoundException anfe) {
-                    i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName));
-                }
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                break;
-            default:
-                i = new Intent();
-                break;
+            try {
+                i = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName));
+            } catch (ActivityNotFoundException anfe) {
+                i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName));
+            }
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        } else {
+            i = new Intent();
         }
         return i;
     }

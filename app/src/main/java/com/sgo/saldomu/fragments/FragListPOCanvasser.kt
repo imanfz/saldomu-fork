@@ -117,7 +117,7 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
                                 val gson = Gson()
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
                                 val code = response.getString(WebParams.ERROR_CODE)
-                                val code_msg = response.getString(WebParams.ERROR_MESSAGE)
+                                val message = response.getString(WebParams.ERROR_MESSAGE)
                                 Timber.d("isi response generate url bat:$response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
@@ -127,24 +127,20 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
-                                        val message = response.getString(WebParams.ERROR_MESSAGE)
-                                        val test = AlertDialogLogout.getInstance()
-                                        test.showDialoginActivity(activity, message)
+                                        AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                                     }
                                     DefineValue.ERROR_9333 -> {
                                         Timber.d("isi response app data:%s", model.app_data)
                                         val appModel = model.app_data
-                                        val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                        alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                        AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                                     }
                                     DefineValue.ERROR_0066 -> {
                                         Timber.d("isi response maintenance:$response")
-                                        val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                        alertDialogMaintenance.showDialogMaintenance(activity)
+                                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         Timber.d("isi error generate url bat:$response")
-                                        Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
+                                        Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
                                     }
                                 }
                             } catch (e: JSONException) {
@@ -181,6 +177,7 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
                 val docStatus = mArrayDoc.getJSONObject(i).getString(WebParams.DOC_STATUS)
                 val nettAmount = mArrayDoc.getJSONObject(i).getString(WebParams.NETT_AMOUNT)
                 val dueDate = mArrayDoc.getJSONObject(i).getString(WebParams.DUE_DATE)
+                val issueDate = mArrayDoc.getJSONObject(i).getString(WebParams.ISSUE_DATE)
                 val custID = mArrayDoc.getJSONObject(i).getString(WebParams.CUST_ID)
                 val memberCode = mArrayDoc.getJSONObject(i).getString(WebParams.MEMBER_CODE)
                 val commCode = mArrayDoc.getJSONObject(i).getString(WebParams.COMM_CODE)
@@ -190,6 +187,7 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
                 listPOModel.doc_status = docStatus
                 listPOModel.nett_amount = nettAmount
                 listPOModel.due_date = dueDate
+                listPOModel.issue_date = issueDate
                 listPOModel.cust_id = custID
                 listPOModel.comm_code = commCode
                 listPOModel.member_code = memberCode

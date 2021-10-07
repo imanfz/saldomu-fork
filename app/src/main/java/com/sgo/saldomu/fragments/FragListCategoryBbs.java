@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.ListFragment;
 
 import com.securepreferences.SecurePreferences;
@@ -62,7 +63,7 @@ public class FragListCategoryBbs extends ListFragment implements EasyPermissions
     ProgressDialog progdialog;
     GridView gridCategory;
     GridBbsCategory gridBbsCategoryAdapter;
-    Switch swMobilityAgent;
+    SwitchCompat swMobilityAgent;
     LinearLayout llJumlah;
     EditText etJumlah;
     private static final int RC_LOCATION_PERM = 500;
@@ -167,61 +168,55 @@ public class FragListCategoryBbs extends ListFragment implements EasyPermissions
 
         etJumlah.addTextChangedListener(jumlahChangeListener);
 
-        swMobilityAgent.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        swMobilityAgent.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-                if (isChecked) {
-                    llJumlah.setVisibility(View.VISIBLE);
-                } else {
-                    llJumlah.setVisibility(View.GONE);
-                }
-
+            if (isChecked) {
+                llJumlah.setVisibility(View.VISIBLE);
+            } else {
+                llJumlah.setVisibility(View.GONE);
             }
+
         });
 
-        gridCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Timber.d("masuk gridcategoryonitemclicklistener");
+        gridCategory.setOnItemClickListener((parent, view, position, id) -> {
+            Timber.d("masuk gridcategoryonitemclicklistener");
 
-                Boolean hasError = false;
-                if (swMobilityAgent.isChecked()) {
-                    if (etJumlah.getText().toString().length() == 0) {
-                        etJumlah.requestFocus();
-                        etJumlah.setError(getString(R.string.sgoplus_validation_jumlahSGOplus));
-                        hasError = true;
-                    } else if (Long.parseLong(etJumlah.getText().toString()) < 1) {
-                        etJumlah.requestFocus();
-                        etJumlah.setError(getString(R.string.payfriends_amount_zero));
-                        hasError = true;
-                    }
-                } else {
-                    hasError = false;
+            Boolean hasError = false;
+            if (swMobilityAgent.isChecked()) {
+                if (etJumlah.getText().toString().length() == 0) {
+                    etJumlah.requestFocus();
+                    etJumlah.setError(getString(R.string.sgoplus_validation_jumlahSGOplus));
+                    hasError = true;
+                } else if (Long.parseLong(etJumlah.getText().toString()) < 1) {
+                    etJumlah.requestFocus();
+                    etJumlah.setError(getString(R.string.payfriends_amount_zero));
+                    hasError = true;
                 }
-
-                if (!hasError) {
-
-                    Intent i = new Intent(getActivity(), BbsSearchAgentActivity.class);
-                    i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(position).getCategoryId());
-                    i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(position).getCategoryName());
-
-                    if (!swMobilityAgent.isChecked()) {
-                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
-                        i.putExtra(DefineValue.AMOUNT, "");
-                    } else {
-                        i.putExtra(DefineValue.AMOUNT, etJumlah.getText().toString());
-                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
-                    }
-
-                    SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                    SecurePreferences.Editor mEditor = prefs.edit();
-                    mEditor.putString(DefineValue.BBS_TX_ID, "");
-                    mEditor.apply();
-
-                    startActivityForResult(i, DefineValue.IDX_CATEGORY_SEARCH_AGENT);// Activity is started with requestCode 2
-                }
+            } else {
+                hasError = false;
             }
 
+            if (!hasError) {
+
+                Intent i = new Intent(getActivity(), BbsSearchAgentActivity.class);
+                i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(position).getCategoryId());
+                i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(position).getCategoryName());
+
+                if (!swMobilityAgent.isChecked()) {
+                    i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                    i.putExtra(DefineValue.AMOUNT, "");
+                } else {
+                    i.putExtra(DefineValue.AMOUNT, etJumlah.getText().toString());
+                    i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
+                }
+
+                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                SecurePreferences.Editor mEditor = prefs.edit();
+                mEditor.putString(DefineValue.BBS_TX_ID, "");
+                mEditor.apply();
+
+                startActivityForResult(i, DefineValue.IDX_CATEGORY_SEARCH_AGENT);// Activity is started with requestCode 2
+            }
         });
 
     }
@@ -244,11 +239,7 @@ public class FragListCategoryBbs extends ListFragment implements EasyPermissions
                         builder1.setMessage(message);
                         builder1.setCancelable(true);
                         builder1.setNeutralButton(android.R.string.ok,
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                });
+                                (dialog, id) -> dialog.cancel());
 
                         AlertDialog alert11 = builder1.create();
                         alert11.show();

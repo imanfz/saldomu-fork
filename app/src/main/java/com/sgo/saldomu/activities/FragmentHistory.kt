@@ -73,10 +73,10 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.MEMBER_ID] = memberIDLogin
         params[WebParams.PAGE] = currentPage
-        Log.e(TAG, "params history : $params")
+        Timber.tag(TAG).e("params history : %s", params)
         RetrofitService.getInstance().PostObjectRequest(url, params, object : ResponseListener {
             override fun onResponses(jsonObject: JsonObject) {
-                Log.e(TAG, "onResponses: $jsonObject")
+                Timber.tag(TAG).e("onResponses: %s", jsonObject)
                 val model = getGson().fromJson(jsonObject, jsonModel::class.java)
                 val code = model.error_code
                 val message = model.error_message
@@ -86,7 +86,8 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
                         next = jsonObject.get("next").toString()
                         val type = object : TypeToken<List<HistoryModel>>() {
                         }.type
-                        val list = gson.fromJson<List<HistoryModel>>(jsonObject.get("report_data"), type)
+                        val list =
+                            gson.fromJson<List<HistoryModel>>(jsonObject.get("report_data"), type)
 
                         if (next == "" || next == "0") {
                             isLastPage = true
@@ -101,13 +102,16 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
                     WebParams.ERROR_9333 -> {
                         Timber.d("isi response app data:%s", model.app_data)
                         val appModel = model.app_data
-                        val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                        alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                        AlertDialogUpdateApp.getInstance().showDialogUpdate(
+                            activity,
+                            appModel.type,
+                            appModel.packageName,
+                            appModel.downloadUrl
+                        )
                     }
-                    WebParams.ERROR_0066 ->  {
+                    WebParams.ERROR_0066 -> {
                         Timber.d("isi response maintenance:$jsonObject")
-                        val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                        alertDialogMaintenance.showDialogMaintenance(activity)
+                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                     }
                 }
             }
@@ -126,13 +130,6 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
         })
     }
 
-    private fun setDialog(show: Boolean) {
-        if (show)
-            dialog.show()
-        else
-            dialog.dismiss()
-    }
-
     private fun initialize() {
         currentPage = 1
         mLayoutManager = LinearLayoutManager(activity)
@@ -144,7 +141,6 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
         builder.setView(R.layout.progress)
         dialog = builder.create()
     }
-
 
     private fun setupRecycler() {
         recycler_view.adapter = adapter
@@ -198,30 +194,32 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
         RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
                 object : ResponseListener {
                     override fun onResponses(jsonObject: JsonObject) {
-                        Log.e(TAG, "gettrx : $jsonObject")
+                        Timber.e("gettrx : " + jsonObject)
 
-                        val model = getGson().fromJson(jsonObject, GetTrxStatusReportModel::class.java)
+                        val model =
+                            getGson().fromJson(jsonObject, GetTrxStatusReportModel::class.java)
 
                         when (model.error_code) {
                             WebParams.SUCCESS_CODE -> showDialog(historyModel, model)
                             WebParams.LOGOUT_CODE -> {
                                 val message = model.error_message
-                                val test = AlertDialogLogout.getInstance()
-                                test.showDialoginActivity(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                             }
                             WebParams.ERROR_9333 -> {
                                 Timber.d("isi response app data:" + model.app_data)
                                 val appModel = model.app_data
-                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(
+                                    activity,
+                                    appModel.type,
+                                    appModel.packageName,
+                                    appModel.downloadUrl
+                                )
                             }
                             WebParams.ERROR_0066 -> {
-                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity)
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                             }
                             else -> {
-                                val msg = model.error_message
-                                showErrorMessage(msg)
+                                showErrorMessage(model.error_message)
                             }
                         }
                     }
@@ -301,6 +299,7 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.MERCHANT_PAN, response.merchant_pan)
         args.putString(DefineValue.TERMINAL_ID, response.terminal_id)
         args.putString(DefineValue.TRX_ID_REF, response.trx_id_ref)
+        args.putString(DefineValue.INDICATOR_TYPE, response.indicator_type)
         dialog.arguments = args
         val ft = requireActivity().supportFragmentManager.beginTransaction()
         ft.add(dialog, ReportBillerDialog.TAG)

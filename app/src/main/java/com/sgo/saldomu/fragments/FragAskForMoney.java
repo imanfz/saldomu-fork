@@ -157,21 +157,15 @@ public class FragAskForMoney extends BaseFragment {
 
         btnRequestMoney.setOnClickListener(btnRequestMoneyListener);
 
-        etAmount.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    setNumberRecipients();
-                }
+        etAmount.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                setNumberRecipients();
             }
         });
 
-        etMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    setNumberRecipients();
-                }
+        etMessage.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                setNumberRecipients();
             }
         });
 
@@ -234,10 +228,10 @@ public class FragAskForMoney extends BaseFragment {
         else
             txtNumberRecipients.setText(String.valueOf(phoneRetv.getRecipients().length));
 
-        Timber.d("isi length recipients:" + String.valueOf(phoneRetv.getRecipients().length));
+        Timber.d("isi length recipients:%s", String.valueOf(phoneRetv.getRecipients().length));
     }
 
-    private Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
+    private final Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             privacy = i + 1;
@@ -266,10 +260,10 @@ public class FragAskForMoney extends BaseFragment {
 
     private class TempObjectData {
 
-        private String send_to;
-        private String ccy_id;
-        private String amount;
-        private String recipient_name;
+        private final String send_to;
+        private final String ccy_id;
+        private final String amount;
+        private final String recipient_name;
 
         public TempObjectData(String _send_to, String _ccy_id, String _amount, String _recipient_name) {
             this.send_to = _send_to;
@@ -280,7 +274,7 @@ public class FragAskForMoney extends BaseFragment {
 
     }
 
-    private Button.OnClickListener btnRequestMoneyListener = new Button.OnClickListener() {
+    private final Button.OnClickListener btnRequestMoneyListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (InetHandler.isNetworkAvailable(getActivity())) {
@@ -293,7 +287,7 @@ public class FragAskForMoney extends BaseFragment {
                     ArrayList<TempObjectData> mTempObjectDataList = new ArrayList<>();
 
                     String check = phoneRetv.getText().toString();
-                    if ((!check.isEmpty()) && check.substring(check.length() - 1).equals(","))
+                    if ((!check.isEmpty()) && check.endsWith(","))
                         phoneRetv.setText(check.substring(0, check.length() - 1));
 
                     chips = new DrawableRecipientChip[phoneRetv.getSortedRecipients().length];
@@ -308,7 +302,7 @@ public class FragAskForMoney extends BaseFragment {
                                 break;
                             }
                             finalNumber = NoHPFormat.formatTo62(finalNumber);
-                            Timber.v("final number:" + finalNumber);
+                            Timber.v("final number:%s", finalNumber);
                             mTempObjectDataList.add(new TempObjectData(finalNumber, DefineValue.IDR, amount, chip.getEntry().getDisplayName()));
                         }
 
@@ -356,7 +350,7 @@ public class FragAskForMoney extends BaseFragment {
             params.put(WebParams.PRIVACY, privacy);
             params.put(WebParams.MEMBER_LEVEL, memberLevel);
 
-            Timber.d("isi params sent ask for money:" + params.toString());
+            Timber.d("isi params sent ask for money:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ASKFORMONEY_SUBMIT, params,
                     new ResponseListener() {
@@ -456,12 +450,7 @@ public class FragAskForMoney extends BaseFragment {
         Message_Detail.setGravity(Gravity.LEFT);
         Message_Detail.setText(messageDialog);
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        btnDialogOTP.setOnClickListener(view -> dialog.dismiss());
 
         dialog.show();
     }

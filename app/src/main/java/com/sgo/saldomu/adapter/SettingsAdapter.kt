@@ -14,6 +14,7 @@ import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.CoreApp
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.utils.LocaleManager
+import timber.log.Timber
 
 class SettingsAdapter(internal var listener: SettingsListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     internal lateinit var context: Context
@@ -61,7 +62,7 @@ class SettingsAdapter(internal var listener: SettingsListener) : RecyclerView.Ad
 
             language = LocaleManager.getLanguagePref()
 
-            Log.e("wenly adapter : ", language)
+            Timber.tag("wenly adapter : ").e(language)
 
             if (language == DefineValue.LANGUAGE_CODE_IND) {
                 viewHolder.rb_lang_ind.isChecked = true

@@ -155,7 +155,7 @@
         android:orientation="horizontal"
         android:id="@+id/layout_save">
 
-        <Switch
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/favorite_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

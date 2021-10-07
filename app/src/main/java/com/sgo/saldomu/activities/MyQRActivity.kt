@@ -17,6 +17,7 @@ import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.ScanQRUtils
 import com.sgo.saldomu.widgets.BaseActivity
 import kotlinx.android.synthetic.main.activity_my_qr.*
+import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -55,7 +56,7 @@ class MyQRActivity : BaseActivity() {
     private fun storeImage() {
         val pictureFile: File? = getOutputMediaFile()
         if (pictureFile == null) {
-            Log.d(TAG, "Error creating media file, check storage permissions")
+            Timber.tag(TAG).d("Error creating media file, check storage permissions")
             return
         }
         try {
@@ -66,9 +67,9 @@ class MyQRActivity : BaseActivity() {
             fos.close()
             Toast.makeText(this, "Berhasil menyimpan gambar", Toast.LENGTH_SHORT).show()
         } catch (e: FileNotFoundException) {
-            Log.d(TAG, "File not found: " + e.message)
+            Timber.tag(TAG).d("File not found: %s", e.message)
         } catch (e: IOException) {
-            Log.d(TAG, "Error accessing file: " + e.message)
+            Timber.tag(TAG).d("Error accessing file: %s", e.message)
         }
     }
 

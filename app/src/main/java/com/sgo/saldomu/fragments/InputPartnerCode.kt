@@ -41,7 +41,7 @@ class InputPartnerCode : BaseFragment() {
         btn_next.setOnClickListener {
 //            if (et_partner_code.text!!.isNotEmpty()) {
             if (inputValidation()) {
-                val bundle: Bundle = Bundle()
+                val bundle = Bundle()
                 bundle.putString(DefineValue.MEMBER_CODE, et_partner_code.text.toString())
                 if (favorite_switch.isChecked) {
                     bundle.putBoolean(DefineValue.IS_FAVORITE, true)

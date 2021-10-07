@@ -138,66 +138,59 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
         llSetupClosedType.setVisibility(View.GONE);
         llTutupToko.setVisibility(View.GONE);
 
-        tbOpen24Hours.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    llSetupHours.setVisibility(View.GONE);
-                    llTutupToko.setVisibility(View.GONE);
-                    llSetupClosedType.setVisibility(View.GONE);
-                } else {
-                    llSetupHours.setVisibility(View.VISIBLE);
-                    llTutupToko.setVisibility(View.VISIBLE);
+        tbOpen24Hours.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                llSetupHours.setVisibility(View.GONE);
+                llTutupToko.setVisibility(View.GONE);
+                llSetupClosedType.setVisibility(View.GONE);
+            } else {
+                llSetupHours.setVisibility(View.VISIBLE);
+                llTutupToko.setVisibility(View.VISIBLE);
 
-                    if (tbTutupToko.isChecked()) {
-                        llSetupClosedType.setVisibility(View.VISIBLE);
-                    }
+                if (tbTutupToko.isChecked()) {
+                    llSetupClosedType.setVisibility(View.VISIBLE);
                 }
-
-
             }
+
+
         });
 
-        tbTutupToko.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    llSetupClosedType.setVisibility(View.VISIBLE);
+        tbTutupToko.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                llSetupClosedType.setVisibility(View.VISIBLE);
 
-                    ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BbsMerchantSetupHourActivity.this,
-                            R.array.list_closed_type, android.R.layout.simple_spinner_item);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spClosedType.setAdapter(adapter);
+                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BbsMerchantSetupHourActivity.this,
+                        R.array.list_closed_type, android.R.layout.simple_spinner_item);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spClosedType.setAdapter(adapter);
 
-                } else {
-                    llSetupClosedType.setVisibility(View.GONE);
-                }
+            } else {
+                llSetupClosedType.setVisibility(View.GONE);
             }
         });
 
         customAdapter = new GridViewAdapter(getApplicationContext(), setupOpenHour.getSetupOpenHours());
         gridview.setAdapter(customAdapter);
 
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        gridview.setOnItemClickListener((parent, view, position, id) -> {
 
-                TimePickerFragment timePickerFragment = new TimePickerFragment();
+            TimePickerFragment timePickerFragment = new TimePickerFragment();
 
-                Bundle bundle = new Bundle();
-                bundle.putInt("position", position);
-                bundle.putString("NamaHari", setupOpenHour.getSetupOpenHours().get(position).getNamaHari());
-                bundle.putString("startHour", setupOpenHour.getSetupOpenHours().get(position).getStartHour());
-                bundle.putString("endHour", setupOpenHour.getSetupOpenHours().get(position).getEndHour());
-                bundle.putInt("iStartHour", setupOpenHour.getSetupOpenHours().get(position).getiStartHour());
-                bundle.putInt("iStartMinute", setupOpenHour.getSetupOpenHours().get(position).getiStartMinute());
-                bundle.putInt("iEndHour", setupOpenHour.getSetupOpenHours().get(position).getiEndHour());
-                bundle.putInt("iEndMinute", setupOpenHour.getSetupOpenHours().get(position).getiEndMinute());
+            Bundle bundle = new Bundle();
+            bundle.putInt("position", position);
+            bundle.putString("NamaHari", setupOpenHour.getSetupOpenHours().get(position).getNamaHari());
+            bundle.putString("startHour", setupOpenHour.getSetupOpenHours().get(position).getStartHour());
+            bundle.putString("endHour", setupOpenHour.getSetupOpenHours().get(position).getEndHour());
+            bundle.putInt("iStartHour", setupOpenHour.getSetupOpenHours().get(position).getiStartHour());
+            bundle.putInt("iStartMinute", setupOpenHour.getSetupOpenHours().get(position).getiStartMinute());
+            bundle.putInt("iEndHour", setupOpenHour.getSetupOpenHours().get(position).getiEndHour());
+            bundle.putInt("iEndMinute", setupOpenHour.getSetupOpenHours().get(position).getiEndMinute());
 
-                timePickerFragment.setArguments(bundle);
-                timePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
-                timePickerFragment.show(getSupportFragmentManager(), TimePickerFragment.TAG);
+            timePickerFragment.setArguments(bundle);
+            timePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+            timePickerFragment.show(getSupportFragmentManager(), TimePickerFragment.TAG);
 
 
-            }
         });
 
         btnProses.setOnClickListener(btnProsesListener);
@@ -448,7 +441,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
 
                         params.put(WebParams.SIGNATURE, signature);
 
-                        Log.d("TEST", params.toString());
+                        Timber.tag("TEST").d(params.toString());
 
                         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_SETUP_OPENING_HOUR, params,
                                 new ObjListeners() {
@@ -482,7 +475,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
                                     }
                                 });
                     } catch (Exception e) {
-                        Timber.d("httpclient:" + e.getMessage());
+                        Timber.d("httpclient:%s", e.getMessage());
                     }
                 } else {
                     //DefinedDialog.showErrorDialog(getApplicationContext(), errorMessage);

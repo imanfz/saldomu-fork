@@ -114,19 +114,15 @@ public class ClosedTypePickerFragment extends DialogFragment {
                     }
                 }
 
-                cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        // TODO Auto-generated method stub
-                        if (isChecked) {
-                            selectedDays.add(String.valueOf(buttonView.getId()));
-                        } else {
-                            selectedDays.remove(String.valueOf(buttonView.getId()));
-                        }
-
-
+                cb.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    // TODO Auto-generated method stub
+                    if (isChecked) {
+                        selectedDays.add(String.valueOf(buttonView.getId()));
+                    } else {
+                        selectedDays.remove(String.valueOf(buttonView.getId()));
                     }
+
+
                 });
 
                 llPicker.addView(cb);
@@ -173,21 +169,17 @@ public class ClosedTypePickerFragment extends DialogFragment {
                     }
                 }
 
-                check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                check.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    // TODO Auto-generated method stub
+                    if (isChecked) {
 
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        // TODO Auto-generated method stub
-                        if (isChecked) {
+                        selectedDate.add(String.valueOf(buttonView.getId()));
 
-                            selectedDate.add(String.valueOf(buttonView.getId()));
-
-                        } else {
-                            selectedDate.remove(String.valueOf(buttonView.getId()));
-                        }
-
-
+                    } else {
+                        selectedDate.remove(String.valueOf(buttonView.getId()));
                     }
+
+
                 });
                 check.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
                 tr.addView(check);
@@ -218,28 +210,24 @@ public class ClosedTypePickerFragment extends DialogFragment {
         }
 
         btnYes.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
+                v -> {
 
 
-                        if (selectedDays.size() == 0 && selectedDate.size() == 0) {
-                            Toast.makeText(getActivity(), R.string.err_empty_pick, Toast.LENGTH_LONG).show();
-                        } else {
-                            cpl.onOkClosedTypePickerClick(position, selectedDays, selectedDate);
-                            getDialog().dismiss();
-                        }
-
-
+                    if (selectedDays.size() == 0 && selectedDate.size() == 0) {
+                        Toast.makeText(getActivity(), R.string.err_empty_pick, Toast.LENGTH_LONG).show();
+                    } else {
+                        cpl.onOkClosedTypePickerClick(position, selectedDays, selectedDate);
+                        getDialog().dismiss();
                     }
+
+
                 }
         );
 
         btnNo.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
-                        cpl.onCancelClosedTypePickerClick(position);
-                        getDialog().dismiss();
-                    }
+                v -> {
+                    cpl.onCancelClosedTypePickerClick(position);
+                    getDialog().dismiss();
                 }
         );
     }

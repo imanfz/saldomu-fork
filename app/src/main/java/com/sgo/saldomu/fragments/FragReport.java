@@ -1322,6 +1322,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.MERCHANT_PAN, response.getMerchant_pan());
         args.putString(DefineValue.TERMINAL_ID, response.getTerminal_id());
         args.putString(DefineValue.TRX_ID_REF, response.getTrx_id_ref());
+        args.putString(DefineValue.INDICATOR_TYPE, response.getIndicator_type());
 
         dialog.setArguments(args);
         dialog.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), ReportBillerDialog.TAG);

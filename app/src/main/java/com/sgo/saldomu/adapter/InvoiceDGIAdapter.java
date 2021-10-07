@@ -80,12 +80,7 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
         }
         holder.view.setVisibility(View.VISIBLE);
 
-        holder.topLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onTap(invoiceDGIModelArrayList.get(position));
-            }
-        });
+        holder.topLayout.setOnClickListener(view -> listener.onTap(invoiceDGIModelArrayList.get(position)));
     }
 
     @Override

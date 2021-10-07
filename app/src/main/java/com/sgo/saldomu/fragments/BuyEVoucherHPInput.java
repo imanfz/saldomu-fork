@@ -200,7 +200,7 @@ public class BuyEVoucherHPInput extends BaseFragment {
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params get Member Pulsa:" + params.toString());
+            Timber.d("isi params get Member Pulsa:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_MEMBER_PULSA, params,
                     new ResponseListener() {
@@ -452,12 +452,9 @@ public class BuyEVoucherHPInput extends BaseFragment {
         Message.setText(getString(R.string.evoucer_sb_dialog_message));
 
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                getFragmentManager().popBackStack();
-            }
+        btnDialogOTP.setOnClickListener(view -> {
+            dialog.dismiss();
+            getFragmentManager().popBackStack();
         });
 
         dialog.show();

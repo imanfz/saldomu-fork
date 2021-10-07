@@ -268,7 +268,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         String _url_profpic;
         _url_profpic = sp.getString(DefineValue.IMG_URL, null);
 
-        Timber.wtf("url prof pic:" + _url_profpic);
+        Timber.wtf("url prof pic:%s", _url_profpic);
 
         Bitmap bm = BitmapFactory.decodeResource(Objects.requireNonNull(context).getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
@@ -289,12 +289,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         lytDetail.setOnClickListener(detailOnClick);
     }
 
-    RelativeLayout.OnClickListener detailOnClick = new RelativeLayout.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            showDialogMessage();
-        }
-    };
+    RelativeLayout.OnClickListener detailOnClick = v -> showDialogMessage();
 
     private void showDialogMessage() {
 //        final Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), this.getString(R.string.upgrade_dialog_finish_title),
@@ -425,7 +420,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                     Gson gson2 = new Gson();
                     UploadPPModel model = gson2.fromJson(object, UploadPPModel.class);
 
-                    Log.e("sse : ", model.getImg_url());
+                    Timber.tag("sse : ").e(model.getImg_url());
 
                     String error_code = model.getError_code();
                     String error_message = model.getError_message();
@@ -439,24 +434,16 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 
                         mEditor.commit();
 
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                setImageProfPic();
-                            }
-                        });
+                        activity.runOnUiThread(() -> setImageProfPic());
                     } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
-                        AlertDialogLogout test = AlertDialogLogout.getInstance();
-                        test.showDialoginActivity(getActivity(), error_message);
+                        AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), error_message);
                     } else if (error_code.equals(DefineValue.ERROR_9333)) {
-                        Timber.d("isi response app data:" + model.getApp_data());
+                        Timber.d("isi response app data:%s", model.getApp_data());
                         final AppDataModel appModel = model.getApp_data();
-                        AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                        alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                        AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                     } else if (error_code.equals(DefineValue.ERROR_0066)) {
-                        Timber.d("isi response maintenance:" + object.toString());
-                        AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                        alertDialogMaintenance.showDialogMaintenance(getActivity());
+                        Timber.d("isi response maintenance:%s", object.toString());
+                        AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                     } else {
                         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                         alert.setTitle("Upload Image");
@@ -471,7 +458,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 
     @Override
     public void onProgressUpdate(int percentage) {
-        Log.d("okhttp", "percentage :" + percentage);
+        Timber.tag("okhttp").d("percentage :%s", percentage);
         if (progdialog == null) {
             progdialog = DefinedDialog.CreateProgressDialog(context, "");
         }

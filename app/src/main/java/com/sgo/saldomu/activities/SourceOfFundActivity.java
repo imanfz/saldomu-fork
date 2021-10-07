@@ -56,37 +56,6 @@ public class SourceOfFundActivity extends BaseActivity {
         }
     }
 
-    public void switchContent(Fragment mFragment, String fragName, Boolean isBackstack) {
-
-        if (isBackstack) {
-            Timber.d("backstack");
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.sofactivity_content, mFragment, fragName)
-                    .addToBackStack(null)
-                    .commit();
-        } else {
-            Timber.d("bukan backstack");
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.sofactivity_content, mFragment, fragName)
-                    .commit();
-
-        }
-        setActionBarTitle(fragName);
-    }
-
-    public void switchActivity(Intent mIntent, int j) {
-        switch (j) {
-            case MainPage.ACTIVITY_RESULT:
-                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                startActivityForResult(mIntent, MainPage.REQUEST_FINISH);
-                break;
-            case 2:
-                break;
-        }
-    }
-
     private void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.payment_confirm));
@@ -117,6 +86,6 @@ public class SourceOfFundActivity extends BaseActivity {
     }
 
     public void setResultActivity(int result) {
-        setResult(MainPage.RESULT_BALANCE);
+        setResult(result);
     }
 }

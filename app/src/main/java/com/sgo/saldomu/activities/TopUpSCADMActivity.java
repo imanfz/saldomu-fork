@@ -27,7 +27,6 @@ import timber.log.Timber;
  */
 
 public class TopUpSCADMActivity extends BaseActivity {
-    private SecurePreferences sp;
     FragmentManager fragmentManager;
     Fragment newFragment = null;
     public static String TOPUP = "topup";
@@ -41,8 +40,6 @@ public class TopUpSCADMActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initializeToolbar();
-
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         if (findViewById(R.id.topup_scadm_content) != null) {
             if (savedInstanceState != null) {
@@ -97,27 +94,6 @@ public class TopUpSCADMActivity extends BaseActivity {
         super.onResume();
     }
 
-    public void switchContent(Fragment mFragment, String fragName, Boolean isBackstack) {
-        ToggleKeyboard.hide_keyboard(this);
-        if(isBackstack){
-            Timber.d("backstack");
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.topup_scadm_content, mFragment, fragName)
-                    .addToBackStack(null)
-                    .commitAllowingStateLoss();
-        }
-        else {
-            Timber.d("bukan backstack");
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.topup_scadm_content, mFragment, fragName)
-                    .commitAllowingStateLoss();
-
-        }
-        setActionBarTitle(fragName);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId())
@@ -141,7 +117,7 @@ public class TopUpSCADMActivity extends BaseActivity {
     }
 
     public void setResultActivity(int result){
-        setResult(MainPage.RESULT_BALANCE);
+        setResult(result);
     }
 
     public void switchActivity(Intent mIntent, int j) {

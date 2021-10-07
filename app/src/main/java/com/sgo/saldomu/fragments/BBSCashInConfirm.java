@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
@@ -24,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -61,7 +61,6 @@ import com.sgo.saldomu.widgets.BaseFragment;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import timber.log.Timber;
@@ -85,14 +84,18 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             fee, tx_id, amount, share_type, comm_id, benef_product_name, name_benef, no_benef,
             no_hp_benef, remark, source_product_name, total_amount, transaksi, benef_product_code;
     private int max_token_resend = MAX_TOKEN_RESENT;
-    private boolean isSMS = false, isIB = false, isPIN = false, TCASH_hp_validation = false, isTCASH = false,
-            isMandiriLKD = false, mandiriLKDValidation = false;
+    private boolean isSMS = false;
+    private boolean isIB = false;
+    private boolean isPIN = false;
+    private boolean TCASH_hp_validation = false;
+    private boolean isTCASH = false;
+    private boolean isMandiriLKD = false;
     private int attempt;
     private int failed;
     private SMSclass smSclass;
     private ActionListener actionListener;
     private Boolean finishTransaction = false, retryToken = false, isAgentLKD = false;
-    private Switch favoriteSwitch;
+    private SwitchCompat favoriteSwitch;
     private EditText notesEditText;
     private String value_pin;
 
@@ -163,7 +166,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            Log.e("BBS", "isi bundle " + bundle.toString());
+            Timber.tag("BBS").e("isi bundle %s", bundle.toString());
 
             transaksi = bundle.getString(DefineValue.TRANSACTION);
             if (bundle.containsKey(DefineValue.BENEF_CITY)) {
@@ -192,7 +195,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             remark = bundle.getString(DefineValue.REMARK);
             source_product_name = bundle.getString(DefineValue.SOURCE_ACCT);
             TCASH_hp_validation = bundle.getBoolean(DefineValue.TCASH_HP_VALIDATION);
-            mandiriLKDValidation = bundle.getBoolean(DefineValue.MANDIRI_LKD_VALIDATION);
+            boolean mandiriLKDValidation = bundle.getBoolean(DefineValue.MANDIRI_LKD_VALIDATION);
 
             String benef_product_type = bundle.getString(DefineValue.TYPE_BENEF, "");
 
@@ -335,23 +338,17 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         if (smSclass == null)
             smSclass = new SMSclass(getActivity(), CustomSimcardListener);
 
-        smSclass.isSimExists(new SMSclass.SMS_SIM_STATE() {
-            @Override
-            public void sim_state(Boolean isExist, String msg) {
-                if (!isExist) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setMessage(msg)
-                            .setCancelable(false)
-                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    SimNotExitAction();
-                                }
-                            });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                }
+        smSclass.isSimExists((isExist, msg) -> {
+            if (!isExist) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage(msg)
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+                            dialog.dismiss();
+                            SimNotExitAction();
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             }
         });
     }
@@ -377,14 +374,11 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         }
     }
 
-    Button.OnClickListener backListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (getFragmentManager().getBackStackEntryCount() > 0)
-                getFragmentManager().popBackStack();
-            else
-                getActivity().finish();
-        }
+    Button.OnClickListener backListener = view -> {
+        if (getFragmentManager().getBackStackEntryCount() > 0)
+            getFragmentManager().popBackStack();
+        else
+            getActivity().finish();
     };
 
     Button.OnClickListener submitListener = new Button.OnClickListener() {
@@ -507,7 +501,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, token, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params insertTrxSGOL:" + params.toString());
+            Timber.d("isi params insertTrxSGOL:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
@@ -516,15 +510,12 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                             FailedPinModel model = getGson().fromJson(object, FailedPinModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 getActivity().setResult(MainPage.RESULT_BALANCE);
-
                                 getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""), tx_id, userPhoneID);
-
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             }
 //                        else if(code.equals("0288")){
 //                            Timber.d("isi error sent insertTrx:"+response.toString());
@@ -534,20 +525,17 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 //                            retryToken=true;
 //                        }
                             else if (code.equals("0061")) {
-                                String code_msg = model.getError_message();
-                                Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 tokenValue.setText("");
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
+                                Timber.d("isi response maintenance:%s", object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
-                                String message = model.getError_message();
                                 if (isPIN) {
                                     Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                     //pin tidak sesuai errorcode 0097
@@ -598,7 +586,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                     });
 
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -627,7 +615,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             if (noHpTCASH != null)
                 params.put(WebParams.PRODUCT_VALUE, noHpTCASH.getText().toString());
 
-            Timber.d("isi params resendTokenSGOL:" + params.toString());
+            Timber.d("isi params resendTokenSGOL:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(url, params,
                     new ResponseListener() {
@@ -636,6 +624,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                 if (!isRequestOTP) {
@@ -646,21 +635,16 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                                 changeTextBtnSub();
                                 layout_OTP.setVisibility(View.VISIBLE);
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                code = model.getError_message();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                                 if (isRequestOTP)
                                     getFragmentManager().popBackStack();
 
@@ -687,7 +671,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -703,7 +687,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.USER_ID, userId);
 
-            Timber.d("isi params sent get Trx Status bbs:" + params.toString());
+            Timber.d("isi params sent get Trx Status bbs:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_TRX_STATUS_BBS, params,
                     new ResponseListener() {
@@ -712,32 +696,27 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                             GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
 
                                 showReportBillerDialog(userName, txId, userId, model);
 
                             } else if (code.equals("0288")) {
-                                String code_msg = model.getError_message();
-                                Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 layout_OTP.setVisibility(View.VISIBLE);
                                 tokenValue.setText("");
                                 retryToken = true;
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                String msg = model.getError_message();
-                                showDialog(msg);
+                                showDialog(message);
                             }
 
                         }
@@ -757,7 +736,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
 
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -781,7 +760,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             params.put(WebParams.TOKEN_ID, RSA.opensslEncryptCommID(comm_id, uuid, dateTime, userPhoneID, token, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params sentRetryToken:" + params.toString());
+            Timber.d("isi params sentRetryToken:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
@@ -790,34 +769,25 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-
                                 getActivity().setResult(MainPage.RESULT_BALANCE);
-
                                 getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""), tx_id, userPhoneID);
-
                             } else if (code.equals("0288")) {
-                                String code_msg = model.getError_message();
-                                Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 tokenValue.setText("");
                                 retryToken = true;
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                String code_msg = model.getError_message();
-
-                                Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                             }
 
 
@@ -836,7 +806,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                     });
 
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -857,12 +827,9 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         Title.setText(getString(R.string.error));
         Message.setText(msg);
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                //SgoPlusWeb.this.finish();
-            }
+        btnDialogOTP.setOnClickListener(view -> {
+            dialog.dismiss();
+            //SgoPlusWeb.this.finish();
         });
 
         dialog.show();
@@ -1023,12 +990,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     }
 
     public void changeTextBtnSub() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + max_token_resend + ")");
-            }
-        });
+        getActivity().runOnUiThread(() -> btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + max_token_resend + ")"));
     }
 
     public boolean validasiNoHP() {
@@ -1075,12 +1037,9 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
     public void setToRetryTokenEspay() {
         layout_OTP.setVisibility(View.VISIBLE);
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (inputValidation()) {
-                    sentRetryToken();
-                }
+        btnSubmit.setOnClickListener(v -> {
+            if (inputValidation()) {
+                sentRetryToken();
             }
         });
 
@@ -1105,7 +1064,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
     private void onSaveToFavorite() {
         extraSignature = no_benef + source_product_type + "BBS";
-        Log.e("extraSignature params ", extraSignature);
+        Timber.tag("extraSignature params ").e(extraSignature);
         String url = MyApiClient.LINK_TRX_FAVORITE_SAVE;
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(url, extraSignature);
         params.put(WebParams.USER_ID, userPhoneID);
@@ -1117,7 +1076,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         params.put(WebParams.BENEF_BANK_CODE, benef_product_code);
         params.put(WebParams.SOURCE_BANK_CODE, tx_bank_code);
 
-        Log.e("params ", params.toString());
+        Timber.tag("params ").e(params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(url, params,
                 new ObjListeners() {
@@ -1125,20 +1084,18 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                     public void onResponses(JSONObject response) {
                         try {
                             jsonModel model = RetrofitService.getInstance().getGson().fromJson(response.toString(), jsonModel.class);
-                            Log.e("onResponses ", response.toString());
+                            Timber.tag("onResponses ").e(response.toString());
                             String code = response.getString(WebParams.ERROR_CODE);
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + response.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                Timber.d("isi response maintenance:%s", response.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
@@ -1149,7 +1106,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
                     @Override
                     public void onError(Throwable throwable) {
-                        Log.e("onResponses ", throwable.getLocalizedMessage());
+                        Timber.tag("onResponses ").e(throwable.getLocalizedMessage());
                         throwable.printStackTrace();
                     }
 

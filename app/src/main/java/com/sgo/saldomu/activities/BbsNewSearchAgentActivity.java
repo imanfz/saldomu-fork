@@ -202,19 +202,15 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.alertbox_gps_warning))
                 .setCancelable(false)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                .setPositiveButton(R.string.yes, (dialog, id) -> {
 
-                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivityForResult(ilocation, RC_GPS_REQUEST);
+                    Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivityForResult(ilocation, RC_GPS_REQUEST);
 
-                    }
                 })
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
-                        startActivity(new Intent(getApplicationContext(), MainPage.class));
-                    }
+                .setNegativeButton(R.string.no, (dialog, id) -> {
+                    dialog.cancel();
+                    startActivity(new Intent(getApplicationContext(), MainPage.class));
                 });
         final AlertDialog alert = builder.create();
         alert.show();
@@ -226,10 +222,10 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
             createLocationRequest();
         }
 
-        Timber.d("GPS Test googleapiclient : " + mGoogleApiClient.toString());
+        Timber.d("GPS Test googleapiclient : %s", mGoogleApiClient.toString());
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
-            Timber.d("GPS Test googleapiclient connect : " + mGoogleApiClient.toString());
+            Timber.d("GPS Test googleapiclient connect : %s", mGoogleApiClient.toString());
         }
 
 
@@ -239,22 +235,14 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         searchLocationEditText.setOnItemClickListener(this);
         searchLocationEditText.setOnEditorActionListener(this);
         searchLocationEditText.clearFocus();
-        searchLocationEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    v.setSelected(true);
-                } else {
-                    v.setSelected(false);
-                }
-            }
-        });
-        searchLocationEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        searchLocationEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
                 v.setSelected(true);
+            } else {
+                v.setSelected(false);
             }
         });
+        searchLocationEditText.setOnClickListener(v -> v.setSelected(true));
 
         searchLocationEditText.setSelectAllOnFocus(true);
 
@@ -268,36 +256,33 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         etJumlah.setThreshold(1);
 
 
-        etJumlah.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2;
+        etJumlah.setOnTouchListener((v, event) -> {
+            final int DRAWABLE_RIGHT = 2;
 
 
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    int width = etJumlah.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width();
-                    int maxWidth = width + 20;
-                    if (event.getRawX() >= (etJumlah.getRight() - maxWidth)) {
-                        //Toast.makeText(BbsNewSearchAgentActivity.this, "TESTING", Toast.LENGTH_SHORT).show();
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                int width = etJumlah.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width();
+                int maxWidth = width + 20;
+                if (event.getRawX() >= (etJumlah.getRight() - maxWidth)) {
+                    //Toast.makeText(BbsNewSearchAgentActivity.this, "TESTING", Toast.LENGTH_SHORT).show();
 
-                        if (!showHideLayoutNote) {
-                            showHideLayoutNote = true;
-                            etNote.setVisibility(View.VISIBLE);
-                        } else {
-                            showHideLayoutNote = false;
-                            etNote.setVisibility(View.GONE);
-                        }
-
-                        //etJumlah.clearListSelection();
-                        return true;
+                    if (!showHideLayoutNote) {
+                        showHideLayoutNote = true;
+                        etNote.setVisibility(View.VISIBLE);
                     } else {
-                        etJumlah.showDropDown();
+                        showHideLayoutNote = false;
+                        etNote.setVisibility(View.GONE);
                     }
+
+                    //etJumlah.clearListSelection();
+                    return true;
                 } else {
-                    //etJumlah.showDropDown();
+                    etJumlah.showDropDown();
                 }
-                return false;
+            } else {
+                //etJumlah.showDropDown();
             }
+            return false;
         });
 
         btnProses = findViewById(R.id.btnProses);
@@ -307,87 +292,82 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
 
-        btnProses.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Boolean hasError = false;
+        btnProses.setOnClickListener(v -> {
+            Boolean hasError = false;
 
-                if (etJumlah.getText().toString().length() == 0) {
-                    etJumlah.requestFocus();
-                    etJumlah.setError(getString(R.string.sgoplus_validation_jumlahSGOplus), null);
+            if (etJumlah.getText().toString().length() == 0) {
+                etJumlah.requestFocus();
+                etJumlah.setError(getString(R.string.sgoplus_validation_jumlahSGOplus), null);
+                hasError = true;
+            } else if (Long.parseLong(etJumlah.getText().toString()) < 1) {
+                etJumlah.requestFocus();
+                etJumlah.setError(getString(R.string.payfriends_amount_zero), null);
+                hasError = true;
+            }
+
+            if (!hasError) {
+                int idxValid = -1;
+                String nameAcct = acMemberAcct.getText().toString();
+                for (int i = 0; i < aListMember.size(); i++) {
+                    if (nameAcct.equalsIgnoreCase(aListMember.get(i).get("txt")))
+                        idxValid = i;
+                }
+
+                if (idxValid == -1) {
+                    acMemberAcct.requestFocus();
+                    //acMemberAcct.setError(getString(R.string.no_match_customer_acct_message), null);
+
+                    AlertDialog alertDialog = new AlertDialog.Builder(BbsNewSearchAgentActivity.this).create();
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.setCancelable(false);
+                    alertDialog.setTitle(getString(R.string.alertbox_title_warning));
+                    alertDialog.setMessage(getString(R.string.no_match_customer_acct_message));
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            (dialog, which) -> {
+                                dialog.dismiss();
+                                acMemberAcct.requestFocus();
+                            });
+                    alertDialog.show();
                     hasError = true;
-                } else if (Long.parseLong(etJumlah.getText().toString()) < 1) {
-                    etJumlah.requestFocus();
-                    etJumlah.setError(getString(R.string.payfriends_amount_zero), null);
-                    hasError = true;
                 }
+            }
 
-                if (!hasError) {
-                    int idxValid = -1;
-                    String nameAcct = acMemberAcct.getText().toString();
-                    for (int i = 0; i < aListMember.size(); i++) {
-                        if (nameAcct.equalsIgnoreCase(aListMember.get(i).get("txt")))
-                            idxValid = i;
-                    }
+            if (!hasError) {
+                amount = etJumlah.getText().toString();
+                bbsProductName = acMemberAcct.getText().toString();
 
-                    if (idxValid == -1) {
-                        acMemberAcct.requestFocus();
-                        //acMemberAcct.setError(getString(R.string.no_match_customer_acct_message), null);
+                String note = etNote.getText().toString();
 
-                        AlertDialog alertDialog = new AlertDialog.Builder(BbsNewSearchAgentActivity.this).create();
-                        alertDialog.setCanceledOnTouchOutside(false);
-                        alertDialog.setCancelable(false);
-                        alertDialog.setTitle(getString(R.string.alertbox_title_warning));
-                        alertDialog.setMessage(getString(R.string.no_match_customer_acct_message));
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        acMemberAcct.requestFocus();
-                                    }
-                                });
-                        alertDialog.show();
-                        hasError = true;
-                    }
-                }
-
-                if (!hasError) {
-                    amount = etJumlah.getText().toString();
-                    bbsProductName = acMemberAcct.getText().toString();
-
-                    String note = etNote.getText().toString();
-
-                    SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                    SecurePreferences.Editor mEditor = prefs.edit();
-                    mEditor.putString(DefineValue.BBS_TX_ID, "");
-                    mEditor.putString(DefineValue.AMOUNT, amount);
-                    mEditor.apply();
+                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                SecurePreferences.Editor mEditor = prefs.edit();
+                mEditor.putString(DefineValue.BBS_TX_ID, "");
+                mEditor.putString(DefineValue.AMOUNT, amount);
+                mEditor.apply();
 
 
-                    etJumlah.clearFocus();
-                    InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                etJumlah.clearFocus();
+                InputMethodManager imm1 = (InputMethodManager) getApplicationContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                imm1.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
-                    Intent i = new Intent(BbsNewSearchAgentActivity.this, BbsSearchAgentActivity.class);
-                    i.putExtra(DefineValue.CATEGORY_ID, categoryId);
-                    i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
-                    i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, latitude);
-                    i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, longitude);
-                    i.putExtra(DefineValue.BBS_PRODUCT_NAME, bbsProductName);
-                    i.putExtra(DefineValue.BBS_SCHEME_CODE, bbsSchemeCode);
+                Intent i = new Intent(BbsNewSearchAgentActivity.this, BbsSearchAgentActivity.class);
+                i.putExtra(DefineValue.CATEGORY_ID, categoryId);
+                i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+                i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, latitude);
+                i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, longitude);
+                i.putExtra(DefineValue.BBS_PRODUCT_NAME, bbsProductName);
+                i.putExtra(DefineValue.BBS_SCHEME_CODE, bbsSchemeCode);
 
-                    i.putExtra(DefineValue.BBS_COMPLETE_ADDRESS, completeAddress);
-                    i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
-                    i.putExtra(DefineValue.AMOUNT, amount);
-                    i.putExtra(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
-                    i.putExtra(DefineValue.BBS_NOTE, note);
+                i.putExtra(DefineValue.BBS_COMPLETE_ADDRESS, completeAddress);
+                i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
+                i.putExtra(DefineValue.AMOUNT, amount);
+                i.putExtra(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
+                i.putExtra(DefineValue.BBS_NOTE, note);
 
-                    startActivity(i);
-                    finish();
-
-                }
+                startActivity(i);
+                finish();
 
             }
+
         });
 
     }
@@ -571,7 +551,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(this);
-        Timber.d("GPS Test checkPlayServices : " + String.valueOf(result));
+        Timber.d("GPS Test checkPlayServices : %s", String.valueOf(result));
         if (result != ConnectionResult.SUCCESS) {
             if (googleAPI.isUserResolvableError(result)) {
                 Toast.makeText(this, "GOOGLE API LOCATION CONNECTION FAILED", Toast.LENGTH_SHORT).show();
@@ -600,7 +580,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         params.put(WebParams.RADIUS, DefineValue.MAX_RADIUS_SEARCH_AGENT);
         params.put(WebParams.USER_ID, userPhoneID);
         params.put(WebParams.SHOP_TYPE, sp.getString(DefineValue.COMPANY_TYPE, ""));
-        Timber.d("Params new search agent :" + params);
+        Timber.d("Params new search agent :%s", params);
 
         //Start
         handlerSearchAgent.removeCallbacks(runnableSearchAgent);
@@ -697,7 +677,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                                         }
                                     }
 
-                                    Timber.d("diffShops: " + differentShops.toString());
+                                    Timber.d("diffShops: %s", differentShops.toString());
                                 }
 
 
@@ -791,7 +771,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         } catch (IOException ioException) {
             // Catch network or other I/O problems.
             //errorMessage = "Catch : Network or other I/O problems - No geocoder available";
-            Log.d("onIOException ", "Catch : Network or other I/O problems - No geocoder available");
+            Timber.tag("onIOException ").d("Catch : Network or other I/O problems - No geocoder available");
         } catch (IllegalArgumentException illegalArgumentException) {
             // Catch invalid latitude or longitude values.
             //errorMessage = "Catch : Invalid latitude or longitude values";
@@ -901,7 +881,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                         try {
 
                             String status = response.getString(WebParams.GMAP_API_STATUS);
-                            Timber.w("JSON Response: " + response.toString());
+                            Timber.w("JSON Response: %s", response.toString());
 
                             btnProses.setEnabled(true);
 

@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -169,7 +170,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                             fingerprintDialog.show(getActivity().getSupportFragmentManager(), "FingerprintDialog");
                         }
                     } catch (NullPointerException e) {
-                        Timber.e(e.getMessage());
+                        Timber.e(e);
                     }
                 }
             }
@@ -178,7 +179,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             if (m.containsKey(DefineValue.IS_POS)) {
                 if (m.getString(DefineValue.IS_POS).equalsIgnoreCase(DefineValue.STRING_YES)) {
                     is_pos = m.getString(DefineValue.IS_POS, DefineValue.STRING_NO);
-                    logo.setImageDrawable(getResources().getDrawable(R.drawable.logo_pos));
+                    logo.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.logo_pos, null));
                     getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
                     userIDValue.setEnabled(true);
                     userIDValue.setHint(getString(R.string.pos_hint));
@@ -195,24 +196,18 @@ public class Login extends BaseFragment implements View.OnClickListener {
         btnRegister.setOnClickListener(this);
         btnWarn.setOnClickListener(this);
         toogleViewPass.setOnClickListener(this);
-        passLoginValue.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    toogleViewPass.setVisibility(View.VISIBLE);
-                } else {
-                    toogleViewPass.setVisibility(View.INVISIBLE);
-                }
+        passLoginValue.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                toogleViewPass.setVisibility(View.VISIBLE);
+            } else {
+                toogleViewPass.setVisibility(View.INVISIBLE);
             }
         });
 
 
-        btnPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getActivity(), TermsAndCondition.class);
-                startActivity(i);
-            }
+        btnPrivacyPolicy.setOnClickListener(view -> {
+            Intent i = new Intent(getActivity(), TermsAndCondition.class);
+            startActivity(i);
         });
 
 //        String mcAddress = new DeviceUtils(getActivity()).getWifiMcAddress();
@@ -308,7 +303,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             if (sp.getString(DefineValue.FCM_ID, "") != null)
                 params.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID, ""));
 
-            Timber.d("isi params login:" + params.toString());
+            Timber.d("isi params login:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params, new ResponseListener() {
 
@@ -369,14 +364,12 @@ public class Login extends BaseFragment implements View.OnClickListener {
                     } else if (code.equals(DefineValue.ERROR_0002)) {
                         showDialog(getString(R.string.login_failed_wrong_id));
                     } else if (code.equals(DefineValue.ERROR_9333)) {
-                        Timber.d("isi response app data:" + loginModel.getApp_data());
+                        Timber.d("isi response app data:%s", loginModel.getApp_data());
                         final AppDataModel appModel = loginModel.getApp_data();
-                        AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                        alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                        AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                     } else if (code.equals(DefineValue.ERROR_0066)) {
-                        Timber.d("isi response maintenance:" + response.toString());
-                        AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                        alertDialogMaintenance.showDialogMaintenance(getActivity());
+                        Timber.d("isi response maintenance:%s", response.toString());
+                        AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                     }else if (code.equals("0324")) {
                         sp.edit().remove(DefineValue.PREVIOUS_LOGIN_USER_ID).apply();
                         showDialogBackToPerkenalan(loginModel.getError_message());
@@ -404,7 +397,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 }
             });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -430,12 +423,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
         Message.setText(message);
 
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        btnDialogOTP.setOnClickListener(view -> dialog.dismiss());
 
         dialog.show();
     }
@@ -458,13 +446,10 @@ public class Login extends BaseFragment implements View.OnClickListener {
         Message.setText(message);
 
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getActivity(), Perkenalan.class);
-                startActivity(i);
-                getActivity().finish();
-            }
+        btnDialogOTP.setOnClickListener(view -> {
+            Intent i = new Intent(getActivity(), Perkenalan.class);
+            startActivity(i);
+            getActivity().finish();
         });
 
         dialog.show();
@@ -592,7 +577,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         mEditor.putString(DefineValue.MEMBER_CREATED, commModel.getMember_created());
                         mEditor.putString(DefineValue.USE_DEPOSIT_CCOL, commModel.getUse_deposit_ccol());
                         mEditor.putString(DefineValue.USE_DEPOSIT_COL, commModel.getUse_deposit_col());
-                        Timber.w("isi comm id yg bener:" + commModel.getCommId());
+                        Timber.w("isi comm id yg bener:%s", commModel.getCommId());
 
                         break;
                     }

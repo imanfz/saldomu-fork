@@ -88,34 +88,31 @@ public class PinputView extends TextView {
     }
 
     private void initializeAnimator() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                float x = getX();
-                mErrorAnimator =
-                        ObjectAnimator.ofFloat(PinputView.this, "x", x, x + getWidth() / 20);
-                mErrorAnimator.setInterpolator(new CycleInterpolator(3));
-                mErrorAnimator.setDuration(mErrorVibrationLen);
-                mErrorAnimator.addListener(new AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animator) {
-                        vibrateOnError();
-                    }
+        post(() -> {
+            float x = getX();
+            mErrorAnimator =
+                    ObjectAnimator.ofFloat(PinputView.this, "x", x, x + getWidth() / 20);
+            mErrorAnimator.setInterpolator(new CycleInterpolator(3));
+            mErrorAnimator.setDuration(mErrorVibrationLen);
+            mErrorAnimator.addListener(new AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    vibrateOnError();
+                }
 
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        getText().clear();
-                    }
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    getText().clear();
+                }
 
-                    @Override
-                    public void onAnimationCancel(Animator animator) {
-                    }
+                @Override
+                public void onAnimationCancel(Animator animator) {
+                }
 
-                    @Override
-                    public void onAnimationRepeat(Animator animator) {
-                    }
-                });
-            }
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+                }
+            });
         });
     }
 
@@ -154,12 +151,7 @@ public class PinputView extends TextView {
             @Override
             public void afterTextChanged(final Editable text) {
                 if (text.length() == mPinLen && mListener != null) {
-                    postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mListener.onPinCommit(PinputView.this, text.toString());
-                        }
-                    }, mAnimDuration);
+                    postDelayed(() -> mListener.onPinCommit(PinputView.this, text.toString()), mAnimDuration);
                 }
             }
         });
@@ -242,27 +234,24 @@ public class PinputView extends TextView {
         ValueAnimator animator = ValueAnimator.ofFloat(0, to);
         animator.setDuration(mAnimDuration);
         animator.setInterpolator(new OvershootInterpolator(3f));
-        animator.addUpdateListener(new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float newSize =
-                        animation.getAnimatedFraction() * back.getShape().getWidth();
-                int alpha = Math.min((int) (255 * animation.getAnimatedFraction()), 255);
-                int offset = (int) (back.getShape().getWidth() - newSize) / 2;
-                int left = back.getBounds().left + offset;
-                int top = back.getBounds().top + offset;
-                int right = (int) (left + newSize);
-                int bottom = (int) (top + newSize);
+        animator.addUpdateListener(animation -> {
+            float newSize =
+                    animation.getAnimatedFraction() * back.getShape().getWidth();
+            int alpha = Math.min((int) (255 * animation.getAnimatedFraction()), 255);
+            int offset = (int) (back.getShape().getWidth() - newSize) / 2;
+            int left = back.getBounds().left + offset;
+            int top = back.getBounds().top + offset;
+            int right = (int) (left + newSize);
+            int bottom = (int) (top + newSize);
 
-                front.getShape().resize(newSize, newSize);
-                front.setBounds(left, top, right, bottom);
-                front.setAlpha(alpha);
-                invalidate(
-                        back.getBounds().left - mCharPadding,
-                        back.getBounds().top - mCharPadding,
-                        right + mCharPadding,
-                        bottom + mCharPadding);
-            }
+            front.getShape().resize(newSize, newSize);
+            front.setBounds(left, top, right, bottom);
+            front.setAlpha(alpha);
+            invalidate(
+                    back.getBounds().left - mCharPadding,
+                    back.getBounds().top - mCharPadding,
+                    right + mCharPadding,
+                    bottom + mCharPadding);
         });
 
         animator.start();

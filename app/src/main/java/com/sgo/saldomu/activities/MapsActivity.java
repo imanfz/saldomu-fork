@@ -81,20 +81,17 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
             }
         };
 
-        currLocLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        currLocLayout.setOnClickListener(v -> {
 //                captureScreen();
 
-                LatLng latLng = map.getCameraPosition().target;
-                Intent i = new Intent();
-                i.putExtra("address", getAddress(latLng));
-                i.putExtra("latitude", latLng.latitude);
-                i.putExtra("longitude", latLng.longitude);
-                setResult(201, i);
+            LatLng latLng = map.getCameraPosition().target;
+            Intent i = new Intent();
+            i.putExtra("address", getAddress(latLng));
+            i.putExtra("latitude", latLng.latitude);
+            i.putExtra("longitude", latLng.longitude);
+            setResult(201, i);
 //                finishActivity(200);
-                finish();
-            }
+            finish();
         });
 
         createLocationRequest();
@@ -137,22 +134,16 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
         SettingsClient settingsClient = LocationServices.getSettingsClient(this);
         Task<LocationSettingsResponse> task = settingsClient.checkLocationSettings(builder.build());
 
-        task.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
-            @Override
-            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                locationUpdateState = true;
-                startLocationUpdates();
-            }
+        task.addOnSuccessListener(locationSettingsResponse -> {
+            locationUpdateState = true;
+            startLocationUpdates();
         });
-        task.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                if (e instanceof ResolvableApiException) {
-                    try {
-                        ((ResolvableApiException) e).startResolutionForResult(MapsActivity.this, REQUEST_CHECK_SETTINGS);
-                    } catch (IntentSender.SendIntentException e1) {
-                        e1.printStackTrace();
-                    }
+        task.addOnFailureListener(e -> {
+            if (e instanceof ResolvableApiException) {
+                try {
+                    ((ResolvableApiException) e).startResolutionForResult(MapsActivity.this, REQUEST_CHECK_SETTINGS);
+                } catch (IntentSender.SendIntentException e1) {
+                    e1.printStackTrace();
                 }
             }
         });
@@ -172,15 +163,12 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
         map.setMyLocationEnabled(true);
 
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this,
-                new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            LatLng currLatlng = new LatLng(location.getLatitude(), location.getLongitude());
-                            placeMarkerOnMap(currLatlng);
-                            map.animateCamera(CameraUpdateFactory.newLatLngZoom(currLatlng
-                                    , 12f));
-                        }
+                location -> {
+                    if (location != null) {
+                        LatLng currLatlng = new LatLng(location.getLatitude(), location.getLongitude());
+                        placeMarkerOnMap(currLatlng);
+                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(currLatlng
+                                , 12f));
                     }
                 });
 
@@ -257,12 +245,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
         map.getUiSettings().setZoomControlsEnabled(true);
         map.setOnMarkerClickListener(this);
 
-        map.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
-            @Override
-            public void onCameraMove() {
-                currLocLayout.setVisibility(View.GONE);
-            }
-        });
+        map.setOnCameraMoveListener(() -> currLocLayout.setVisibility(View.GONE));
 
         getCurrLoc();
     }

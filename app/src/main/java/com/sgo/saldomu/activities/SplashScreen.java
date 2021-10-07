@@ -20,7 +20,6 @@ import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.utils.LocaleManager;
 
 public class SplashScreen extends AppIntro {
-    private SecurePreferences sp;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
@@ -32,8 +31,6 @@ public class SplashScreen extends AppIntro {
 
         if (InetHandler.isNetworkAvailable(this))
             new UtilsLoader(this).getAppVersion();
-
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         addSlide(IntroPage.newInstance(R.layout.splash_screen_1));
         addSlide(IntroPage.newInstance(R.layout.splash_screen_2));
@@ -49,13 +46,10 @@ public class SplashScreen extends AppIntro {
 //        skipbtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 //        donebtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
-        donebtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(SplashScreen.this, Perkenalan.class);
-                startActivity(i);
-                SplashScreen.this.finish();
-            }
+        donebtn.setOnClickListener(v -> {
+            Intent i = new Intent(SplashScreen.this, Perkenalan.class);
+            startActivity(i);
+            SplashScreen.this.finish();
         });
     }
 

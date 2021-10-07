@@ -20,11 +20,9 @@ import timber.log.Timber;
  * Created by thinkpad on 4/12/2016.
  */
 public class UserProfileHandler {
-    private Context mContext = null;
     private SecurePreferences sp;
 
     public UserProfileHandler(Context s) {
-        mContext = s;
     }
 
     public void sentUserProfile(final OnLoadDataListener onLoadDataListener, final String _is_new_bulk) {
@@ -44,50 +42,47 @@ public class UserProfileHandler {
             if(_is_new_bulk.equalsIgnoreCase(DefineValue.STRING_YES))
                 params.put(WebParams.IS_NEW_BULK, _is_new_bulk);
 
-            Timber.d("isi params sent user profile:" + params.toString());
+            Timber.d("isi params sent user profile:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_USER_PROFILE, params,
-                    new ObjListener() {
-                        @Override
-                        public void onResponses(JsonObject object) {
-                            Gson gson = new Gson();
+                    object -> {
+                        Gson gson = new Gson();
 
-                            UpdateProfileModel model = gson.fromJson(object, UpdateProfileModel.class);
+                        UpdateProfileModel model = gson.fromJson(object, UpdateProfileModel.class);
 
-                            String code = model.getError_code();
-                            if (code.equals(WebParams.SUCCESS_CODE)) {
-                                SecurePreferences.Editor mEditor = sp.edit();
-                                mEditor.putString(DefineValue.PROFILE_DOB, model.getDate_of_birth());
-                                mEditor.putString(DefineValue.PROFILE_ADDRESS, model.getAddress());
-                                mEditor.putString(DefineValue.PROFILE_BIO, model.getBio());
-                                mEditor.putString(DefineValue.PROFILE_COUNTRY, model.getCountry());
-                                mEditor.putString(DefineValue.PROFILE_EMAIL, model.getEmail());
-                                mEditor.putString(DefineValue.PROFILE_FULL_NAME, model.getFull_name());
-                                mEditor.putString(DefineValue.PROFILE_SOCIAL_ID, model.getSocial_id());
-                                mEditor.putString(DefineValue.PROFILE_HOBBY, model.getHobby());
-                                mEditor.putString(DefineValue.PROFILE_POB, model.getBirth_place());
-                                mEditor.putString(DefineValue.PROFILE_GENDER, model.getGender());
-                                mEditor.putString(DefineValue.PROFILE_ID_TYPE, model.getIdtype());
-                                mEditor.putString(DefineValue.PROFILE_VERIFIED, model.getVerified());
-                                mEditor.putString(DefineValue.PROFILE_BOM, model.getMother_name());
+                        String code = model.getError_code();
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            SecurePreferences.Editor mEditor = sp.edit();
+                            mEditor.putString(DefineValue.PROFILE_DOB, model.getDate_of_birth());
+                            mEditor.putString(DefineValue.PROFILE_ADDRESS, model.getAddress());
+                            mEditor.putString(DefineValue.PROFILE_BIO, model.getBio());
+                            mEditor.putString(DefineValue.PROFILE_COUNTRY, model.getCountry());
+                            mEditor.putString(DefineValue.PROFILE_EMAIL, model.getEmail());
+                            mEditor.putString(DefineValue.PROFILE_FULL_NAME, model.getFull_name());
+                            mEditor.putString(DefineValue.PROFILE_SOCIAL_ID, model.getSocial_id());
+                            mEditor.putString(DefineValue.PROFILE_HOBBY, model.getHobby());
+                            mEditor.putString(DefineValue.PROFILE_POB, model.getBirth_place());
+                            mEditor.putString(DefineValue.PROFILE_GENDER, model.getGender());
+                            mEditor.putString(DefineValue.PROFILE_ID_TYPE, model.getIdtype());
+                            mEditor.putString(DefineValue.PROFILE_VERIFIED, model.getVerified());
+                            mEditor.putString(DefineValue.PROFILE_BOM, model.getMother_name());
 //                            mEditor.apply();
 
-                                if(mEditor.commit()) {
-                                    if (onLoadDataListener != null)
-                                        onLoadDataListener.onSuccess(model);
-                                }
-                            } else {
-                                if (onLoadDataListener != null) {
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString(DefineValue.ERROR_CODE,model.getError_code());
-                                    bundle.putString(DefineValue.ERROR, model.getError_message());
-                                    onLoadDataListener.onFail(bundle);
-                                }
+                            if(mEditor.commit()) {
+                                if (onLoadDataListener != null)
+                                    onLoadDataListener.onSuccess(model);
+                            }
+                        } else {
+                            if (onLoadDataListener != null) {
+                                Bundle bundle = new Bundle();
+                                bundle.putString(DefineValue.ERROR_CODE,model.getError_code());
+                                bundle.putString(DefineValue.ERROR, model.getError_message());
+                                onLoadDataListener.onFail(bundle);
                             }
                         }
                     });
         }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
             if (onLoadDataListener != null)
                 onLoadDataListener.onFailure(e.getMessage());
         }

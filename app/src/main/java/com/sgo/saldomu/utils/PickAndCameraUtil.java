@@ -117,7 +117,7 @@ public class PickAndCameraUtil {
                 try {
                     photoFile = createImageFile();
                 } catch (IOException ex) {
-                    Timber.e(ex.getMessage());
+                    Timber.e(ex);
                 }
 
                 if (photoFile != null) {

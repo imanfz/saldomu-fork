@@ -59,7 +59,7 @@ public class UpdateBBSBirthPlace extends IntentService {
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_BBS_BIRTH_PLACE,
                     "");
-            Timber.d("params bbs birth place " +params.toString());
+            Timber.d("params bbs birth place %s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_BBS_BIRTH_PLACE, params,
                     new ObjListeners() {
@@ -67,13 +67,10 @@ public class UpdateBBSBirthPlace extends IntentService {
                         public void onResponses(JSONObject response) {
                             try {
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                Timber.d("Isi response get BBS birth place: "+response.toString());
+                                Timber.d("Isi response get BBS birth place: %s", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     insertToRealm(response.optJSONArray(WebParams.BBS_CITY));
-                                }else {
-                                    code = response.getString(WebParams.ERROR_MESSAGE);
                                 }
-
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -90,7 +87,7 @@ public class UpdateBBSBirthPlace extends IntentService {
                         }
                     });
         }catch (Exception e){
-            Log.d("httpclient:",e.getMessage());
+            Timber.tag("httpclient:").d(e.getMessage());
         }
     }
 
@@ -109,13 +106,13 @@ public class UpdateBBSBirthPlace extends IntentService {
                         list_BBS_Birth_Place= realm.createObjectFromJson(List_BBS_Birth_Place.class, bbs_city.getJSONObject(i));
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Timber.d("REALM Json Error:"+e.toString());
+                        Timber.d("REALM Json Error:%s", e.toString());
                         realm.cancelTransaction();
                     }
                 }
 
             }catch(Exception e){
-                Timber.d("REALM error:"+e.toString());
+                Timber.d("REALM error:%s", e.toString());
             }finally {
                 realm.commitTransaction();
                 EndRealm();

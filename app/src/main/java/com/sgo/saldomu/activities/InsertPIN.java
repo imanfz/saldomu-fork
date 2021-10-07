@@ -140,7 +140,7 @@ public class InsertPIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
                         keyboardPin.hideFingerprint();
                     }
                 } catch (NullPointerException e) {
-                    Timber.e(e.getMessage());
+                    Timber.e(e);
                 }
             } else {
                 keyboardPin.hideFingerprint();
@@ -213,7 +213,7 @@ public class InsertPIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
                             try {
                                 JSONArray arrayContact = new JSONArray(response.optString(WebParams.CONTACT_DATA));
                                 JSONObject mObject;
-                                Log.d("getHelpPin", response.toString());
+                                Timber.tag("getHelpPin").d(response.toString());
                                 for (int i = 0; i < arrayContact.length(); i++) {
                                     mObject = arrayContact.getJSONObject(i);
 //                            id = mObject.optString(WebParams.ID, "0");
@@ -245,7 +245,7 @@ public class InsertPIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient" + e.getMessage());
+            Timber.d("httpclient%s", e.getMessage());
         }
     }
 

@@ -63,13 +63,7 @@ public class PopUpDialog extends DialogFragment {
         dialogssss = this;
         buttonSubmit = v.findViewById(R.id.btnSubmit);
 
-        buttonSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onClick(dialogssss);
-
-            }
-        });
+        buttonSubmit.setOnClickListener(view -> listener.onClick(dialogssss));
 
 
         return v;

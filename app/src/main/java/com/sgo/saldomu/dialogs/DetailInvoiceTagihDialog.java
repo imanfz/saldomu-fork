@@ -66,11 +66,6 @@ public class DetailInvoiceTagihDialog extends DialogFragment
         tv_remark.setText(remark);
         tv_phone.setText(phone);
 
-        btn_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismiss();
-            }
-        });
+        btn_ok.setOnClickListener(view -> dismiss());
     }
 }

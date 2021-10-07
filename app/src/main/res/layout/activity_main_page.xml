@@ -69,29 +69,6 @@
 
         </FrameLayout>
 
-        <!--<FrameLayout-->
-        <!--android:id="@+id/right_drawer"-->
-        <!--android:layout_width="300dp"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_gravity="end"-->
-        <!--&gt;-->
-
-        <!--<View android:layout_width="20dp"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="@drawable/drawer_shadow"-->
-        <!--android:layout_gravity="left"-->
-        <!--/>-->
-        <!--<fragment-->
-        <!--android:id="@+id/main_list_menu_fragment_right"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_gravity="right|center"-->
-        <!--android:layout="@layout/frag_navigation_draw_menu_main"-->
-        <!--class="com.sgo.saldomu.fragments.RightSideDrawMenu"-->
-        <!--tools:layout="@layout/frag_navigation_draw_menu_main"/>-->
-
-        <!--</FrameLayout>-->
-
     </androidx.drawerlayout.widget.DrawerLayout>
 
     <!--    <include android:id="@+id/layout_include_fab"-->

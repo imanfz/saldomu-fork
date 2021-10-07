@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.sgo.saldomu.R;
@@ -45,7 +46,7 @@ public class Tutorial_page extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.tutorial_page, container, false);
         ImageView tutorialImage = (ImageView) v.findViewById(R.id.image_tutorial);
-        tutorialImage.setImageDrawable(getResources().getDrawable(imageId));
+        tutorialImage.setImageDrawable(ResourcesCompat.getDrawable(getResources(),imageId,null));
         return v;
     }
 

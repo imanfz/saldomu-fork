@@ -64,7 +64,7 @@ import timber.log.Timber;
  */
 public class Regist1 extends BaseFragment implements EasyPermissions.PermissionCallbacks {
 
-    String namaValid = "", emailValid = "", noHPValid = "", token_id = "", member_code = "", max_resend_token = "3", authType, memberID;
+    String namaValid = "", emailValid = "", noHPValid = "", memberID;
     EditText namaValue, emailValue, noHPValue, referalValue;
     Button btnLanjut;
     String flag_change_pwd, flag_change_pin, pass, confPass;
@@ -199,11 +199,10 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Timber.d("isi regist 1 requestCode:" + requestCode);
+        Timber.d("isi regist 1 requestCode:%s", requestCode);
         if (requestCode == LoginActivity.ACTIVITY_RESULT) {
-            Timber.d("isi regist 1 resultcode:" + resultCode);
+            Timber.d("isi regist 1 resultcode:%s", resultCode);
             if (resultCode == LoginActivity.RESULT_PIN) {
-                Timber.d("isi regist 1 authtype:" + authType);
 
                 pass = data.getStringExtra(DefineValue.NEW_PASSWORD);
                 confPass = data.getStringExtra(DefineValue.CONFIRM_PASSWORD);
@@ -237,14 +236,6 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
 
         LoginActivity fca = (LoginActivity) getActivity();
         fca.switchActivity(i);
-    }
-
-    private void SaveIMEIICCID() {
-        if (getActivity() == null)
-            return;
-
-        LoginActivity fca = (LoginActivity) getActivity();
-        fca.SaveImeiICCIDDevice();
     }
 
     public void sentData(final String noHP) {
@@ -291,7 +282,6 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
                                         emailValid = model.getCust_email();
                                         noHPValid = model.getCust_phone();
                                         Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
-                                        i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
                                         switchActivityPIN(i);
                                     } else {
                                         flag_change_pwd = model.getFlag_change_pwd();
@@ -311,7 +301,6 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
                                     noHPValid = model.getCust_phone();
 
                                     Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
-                                    i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
                                     switchActivityPIN(i);
                                 }
                             } else if (code.equals("0002")) {
@@ -391,7 +380,6 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
                             } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
-                                i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
                                 switchActivityPIN(i);
                             }
                         }
@@ -408,7 +396,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -478,7 +466,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -506,7 +494,6 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
     private void check(String code) {
         if (flag_change_pwd.equals(DefineValue.STRING_YES)) {
             Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
-            i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             switchActivityPIN(i);
         } else if (flag_change_pin.equals(DefineValue.STRING_YES)) {
@@ -550,14 +537,11 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
             Message3.setText(getResources().getString(R.string.regist2_notif_message_3));
         }
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0002"))
-                    changeActivity(true);
+        btnDialogOTP.setOnClickListener(view -> {
+            if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0002"))
+                changeActivity(true);
 
-                dialog.dismiss();
-            }
+            dialog.dismiss();
         });
 
         dialog.show();

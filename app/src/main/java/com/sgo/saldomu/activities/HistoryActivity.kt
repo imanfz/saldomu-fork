@@ -51,7 +51,6 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
     private var isMemberCTA: Boolean? = false
     private var isReport: Boolean? = false
     private var next: String = "0"
-    private var agentCOL: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,21 +73,30 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         showProgressDialog()
 
         extraSignature = memberIDLogin
-        val url = if (intent.getBooleanExtra(DefineValue.IS_AGENT_DGI, false) == true && sp.getString(DefineValue.USE_DEPOSIT_COL, "").equals("LIMIT")) {
-            MyApiClient.LINK_HISTORY_COLLECTOR
-        } else if (intent.getBooleanExtra(DefineValue.IS_AGENT_CTR, false) == true && sp.getString(DefineValue.USE_DEPOSIT_CCOL, "").equals("LIMIT")) {
-            MyApiClient.LINK_HISTORY_COLLECTOR_LIMIT
-        } else {
-            MyApiClient.LINK_HISTORY
-        }
+        val url =
+            if (intent.getBooleanExtra(DefineValue.IS_AGENT_DGI, false) == true && sp.getString(
+                    DefineValue.USE_DEPOSIT_COL,
+                    ""
+                ).equals("LIMIT")
+            ) {
+                MyApiClient.LINK_HISTORY_COLLECTOR
+            } else if (intent.getBooleanExtra(
+                    DefineValue.IS_AGENT_CTR,
+                    false
+                ) == true && sp.getString(DefineValue.USE_DEPOSIT_CCOL, "").equals("LIMIT")
+            ) {
+                MyApiClient.LINK_HISTORY_COLLECTOR_LIMIT
+            } else {
+                MyApiClient.LINK_HISTORY
+            }
         params = RetrofitService.getInstance().getSignature(url, extraSignature)
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.MEMBER_ID] = memberIDLogin
         params[WebParams.PAGE] = currentPage
-        Log.e(TAG, "params history : $`params`")
+        Timber.tag(TAG).e("params history : %s", params)
         RetrofitService.getInstance().PostObjectRequest(url, params, object : ResponseListener {
             override fun onResponses(`object`: JsonObject) {
-                Log.e(TAG, "onResponses: $`object`")
+                Timber.tag(TAG).e("onResponses: $`object`")
                 val model = getGson().fromJson(`object`, jsonModel::class.java)
                 next = `object`.get("next").toString()
                 val code = model.error_code
@@ -106,24 +114,27 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
                     adapter.updateAdapter(list)
                     isLoading = false
                 } else if (code == WebParams.LOGOUT_CODE) {
-                    val test = AlertDialogLogout.getInstance()
-                    test.showDialoginActivity(this@HistoryActivity, message)
+                    AlertDialogLogout.getInstance().showDialoginActivity(this@HistoryActivity, message)
                 } else if (code == DefineValue.ERROR_9333) run {
                     Timber.d("isi response app data:" + model.app_data)
                     val appModel = model.app_data
-                    val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                    alertDialogUpdateApp.showDialogUpdate(this@HistoryActivity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                    AlertDialogUpdateApp.getInstance().showDialogUpdate(
+                        this@HistoryActivity,
+                        appModel.type,
+                        appModel.packageName,
+                        appModel.downloadUrl
+                    )
                 } else if (code == DefineValue.ERROR_0066) run {
                     Timber.d("isi response maintenance:$`object`")
-                    val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                    alertDialogMaintenance.showDialogMaintenance(this@HistoryActivity)
+                    AlertDialogMaintenance.getInstance().showDialogMaintenance(this@HistoryActivity)
                 }
             }
 
             override fun onError(throwable: Throwable) {
 //                setDialog(false)
                 dismissProgressDialog()
-                Toast.makeText(this@HistoryActivity, throwable.localizedMessage, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@HistoryActivity, throwable.localizedMessage, Toast.LENGTH_SHORT)
+                    .show()
             }
 
             override fun onComplete() {
@@ -132,13 +143,6 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
                 mRecyclerView.visibility = View.VISIBLE
             }
         })
-    }
-
-    private fun setDialog(show: Boolean) {
-        if (show)
-            dialog.show()
-        else
-            dialog.dismiss()
     }
 
     private fun initialize() {
@@ -212,9 +216,10 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
                 object : ResponseListener {
                     override fun onResponses(jsonObject: JsonObject) {
-                        Log.e(TAG, "gettrx : $jsonObject")
+                        Timber.tag(TAG).e("gettrx : %s", jsonObject)
 
-                        val model = getGson().fromJson(jsonObject, GetTrxStatusReportModel::class.java)
+                        val model =
+                            getGson().fromJson(jsonObject, GetTrxStatusReportModel::class.java)
 
                         when (model.error_code) {
                             WebParams.SUCCESS_CODE -> showDialog(historyModel, model)
@@ -227,7 +232,12 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
                                 Timber.d("isi response app data:" + model.app_data)
                                 val appModel = model.app_data
                                 val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(this@HistoryActivity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                alertDialogUpdateApp.showDialogUpdate(
+                                    this@HistoryActivity,
+                                    appModel.type,
+                                    appModel.packageName,
+                                    appModel.downloadUrl
+                                )
                             }
                             WebParams.ERROR_0066 -> {
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()

@@ -178,7 +178,7 @@ public class FragDataC2A extends BaseFragment {
 
         RealmResults<List_BBS_Birth_Place> results = realm.where(List_BBS_Birth_Place.class).findAll();
 
-        Timber.d("REALM RESULTS:" + results.toString());
+        Timber.d("REALM RESULTS:%s", results.toString());
 
         list_name_bbs_birth_place = new ArrayList<>();
 
@@ -189,7 +189,7 @@ public class FragDataC2A extends BaseFragment {
             }
         }
 
-        Timber.d("Size of List name Birth place:" + list_name_bbs_birth_place.size());
+        Timber.d("Size of List name Birth place:%s", list_name_bbs_birth_place.size());
         ArrayAdapter<String> city_adapter = new ArrayAdapter<String>
                 (getActivity(), android.R.layout.simple_selectable_list_item, list_name_bbs_birth_place);
         city_textview_autocomplete.setThreshold(1);
@@ -203,7 +203,7 @@ public class FragDataC2A extends BaseFragment {
 
         Calendar c = Calendar.getInstance();
         dateNow = fromFormat.format(c.getTime());
-        Timber.d("date now profile:" + dateNow);
+        Timber.d("date now profile:%s", dateNow);
 
         dpd = DatePickerDialog.newInstance(
                 dobPickerSetListener,
@@ -212,12 +212,9 @@ public class FragDataC2A extends BaseFragment {
                 c.get(Calendar.DAY_OF_MONTH)
         );
 
-        tv_dob.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (getFragmentManager() != null) {
-                    dpd.show(getFragmentManager(), "asd");
-                }
+        tv_dob.setOnClickListener(view -> {
+            if (getFragmentManager() != null) {
+                dpd.show(getFragmentManager(), "asd");
             }
         });
 
@@ -256,13 +253,10 @@ public class FragDataC2A extends BaseFragment {
         }
     };
 
-    private Button.OnClickListener submitlistener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (inputValidation()) {
+    private Button.OnClickListener submitlistener = view -> {
+        if (inputValidation()) {
 //                birthplace_id = list_bbs_birth_place.get(CityAutocompletePos).getBirthPlace_id();
-                setSignaturePhoto();
-            }
+            setSignaturePhoto();
         }
     };
 
@@ -374,7 +368,7 @@ public class FragDataC2A extends BaseFragment {
             RequestBody reqFile = new ProgressRequestBody(photoFile, percentage -> Timber.d("Percentage : %s", percentage));
             photoFilePart = MultipartBody.Part.createFormData(WebParams.SIGN, photoFile.getName(), reqFile);
 
-            Timber.d("params bbs send data : ", params.toString());
+            Timber.d("params bbs send data : %s", params.toString());
 
             RetrofitService.getInstance().MultiPartRequest(MyApiClient.LINK_BBS_SEND_DATA_LKD, params, photoFilePart,
                     response -> {
@@ -383,7 +377,7 @@ public class FragDataC2A extends BaseFragment {
                             JSONObject jsonObject = new JSONObject(response.toString());
                             String code = jsonObject.getString(WebParams.ERROR_CODE);
                             String message = jsonObject.getString(WebParams.ERROR_MESSAGE);
-                            Timber.d("response bbs send data : ", jsonObject.toString());
+                            Timber.d("response bbs send data : %s", jsonObject.toString());
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 changeToBBSCashInConfirm(jsonObject.getString(WebParams.ADMIN_FEE), jsonObject.getString(WebParams.AMOUNT), jsonObject.getString(WebParams.TOTAL_AMOUNT));
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
@@ -462,14 +456,11 @@ public class FragDataC2A extends BaseFragment {
 //        switchFragment(mFrag, getString(R.string.cash_in), true);
     }
 
-    Button.OnClickListener cancellistener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (getFragmentManager().getBackStackEntryCount() > 0) {
-                getFragmentManager().popBackStack();
-            } else
-                getActivity().finish();
-        }
+    Button.OnClickListener cancellistener = view -> {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else
+            getActivity().finish();
     };
 
 
@@ -490,7 +481,7 @@ public class FragDataC2A extends BaseFragment {
                     compare = dob.compareTo(now);
                 }
             }
-            Timber.d("compare date:" + Integer.toString(compare));
+            Timber.d("compare date:%s", Integer.toString(compare));
         }
         if (et_noID.getText().toString().length() == 0) {
             et_noID.requestFocus();
@@ -532,12 +523,7 @@ public class FragDataC2A extends BaseFragment {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Alert")
                         .setMessage(getString(R.string.myprofile_validation_date_empty))
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
+                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
                 AlertDialog dialog = builder.create();
                 dialog.show();
                 return false;
@@ -545,12 +531,7 @@ public class FragDataC2A extends BaseFragment {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Alert")
                         .setMessage(getString(R.string.myprofile_validation_date))
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
+                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
                 AlertDialog dialog = builder.create();
                 dialog.show();
                 return false;
@@ -583,7 +564,7 @@ public class FragDataC2A extends BaseFragment {
             Timber.d("masuk date picker dob");
             try {
                 date_dob = fromFormat.format(toFormat2.parse(dedate));
-                Timber.d("masuk date picker dob masuk tanggal : " + date_dob);
+                Timber.d("masuk date picker dob masuk tanggal : %s", date_dob);
             } catch (ParseException e) {
                 e.printStackTrace();
             }

@@ -2,7 +2,6 @@ package com.sgo.saldomu.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
@@ -116,12 +115,7 @@ public class ListAccountBBS extends BaseFragment implements View.OnClickListener
 
         FloatingActionButton fab =
                 (FloatingActionButton) getActivity().findViewById(R.id.fab_add_account);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeFragmentAdd();
-            }
-        });
+        fab.setOnClickListener(v -> changeFragmentAdd());
         return v;
     }
 
@@ -175,12 +169,7 @@ public class ListAccountBBS extends BaseFragment implements View.OnClickListener
         if(lv.getAdapter() == null) {
             lv.setAdapter(listAccountBBSAdapter);
 
-            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    ToUpdateFragment(position);
-                }
-            });
+            lv.setOnItemClickListener((parent, view, position, id) -> ToUpdateFragment(position));
         }
 
         checkingData();
@@ -337,7 +326,7 @@ public class ListAccountBBS extends BaseFragment implements View.OnClickListener
             params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenId, subStringLink));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
-            Timber.d("isi params deleteAccountList:" + params.toString());
+            Timber.d("isi params deleteAccountList:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(link, params,
                     new ObjListeners() {
@@ -347,23 +336,21 @@ public class ListAccountBBS extends BaseFragment implements View.OnClickListener
                                 Gson gson = new Gson();
                                 jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                Timber.d("Isi response deleteAccountList: "+response.toString());
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                Timber.d("Isi response deleteAccountList: %s", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     realm.beginTransaction();
                                     listAccountBBSAdapter.deleteItem(position);
                                     realm.commitTransaction();
                                 }else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
-                                    code = response.getString(WebParams.ERROR_MESSAGE);
-                                    Toast.makeText(getActivity(),code, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(),message, Toast.LENGTH_SHORT).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -385,7 +372,7 @@ public class ListAccountBBS extends BaseFragment implements View.OnClickListener
                         }
                     });
         }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -415,26 +402,18 @@ public class ListAccountBBS extends BaseFragment implements View.OnClickListener
             alertDialogBuilder.setPositiveButton(getString(R.string.yes), null);
             alertDialogBuilder.setNegativeButton(getString(R.string.no), null);
             alertDialogDelete = alertDialogBuilder.create();
-            alertDialogDelete.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(final DialogInterface dialog) {
+            alertDialogDelete.setOnShowListener(dialog -> {
 
-                    Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                    button.setOnClickListener(new View.OnClickListener() {
-
-                        @Override
-                        public void onClick(View view) {
-                            if(input.getText().toString().length() == 0 ) {
-                                input.requestFocus();
-                                input.setError(getString(R.string.login_validation_pass));
-                            }
-                            else {
-                                dialog.dismiss();
-                                deleteBBSAccount(position, input.getText().toString());
-                            }
-                        }
-                    });
-                }
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(view -> {
+                    if (input.getText().toString().length() == 0) {
+                        input.requestFocus();
+                        input.setError(getString(R.string.login_validation_pass));
+                    } else {
+                        dialog.dismiss();
+                        deleteBBSAccount(position, input.getText().toString());
+                    }
+                });
             });
         alertDialogDelete.show();
     }

@@ -113,15 +113,12 @@ public class BBSConfirmAcct extends BaseFragment {
 
         etPassword = v.findViewById(R.id.et_password_value);
         Button btnSave = v.findViewById(R.id.btn_save);
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (inputValidation()) {
-                    sentConfirmAcct(bundle.getString(DefineValue.COMMUNITY_CODE),
-                            bundle.getString(DefineValue.MEMBER_CODE),
-                            bundle.getString(DefineValue.TX_ID),
-                            etPassword.getText().toString());
-                }
+        btnSave.setOnClickListener(v1 -> {
+            if (inputValidation()) {
+                sentConfirmAcct(bundle.getString(DefineValue.COMMUNITY_CODE),
+                        bundle.getString(DefineValue.MEMBER_CODE),
+                        bundle.getString(DefineValue.TX_ID),
+                        etPassword.getText().toString());
             }
         });
         return v;
@@ -187,7 +184,7 @@ public class BBSConfirmAcct extends BaseFragment {
             params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenId, subStringLink));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
-            Timber.d("isi params confirmAcct:" + params.toString());
+            Timber.d("isi params confirmAcct:%s", params.toString());
 
             progdialog.show();
 

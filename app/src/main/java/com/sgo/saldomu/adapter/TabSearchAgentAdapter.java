@@ -91,11 +91,6 @@ public class TabSearchAgentAdapter extends FragmentPagerAdapter {
         return menuItems[position];
     }
 
-    private FragmentManager getFragment()
-    {
-        return this.fm;
-    }
-
     @Override
     public int getItemPosition(Object object) {
         if ( object instanceof AgentMapFragment ) {

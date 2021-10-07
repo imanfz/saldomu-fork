@@ -52,14 +52,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 100;
     public static final String ALLOW_KEY = "ALLOWED";
     public static final String CAMERA_PREF = "camera_pref";
-    public static final String Name = "nameKey";
-    private String bundleType, bundleSource, scanResult;
-    SharedPreferences sharedpreferences;
-    public static final String mypreference = "mypref";
-    public static final String QRVALUE = "qrvalue";
-    QrModel parcelQRData;
     private static final int SELECT_IMAGE = 111;
-
 
     private String qrType, benef, benefName;
 
@@ -68,18 +61,12 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.qrscan_activity);
-        sharedpreferences = getSharedPreferences(mypreference,
-                Context.MODE_PRIVATE);
+
         mScannerView = findViewById(R.id.scanner_view);
         galleryImageButton = findViewById(R.id.gallery_image_button);
 
         Intent intent = getIntent();
         Bundle b = intent.getExtras();
-        if (b != null) {
-            assert b != null;
-            bundleType = b.getString("bundleType");
-            bundleSource = b.getString("bundleSource");
-        }
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
@@ -112,15 +99,6 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
             startActivityForResult(Intent.createChooser(intent2, "Select Picture"), SELECT_IMAGE);
         });
 
-    }
-
-    public static void saveToPreferences(Context context, String key,
-                                         Boolean allowed) {
-        SharedPreferences myPrefs = context.getSharedPreferences
-                (CAMERA_PREF, Context.MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = myPrefs.edit();
-        prefsEditor.putBoolean(key, allowed);
-        prefsEditor.commit();
     }
 
     public static Boolean getFromPref(ScanQRActivity context, String key) {
@@ -226,8 +204,8 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
 
     @Override
     public void handleResult(Result rawResult) {
-        Log.v("TAG", rawResult.getText()); // Prints scan results
-        Log.v("TAG", rawResult.getBarcodeFormat().toString());
+        Timber.v(rawResult.getText()); // Prints scan results
+        Timber.v(rawResult.getBarcodeFormat().toString());
 //        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 //        builder.setTitle("Scan Result");
 //        builder.setMessage(rawResult.getText());
@@ -299,29 +277,21 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
 
         int i = 0;
         for (String value : result.split(ScanQRUtils.SCAN_QR_SEPARATOR)) {
-            Timber.d("splitt string:" + value);
+            Timber.d("splitt string:%s", value);
             array[i] = value;
 
             if (array[i].contains(DefineValue.QR_TYPE)) {
                 qrType = array[i].substring(array[i].indexOf(ScanQRUtils.EQUALS_SEPARATOR) + 1);
             } else if (array[i].contains(DefineValue.NO_HP_BENEF)) {
                 benef = array[i].substring(array[i].indexOf(ScanQRUtils.EQUALS_SEPARATOR) + 1);
-                Timber.d("TEST benef:" + benef);
+                Timber.d("TEST benef:%s", benef);
             } else if (array[i].contains(DefineValue.SOURCE_ACCT_NAME)) {
                 benefName = array[i].substring(array[i].indexOf(ScanQRUtils.EQUALS_SEPARATOR) + 1);
-                Timber.d("TEST benefName:" + benefName);
+                Timber.d("TEST benefName:%s", benefName);
             }
             i++;
         }
 //        Timber.d("isi qrType:"+ qrType +" benef:"+benef+" amount:"+amount+" messages:"+messages);
-    }
-
-    private void PassResult() {
-        Intent intent = new Intent(this, ScanQRActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("bundleType", bundleType);
-        bundle.putString("bundleType", bundleType);
-        intent.putExtras(bundle);
     }
 
     @Override
@@ -343,11 +313,10 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
                         InputStream inputStream = this.getContentResolver().openInputStream(data.getData());
                         bitmap1 = BitmapFactory.decodeStream(inputStream);
                     } catch (IOException e) {
-                        Log.d("bitmap1 QR", e.getLocalizedMessage());
+                        Timber.tag("bitmap1 QR").d(e.getLocalizedMessage());
                         e.printStackTrace();
                     }
 //                    bitmap1 = getBitmap(data.getData());
-                    WallpaperManager image = null;
 
 
                     Bitmap bMap = bitmap1;
@@ -365,7 +334,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
                     try {
                         result = reader.decode(bitmap);
                         contents = result.getText();
-                        Log.d("Result QR", "Ini Isinya :" + contents);
+                        Timber.tag("Result QR").d("Ini Isinya :%s", contents);
 
                         divideResult(result.getText());
 

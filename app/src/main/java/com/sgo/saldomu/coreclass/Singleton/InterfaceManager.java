@@ -15,12 +15,7 @@ public class InterfaceManager {
         alertdialog.setCancelable(true);
 
         alertdialog.setMessage(title);
-        alertdialog.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                listener.OnOK();
-            }
-        });
+        alertdialog.setPositiveButton("Ya", (dialog, which) -> listener.OnOK());
 //        alertdialog.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
 //            @Override
 //            public void onClick(DialogInterface dialog, int which) {

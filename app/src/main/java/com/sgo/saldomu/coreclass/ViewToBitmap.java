@@ -138,7 +138,7 @@ public class ViewToBitmap {
             values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
             values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
             values.put(MediaStore.MediaColumns.DATA,path);
-            Timber.w("Path Img: " + path.toString());
+            Timber.w("Path Img: %s", path.toString());
             context.getApplicationContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
             BitmapFactory.Options options = new BitmapFactory.Options();

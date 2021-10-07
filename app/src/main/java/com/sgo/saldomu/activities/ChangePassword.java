@@ -184,7 +184,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.MEMBER_ID, memberIDLogin);
 
-            Timber.d("isi params Change Password:" + params.toString());
+            Timber.d("isi params Change Password:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params
                     , new ResponseListener() {
@@ -195,6 +195,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
                             if (!model.getOn_error()) {
 
                                 String code = model.getError_code();
+                                String message = model.getError_message();
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     //Toast.makeText(ChangePassword.this, sp.getString(CoreApp.IS_FIRST_TIME,""), Toast.LENGTH_LONG).show();
@@ -206,17 +207,14 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
 //                                    Timber.d("isi response autologout:"+response.toString());
 //                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(ChangePassword.this, model.getError_message());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(ChangePassword.this, model.getError_message());
                                 }else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(ChangePassword.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(ChangePassword.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + object.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(ChangePassword.this);
+                                    Timber.d("isi response maintenance:%s", object.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(ChangePassword.this);
                                 }
 //                                else if(code.equals("0301")){
 //                                    AlertDialog.Builder builder = new AlertDialog.Builder(ChangePassword.this);
@@ -233,7 +231,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
 //                                }
                                     else {
 //                                    code = response.getString(WebParams.ERROR_MESSAGE);
-                                    Toast.makeText(ChangePassword.this, model.getError_message(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(ChangePassword.this, message, Toast.LENGTH_LONG).show();
                                 }
                             } else {
                                 Toast.makeText(ChangePassword.this, model.getError_message(), Toast.LENGTH_SHORT).show();
@@ -251,7 +249,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
                         }
                     } );
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 

@@ -758,5 +758,6 @@ public class DefineValue {
     public static String COMM_NAME = "commName";
     public static String FLAG_APPROVE = "flagApprove";
     public static String SETUP_OPEN_HOUR = "setupOpenHour";
+    public static String INDICATOR_TYPE = "indicatorType";
 }
 

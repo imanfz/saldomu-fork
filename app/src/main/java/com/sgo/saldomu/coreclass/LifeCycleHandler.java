@@ -49,14 +49,14 @@ public class LifeCycleHandler implements Application.ActivityLifecycleCallbacks 
     public void onActivityPaused(Activity activity) {
         ++paused;
         mApp.setCurrentActivity(null);
-        Timber.w("application is in foreground: " + (resumed > paused));
+        Timber.w("application is in foreground: %s", (resumed > paused));
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
         ++stopped;
         mApp.setCurrentActivity(null);
-        Timber.w("application is visible: " + (started > stopped));
+        Timber.w("application is visible: %s", (started > stopped));
     }
 
     @Override

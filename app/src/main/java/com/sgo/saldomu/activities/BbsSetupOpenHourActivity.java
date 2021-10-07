@@ -18,6 +18,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.SwitchCompat;
+
 import com.google.gson.Gson;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -51,7 +53,7 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
         AdapterView.OnItemSelectedListener, ClosedTypePickerFragment.ClosedTypePickerListener {
     String memberId, shopId;
     public SetupOpenHour setupOpenHour;
-    Switch swOpen24Hours, swTutupToko;
+    SwitchCompat swOpen24Hours, swTutupToko;
     LinearLayout llSettingTutupToko, llSetupHours, llSetupClosedType, llSetupOpeningHour;
     GridView gridview;
     GridViewAdapter customAdapter;
@@ -78,13 +80,13 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
         llSetupHours = (LinearLayout) findViewById(R.id.llSetupHours);
         llSetupOpeningHour = (LinearLayout) findViewById(R.id.llSetupOpeningHour);
 
-        swOpen24Hours = (Switch) findViewById(R.id.swOpen24Hours);
+        swOpen24Hours = (SwitchCompat) findViewById(R.id.swOpen24Hours);
         btnProses = (Button) findViewById(R.id.btnProses);
         swOpen24Hours.setChecked(true);
         selectedDate = new ArrayList<>();
         selectedDays = new ArrayList<>();
 
-        swTutupToko = (Switch) findViewById(R.id.swTutupToko);
+        swTutupToko = (SwitchCompat) findViewById(R.id.swTutupToko);
         llSetupClosedType = (LinearLayout) findViewById(R.id.llSetupClosedType);
         tvSelectedInfo = (TextView) findViewById(R.id.tvSelectedInfo);
 
@@ -97,69 +99,62 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
         //llTutupToko.setVisibility(View.GONE);
         llSettingTutupToko.setVisibility(View.GONE);
 
-        swOpen24Hours.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    llSettingTutupToko.setVisibility(View.GONE);
-                    llSetupHours.setVisibility(View.GONE);
-                    llSetupOpeningHour.setVisibility(View.GONE);
-                    //llTutupToko.setVisibility(View.GONE);
-                    llSetupClosedType.setVisibility(View.GONE);
-                } else {
-                    llSettingTutupToko.setVisibility(View.VISIBLE);
-                    llSetupHours.setVisibility(View.VISIBLE);
-                    llSetupOpeningHour.setVisibility(View.VISIBLE);
-                    //llTutupToko.setVisibility(View.VISIBLE);
+        swOpen24Hours.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                llSettingTutupToko.setVisibility(View.GONE);
+                llSetupHours.setVisibility(View.GONE);
+                llSetupOpeningHour.setVisibility(View.GONE);
+                //llTutupToko.setVisibility(View.GONE);
+                llSetupClosedType.setVisibility(View.GONE);
+            } else {
+                llSettingTutupToko.setVisibility(View.VISIBLE);
+                llSetupHours.setVisibility(View.VISIBLE);
+                llSetupOpeningHour.setVisibility(View.VISIBLE);
+                //llTutupToko.setVisibility(View.VISIBLE);
 
-                    if (swTutupToko.isChecked()) {
-                        llSetupClosedType.setVisibility(View.VISIBLE);
-                    }
+                if (swTutupToko.isChecked()) {
+                    llSetupClosedType.setVisibility(View.VISIBLE);
                 }
-
             }
+
         });
 
-        swTutupToko.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    llSetupClosedType.setVisibility(View.VISIBLE);
+        swTutupToko.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                llSetupClosedType.setVisibility(View.VISIBLE);
 
-                    ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BbsSetupOpenHourActivity.this,
-                            R.array.list_closed_type, android.R.layout.simple_spinner_item);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spClosedType.setAdapter(adapter);
+                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BbsSetupOpenHourActivity.this,
+                        R.array.list_closed_type, android.R.layout.simple_spinner_item);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spClosedType.setAdapter(adapter);
 
-                } else {
-                    llSetupClosedType.setVisibility(View.GONE);
-                }
+            } else {
+                llSetupClosedType.setVisibility(View.GONE);
             }
         });
 
         customAdapter = new GridViewAdapter(getApplicationContext(), setupOpenHour.getSetupOpenHours());
         gridview.setAdapter(customAdapter);
 
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        gridview.setOnItemClickListener((parent, view, position, id) -> {
 
-                TimePickerFragment timePickerFragment = new TimePickerFragment();
+            TimePickerFragment timePickerFragment = new TimePickerFragment();
 
-                Bundle bundle = new Bundle();
-                bundle.putInt("position", position);
-                bundle.putString("NamaHari", setupOpenHour.getSetupOpenHours().get(position).getNamaHari());
-                bundle.putString("startHour", setupOpenHour.getSetupOpenHours().get(position).getStartHour());
-                bundle.putString("endHour", setupOpenHour.getSetupOpenHours().get(position).getEndHour());
-                bundle.putInt("iStartHour", setupOpenHour.getSetupOpenHours().get(position).getiStartHour());
-                bundle.putInt("iStartMinute", setupOpenHour.getSetupOpenHours().get(position).getiStartMinute());
-                bundle.putInt("iEndHour", setupOpenHour.getSetupOpenHours().get(position).getiEndHour());
-                bundle.putInt("iEndMinute", setupOpenHour.getSetupOpenHours().get(position).getiEndMinute());
+            Bundle bundle = new Bundle();
+            bundle.putInt("position", position);
+            bundle.putString("NamaHari", setupOpenHour.getSetupOpenHours().get(position).getNamaHari());
+            bundle.putString("startHour", setupOpenHour.getSetupOpenHours().get(position).getStartHour());
+            bundle.putString("endHour", setupOpenHour.getSetupOpenHours().get(position).getEndHour());
+            bundle.putInt("iStartHour", setupOpenHour.getSetupOpenHours().get(position).getiStartHour());
+            bundle.putInt("iStartMinute", setupOpenHour.getSetupOpenHours().get(position).getiStartMinute());
+            bundle.putInt("iEndHour", setupOpenHour.getSetupOpenHours().get(position).getiEndHour());
+            bundle.putInt("iEndMinute", setupOpenHour.getSetupOpenHours().get(position).getiEndMinute());
 
-                timePickerFragment.setArguments(bundle);
-                timePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
-                timePickerFragment.show(getSupportFragmentManager(), TimePickerFragment.TAG);
+            timePickerFragment.setArguments(bundle);
+            timePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+            timePickerFragment.show(getSupportFragmentManager(), TimePickerFragment.TAG);
 
 
-            }
         });
 
         btnProses.setOnClickListener(btnProsesListener);
@@ -392,7 +387,7 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
 
                         params.put(WebParams.SIGNATURE, signature);
 
-                        Log.d("TEST", params.toString());
+                        Timber.tag("TEST").d(params.toString());
 
                         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_SETUP_OPENING_HOUR, params,
                                 new ObjListeners() {
@@ -426,7 +421,7 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
                                     }
                                 });
                     } catch (Exception e) {
-                        Timber.d("httpclient:" + e.getMessage());
+                        Timber.d("httpclient:%s", e.getMessage());
                     }
                 } else {
                     //DefinedDialog.showErrorDialog(getApplicationContext(), errorMessage);

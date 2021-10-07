@@ -14,6 +14,8 @@ import android.inputmethodservice.KeyboardView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import com.venmo.android.pin.R;
 
 import java.util.List;
@@ -73,7 +75,7 @@ public class PinKeyboardView extends KeyboardView {
         mUnderlinePaint.setStrokeWidth(stroke);
         setPreviewEnabled(false);
         setKeyboard(new Keyboard(getContext(), R.xml.keyboard_number_pad));
-        Drawable back = getResources().getDrawable(R.drawable.key_back);
+        Drawable back = ResourcesCompat.getDrawable(getResources(), R.drawable.key_back, null);
         back.setColorFilter(textColor, Mode.SRC_ATOP);
     }
 
