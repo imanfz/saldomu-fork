@@ -191,7 +191,30 @@
     <TableRow>
 
         <TextView
-            android:id="@+id/dialog_label_report_fee"
+            android:id="@+id/dialog_label_report_tip_fee"
+            android:layout_weight="1"
+            android:padding="3dip"
+            android:text="@string/transaction_fee" />
+
+        <TextView
+            android:id="@+id/dialog_report_tips_fee"
+            android:layout_width="wrap_content"
+            android:layout_weight="2"
+            android:gravity="end"
+            android:maxLines="1"
+            android:padding="3dip"
+            android:text="Rp. 200000" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300" />
+
+    <TableRow>
+
+        <TextView
             android:layout_weight="1"
             android:padding="3dip"
             android:text="@string/topup_token_fee" />

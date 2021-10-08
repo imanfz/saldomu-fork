@@ -1768,6 +1768,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="insufficient_balance_desc">Harap lakukan top up untuk melakukan transaksi</string>
     <string name="remaining_balance">Sisa Saldo</string>
     <string name="no_reference">No. Referensi</string>
+    <string name="tip_fee">Biaya Tip</string>
     <string name="tip">Tip</string>
     <string name="transaction_fee">Biaya Transaksi</string>
     <string name="acquire_name">Nama Pengakuisisi</string>

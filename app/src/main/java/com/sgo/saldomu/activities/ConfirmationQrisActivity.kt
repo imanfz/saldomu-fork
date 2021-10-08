@@ -74,7 +74,7 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
         )
         tv_acquire_name_value.text = qrisParsingModel.nnsMemberName
         tv_merchant_domain_value.text = qrisParsingModel.merchantDomain
-        tv_merchant_pan_value.text = qrisParsingModel.merchantPan
+        tv_merchant_pan_value.text = qrisParsingModel.merchantPanRemark
         tv_payment_destination_name_value.text = qrisParsingModel.merchantName
         val paymentDestinationCity =
             qrisParsingModel.merchantCity + ", " + qrisParsingModel.postalCode + ", " + qrisParsingModel.merchantCountry;
@@ -421,10 +421,15 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
             DefineValue.AMOUNT,
             MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.tx_amount)
         )
+        args.putString(
+            DefineValue.TIPS_AMOUNT,
+            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.tips_amount)
+        )
 
-        val dAmount = response.tx_amount!!.toDouble()
-        val dFee = response.admin_fee!!.toDouble()
-        val totalAmount = dAmount + dFee
+        val amount = response.tx_amount!!.toDouble()
+        val fee = response.admin_fee!!.toDouble()
+        val tipFee = response.tips_amount!!.toDouble()
+        val totalAmount = amount + fee + tipFee
 
         args.putString(
             DefineValue.TOTAL_AMOUNT,

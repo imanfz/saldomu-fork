@@ -1297,10 +1297,12 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.TX_ID, response.getTx_id());
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdmin_fee()));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTx_amount()));
+        args.putString(DefineValue.TIPS_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTips_amount()));
 
-        double dAmount = Double.parseDouble(Objects.requireNonNull(response.getTx_amount()));
-        double dFee = Double.parseDouble(Objects.requireNonNull(response.getAdmin_fee()));
-        double total_amount = dAmount + dFee;
+        double amount = Double.parseDouble(Objects.requireNonNull(response.getTx_amount()));
+        double fee = Double.parseDouble(Objects.requireNonNull(response.getAdmin_fee()));
+        double tipFee = Double.parseDouble(Objects.requireNonNull(response.getTips_amount()));
+        double total_amount = amount + fee + tipFee;
 
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount));
 

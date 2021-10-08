@@ -44,6 +44,10 @@ open class GetTrxStatusReportModel : GetTrxStatusModel() {
     @Expose
     val fee_amount: String? = ""
 
+    @SerializedName("tips_amount")
+    @Expose
+    val tips_amount: String? = ""
+
     @SerializedName("total_amount")
     @Expose
     val total_amount: String? = ""

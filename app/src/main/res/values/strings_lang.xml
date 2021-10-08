@@ -1780,6 +1780,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="insufficient_balance_desc">Please do a top up to make a transaction</string>
     <string name="remaining_balance">Remaining Balance</string>
     <string name="no_reference">Reference Number</string>
+    <string name="tip_fee">Tip Fee</string>
     <string name="tip">Tip</string>
     <string name="transaction_fee">Transaction Fee</string>
     <string name="acquire_name">Name of the acquirer</string>
