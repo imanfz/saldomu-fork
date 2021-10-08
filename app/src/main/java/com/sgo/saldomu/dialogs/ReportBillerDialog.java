@@ -1014,7 +1014,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_trx_id_ref = inflated.findViewById(R.id.dialog_report_trx_id_ref);
                 View line_trx_id_ref = inflated.findViewById(R.id.line_dialog_report_trx_id_ref);
                 TextView tv_terminal_id = inflated.findViewById(R.id.dialog_report_terminal_id);
-                TextView tv_label_fee = inflated.findViewById(R.id.dialog_label_report_fee);
+                TextView tv_label_tip_fee = inflated.findViewById(R.id.dialog_label_report_tip_fee);
+                TextView tv_tip_fee = inflated.findViewById(R.id.dialog_report_tips_fee);
                 TextView tv_fee = inflated.findViewById(R.id.dialog_report_fee);
                 TextView tv_amount = inflated.findViewById(R.id.dialog_report_amount);
                 TextView tv_total_amount = inflated.findViewById(R.id.dialog_report_total_amount);
@@ -1038,16 +1039,17 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_merchant_pan.setText(args.getString(DefineValue.MERCHANT_PAN));
                 tv_terminal_id.setText(args.getString(DefineValue.TERMINAL_ID));
                 tv_trx_id_ref.setText(args.getString(DefineValue.TRX_ID_REF));
-                if (args.getString(DefineValue.TRX_ID_REF).equals("")){
+                if (args.getString(DefineValue.TRX_ID_REF).equals("")) {
                     tr_trx_id_ref.setVisibility(View.GONE);
                     line_trx_id_ref.setVisibility(View.GONE);
                 }
-                if (args.getString(DefineValue.INDICATOR_TYPE).equals("1")){
-                    tv_label_fee.setText(getResources().getString(R.string.tip));
+                if (args.getString(DefineValue.INDICATOR_TYPE).equals("01")) {
+                    tv_label_tip_fee.setText(getResources().getString(R.string.tip_fee));
                 } else {
-                    tv_label_fee.setText(getResources().getString(R.string.transaction_fee));
+                    tv_label_tip_fee.setText(getResources().getString(R.string.transaction_fee));
                 }
 
+                tv_tip_fee.setText(args.getString(DefineValue.TIPS_AMOUNT));
                 tv_fee.setText(fee);
                 tv_amount.setText(amount);
                 tv_total_amount.setText(total_amount);
@@ -1476,7 +1478,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     mService = new BluetoothService(mHandler);
                 } else {
                     // User did not enable Bluetooth or an error occured
-                    Timber.tag(TAG).d("BT not enabled"); }
+                    Timber.tag(TAG).d("BT not enabled");
+                }
                 break;
             }
 

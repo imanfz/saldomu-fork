@@ -46,6 +46,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.BillerItem;
 import com.sgo.saldomu.models.DenomDataItem;
 import com.sgo.saldomu.utils.Converter;
+import com.sgo.saldomu.utils.NumberTextWatcherForThousand;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import java.io.IOException;
@@ -267,6 +268,7 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
             et_input_amount_b2btelco_value.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
             et_input_amount_b2btelco_value.setInputType(InputType.TYPE_CLASS_NUMBER);
+            et_input_amount_b2btelco_value.addTextChangedListener(new NumberTextWatcherForThousand(et_input_amount_b2btelco_value));
         }else {
             buy_code = BillerActivity.PAYMENT_TYPE;
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -395,7 +397,7 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         mArgs.putString(DefineValue.COMMUNITY_ID, biller_comm_id);
         mArgs.putString(DefineValue.COMMUNITY_NAME, biller_comm_name);
         if (biller_type_code.equalsIgnoreCase(billerType[23]))
-            mArgs.putString(DefineValue.AMOUNT, et_input_amount_b2btelco_value.getText().toString());
+            mArgs.putString(DefineValue.AMOUNT, NumberTextWatcherForThousand.trimCommaOfString(et_input_amount_b2btelco_value.getText().toString()));
         if (biller_type_code.equalsIgnoreCase(billerType[22]) && et_layout_input_samsat_payment_remark.getText().toString().length() == 16)
             mArgs.putString(DefineValue.IDENTITY_REMARK, et_layout_input_samsat_payment_remark.getText().toString());
 

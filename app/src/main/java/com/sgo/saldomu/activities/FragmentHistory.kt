@@ -278,9 +278,11 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.TX_ID, response.tx_id)
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.admin_fee))
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.tx_amount))
-        val dAmount = Objects.requireNonNull(response.tx_amount)!!.toDouble()
-        val dFee = Objects.requireNonNull(response.admin_fee)!!.toDouble()
-        val totalAmount = dAmount + dFee
+        args.putString(DefineValue.TIPS_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.tips_amount))
+        val amount = Objects.requireNonNull(response.tx_amount)!!.toDouble()
+        val fee = Objects.requireNonNull(response.admin_fee)!!.toDouble()
+        val tipFee = Objects.requireNonNull(response.tips_amount)!!.toDouble()
+        val totalAmount = amount + fee + tipFee
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(totalAmount))
         var txStat = false
         val txStatus = response.tx_status
