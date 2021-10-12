@@ -124,7 +124,8 @@ class FragmentScanQris : BaseFragment(), ZXingScannerView.ResultHandler {
                 dialog.show()
             }
         } else
-            parsingQR(rawResult.text.toString())
+//            parsingQR(rawResult.text.toString())
+            Toast.makeText(context, "Coming Soon", Toast.LENGTH_SHORT).show()
     }
 
     private fun divideResult(rawResult: String) {
