@@ -156,6 +156,10 @@ class FragListToko : BaseFragment() {
     private fun showDialog(response: JSONObject) {
         val memberCode = response.getString(WebParams.MEMBER_CODE_ESPAY)
         val commCode = response.getString(WebParams.COMM_CODE_ESPAY)
+        var status = response.optString(WebParams.STATUS,"")
+        if (status == "")
+            status = getString(R.string.register_success_wait_for_verification)
+
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCanceledOnTouchOutside(false)
@@ -167,9 +171,7 @@ class FragListToko : BaseFragment() {
             dialog.message_dialog.text = getString(R.string.your_store_code) + " " + getString(R.string.titik_dua) + " " + memberCode + "\n" +
                     getString(R.string.your_community_code) + " " + getString(R.string.titik_dua) + " " + commCode
         else
-//            dialog.message_dialog.text = getString(R.string.register_success_wait_for_verification)
-
-            dialog.message_dialog.text = response.getString(WebParams.REMARK)
+            dialog.message_dialog.text = status
         dialog.btn_dialog_notification_ok.setOnClickListener {
             dialog.dismiss()
         }
