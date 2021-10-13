@@ -24,9 +24,6 @@ open class GetTrxStatusReportModel : GetTrxStatusModel() {
     @Expose
     val payment_name: String? = ""
 
-    @SerializedName("payment_remark")
-    @Expose
-    val payment_remark: String? = ""
 
     @SerializedName("tx_amount")
     @Expose

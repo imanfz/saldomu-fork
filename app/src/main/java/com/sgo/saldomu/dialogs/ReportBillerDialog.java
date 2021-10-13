@@ -536,6 +536,9 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_destinationValue = inflated.findViewById(R.id.dialog_reportbiller_destination_value);
                 TextView tv_destinationEmon = inflated.findViewById(R.id.tv_destination_no_emon);
                 TextView tv_destinationEmonValue = inflated.findViewById(R.id.tv_destination_no_emon_value);
+                TextView tv_destinationNo = inflated.findViewById(R.id.dialog_reportbiller_b2b_destination_no);
+                TextView tv_destinationNoValue = inflated.findViewById(R.id.dialog_reportbiller_b2b_destination_no_value);
+                View v_destinationNo = inflated.findViewById(R.id.v_destination_no);
                 View viewAdditional = inflated.findViewById(R.id.view_additionalFee);
                 View viewEmon = inflated.findViewById(R.id.view_destination_no_emon);
 
@@ -563,6 +566,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                         tv_destinationEmon.setVisibility(View.VISIBLE);
                         tv_destinationEmonValue.setVisibility(View.VISIBLE);
                         tv_destinationEmonValue.setText(args.getString(DefineValue.PAYMENT_REMARK));
+                    }else if (args.getString(DefineValue.BILLER_TYPE).equalsIgnoreCase("RTU")) {
+                        v_destinationNo.setVisibility(View.VISIBLE);
+                        tv_destinationNo.setVisibility(View.VISIBLE);
+                        tv_destinationNoValue.setVisibility(View.VISIBLE);
+                        tv_destinationNoValue.setText(args.getString(DefineValue.PAYMENT_REMARK));
                     }
 
                 if (isAgent) {

@@ -61,4 +61,9 @@ open class GetTrxStatusModel : jsonModel() {
     @Expose
     val doc_type_remark: String? = ""
 
+    @SerializedName("payment_remark")
+    @Expose
+    val payment_remark: String? = ""
+
+
 }
