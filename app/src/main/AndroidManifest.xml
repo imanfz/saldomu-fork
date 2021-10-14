@@ -50,6 +50,7 @@
         android:launchMode="singleInstance"
         android:noHistory="true"
         android:requestLegacyExternalStorage="true"
+        android:preserveLegacyExternalStorage="true"
         android:theme="@style/Theme.MyTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:label,allowBackup,appComponentFactory,theme">
