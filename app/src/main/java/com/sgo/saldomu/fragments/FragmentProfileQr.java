@@ -434,7 +434,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         int fileSize = Integer.parseInt(String.valueOf(fileProfPic.length() / 1024));
         Log.e("TAG", "size: " + fileSize);
         if (fileSize > 500) {
-            Luban.compress(getContext(), fileProfPic)
+            Luban.compress(context.getApplicationContext(), fileProfPic)
                     .setMaxSize(500)
                     .putGear(Luban.CUSTOM_GEAR)
                     .asObservable()
@@ -494,6 +494,9 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                                     public void accept(@NotNull File file) throws Exception {
                                         Log.e("TAG", "accept: " );
                                         fileProfPic = file;
+
+                                        Timber.d("file name : %s", fileProfPic.getName());
+                                        Timber.d("file path : %s", fileProfPic.getPath());
                                         handler.postDelayed(runnable, 2000);
                                     }
                                 });

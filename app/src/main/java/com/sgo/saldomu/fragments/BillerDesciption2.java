@@ -218,6 +218,10 @@ public class BillerDesciption2 extends BaseFragment {
             amount_layout.setVisibility(View.VISIBLE);
         }
         if (buy_type == BillerActivity.PURCHASE_TYPE) {
+            if (biller_type_code.equalsIgnoreCase("RTU"))
+            {
+                layout_biller_name.setVisibility(View.GONE);
+            }
             tv_biller_name_value = v.findViewById(R.id.billertoken_biller_name_value);
             tv_biller_name_value.setText(biller_name);
             if (is_display_amount) {
@@ -842,6 +846,7 @@ public class BillerDesciption2 extends BaseFragment {
         mArgs.putString(DefineValue.AUTHENTICATION_TYPE, merchant_type);
         mArgs.putInt(DefineValue.ATTEMPT, attempt);
         mArgs.putString(DefineValue.ADDITIONAL_FEE, sentPaymentBillerModel.getAdditional_fee());
+        mArgs.putString(DefineValue.OUTLET_NAME, cust_name);
 
         if (is_display_amount)
             mArgs.putString(DefineValue.DESCRIPTION, description);

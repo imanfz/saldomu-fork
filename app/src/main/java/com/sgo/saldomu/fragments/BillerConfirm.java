@@ -127,9 +127,9 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
     private ProgressDialog progdialog;
     private ImageView mIconArrow;
     private TableLayout mTableLayout;
-    private LinearLayout ly_additionalFee;
-    private TextView tv_additionalFee;
-    private String additionalFee;
+    private LinearLayout ly_additionalFee, layout_custname;
+    private TextView tv_additionalFee, cust_name_value;
+    private String additionalFee, custName;
     private Boolean isAgent;
 
     private SwitchCompat favoriteSwitch;
@@ -161,6 +161,8 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         btn_cancel = v.findViewById(R.id.billertoken_btn_cancel);
         favoriteSwitch = v.findViewById(R.id.favorite_switch);
         notesEditText = v.findViewById(R.id.notes_edit_text);
+        layout_custname = v.findViewById(R.id.layout_cust_name);
+        cust_name_value = v.findViewById(R.id.cust_name_value);
 
         btn_submit.setOnClickListener(submitListener);
         btn_cancel.setOnClickListener(cancelListener);
@@ -265,10 +267,18 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         }
 
         if (buy_code == BillerActivity.PURCHASE_TYPE) {
+
             View layout_biller_name = v.findViewById(R.id.billertoken_layout_biller_name);
             layout_biller_name.setVisibility(View.VISIBLE);
             TextView tv_biller_name_value = layout_biller_name.findViewById(R.id.billertoken_biller_name_value);
             tv_biller_name_value.setText(biller_name);
+            if (biller_type_code.equalsIgnoreCase("RTU"))
+            {
+                layout_custname.setVisibility(View.VISIBLE);
+                custName = args.getString(DefineValue.OUTLET_NAME);
+                cust_name_value.setText(custName);
+                layout_biller_name.setVisibility(View.GONE);
+            }
         }
 
         if (is_display_amount && isShowDescription) {
@@ -803,6 +813,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         {
             args.putString(DefineValue.BILLER_TYPE, biller_type_code);
             args.putString(DefineValue.PAYMENT_REMARK, model.getPayment_remark());
+            args.putString(DefineValue.OUTLET_NAME, custName);
         }
 
         args.putString(DefineValue.BILLER_DETAIL, toJson(model.getBiller_detail()).toString());

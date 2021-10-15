@@ -538,9 +538,13 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_destinationEmonValue = inflated.findViewById(R.id.tv_destination_no_emon_value);
                 TextView tv_destinationNo = inflated.findViewById(R.id.dialog_reportbiller_b2b_destination_no);
                 TextView tv_destinationNoValue = inflated.findViewById(R.id.dialog_reportbiller_b2b_destination_no_value);
+                TextView tv_outletName = inflated.findViewById(R.id.tv_outlet_name);
+                TextView tv_outletNameValue = inflated.findViewById(R.id.tv_outlet_name_value);
+                TextView tv_denom = inflated.findViewById(R.id.dialog_reportbiller_text_denom);
                 View v_destinationNo = inflated.findViewById(R.id.v_destination_no);
                 View viewAdditional = inflated.findViewById(R.id.view_additionalFee);
                 View viewEmon = inflated.findViewById(R.id.view_destination_no_emon);
+                View viewOutletName = inflated.findViewById(R.id.v_outlet_name);
 
                 TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
                 mTableLayout.setVisibility(View.VISIBLE);
@@ -568,9 +572,14 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                         tv_destinationEmonValue.setText(args.getString(DefineValue.PAYMENT_REMARK));
                     }else if (args.getString(DefineValue.BILLER_TYPE).equalsIgnoreCase("RTU")) {
                         v_destinationNo.setVisibility(View.VISIBLE);
+                        viewOutletName.setVisibility(View.VISIBLE);
                         tv_destinationNo.setVisibility(View.VISIBLE);
                         tv_destinationNoValue.setVisibility(View.VISIBLE);
                         tv_destinationNoValue.setText(args.getString(DefineValue.PAYMENT_REMARK));
+                        tv_outletName.setVisibility(View.VISIBLE);
+                        tv_outletNameValue.setVisibility(View.VISIBLE);
+                        tv_outletNameValue.setText(args.getString(DefineValue.OUTLET_NAME));
+                        tv_denom.setText(getString(R.string.pulsa_product_name));
                     }
 
                 if (isAgent) {
