@@ -131,21 +131,45 @@ public class PickAndCameraUtil {
         }
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
+//    private File createImageFile() throws IOException {
+//        // Create an image file name
+//        String timeStamp = DateTimeFormat.getCurrentDateTime();
+//        String imageFileName = "JPEG_" + timeStamp + "_" + BuildConfig.APP_ID;
+////        String imageFileName = "IMG_" + timeStamp;
+//        File storageDir = mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+//        File image = File.createTempFile(
+//                imageFileName,  /* prefix */
+//                ".jpg",         /* suffix */
+//                storageDir      /* directory */
+//        );
+//
+//        // Save a file: path for use with ACTION_VIEW intents
+//        mCurrentPhotoPath =image.toString();
+//        return image;
+//    }
+
+    public static String prepareFileName() {
         String timeStamp = DateTimeFormat.getCurrentDateTime();
-        String imageFileName = "JPEG_" + timeStamp + "_" + BuildConfig.APP_ID;
-//        String imageFileName = "IMG_" + timeStamp;
-        File storageDir = mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        return imageFileName;
+    }
+
+    private static File createImageFile() throws IOException {
+        String imageFileName = prepareFileName();
+//        epassBookFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), currentDate + "_" +fileName);
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), BuildConfig.APPLICATION_ID+ "Image.JPEG");
+        storageDir.mkdirs();
+
+        if (!storageDir.exists()) {
+            if (!storageDir.mkdirs()) {
+                return null;
+            }
+        }
+        return File.createTempFile(
                 imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
+                ".jpeg",         /* suffix */
                 storageDir      /* directory */
         );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath =image.toString();
-        return image;
     }
 
 

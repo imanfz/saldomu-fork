@@ -9,9 +9,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
@@ -23,12 +25,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
 import com.google.gson.Gson;
+import com.mlsdev.rximagepicker.RxImageConverters;
+import com.mlsdev.rximagepicker.RxImagePicker;
+import com.mlsdev.rximagepicker.Sources;
+import com.permissionx.guolindev.PermissionX;
+import com.permissionx.guolindev.callback.ForwardToSettingsCallback;
+import com.permissionx.guolindev.callback.RequestCallback;
+import com.permissionx.guolindev.request.ForwardScope;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -58,13 +68,22 @@ import com.sgo.saldomu.widgets.BaseFragment;
 import com.sgo.saldomu.widgets.ProgressRequestBody;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import me.shaohui.advancedluban.Luban;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -102,6 +121,8 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     ProgressDialog progdialog;
     RelativeLayout lytUpgrade, lytDetail;
     LinearLayout llBalanceDetail;
+
+    private File fileProfPic = null, compressFile = null;
 
     @Override
     public void onAttach(Context context) {
@@ -335,12 +356,78 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 
     @AfterPermissionGranted(RC_CAMERA_STORAGE)
     private void chooseCamera() {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
-        if (EasyPermissions.hasPermissions(context, perms)) {
-            ((MainPage) getActivity()).pickAndCameraUtil.runCamera(RESULT_CAMERA);
+//        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+//        if (EasyPermissions.hasPermissions(context, perms)) {
+//            ((MainPage) getActivity()).pickAndCameraUtil.runCamera(RESULT_CAMERA);
+//        } else {
+//            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage),
+//                    RC_CAMERA_STORAGE, perms);
+//        }
+        PermissionX.init(this).permissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .onForwardToSettings(new ForwardToSettingsCallback() {
+                    @Override
+                    public void onForwardToSettings(ForwardScope scope, List<String> deniedList) {
+                        String message = "Please allow following permissions in settings";
+                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .request(new RequestCallback() {
+                    @Override
+                    public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
+                        if (allGranted) {
+                            RxImagePicker.with(getContext()).requestImage(Sources.CAMERA)
+                                    .flatMap(new Function<Uri, ObservableSource<File>>() {
+                                        @Override
+                                        public ObservableSource<File> apply(@NonNull Uri uri) throws Exception {
+                                            return RxImageConverters.uriToFile(getContext(), uri, prepareUploadFileTemp());
+                                        }
+                                    }).subscribe(new Consumer<File>() {
+                                @Override
+                                public void accept(@NonNull File file) throws Exception {
+                                    // Do something with your file copy
+                                    fileProfPic = file;
+                                    convertImage();
+                                }
+                            });
+
+
+//                            pickAndCameraUtil.runCamera(RESULT_CAMERA);
+                        }
+                    }
+                });
+    }
+    private void convertImage() {
+        int fileSize = Integer.parseInt(String.valueOf(fileProfPic.length() / 1024));
+        Log.e("TAG", "size: " + fileSize);
+        if (fileSize > 500) {
+            Luban.compress(getContext(), fileProfPic)
+                    .setMaxSize(500)
+                    .putGear(Luban.CUSTOM_GEAR)
+                    .asObservable()
+                    .subscribe(new Observer<File>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(File file) {
+                            compressFile = file;
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            uploadFileToServer(compressFile);
+                        }
+                    });
         } else {
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage),
-                    RC_CAMERA_STORAGE, perms);
+            compressFile = fileProfPic;
+            uploadFileToServer(compressFile);
         }
     }
 
@@ -506,5 +593,34 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                 }
         );
         dialognya.show();
+    }
+
+    public static String prepareFileName() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        return imageFileName;
+    }
+
+    private static File createImageFile() throws IOException {
+        String imageFileName = prepareFileName();
+//        epassBookFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), currentDate + "_" +fileName);
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), BuildConfig.APP_ID + "Image.JPEG");
+        storageDir.mkdirs();
+
+        if (!storageDir.exists()) {
+            if (!storageDir.mkdirs()) {
+                return null;
+            }
+        }
+        return File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpeg",         /* suffix */
+                storageDir      /* directory */
+        );
+    }
+
+    public static File prepareUploadFileTemp() throws IOException {
+
+        return createImageFile();
     }
 }
