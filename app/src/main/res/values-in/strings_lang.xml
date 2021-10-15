@@ -1780,4 +1780,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="check">Cek</string>
     <string name="invoice_failed">Invoice Gagal</string>
     <string name="invoice_exist">Invoice Telah Tersedia</string>
+    <string name="outlet_name">Nama Outlet</string>
 </resources>

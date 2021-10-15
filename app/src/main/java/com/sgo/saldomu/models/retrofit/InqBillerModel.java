@@ -49,6 +49,10 @@ public class InqBillerModel extends jsonModel {
     @Expose
     private
     String enabled_additional_fee;
+    @SerializedName("customer_name")
+    @Expose
+    private
+    String customer_name;
 
     public String getBiller_input_amount() {
         return biller_input_amount;
@@ -92,5 +96,9 @@ public class InqBillerModel extends jsonModel {
 
     public String getEnabled_additional_fee() {
         return enabled_additional_fee;
+    }
+
+    public String getCustomer_name() {
+        return customer_name;
     }
 }

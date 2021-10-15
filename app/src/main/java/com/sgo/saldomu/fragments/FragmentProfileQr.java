@@ -1,5 +1,7 @@
 package com.sgo.saldomu.fragments;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -14,6 +16,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
@@ -67,6 +70,8 @@ import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseFragment;
 import com.sgo.saldomu.widgets.ProgressRequestBody;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -106,7 +111,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     private ImageView custImage;
     private DateFormat fromFormat;
     private DateFormat dobFormat;
-    //    private PickAndCameraUtil pickAndCameraUtil;
+    private PickAndCameraUtil pickAndCameraUtil;
     private final int RESULT_GALERY = 100;
     private final int RESULT_CAMERA = 200;
     final int RC_CAMERA_STORAGE = 14;
@@ -121,6 +126,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     ProgressDialog progdialog;
     RelativeLayout lytUpgrade, lytDetail;
     LinearLayout llBalanceDetail;
+    Runnable runnable;
 
     private File fileProfPic = null, compressFile = null;
 
@@ -131,6 +137,12 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         if (context instanceof Activity) {
             activity = (Activity) context;
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        pickAndCameraUtil = new PickAndCameraUtil(getActivity());
     }
 
     @Nullable
@@ -260,7 +272,8 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                     (dialog, which) -> {
                         if (which == 0) {
                             Timber.wtf("masuk gallery");
-                            ((MainPage) getActivity()).pickAndCameraUtil.chooseGallery(RESULT_GALERY);
+//                            ((MainPage) getActivity()).pickAndCameraUtil.chooseGallery(RESULT_GALERY);
+                            chooseGallery();
 //                            pickAndCameraUtil.chooseGallery(RESULT_GALERY);
                         } else if (which == 1) {
                             chooseCamera();
@@ -271,6 +284,25 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
             a.show();
         });
         tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")");
+    }
+
+    private void chooseGallery() {
+        PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .onForwardToSettings(new ForwardToSettingsCallback() {
+                    @Override
+                    public void onForwardToSettings(ForwardScope scope, List<String> deniedList) {
+                        String message = "Please allow following permissions in settings";
+                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .request(new RequestCallback() {
+                    @Override
+                    public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
+                        if (allGranted) {
+                            pickAndCameraUtil.chooseGallery(RESULT_GALERY);
+                        }
+                    }
+                });
     }
 
     private String getLvl() {
@@ -390,13 +422,14 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                                         convertImage();
                                     }
                                 });
-                            }else {
+                            } else {
                                 ((MainPage) getActivity()).pickAndCameraUtil.runCamera(RESULT_CAMERA);
                             }
                         }
                     }
                 });
     }
+
     private void convertImage() {
         int fileSize = Integer.parseInt(String.valueOf(fileProfPic.length() / 1024));
         Log.e("TAG", "size: " + fileSize);
@@ -435,10 +468,42 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Handler handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+//                uploadNewProfilePicture();
+                Log.e("TAG", "call: " );
+                convertImage();
+//                hidePbar();
+                handler.removeCallbacks(this);
+            }
+        };
+
         switch (requestCode) {
             case RESULT_GALERY:
+//                if (resultCode == RESULT_OK) {
+//                    new ImageCompressionAsyncTask().execute(((MainPage) getActivity()).pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
+//                }
+//                break;
                 if (resultCode == RESULT_OK) {
-                    new ImageCompressionAsyncTask().execute(((MainPage) getActivity()).pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
+                    try {
+                        RxImageConverters.uriToFile(getContext(), data.getData(), prepareUploadFileTemp())
+                                .subscribe(new Consumer<File>() {
+                                    @Override
+                                    public void accept(@NotNull File file) throws Exception {
+                                        Log.e("TAG", "accept: " );
+                                        fileProfPic = file;
+                                        handler.postDelayed(runnable, 2000);
+                                    }
+                                });
+                    } catch (IOException e) {
+                        Log.e("TAG", "err" );
+                        e.printStackTrace();
+                    }
+
+//                    new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
+//                    handler.postDelayed(runnable, 2000);
                 }
                 break;
             case RESULT_CAMERA:

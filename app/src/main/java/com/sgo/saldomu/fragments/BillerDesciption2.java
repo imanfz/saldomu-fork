@@ -108,9 +108,9 @@ public class BillerDesciption2 extends BaseFragment {
     private String shareType;
     private String biller_type_code;
     private String identity_remark;
-    private String bill_amount;
+    private String bill_amount, cust_name;
     private TextView tv_biller_name_value, tvbillerid;
-    private TextView tv_item_name_value;
+    private TextView tv_item_name_value, cust_name_value;
     private TextView tv_amount_value, tv_total_value;
     private TextView tv_id_cust;
     private EditText et_desired_amount;
@@ -132,7 +132,7 @@ public class BillerDesciption2 extends BaseFragment {
     private Realm realm;
     String fee = "0", enabledAdditionalFee;
     private Boolean isAgent = false;
-    private LinearLayout layout_additionalFee;
+    private LinearLayout layout_additionalFee, layout_cust_name;
     private EditText et_additionalFee;
     SentPaymentBillerModel sentPaymentBillerModel;
 
@@ -151,6 +151,8 @@ public class BillerDesciption2 extends BaseFragment {
         layout_additionalFee = v.findViewById(R.id.layout_additional_fee);
         et_additionalFee = v.findViewById(R.id.et_additionalfee);
         tvbillerid = v.findViewById(R.id.tv_billerid);
+        layout_cust_name = v.findViewById(R.id.layout_cust_name);
+        cust_name_value = v.findViewById(R.id.cust_name_value);
 
         return v;
     }
@@ -501,14 +503,16 @@ public class BillerDesciption2 extends BaseFragment {
                                 ccy_id = model.getCcy_id();
                                 amount = model.getAmount();
                                 item_name = model.getItem_name();
-//                                DescriptionModel descObj = getGson().fromJson(toJson(model.getDescription()), DescriptionModel.class);
-//                                description = descObj.getPhoneNumber();
-//                                description = toJson(model.getDescription()).getAsString();
                                 description = getGson().toJson(model.getDescription());
-//                            if(isPLN ) {
                                 fee = model.getAdmin_fee();
                                 enabledAdditionalFee = model.getEnabled_additional_fee();
-//                            }
+
+                                if (biller_type_code.equalsIgnoreCase("RTU"))
+                                {
+                                    cust_name = model.getCustomer_name();
+                                    layout_cust_name.setVisibility(View.VISIBLE);
+                                    cust_name_value.setText(cust_name);
+                                }
 
                                 if (isAdded())
                                     initializeLayout();

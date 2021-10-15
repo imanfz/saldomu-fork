@@ -46,6 +46,34 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"
+                android:id="@+id/layout_cust_name"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_cust_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/outlet_name"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/cust_name_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/billertoken_layout_biller_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
