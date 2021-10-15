@@ -113,7 +113,6 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     final int RESULT_OK = -1;
     Context context;
     Activity activity;
-    PickAndCameraUtil pickAndCameraUtil;
 
     // UI LAYOUT
     TextView tv_name, tv_phone_no, tv_lvl_member_value, tv_dormant_value, currencyLimit, limitValue, tv_email, tv_dob, tv_version;
@@ -167,7 +166,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         levelClass = new LevelClass(getActivity(), sp);
         fromFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID", "INDONESIA"));
         dobFormat = new SimpleDateFormat("dd-MM-yyyy", new Locale("ID", "INDONESIA"));
-        pickAndCameraUtil = new PickAndCameraUtil(getActivity());
+
 
         initData();
         initLayout();
@@ -185,7 +184,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     @Override
     public void onResume() {
         super.onResume();
-        pickAndCameraUtil = new PickAndCameraUtil(getActivity());
+        ((MainPage) getActivity()).pickAndCameraUtil = new PickAndCameraUtil(getActivity());
     }
 
     private void initData() {
@@ -261,7 +260,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                     (dialog, which) -> {
                         if (which == 0) {
                             Timber.wtf("masuk gallery");
-                            pickAndCameraUtil.chooseGallery(RESULT_GALERY);
+                            ((MainPage) getActivity()).pickAndCameraUtil.chooseGallery(RESULT_GALERY);
 //                            pickAndCameraUtil.chooseGallery(RESULT_GALERY);
                         } else if (which == 1) {
                             chooseCamera();
@@ -365,21 +364,36 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 //                    RC_CAMERA_STORAGE, perms);
 //        }
         PermissionX.init(this).permissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-                .onForwardToSettings((scope, deniedList) -> {
-                    String message = "Please allow following permissions in settings";
-                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                .onForwardToSettings(new ForwardToSettingsCallback() {
+                    @Override
+                    public void onForwardToSettings(ForwardScope scope, List<String> deniedList) {
+                        String message = "Please allow following permissions in settings";
+                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                    }
                 })
-                .request((allGranted, grantedList, deniedList) -> {
-                    if (allGranted) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                            RxImagePicker.with(getContext()).requestImage(Sources.CAMERA)
-                                    .flatMap((Function<Uri, ObservableSource<File>>) uri -> RxImageConverters.uriToFile(getContext(), uri, pickAndCameraUtil.prepareUploadFileTemp())).subscribe(file -> {
+                .request(new RequestCallback() {
+                    @Override
+                    public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
+                        if (allGranted) {
+                            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                                RxImagePicker.with(getContext()).requestImage(Sources.CAMERA)
+                                        .flatMap(new Function<Uri, ObservableSource<File>>() {
+                                            @Override
+                                            public ObservableSource<File> apply(@NonNull Uri uri) throws Exception {
+                                                return RxImageConverters.uriToFile(getContext(), uri, prepareUploadFileTemp());
+                                            }
+                                        }).subscribe(new Consumer<File>() {
+                                    @Override
+                                    public void accept(@NonNull File file) throws Exception {
                                         // Do something with your file copy
                                         fileProfPic = file;
                                         convertImage();
-                                    });
-                        } else
-                            pickAndCameraUtil.runCamera(RESULT_CAMERA);
+                                    }
+                                });
+                            }else {
+                                ((MainPage) getActivity()).pickAndCameraUtil.runCamera(RESULT_CAMERA);
+                            }
+                        }
                     }
                 });
     }
@@ -424,25 +438,15 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         switch (requestCode) {
             case RESULT_GALERY:
                 if (resultCode == RESULT_OK) {
-                    new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
+                    new ImageCompressionAsyncTask().execute(((MainPage) getActivity()).pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
                 }
                 break;
             case RESULT_CAMERA:
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                    new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
+                    new ImageCompressionAsyncTask().execute(((MainPage) getActivity()).pickAndCameraUtil.getRealPathFromURI(((MainPage) getActivity()).pickAndCameraUtil.getCaptureImageUri()));
                 } else {
-                    new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getCurrentPhotoPath());
+                    new ImageCompressionAsyncTask().execute(((MainPage) getActivity()).pickAndCameraUtil.getCurrentPhotoPath());
                 }
-
-//                if (resultCode == RESULT_OK && ((MainPage)getActivity()).pickAndCameraUtil.getCaptureImageUri() != null) {
-//                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-//                        new ImageCompressionAsyncTask().execute(((MainPage)getActivity()).pickAndCameraUtil.getRealPathFromURI(((MainPage)getActivity()).pickAndCameraUtil.getCaptureImageUri()));
-//                    } else {
-//                        new ImageCompressionAsyncTask().execute(((MainPage)getActivity()).pickAndCameraUtil.getCurrentPhotoPath());
-//                    }
-//                } else {
-//                    Toast.makeText(getActivity(), "Try Again", Toast.LENGTH_LONG).show();
-//                }
                 break;
             default:
                 break;
@@ -580,5 +584,34 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                 }
         );
         dialognya.show();
+    }
+
+    public static String prepareFileName() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        return imageFileName;
+    }
+
+    private static File createImageFile() throws IOException {
+        String imageFileName = prepareFileName();
+//        epassBookFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), currentDate + "_" +fileName);
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), BuildConfig.APP_ID + "Image.JPEG");
+        storageDir.mkdirs();
+
+        if (!storageDir.exists()) {
+            if (!storageDir.mkdirs()) {
+                return null;
+            }
+        }
+        return File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpeg",         /* suffix */
+                storageDir      /* directory */
+        );
+    }
+
+    public static File prepareUploadFileTemp() throws IOException {
+
+        return createImageFile();
     }
 }
