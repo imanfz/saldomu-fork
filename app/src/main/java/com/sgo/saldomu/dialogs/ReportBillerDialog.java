@@ -536,15 +536,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_destinationValue = inflated.findViewById(R.id.dialog_reportbiller_destination_value);
                 TextView tv_destinationEmon = inflated.findViewById(R.id.tv_destination_no_emon);
                 TextView tv_destinationEmonValue = inflated.findViewById(R.id.tv_destination_no_emon_value);
-                TextView tv_destinationNo = inflated.findViewById(R.id.dialog_reportbiller_b2b_destination_no);
-                TextView tv_destinationNoValue = inflated.findViewById(R.id.dialog_reportbiller_b2b_destination_no_value);
-                TextView tv_outletName = inflated.findViewById(R.id.tv_outlet_name);
-                TextView tv_outletNameValue = inflated.findViewById(R.id.tv_outlet_name_value);
-                TextView tv_denom = inflated.findViewById(R.id.dialog_reportbiller_text_denom);
-                View v_destinationNo = inflated.findViewById(R.id.v_destination_no);
                 View viewAdditional = inflated.findViewById(R.id.view_additionalFee);
                 View viewEmon = inflated.findViewById(R.id.view_destination_no_emon);
-                View viewOutletName = inflated.findViewById(R.id.v_outlet_name);
 
                 TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
                 mTableLayout.setVisibility(View.VISIBLE);
@@ -558,6 +551,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_fee_text.setText(args.getString(DefineValue.FEE));
                 tv_total_amount_text.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+                Boolean isHistory = args.getBoolean(DefineValue.IS_HISTORY);
 
                 if (args.getString(DefineValue.BUSS_SCHEME_NAME).equalsIgnoreCase("Pembelian Paket Data")) {
 //                    tableLayoutDestination.setVisibility(View.VISIBLE);
@@ -570,16 +564,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                         tv_destinationEmon.setVisibility(View.VISIBLE);
                         tv_destinationEmonValue.setVisibility(View.VISIBLE);
                         tv_destinationEmonValue.setText(args.getString(DefineValue.PAYMENT_REMARK));
-                    }else if (args.getString(DefineValue.BILLER_TYPE).equalsIgnoreCase("RTU")) {
-                        v_destinationNo.setVisibility(View.VISIBLE);
-                        viewOutletName.setVisibility(View.VISIBLE);
-                        tv_destinationNo.setVisibility(View.VISIBLE);
-                        tv_destinationNoValue.setVisibility(View.VISIBLE);
-                        tv_destinationNoValue.setText(args.getString(DefineValue.PAYMENT_REMARK));
-                        tv_outletName.setVisibility(View.VISIBLE);
-                        tv_outletNameValue.setVisibility(View.VISIBLE);
-                        tv_outletNameValue.setText(args.getString(DefineValue.OUTLET_NAME));
-                        tv_denom.setText(getString(R.string.pulsa_product_name));
                     }
 
                 if (isAgent) {
@@ -598,68 +582,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setText(transRemark);
                 }
 
-//                        Boolean isShowDescription = args.getBoolean(DefineValue.IS_SHOW_DESCRIPTION, false);
-
-//                        if (isShowDescription) {
-//                            tv_denom_text.setText(getString(R.string.billertoken_text_item_name));
-//                            View desclayout = inflated.findViewById(R.id.dialog_reportbiller_layout_desc);
-//                            RelativeLayout mDescLayout = (RelativeLayout) inflated.findViewById(R.id.billertoken_layout_deskripsi);
-//
-//                            if (!args.getString(DefineValue.DETAILS_BILLER, "").isEmpty()) {
-//                                mDescLayout.setVisibility(View.VISIBLE);
-//                                desclayout.setVisibility(View.VISIBLE);
-//                                final TableLayout mTableLayout = (TableLayout) inflated.findViewById(R.id.billertoken_layout_table);
-//                                final ImageView mIconArrow = (ImageView) inflated.findViewById(R.id.billertoken_arrow_desc);
-//
-//                                View.OnClickListener descriptionClickListener = new View.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(View v) {
-//                                        Animation mRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_arrow);
-//                                        mRotate.setInterpolator(new LinearInterpolator());
-//                                        mRotate.setAnimationListener(new Animation.AnimationListener() {
-//                                            @Override
-//                                            public void onAnimationStart(Animation animation) {
-//
-//                                            }
-//
-//                                            @Override
-//                                            public void onAnimationEnd(Animation animation) {
-//                                                mIconArrow.invalidate();
-//                                                if (mTableLayout.getVisibility() == View.VISIBLE) {
-//                                                    mIconArrow.setImageResource(R.drawable.ic_circle_arrow_down);
-//                                                    mTableLayout.setVisibility(View.GONE);
-//                                                } else {
-//                                                    mIconArrow.setImageResource(R.drawable.ic_circle_arrow);
-//                                                    mTableLayout.setVisibility(View.VISIBLE);
-//                                                }
-//                                                mIconArrow.invalidate();
-//                                            }
-//
-//                                            @Override
-//                                            public void onAnimationRepeat(Animation animation) {
-//
-//                                            }
-//                                        });
-//                                        mIconArrow.startAnimation(mRotate);
-//                                    }
-//                                };
-//
-//                                mDescLayout.setOnClickListener(descriptionClickListener);
-//                                mIconArrow.setOnClickListener(descriptionClickListener);
-//
-//                                createTableDesc(args.getString(DefineValue.DETAILS_BILLER, ""), mTableLayout, type);
-//                            }
-//
-//                            Timber.d("isi Amount desired:" + args.getString(DefineValue.AMOUNT_DESIRED));
-//
-//                            if (!args.getString(DefineValue.AMOUNT_DESIRED, "").isEmpty()) {
-//                                View inputAmountLayout = inflated.findViewById(R.id.dialog_reportbiller_amount_desired_layout);
-//                                inputAmountLayout.setVisibility(View.VISIBLE);
-//                                TextView _desired_amount = (TextView) inputAmountLayout.findViewById(R.id.dialog_reportbiller_amount_desired_value);
-//                                _desired_amount.setText(args.getString(DefineValue.AMOUNT_DESIRED));
-//                            }
-//                        }
-//                }
             } else if (buss_scheme_code.equals(DefineValue.P2P) || type.equals(DefineValue.PAYFRIENDS)) {
                 //payfriend
 

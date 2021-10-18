@@ -761,5 +761,6 @@ public class DefineValue {
     public static String INDICATOR_TYPE = "indicatorType";
     public static String TIPS_AMOUNT = "tipsAmount";
     public static String OUTLET_NAME = "outletName";
+    public static String IS_HISTORY = "isHistory";
 }
 

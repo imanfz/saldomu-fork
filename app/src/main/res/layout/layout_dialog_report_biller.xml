@@ -119,68 +119,6 @@
             android:layout_height="1dp"
             android:layout_margin="8dp"
             android:background="@color/grey_300"
-            android:id="@+id/v_destination_no"
-            android:visibility="gone"/>
-
-        <TableRow>
-
-            <TextView
-                android:id="@+id/dialog_reportbiller_b2b_destination_no"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:padding="3dip"
-                android:text="@string/destination_no"
-                android:visibility="gone"/>
-
-            <TextView
-                android:id="@+id/dialog_reportbiller_b2b_destination_no_value"
-                android:layout_width="0dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="2"
-                android:gravity="right"
-                android:padding="3dip"
-                android:text="Axis 1000"
-                android:visibility="gone"/>
-        </TableRow>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="8dp"
-            android:background="@color/grey_300"
-            android:id="@+id/v_outlet_name"
-            android:visibility="gone"/>
-
-        <TableRow>
-
-            <TextView
-                android:id="@+id/tv_outlet_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:padding="3dip"
-                android:text="@string/outlet_name"
-                android:visibility="gone"/>
-
-            <TextView
-                android:id="@+id/tv_outlet_name_value"
-                android:layout_width="0dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="2"
-                android:gravity="right"
-                android:padding="3dip"
-                android:text="Axis 1000"
-                android:visibility="gone"/>
-        </TableRow>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="8dp"
-            android:background="@color/grey_300"
             android:id="@+id/view_destination_no_emon"
             android:visibility="gone"/>
 

@@ -374,18 +374,10 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
         val txStatus = response.tx_status
         if (txStatus == DefineValue.SUCCESS) {
             txStat = true
-//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
         } else if (txStatus == DefineValue.ONRECONCILED) {
             txStat = true
-//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
         }
-//        else if (txStatus == DefineValue.SUSPECT) {
-//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
-//        } else if (txStatus != DefineValue.FAILED) {
-//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
-//        } else {
-//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
-//        }
+
         args.putBoolean(DefineValue.TRX_STATUS, txStat!!)
         args.putString(DefineValue.TRX_STATUS_REMARK, response.tx_status_remark)
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.tx_remark)
@@ -403,7 +395,6 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.buss_scheme_name)
         args.putString(DefineValue.BILLER_TYPE, response.biller_type)
         args.putString(DefineValue.PAYMENT_REMARK, response.payment_remark)
-
         dialog.arguments = args
         val ft = requireActivity().supportFragmentManager.beginTransaction()
         ft.add(dialog, ReportBillerDialog.TAG)
