@@ -5,9 +5,13 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,11 +27,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.mlsdev.rximagepicker.RxImageConverters;
+import com.mlsdev.rximagepicker.RxImagePicker;
+import com.mlsdev.rximagepicker.Sources;
+import com.permissionx.guolindev.PermissionX;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
@@ -51,8 +61,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import me.shaohui.advancedluban.Luban;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -85,6 +104,8 @@ public class UpgradeAgentActivity extends BaseActivity {
     private EditText et_mothersName;
     String reject_siup, reject_npwp, remark_siup, remark_npwp;
     CheckBox cb_termsncond;
+    private File picFile = null, compressFile = null;
+    Runnable runnable;
 
     @Override
     protected int getLayoutResource() {
@@ -216,38 +237,91 @@ public class UpgradeAgentActivity extends BaseActivity {
 
     @AfterPermissionGranted(RC_CAMERA_STORAGE)
     public void camera_dialog() {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            final String[] items = {"Choose from Gallery", "Take a Photo"};
+        PermissionX.init(this).permissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .onForwardToSettings((scope, deniedList) -> {
+                    String message = "Please allow following permissions in settings";
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                })
+                .request((allGranted, grantedList, deniedList) -> {
+                    if (allGranted) {
+                        final String[] items = {"Choose from Gallery", "Take a Photo"};
 
-            android.app.AlertDialog.Builder a = new android.app.AlertDialog.Builder(UpgradeAgentActivity.this);
-            a.setCancelable(true);
-            a.setTitle("Choose Profile Picture");
-            a.setAdapter(new ArrayAdapter<>(UpgradeAgentActivity.this, android.R.layout.simple_list_item_1, items),
-                    (dialog, which) -> {
-                        if (which == 0) {
-                            if (set_result_photo == RESULT_CAMERA_SIUP) {
-                                pickAndCameraUtil.chooseGallery(RESULT_GALLERY_SIUP);
-                            } else if (set_result_photo == RESULT_CAMERA_NPWP) {
-                                pickAndCameraUtil.chooseGallery(RESULT_GALLERY_NPWP);
-                            }
-                        } else if (which == 1) {
-                            pickAndCameraUtil.runCamera(set_result_photo);
-//                                Intent intent=new Intent(getApplicationContext(),CameraViewActivity.class);
-//                                startActivityForResult(intent,set_result_photo);
+                        AlertDialog.Builder a = new AlertDialog.Builder(UpgradeAgentActivity.this);
+                        a.setCancelable(true);
+                        a.setTitle("Choose Profile Picture");
+                        a.setAdapter(new ArrayAdapter<>(UpgradeAgentActivity.this, android.R.layout.simple_list_item_1, items),
+                                (dialog, which) -> {
+                                    if (which == 0) {
+                                        if (set_result_photo == RESULT_CAMERA_SIUP) {
+                                            pickAndCameraUtil.chooseGallery(RESULT_GALLERY_SIUP);
+                                        } else if (set_result_photo == RESULT_CAMERA_NPWP) {
+                                            pickAndCameraUtil.chooseGallery(RESULT_GALLERY_NPWP);
+                                        }
+                                    } else if (which == 1) {
+                                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                                            RxImagePicker.with(this).requestImage(Sources.CAMERA)
+                                                    .flatMap(new Function<Uri, ObservableSource<File>>() {
+                                                        @Override
+                                                        public ObservableSource<File> apply(@NonNull Uri uri) throws Exception {
+                                                            return RxImageConverters.uriToFile(getApplicationContext(), uri, prepareUploadFileTemp());
+                                                        }
+                                                    }).subscribe(new Consumer<File>() {
+                                                @Override
+                                                public void accept(@NonNull File file) throws Exception {
+                                                    // Do something with your file copy
+                                                    picFile = file;
+                                                    if (set_result_photo == RESULT_CAMERA_SIUP)
+                                                        convertImage(SIUP_TYPE);
+                                                    else if (set_result_photo == RESULT_CAMERA_NPWP)
+                                                        convertImage(NPWP_TYPE);
+                                                }
+                                            });
+                                        } else
+                                            pickAndCameraUtil.runCamera(set_result_photo);
+                                    }
+
+                                }
+                        );
+                        a.create();
+                        a.show();
+                    }
+                });
+    }
+
+    private void convertImage(int flag) {
+        int fileSize = Integer.parseInt(String.valueOf(picFile.length() / 1024));
+        Timber.tag("TAG").e("size: %s", fileSize);
+        if (fileSize > 500) {
+            Luban.compress(this, picFile)
+                    .setMaxSize(500)
+                    .putGear(Luban.CUSTOM_GEAR)
+                    .asObservable()
+                    .subscribe(new Observer<File>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
                         }
 
-                    }
-            );
-            a.create();
-            a.show();
+                        @Override
+                        public void onNext(File file) {
+                            compressFile = file;
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            uploadFileToServer(compressFile, flag);
+                        }
+                    });
         } else {
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage),
-                    RC_CAMERA_STORAGE, perms);
+            compressFile = picFile;
+            uploadFileToServer(compressFile, flag);
         }
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -265,7 +339,6 @@ public class UpgradeAgentActivity extends BaseActivity {
     private class ImageCompressionAsyncTask extends AsyncTask<String, Void, File> {
         private int type;
 
-
         ImageCompressionAsyncTask(int type) {
             this.type = type;
         }
@@ -281,22 +354,20 @@ public class UpgradeAgentActivity extends BaseActivity {
                 case SIUP_TYPE:
                     GlideManager.sharedInstance().initializeGlideProfile(UpgradeAgentActivity.this, file, cameraSIUP);
                     siup = file;
-                    uploadFileToServer(type, siup, SIUP_TYPE);
+                    uploadFileToServer(siup, SIUP_TYPE);
                     pbSIUP.setProgress(0);
                     break;
                 case NPWP_TYPE:
                     GlideManager.sharedInstance().initializeGlideProfile(UpgradeAgentActivity.this, file, cameraNPWP);
                     npwp = file;
-                    uploadFileToServer(type, npwp, NPWP_TYPE);
+                    uploadFileToServer(npwp, NPWP_TYPE);
                     pbNPWP.setProgress(0);
                     break;
             }
         }
     }
 
-    private void uploadFileToServer(int type, File photoFile, final int flag) {
-        int _type = type;
-
+    private void uploadFileToServer(File photoFile, final int flag) {
         pbSIUP.setVisibility(View.VISIBLE);
         pbNPWP.setVisibility(View.VISIBLE);
         tv_pb_siup.setVisibility(View.VISIBLE);
@@ -311,7 +382,7 @@ public class UpgradeAgentActivity extends BaseActivity {
 
         RequestBody requestFile = new ProgressRequestBody(photoFile,
                 percentage -> {
-                    switch (_type) {
+                    switch (flag) {
                         case SIUP_TYPE:
                             pbSIUP.setProgress(percentage);
                             break;
@@ -348,7 +419,7 @@ public class UpgradeAgentActivity extends BaseActivity {
                     String error_code = model.getError_code();
                     String error_message = model.getError_message();
                     if (error_code.equalsIgnoreCase("0000")) {
-                        switch (_type) {
+                        switch (flag) {
                             case SIUP_TYPE:
                                 pbSIUP.setProgress(100);
                                 BlinkingEffectClass.blink(layout_siup);
@@ -481,38 +552,47 @@ public class UpgradeAgentActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Handler handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                Timber.tag("TAG").e("call: ");
+                if (requestCode == RESULT_GALLERY_SIUP)
+                    convertImage(SIUP_TYPE);
+                else if (requestCode == RESULT_GALLERY_NPWP)
+                    convertImage(NPWP_TYPE);
+                handler.removeCallbacks(this);
+            }
+        };
         switch (requestCode) {
             case RESULT_GALLERY_SIUP:
+            case RESULT_GALLERY_NPWP:
                 if (resultCode == RESULT_OK) {
-                    new UpgradeAgentActivity.ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
+                    try {
+                        RxImageConverters.uriToFile(this, data.getData(), prepareUploadFileTemp())
+                                .subscribe(file -> {
+                                    Timber.tag("TAG").e("accept: ");
+                                    picFile = file;
+                                    handler.postDelayed(runnable, 2000);
+                                });
+                    } catch (IOException e) {
+                        Timber.tag("TAG").e("err");
+                        e.printStackTrace();
+                    }
                 }
                 break;
             case RESULT_CAMERA_SIUP:
                 if (resultCode == RESULT_OK) {
                     if (pickAndCameraUtil.getCaptureImageUri() != null) {
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                            new UpgradeAgentActivity.ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
-                        } else {
-                            new UpgradeAgentActivity.ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
-//                            new UpgradeAgentActivity.ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
-                        }
+                        new ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
                     } else {
                         Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                     }
                 }
                 break;
-            case RESULT_GALLERY_NPWP:
-                if (resultCode == RESULT_OK) {
-                    new UpgradeAgentActivity.ImageCompressionAsyncTask(NPWP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
-                }
-                break;
             case RESULT_CAMERA_NPWP:
                 if (resultCode == RESULT_OK && pickAndCameraUtil.getCaptureImageUri() != null) {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                        new UpgradeAgentActivity.ImageCompressionAsyncTask(NPWP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
-                    } else {
-                        new UpgradeAgentActivity.ImageCompressionAsyncTask(NPWP_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
-                    }
+                    new ImageCompressionAsyncTask(NPWP_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
                 } else {
                     Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                 }
@@ -547,6 +627,32 @@ public class UpgradeAgentActivity extends BaseActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public static String prepareFileName() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        return "JPEG_" + timeStamp + "_";
+    }
+
+    private static File createImageFile() throws IOException {
+        String imageFileName = prepareFileName();
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), BuildConfig.APP_ID + "Image.JPEG");
+        storageDir.mkdirs();
+
+        if (!storageDir.exists()) {
+            if (!storageDir.mkdirs()) {
+                return null;
+            }
+        }
+        return File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpeg",         /* suffix */
+                storageDir      /* directory */
+        );
+    }
+
+    public static File prepareUploadFileTemp() throws IOException {
+        return createImageFile();
     }
 }
 
