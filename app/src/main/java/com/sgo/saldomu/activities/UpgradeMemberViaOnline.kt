@@ -4,8 +4,10 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.util.Log
 import android.view.MenuItem
@@ -18,7 +20,13 @@ import androidx.core.content.res.ResourcesCompat
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import com.mlsdev.rximagepicker.RxImageConverters
+import com.mlsdev.rximagepicker.RxImagePicker
+import com.mlsdev.rximagepicker.Sources
+import com.permissionx.guolindev.PermissionX
+import com.permissionx.guolindev.request.ForwardScope
 import com.sgo.saldomu.Beans.CustomAdapterModel
+import com.sgo.saldomu.BuildConfig
 import com.sgo.saldomu.R
 import com.sgo.saldomu.adapter.BankCashoutAdapter
 import com.sgo.saldomu.adapter.CustomAutoCompleteAdapter
@@ -33,6 +41,7 @@ import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.dialogs.DefinedDialog
 import com.sgo.saldomu.entityRealm.List_BBS_Birth_Place
+import com.sgo.saldomu.fragments.FragmentProfileQr
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.retrofit.BankCashoutModel
 import com.sgo.saldomu.models.retrofit.UploadFotoModel
@@ -43,8 +52,12 @@ import com.sgo.saldomu.widgets.BaseActivity
 import com.sgo.saldomu.widgets.BlinkingEffectClass
 import com.sgo.saldomu.widgets.ProgressRequestBody
 import com.sgo.saldomu.widgets.ProgressRequestBody.UploadCallbacks
+import io.reactivex.ObservableSource
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.*
+import me.shaohui.advancedluban.Luban
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -53,6 +66,7 @@ import org.json.JSONObject
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 import java.io.File
+import java.io.IOException
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -97,6 +111,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
     var ktp: File? = null
     var selfie: File? = null
     var ttd: File? = null
+    private var compressFile: File? = null
     private val KTP_TYPE = 1
     private val SELFIE_TYPE = 2
     private val TTD_TYPE = 3
@@ -256,25 +271,21 @@ class UpgradeMemberViaOnline : BaseActivity() {
             override fun onResponses(response: JsonObject?) {
                 val model = gson.fromJson(response, jsonModel::class.java)
                 val code = model.error_code
+                val message = model.error_message
                 if (code == WebParams.SUCCESS_CODE) {
                     dialogSuccessUploadPhoto()
                     sp.edit().putBoolean(DefineValue.IS_REGISTERED_LEVEL, true).apply()
                 } else if (code == WebParams.LOGOUT_CODE) {
-                    val message = model.error_message
-                    val test = AlertDialogLogout.getInstance()
-                    test.showDialoginActivity(this@UpgradeMemberViaOnline, message)
+                    AlertDialogLogout.getInstance().showDialoginActivity(this@UpgradeMemberViaOnline, message)
                 } else if (code == DefineValue.ERROR_9333) {
                     Timber.d("isi response app data:%s", model.app_data)
                     val appModel = model.app_data
-                    val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                    alertDialogUpdateApp.showDialogUpdate(this@UpgradeMemberViaOnline, appModel.type, appModel.packageName, appModel.downloadUrl)
+                    AlertDialogUpdateApp.getInstance().showDialogUpdate(this@UpgradeMemberViaOnline, appModel.type, appModel.packageName, appModel.downloadUrl)
                 } else if (code == DefineValue.ERROR_0066) {
                     Timber.d("isi response maintenance:$response")
-                    val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                    alertDialogMaintenance.showDialogMaintenance(this@UpgradeMemberViaOnline)
+                    AlertDialogMaintenance.getInstance().showDialogMaintenance(this@UpgradeMemberViaOnline)
                 } else {
-                    val msg = model.error_message
-                    Toast.makeText(this@UpgradeMemberViaOnline, msg, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@UpgradeMemberViaOnline, message, Toast.LENGTH_LONG).show()
                     if (code == "0160")
                         finish()
                 }
@@ -683,22 +694,80 @@ class UpgradeMemberViaOnline : BaseActivity() {
         cameraDialog()
     }
 
-    fun cameraDialog() {
-        val perms = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
-        if (EasyPermissions.hasPermissions(this, *perms)) {
-            set_result_photo?.let {
-//                if (set_result_photo == RESULT_CAMERA_KTP || set_result_photo == RESULT_CAMERA_TTD) {
-//
-//                                    CameraActivity.openCertificateCamera(MyProfileNewActivity.this, CameraActivity.TYPE_COMPANY_PORTRAIT);
-//                    val i = Intent(this, CameraViewActivity::class.java)
-//                    startActivityForResult(i, set_result_photo!!)
-//                } else
-                pickAndCameraUtil!!.runCamera(set_result_photo!!)
-//                pickAndCameraUtil!!.runCamera(it)
+    private fun cameraDialog() {
+        PermissionX.init(this).permissions(
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+            .onForwardToSettings { scope: ForwardScope?, deniedList: List<String?>? ->
+                val message = "Please allow following permissions in settings"
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             }
+            .request { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? ->
+                if (allGranted) {
+                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                        RxImagePicker.with(this).requestImage(Sources.CAMERA)
+                            .flatMap({ uri ->
+                                RxImageConverters.uriToFile(
+                                    this,
+                                    uri,
+                                    prepareUploadFileTemp()
+                                )
+                            })
+                            .subscribe { file -> // Do something with your file copy
+                                when (set_result_photo) {
+                                    RESULT_CAMERA_KTP -> {
+                                        ktp = file
+                                        GlideManager.sharedInstance().initializeGlideProfile(this@UpgradeMemberViaOnline, ktp, camera_ktp)
+                                        convertImage(KTP_TYPE)
+                                    }
+                                    RESULT_CAMERA_TTD -> {
+                                        ttd = file
+                                        GlideManager.sharedInstance().initializeGlideProfile(this@UpgradeMemberViaOnline, ttd, camera_ttd)
+                                        convertImage(TTD_TYPE)
+                                    }
+                                    RESULT_SELFIE -> {
+                                        selfie = file
+                                        GlideManager.sharedInstance().initializeGlideProfile(this@UpgradeMemberViaOnline, selfie, camera_selfie_ktp)
+                                        convertImage(SELFIE_TYPE)
+                                    }
+                                }
+                            }
+                    } else
+                        pickAndCameraUtil!!.runCamera(set_result_photo!!)
+                }
+            }
+    }
+
+    private fun convertImage(flag: Int) {
+        var picFile: File? = null
+        when (flag) {
+            KTP_TYPE -> picFile = ktp
+            TTD_TYPE -> picFile = ttd
+            SELFIE_TYPE -> picFile = selfie
+        }
+        val fileSize: Int = (picFile!!.length() / 1024).toString().toInt()
+        Timber.tag("TAG").e("size: %s", fileSize)
+        if (fileSize > 500) {
+            Luban.compress(this, picFile)
+                .setMaxSize(500)
+                .putGear(Luban.CUSTOM_GEAR)
+                .asObservable()
+                .subscribe(object : Observer<File> {
+                    override fun onSubscribe(d: Disposable) {}
+                    override fun onNext(file: File) {
+                        compressFile = file
+                    }
+
+                    override fun onError(e: Throwable) {}
+                    override fun onComplete() {
+                        uploadFileToServer(compressFile!!, flag)
+                    }
+                })
         } else {
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage),
-                    RC_CAMERA_STORAGE, *perms)
+            compressFile = picFile
+            uploadFileToServer(compressFile!!, flag)
         }
     }
 
@@ -866,5 +935,35 @@ class UpgradeMemberViaOnline : BaseActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    fun prepareFileName(): String {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        return "JPEG_" + timeStamp + "_"
+    }
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File? {
+        val imageFileName = prepareFileName()
+        val storageDir = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+            BuildConfig.APP_ID + "Image.JPEG"
+        )
+        storageDir.mkdirs()
+        if (!storageDir.exists()) {
+            if (!storageDir.mkdirs()) {
+                return null
+            }
+        }
+        return File.createTempFile(
+            imageFileName,  /* prefix */
+            ".jpeg",  /* suffix */
+            storageDir /* directory */
+        )
+    }
+
+    @Throws(IOException::class)
+    fun prepareUploadFileTemp(): File? {
+        return createImageFile()
     }
 }

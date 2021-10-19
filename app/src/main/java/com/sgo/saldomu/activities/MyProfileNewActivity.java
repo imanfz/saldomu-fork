@@ -1,22 +1,23 @@
 package com.sgo.saldomu.activities;
 
+import static com.sgo.saldomu.activities.MainPage.REQUEST_FINISH;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Environment;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -32,7 +33,12 @@ import androidx.core.content.res.ResourcesCompat;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.mlsdev.rximagepicker.RxImageConverters;
+import com.mlsdev.rximagepicker.RxImagePicker;
+import com.mlsdev.rximagepicker.Sources;
+import com.permissionx.guolindev.PermissionX;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.CameraViewActivity;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.BankCashoutAdapter;
@@ -47,7 +53,6 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.BankCashoutModel;
@@ -63,6 +68,7 @@ import com.sgo.saldomu.widgets.ProgressRequestBody;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -74,14 +80,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import me.shaohui.advancedluban.Luban;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
-
-import static com.sgo.saldomu.activities.MainPage.REQUEST_FINISH;
 
 /**
  * Created by Lenovo Thinkpad on 10/23/2017.
@@ -134,6 +144,7 @@ public class MyProfileNewActivity extends BaseActivity {
     List<BankCashoutModel> listBankCashOut = new ArrayList<>();
     private String bankCode = "";
 
+    private File picFile = null, compressFile = null;
     @Override
     protected int getLayoutResource() {
         return R.layout.activity_my_profile_new;
@@ -401,7 +412,7 @@ public class MyProfileNewActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private TextView.OnClickListener textDOBListener = new TextView.OnClickListener() {
+    private final TextView.OnClickListener textDOBListener = new TextView.OnClickListener() {
         @Override
         public void onClick(View v) {
 
@@ -409,26 +420,26 @@ public class MyProfileNewActivity extends BaseActivity {
         }
     };
 
-    private TextView.OnClickListener member_basic_click = v -> {
+    private final TextView.OnClickListener member_basic_click = v -> {
     };
 
-    private TextView.OnClickListener verified_member_click = v -> {
+    private final TextView.OnClickListener verified_member_click = v -> {
 
     };
 
-    private Button.OnClickListener nextListener = v -> {
+    private final Button.OnClickListener nextListener = v -> {
         if (inputValidation()) {
             sendDataUpdate();
         }
     };
 
-    private Button.OnClickListener submitListener = v -> {
+    private final Button.OnClickListener submitListener = v -> {
         if (ValidationPhoto() && bankValidation()) {
             sentExecCust();
         }
     };
 
-    private DatePickerDialog.OnDateSetListener dobPickerSetListener = new DatePickerDialog.OnDateSetListener() {
+    private final DatePickerDialog.OnDateSetListener dobPickerSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
             dedate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
@@ -443,7 +454,7 @@ public class MyProfileNewActivity extends BaseActivity {
         }
     };
 
-    private ImageButton.OnClickListener setImageCameraKTP = new ImageButton.OnClickListener() {
+    private final ImageButton.OnClickListener setImageCameraKTP = new ImageButton.OnClickListener() {
         @Override
         public void onClick(View v) {
             Timber.d("Masuk ke setImageCameraKTP di MyprofileactivityNew");
@@ -451,7 +462,7 @@ public class MyProfileNewActivity extends BaseActivity {
             camera_dialog();
         }
     };
-    private ImageButton.OnClickListener setImageSelfieKTP = new ImageButton.OnClickListener() {
+    private final ImageButton.OnClickListener setImageSelfieKTP = new ImageButton.OnClickListener() {
         @Override
         public void onClick(View v) {
             Timber.d("Masuk ke setImageSelfieKTP di MyprofileactivityNew");
@@ -459,7 +470,7 @@ public class MyProfileNewActivity extends BaseActivity {
             camera_dialog();
         }
     };
-    private ImageButton.OnClickListener setImageCameraTTD = new ImageButton.OnClickListener() {
+    private final ImageButton.OnClickListener setImageCameraTTD = new ImageButton.OnClickListener() {
         @Override
         public void onClick(View v) {
             Timber.d("Masuk ke setImageCameraTTD di MyprofileactivityNew");
@@ -506,9 +517,33 @@ public class MyProfileNewActivity extends BaseActivity {
 //                                    CameraActivity.openCertificateCamera(MyProfileNewActivity.this, CameraActivity.TYPE_COMPANY_PORTRAIT);
                                 Intent i = new Intent(MyProfileNewActivity.this, CameraViewActivity.class);
                                 startActivityForResult(i, set_result_photo);
-
                             } else {
-                                pickAndCameraUtil.runCamera(set_result_photo);
+                                PermissionX.init(this).permissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                                        .onForwardToSettings((scope, deniedList) -> {
+                                            String message = "Please allow following permissions in settings";
+                                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                                        })
+                                        .request((allGranted, grantedList, deniedList) -> {
+                                            if (allGranted) {
+                                                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                                                    RxImagePicker.with(this).requestImage(Sources.CAMERA)
+                                                            .flatMap(new Function<Uri, ObservableSource<File>>() {
+                                                                @Override
+                                                                public ObservableSource<File> apply(@NonNull Uri uri) throws Exception {
+                                                                    return RxImageConverters.uriToFile(getApplicationContext(), uri, prepareUploadFileTemp());
+                                                                }
+                                                            }).subscribe(new Consumer<File>() {
+                                                        @Override
+                                                        public void accept(@NonNull File file) throws Exception {
+                                                            // Do something with your file copy
+                                                            picFile = file;
+                                                            convertImage(SELFIE_TYPE);
+                                                        }
+                                                    });
+                                                } else
+                                                    pickAndCameraUtil.runCamera(set_result_photo);
+                                            }
+                                        });
                             }
                         }
 
@@ -519,6 +554,41 @@ public class MyProfileNewActivity extends BaseActivity {
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage),
                     RC_CAMERA_STORAGE, perms);
+        }
+    }
+
+    private void convertImage(int flag) {
+        int fileSize = Integer.parseInt(String.valueOf(picFile.length() / 1024));
+        Timber.tag("TAG").e("size: %s", fileSize);
+        if (fileSize > 500) {
+            Luban.compress(this, picFile)
+                    .setMaxSize(500)
+                    .putGear(Luban.CUSTOM_GEAR)
+                    .asObservable()
+                    .subscribe(new Observer<File>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(File file) {
+                            compressFile = file;
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            uploadFileToServer(compressFile,flag);
+                        }
+                    });
+        } else {
+            compressFile = picFile;
+            uploadFileToServer(compressFile,flag);
         }
     }
 
@@ -535,11 +605,7 @@ public class MyProfileNewActivity extends BaseActivity {
         et_nama.setText(sp.getString(DefineValue.PROFILE_FULL_NAME, ""));
         et_nama.setEnabled(false);
         et_email.setText(sp.getString(DefineValue.PROFILE_EMAIL, ""));
-        if (is_new_bulk.equals(DefineValue.STRING_YES)) {
-            et_email.setEnabled(true);
-        } else {
-            et_email.setEnabled(false);
-        }
+        et_email.setEnabled(is_new_bulk.equals(DefineValue.STRING_YES));
 
 
         dedate = sp.getString(DefineValue.PROFILE_DOB, "");
@@ -573,7 +639,7 @@ public class MyProfileNewActivity extends BaseActivity {
 //            );
         }
         is_verified = sp.getInt(DefineValue.PROFILE_VERIFIED, 0) == 1;
-        Timber.d("isi is verified:" + String.valueOf(sp.getInt(DefineValue.PROFILE_VERIFIED, 0)) + " " + is_verified);
+        Timber.d("isi is verified:" + sp.getInt(DefineValue.PROFILE_VERIFIED, 0) + " " + is_verified);
     }
 
     private void sendDataUpdate() {
@@ -790,11 +856,7 @@ public class MyProfileNewActivity extends BaseActivity {
             case RESULT_CAMERA_KTP:
                 if (resultCode == RESULT_OK) {
                     if (pickAndCameraUtil.getCaptureImageUri() != null) {
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                            new ImageCompressionAsyncTask(KTP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
-                        } else {
-                            new ImageCompressionAsyncTask(KTP_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
-                        }
+                        new ImageCompressionAsyncTask(KTP_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
                     } else {
                         Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                     }
@@ -807,11 +869,7 @@ public class MyProfileNewActivity extends BaseActivity {
                 break;
             case RESULT_SELFIE:
                 if (resultCode == RESULT_OK && pickAndCameraUtil.getCaptureImageUri() != null) {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                        new ImageCompressionAsyncTask(SELFIE_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
-                    } else {
-                        new ImageCompressionAsyncTask(SELFIE_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
-                    }
+                    new ImageCompressionAsyncTask(SELFIE_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
                 } else {
                     Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                 }
@@ -823,11 +881,7 @@ public class MyProfileNewActivity extends BaseActivity {
                 break;
             case RESULT_CAMERA_TTD:
                 if (resultCode == RESULT_OK && pickAndCameraUtil.getCaptureImageUri() != null) {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                        new ImageCompressionAsyncTask(TTD_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
-                    } else {
-                        new ImageCompressionAsyncTask(TTD_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
-                    }
+                    new ImageCompressionAsyncTask(TTD_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
                 } else {
                     Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                 }
@@ -1070,7 +1124,7 @@ public class MyProfileNewActivity extends BaseActivity {
     }
 
     public class ImageCompressionAsyncTask extends AsyncTask<String, Void, File> {
-        private int type;
+        private final int type;
 
 
         ImageCompressionAsyncTask(int type) {
@@ -1162,5 +1216,29 @@ public class MyProfileNewActivity extends BaseActivity {
         }
     }
 
+    public static String prepareFileName() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        return "JPEG_" + timeStamp + "_";
+    }
 
+    private static File createImageFile() throws IOException {
+        String imageFileName = prepareFileName();
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), BuildConfig.APP_ID + "Image.JPEG");
+        storageDir.mkdirs();
+
+        if (!storageDir.exists()) {
+            if (!storageDir.mkdirs()) {
+                return null;
+            }
+        }
+        return File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpeg",         /* suffix */
+                storageDir      /* directory */
+        );
+    }
+
+    public static File prepareUploadFileTemp() throws IOException {
+        return createImageFile();
+    }
 }

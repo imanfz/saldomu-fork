@@ -762,5 +762,6 @@ public class DefineValue {
     public static String TIPS_AMOUNT = "tipsAmount";
     public static String OUTLET_NAME = "outletName";
     public static String IS_HISTORY = "isHistory";
+    public static String BANK_BILLER = "bankBiller";
 }
 

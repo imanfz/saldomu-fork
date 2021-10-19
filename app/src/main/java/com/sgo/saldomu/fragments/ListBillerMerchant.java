@@ -27,14 +27,17 @@ import com.sgo.saldomu.adapter.EasyAdapterFilterable;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.models.BankBillerItem;
 import com.sgo.saldomu.models.BillerItem;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
+import io.realm.RealmList;
 import timber.log.Timber;
 
 //import com.sgo.saldomu.activities.NFCActivity;
@@ -65,12 +68,12 @@ public class ListBillerMerchant extends ListFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Timber.tag("onActivityCreated ListB").wtf("onActivityCreated ListBillerMerchant");
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         Bundle args = getArguments();
         billerTypeCode = args.getString(DefineValue.BILLER_TYPE, "");
         billerIdNumber = args.getString(DefineValue.BILLER_ID_NUMBER, "");
         billerMerchantName = args.getString(DefineValue.BILLER_NAME, "");
+        billerData = (List<BillerItem>) args.getSerializable(DefineValue.BILLER_DATA);
 
         ListView listView1 = v.findViewById(android.R.id.list);
         AutoCompleteTextView searchBar = v.findViewById(R.id.search);
@@ -108,7 +111,9 @@ public class ListBillerMerchant extends ListFragment {
         }
     }
 
-    private void changeToInputBiller(String comm_id, String comm_name, String item_id, String comm_code, String api_key) {
+    private void changeToInputBiller(String comm_id, String comm_name, String item_id, String comm_code, String api_key, RealmList<BankBillerItem> bankBiller) {
+        ArrayList<BankBillerItem> bankBillerItems = new ArrayList<>(bankBiller.size());
+        bankBillerItems.addAll(bankBiller);
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.COMMUNITY_ID, comm_id);
         mArgs.putString(DefineValue.COMMUNITY_NAME, comm_name);
@@ -117,12 +122,16 @@ public class ListBillerMerchant extends ListFragment {
         mArgs.putString(DefineValue.BILLER_API_KEY, api_key);
         mArgs.putString(DefineValue.BILLER_TYPE, billerTypeCode);
         mArgs.putString(DefineValue.BILLER_ID_NUMBER, billerIdNumber);
+        mArgs.putSerializable(DefineValue.BANK_BILLER, bankBillerItems);
 
         Fragment billerInput;
         String fragName;
 
         fragName = getString(R.string.biller_ab_title) + " - " + comm_name;
-        billerInput = new BillerInput();
+        if (billerTypeCode.equals("RTU"))
+            billerInput = new BillerInputTelco();
+        else
+            billerInput = new BillerInput();
 
         billerInput.setArguments(mArgs);
         switchFragment(billerInput, BillerActivity.FRAG_BIL_LIST_MERCHANT, fragName, true, BillerInput.TAG);
@@ -167,13 +176,14 @@ public class ListBillerMerchant extends ListFragment {
         _data = new ArrayList<>();
         adapter = new EasyAdapterFilterable(getActivity(), R.layout.list_view_item_with_arrow, _data, item -> {
             for (int i = 0; i < _data.size(); i++) {
-                if (_data.get(i).equalsIgnoreCase(item)){
+                if (_data.get(i).equalsIgnoreCase(item)) {
                     BillerItem billerItem = billerData.get(i);
                     changeToInputBiller(billerItem.getCommId(),
                             billerItem.getCommName(),
                             billerItem.getItemId(),
                             billerItem.getCommCode(),
-                            billerItem.getApiKey());
+                            billerItem.getApiKey(),
+                            billerItem.getBankBiller());
                 }
             }
         });

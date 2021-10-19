@@ -288,19 +288,13 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 
     private void chooseGallery() {
         PermissionX.init(this).permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-                .onForwardToSettings(new ForwardToSettingsCallback() {
-                    @Override
-                    public void onForwardToSettings(ForwardScope scope, List<String> deniedList) {
-                        String message = "Please allow following permissions in settings";
-                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-                    }
+                .onForwardToSettings((scope, deniedList) -> {
+                    String message = "Please allow following permissions in settings";
+                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
                 })
-                .request(new RequestCallback() {
-                    @Override
-                    public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
-                        if (allGranted) {
-                            pickAndCameraUtil.chooseGallery(RESULT_GALERY);
-                        }
+                .request((allGranted, grantedList, deniedList) -> {
+                    if (allGranted) {
+                        pickAndCameraUtil.chooseGallery(RESULT_GALERY);
                     }
                 });
     }
@@ -396,12 +390,9 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 //                    RC_CAMERA_STORAGE, perms);
 //        }
         PermissionX.init(this).permissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-                .onForwardToSettings(new ForwardToSettingsCallback() {
-                    @Override
-                    public void onForwardToSettings(ForwardScope scope, List<String> deniedList) {
-                        String message = "Please allow following permissions in settings";
-                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-                    }
+                .onForwardToSettings((scope, deniedList) -> {
+                    String message = "Please allow following permissions in settings";
+                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
                 })
                 .request(new RequestCallback() {
                     @Override
@@ -416,7 +407,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                                             }
                                         }).subscribe(new Consumer<File>() {
                                     @Override
-                                    public void accept(@NonNull File file) throws Exception {
+                                    public void accept(@NonNull File file) throws Exception{
                                         // Do something with your file copy
                                         fileProfPic = file;
                                         convertImage();
@@ -432,13 +423,13 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 
     private void convertImage() {
         int fileSize = Integer.parseInt(String.valueOf(fileProfPic.length() / 1024));
-        Log.e("TAG", "size: " + fileSize);
+        Timber.tag("TAG").e("size: %s", fileSize);
         if (fileSize > 500) {
             Luban.compress(context.getApplicationContext(), fileProfPic)
                     .setMaxSize(500)
                     .putGear(Luban.CUSTOM_GEAR)
                     .asObservable()
-                    .subscribe(new Observer<File>() {
+                    .subscribe(new Observer<>() {
                         @Override
                         public void onSubscribe(Disposable d) {
 
@@ -472,10 +463,8 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         runnable = new Runnable() {
             @Override
             public void run() {
-//                uploadNewProfilePicture();
-                Log.e("TAG", "call: " );
+                Timber.tag("TAG").e("call: ");
                 convertImage();
-//                hidePbar();
                 handler.removeCallbacks(this);
             }
         };
@@ -492,7 +481,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                                 .subscribe(new Consumer<File>() {
                                     @Override
                                     public void accept(@NotNull File file) throws Exception {
-                                        Log.e("TAG", "accept: " );
+                                        Timber.tag("TAG").e("accept: ");
                                         fileProfPic = file;
 
                                         Timber.d("file name : %s", fileProfPic.getName());
@@ -501,20 +490,15 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                                     }
                                 });
                     } catch (IOException e) {
-                        Log.e("TAG", "err" );
+                        Timber.tag("TAG").e("err");
                         e.printStackTrace();
                     }
-
 //                    new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
 //                    handler.postDelayed(runnable, 2000);
                 }
                 break;
             case RESULT_CAMERA:
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                    new ImageCompressionAsyncTask().execute(((MainPage) getActivity()).pickAndCameraUtil.getRealPathFromURI(((MainPage) getActivity()).pickAndCameraUtil.getCaptureImageUri()));
-                } else {
-                    new ImageCompressionAsyncTask().execute(((MainPage) getActivity()).pickAndCameraUtil.getCurrentPhotoPath());
-                }
+                new ImageCompressionAsyncTask().execute(((MainPage) getActivity()).pickAndCameraUtil.getCurrentPhotoPath());
                 break;
             default:
                 break;
@@ -656,13 +640,11 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 
     public static String prepareFileName() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        return imageFileName;
+        return "JPEG_" + timeStamp + "_";
     }
 
     private static File createImageFile() throws IOException {
         String imageFileName = prepareFileName();
-//        epassBookFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), currentDate + "_" +fileName);
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), BuildConfig.APP_ID + "Image.JPEG");
         storageDir.mkdirs();
 
@@ -679,7 +661,6 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     }
 
     public static File prepareUploadFileTemp() throws IOException {
-
         return createImageFile();
     }
 }

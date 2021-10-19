@@ -1055,6 +1055,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="kembali">Kembali</string>
     <string name="total_bayar">Total Bayar</string>
     <string name="nominal_text">Nominal</string>
+    <string name="nominal_validation">Nominal dibutuhkan</string>
     <string name="jumlah_text">Jumlah</string>
     <string name="total">Total</string>
     <string name="pln_warn">Demi kenyamanan bersama, sebaiknya tidak melakukan transaksi antara pukul 23.45 - 00.45. Karena transaksi tidak dapat diproses. </string>
@@ -1781,4 +1782,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="invoice_failed">Invoice Gagal</string>
     <string name="invoice_exist">Invoice Telah Tersedia</string>
     <string name="outlet_name">Nama Outlet</string>
+    <string name="show_detail">Lihat Detail</string>
 </resources>

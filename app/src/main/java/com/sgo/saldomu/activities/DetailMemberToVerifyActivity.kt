@@ -3,12 +3,21 @@ package com.sgo.saldomu.activities
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import com.google.gson.JsonObject
+import com.mlsdev.rximagepicker.RxImageConverters
+import com.mlsdev.rximagepicker.RxImagePicker
+import com.mlsdev.rximagepicker.Sources
+import com.permissionx.guolindev.PermissionX
+import com.permissionx.guolindev.request.ForwardScope
+import com.sgo.saldomu.BuildConfig
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
@@ -20,6 +29,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.dialogs.DefinedDialog
+import com.sgo.saldomu.fragments.FragmentProfileQr
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.retrofit.UploadFotoModel
 import com.sgo.saldomu.models.retrofit.jsonModel
@@ -27,15 +37,22 @@ import com.sgo.saldomu.utils.PickAndCameraUtil
 import com.sgo.saldomu.utils.camera.CameraActivity
 import com.sgo.saldomu.widgets.BaseActivity
 import com.sgo.saldomu.widgets.ProgressRequestBody
+import io.reactivex.ObservableSource
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_detail_member_to_verify.*
 import kotlinx.android.synthetic.main.activity_detail_member_to_verify.submit_button
 import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.*
+import me.shaohui.advancedluban.Luban
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DetailMemberToVerifyActivity : BaseActivity() {
     private val RESULT_CAMERA_KTP = 201
@@ -45,6 +62,8 @@ class DetailMemberToVerifyActivity : BaseActivity() {
     internal var ktp: File? = null
     private var set_result_photo: Int? = null
 
+    private var picFile: File? = null
+    private var compressFile: File? = null
     override fun getLayoutResource(): Int {
         return R.layout.activity_detail_member_to_verify
     }
@@ -64,7 +83,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
 
         camera_ktp_paspor_via_agent.setOnClickListener {
             set_result_photo = RESULT_CAMERA_KTP
-            camera_dialog()
+            cameraDialog()
         }
 
 //        camera_selfie_ktp_paspor.setOnClickListener {
@@ -90,7 +109,10 @@ class DetailMemberToVerifyActivity : BaseActivity() {
             showProgressDialog()
 
             val params = RetrofitService.getInstance()
-                    .getSignature(MyApiClient.LINK_EXEC_UPGRADE_MEMBER, sp.getString(DefineValue.MEMBER_ID_CUST, ""))
+                .getSignature(
+                    MyApiClient.LINK_EXEC_UPGRADE_MEMBER,
+                    sp.getString(DefineValue.MEMBER_ID_CUST, "")
+                )
             params[WebParams.CUST_ID] = sp.getString(DefineValue.CUST_ID_MEMBER, "")
             params[WebParams.CUST_NAME] = intent.getStringExtra(DefineValue.MEMBER_CUST_NAME)
             params[WebParams.CUST_ID_TYPE] = DefineValue.KTP
@@ -106,9 +128,11 @@ class DetailMemberToVerifyActivity : BaseActivity() {
             params[WebParams.CUST_KABUPATEN] = intent.getStringExtra(DefineValue.MEMBER_KABUPATEN)
             params[WebParams.CUST_PROVINSI] = intent.getStringExtra(DefineValue.MEMBER_PROVINSI)
             params[WebParams.CUST_RELIGION] = intent.getStringExtra(DefineValue.MEMBER_RELIGION)
-            params[WebParams.CUST_MARRIAGE_STATUS] = intent.getStringExtra(DefineValue.MEMBER_STATUS)
+            params[WebParams.CUST_MARRIAGE_STATUS] =
+                intent.getStringExtra(DefineValue.MEMBER_STATUS)
             params[WebParams.CUST_OCCUPATION] = intent.getStringExtra(DefineValue.MEMBER_OCUPATION)
-            params[WebParams.CUST_NATIONALITY] = intent.getStringExtra(DefineValue.MEMBER_NATIONALITY)
+            params[WebParams.CUST_NATIONALITY] =
+                intent.getStringExtra(DefineValue.MEMBER_NATIONALITY)
             params[WebParams.CUST_GENDER] = intent.getStringExtra(DefineValue.MEMBER_GENDER)
             params[WebParams.MOTHER_NAME] = intent.getStringExtra(DefineValue.MEMBER_MOTHERS_NAME)
             params[WebParams.USER_ID] = userPhoneID
@@ -118,32 +142,39 @@ class DetailMemberToVerifyActivity : BaseActivity() {
 
             Timber.d("isi params upgrade member:$params")
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_EXEC_UPGRADE_MEMBER, params,
+            RetrofitService.getInstance()
+                .PostObjectRequest(MyApiClient.LINK_EXEC_UPGRADE_MEMBER, params,
                     object : ResponseListener {
                         override fun onResponses(response: JsonObject) {
                             val model = gson.fromJson(response, jsonModel::class.java)
 
-                            var code = model.error_code
+                            val code = model.error_code
+                            val message = model.error_message
                             if (code == WebParams.SUCCESS_CODE) {
-
                                 dialogSuccessUploadPhoto()
                             } else if (code == WebParams.LOGOUT_CODE) {
-                                val message = model.error_message
-                                val test = AlertDialogLogout.getInstance()
-                                test.showDialoginActivity(this@DetailMemberToVerifyActivity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(
+                                    this@DetailMemberToVerifyActivity,
+                                    message
+                                )
                             } else if (code == DefineValue.ERROR_9333) run {
                                 Timber.d("isi response app data:" + model.app_data)
                                 val appModel = model.app_data
-                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(this@DetailMemberToVerifyActivity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(
+                                    this@DetailMemberToVerifyActivity,
+                                    appModel.type,
+                                    appModel.packageName,
+                                    appModel.downloadUrl
+                                )
                             } else if (code == DefineValue.ERROR_0066) run {
                                 Timber.d("isi response maintenance:$response")
-                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(this@DetailMemberToVerifyActivity)
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(this@DetailMemberToVerifyActivity)
                             } else {
-                                var msg = model.error_message
-
-                                Toast.makeText(this@DetailMemberToVerifyActivity, msg, Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    this@DetailMemberToVerifyActivity,
+                                    message,
+                                    Toast.LENGTH_LONG
+                                ).show()
                                 if (code == "0160")
                                     finish()
                             }
@@ -164,9 +195,10 @@ class DetailMemberToVerifyActivity : BaseActivity() {
     }
 
     private fun dialogSuccessUploadPhoto() {
-        val dialognya = DefinedDialog.MessageDialog(this@DetailMemberToVerifyActivity, this.getString(R.string.upgrade_member),
-                this.getString(R.string.success_upgrade_member_via_agent)
-        ) {finish()}
+        val dialognya = DefinedDialog.MessageDialog(
+            this@DetailMemberToVerifyActivity, this.getString(R.string.upgrade_member),
+            this.getString(R.string.success_upgrade_member_via_agent)
+        ) { finish() }
 
         dialognya.setCanceledOnTouchOutside(false)
         dialognya.setCancelable(false)
@@ -185,18 +217,65 @@ class DetailMemberToVerifyActivity : BaseActivity() {
     }
 
 
-    fun camera_dialog() {
-        val perms = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
-        if (EasyPermissions.hasPermissions(this, *perms)) {
-            set_result_photo?.let {
-//                val i = Intent(this, CameraViewActivity::class.java)
-//                startActivityForResult(i, set_result_photo!!)
-
-                pickAndCameraUtil!!.runCamera(set_result_photo!!)
+    private fun cameraDialog() {
+        PermissionX.init(this).permissions(
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+            .onForwardToSettings { scope: ForwardScope?, deniedList: List<String?>? ->
+                val message = "Please allow following permissions in settings"
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             }
+            .request { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? ->
+                if (allGranted) {
+                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                        RxImagePicker.with(this).requestImage(Sources.CAMERA)
+                            .flatMap({ uri: Uri? ->
+                                RxImageConverters.uriToFile(
+                                    this,
+                                    uri,
+                                    prepareUploadFileTemp()
+                                )
+                            })
+                            .subscribe { file -> // Do something with your file copy
+                                picFile = file
+                                convertImage()
+                            }
+                    } else
+                        pickAndCameraUtil.runCamera(set_result_photo!!)
+                }
+            }
+    }
+
+    private fun convertImage() {
+        val fileSize: Int = (picFile!!.length() / 1024).toString().toInt()
+        Timber.tag("TAG").e("size: %s", fileSize)
+        if (fileSize > 500) {
+            Luban.compress(this, picFile)
+                .setMaxSize(500)
+                .putGear(Luban.CUSTOM_GEAR)
+                .asObservable()
+                .subscribe(object : Observer<File> {
+                    override fun onSubscribe(d: Disposable) {}
+                    override fun onNext(file: File) {
+                        compressFile = file
+                        ktp = compressFile
+                        GlideManager.sharedInstance()
+                            .initializeGlideProfile(applicationContext, ktp, camera_ktp_paspor_via_agent)
+                    }
+
+                    override fun onError(e: Throwable) {}
+                    override fun onComplete() {
+                        uploadFileToServer(compressFile!!, KTP_TYPE)
+                    }
+                })
         } else {
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage),
-                    RC_CAMERA_STORAGE, *perms)
+            compressFile = picFile
+            ktp = compressFile
+            GlideManager.sharedInstance()
+                .initializeGlideProfile(this, ktp, camera_ktp_paspor_via_agent)
+            uploadFileToServer(compressFile!!, KTP_TYPE)
         }
     }
 
@@ -215,10 +294,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
             }
             RESULT_CAMERA_KTP -> {
                 if (resultCode == Activity.RESULT_OK)
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-                        processImage(KTP_TYPE, pickAndCameraUtil!!.getRealPathFromURI(data!!.getStringExtra("imagePath")))
-                    else
-                        processImage(KTP_TYPE, data!!.getStringExtra("imagePath"))
+                    processImage(KTP_TYPE, data!!.getStringExtra("imagePath"))
             }
         }
     }
@@ -226,8 +302,9 @@ class DetailMemberToVerifyActivity : BaseActivity() {
     private fun processImage(type: Int, uri: String?) {
         when (type) {
             KTP_TYPE -> {
-                ktp = pickAndCameraUtil?.compressImage(uri)
-                GlideManager.sharedInstance().initializeGlideProfile(this, ktp, camera_ktp_paspor_via_agent)
+                ktp = pickAndCameraUtil.compressImage(uri)
+                GlideManager.sharedInstance()
+                    .initializeGlideProfile(this, ktp, camera_ktp_paspor_via_agent)
                 uploadFileToServer(ktp!!, KTP_TYPE)
             }
         }
@@ -238,16 +315,24 @@ class DetailMemberToVerifyActivity : BaseActivity() {
         extraSignature = (flag).toString()
 
         val params = RetrofitService.getInstance()
-                .getSignature2(MyApiClient.LINK_UPLOAD_KTP, extraSignature)
+            .getSignature2(MyApiClient.LINK_UPLOAD_KTP, extraSignature)
 
-        val request1 = RequestBody.create(MediaType.parse("text/plain"),
-                userPhoneID)
-        val request2 = RequestBody.create(MediaType.parse("text/plain"),
-                MyApiClient.COMM_ID)
-        val request3 = RequestBody.create(MediaType.parse("text/plain"),
-                (flag).toString())
-        val request4 = RequestBody.create(MediaType.parse("text/plain"),
-                sp.getString(DefineValue.CUST_ID_MEMBER, ""))
+        val request1 = RequestBody.create(
+            MediaType.parse("text/plain"),
+            userPhoneID
+        )
+        val request2 = RequestBody.create(
+            MediaType.parse("text/plain"),
+            MyApiClient.COMM_ID
+        )
+        val request3 = RequestBody.create(
+            MediaType.parse("text/plain"),
+            (flag).toString()
+        )
+        val request4 = RequestBody.create(
+            MediaType.parse("text/plain"),
+            sp.getString(DefineValue.CUST_ID_MEMBER, "")
+        )
 
         params[WebParams.USER_ID] = request1
         params[WebParams.COMM_ID] = request2
@@ -257,15 +342,18 @@ class DetailMemberToVerifyActivity : BaseActivity() {
         Timber.d("params upload foto type: $flag")
 
         val requestFile = ProgressRequestBody(photoFile,
-                ProgressRequestBody.UploadCallbacks { percentage ->
-                    when (flag) {
-                    }
-                })
+            ProgressRequestBody.UploadCallbacks { percentage ->
+                when (flag) {
+                }
+            })
 
-        val filePart = MultipartBody.Part.createFormData(WebParams.USER_IMAGES, photoFile.name,
-                requestFile)
+        val filePart = MultipartBody.Part.createFormData(
+            WebParams.USER_IMAGES, photoFile.name,
+            requestFile
+        )
 
-        RetrofitService.getInstance().MultiPartRequest(MyApiClient.LINK_UPLOAD_KTP, params, filePart
+        RetrofitService.getInstance().MultiPartRequest(
+            MyApiClient.LINK_UPLOAD_KTP, params, filePart
         ) { `object` ->
             val model = gson.fromJson(`object`, UploadFotoModel::class.java!!)
 
@@ -274,51 +362,75 @@ class DetailMemberToVerifyActivity : BaseActivity() {
             if (error_code.equals("0000", ignoreCase = true)) {
                 Timber.d("onsuccess upload foto type: $flag")
             } else if (error_code == WebParams.LOGOUT_CODE) {
-                val test = AlertDialogLogout.getInstance()
-                test.showDialoginActivity(this@DetailMemberToVerifyActivity, error_message)
+                AlertDialogLogout.getInstance().showDialoginActivity(this@DetailMemberToVerifyActivity, error_message)
             } else if (error_code == DefineValue.ERROR_9333) run {
                 Timber.d("isi response app data:" + model.app_data)
                 val appModel = model.app_data
-                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                alertDialogUpdateApp.showDialogUpdate(this@DetailMemberToVerifyActivity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                AlertDialogUpdateApp.getInstance().showDialogUpdate(
+                    this@DetailMemberToVerifyActivity,
+                    appModel.type,
+                    appModel.packageName,
+                    appModel.downloadUrl
+                )
             } else if (error_code == DefineValue.ERROR_0066) run {
                 Timber.d("isi response maintenance:$`object`")
-                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                alertDialogMaintenance.showDialogMaintenance(this@DetailMemberToVerifyActivity)
+                AlertDialogMaintenance.getInstance().showDialogMaintenance(this@DetailMemberToVerifyActivity)
             } else {
-                Toast.makeText(this@DetailMemberToVerifyActivity, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@DetailMemberToVerifyActivity,
+                    getString(R.string.network_connection_failure_toast),
+                    Toast.LENGTH_SHORT
+                ).show()
 
                 if (flag == KTP_TYPE) {
                     camera_ktp_paspor_via_agent.setImageDrawable(
                         ResourcesCompat.getDrawable(
                             resources, R.drawable.camera_retry, null
-                        ));
+                        )
+                    );
                 }
             }
         }
 
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
-//    inner class ImageCompressionAsyncTask internal constructor(private val type: Int) : AsyncTask<String, Void, File>() {
-//
-//        override fun doInBackground(vararg params: String): File {
-//            return pickAndCameraUtil!!.compressImage(params[0])
-//        }
-//
-//        override fun onPostExecute(file: File) {
-//            when (type) {
-//                KTP_TYPE -> {
-//                    GlideManager.sharedInstance().initializeGlideProfile(this@DetailMemberToVerifyActivity, file, camera_ktp_paspor_via_agent)
-//                    ktp = file
-//                    uploadFileToServer(ktp!!, KTP_TYPE)
-//                }
-//            }
-//        }
-//    }
+    fun prepareFileName(): String {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        return "JPEG_" + timeStamp + "_"
+    }
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File? {
+        val imageFileName = prepareFileName()
+        val storageDir = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+            BuildConfig.APP_ID + "Image.JPEG"
+        )
+        storageDir.mkdirs()
+        if (!storageDir.exists()) {
+            if (!storageDir.mkdirs()) {
+                return null
+            }
+        }
+        return File.createTempFile(
+            imageFileName,  /* prefix */
+            ".jpeg",  /* suffix */
+            storageDir /* directory */
+        )
+    }
+
+    @Throws(IOException::class)
+    fun prepareUploadFileTemp(): File? {
+        return createImageFile()
+    }
 
 }

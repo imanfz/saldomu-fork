@@ -526,6 +526,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_report_type = inflated.findViewById(R.id.dialog_reportbiller_buss_scheme_name);
                 TextView tv_useerid_value = inflated.findViewById(R.id.dialog_reportbiller_userid_value);
                 TextView tv_name_value = inflated.findViewById(R.id.dialog_reportbiller_name_value);
+                TextView tv_denom_label = inflated.findViewById(R.id.dialog_reportbiller_text_denom);
                 TextView tv_denom_value = inflated.findViewById(R.id.dialog_reportbiller_denomretail_value);
                 TextView tv_amount_value = inflated.findViewById(R.id.dialog_reportbiller_amount_value);
                 TextView tv_payment_options_text = inflated.findViewById(R.id.dialog_reportbiller_payment_options_value);
@@ -558,13 +559,17 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_destinationValue.setText(args.getString(DefineValue.DESTINATION_REMARK));
                 }
 
-                if (args.containsKey(DefineValue.BILLER_TYPE))
+                if (args.containsKey(DefineValue.BILLER_TYPE)) {
                     if (args.getString(DefineValue.BILLER_TYPE).equalsIgnoreCase("EMON")) {
                         viewEmon.setVisibility(View.VISIBLE);
                         tv_destinationEmon.setVisibility(View.VISIBLE);
                         tv_destinationEmonValue.setVisibility(View.VISIBLE);
                         tv_destinationEmonValue.setText(args.getString(DefineValue.PAYMENT_REMARK));
                     }
+                    if (args.getString(DefineValue.BILLER_TYPE).equalsIgnoreCase("RTU")) {
+                        tv_denom_label.setText(getResources().getString(R.string.billertoken_text_item_name));
+                    }
+                }
 
                 if (isAgent) {
                     viewAdditional.setVisibility(View.VISIBLE);

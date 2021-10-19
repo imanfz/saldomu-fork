@@ -147,7 +147,6 @@ public class PickAndCameraUtil {
 
     private File createImageFile2() throws IOException {
         String imageFileName = prepareFileName();
-//        epassBookFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), currentDate + "_" +fileName);
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), BuildConfig.APPLICATION_ID + "Image.JPEG");
         storageDir.mkdirs();
 
@@ -161,9 +160,5 @@ public class PickAndCameraUtil {
                 ".jpeg",         /* suffix */
                 storageDir      /* directory */
         );
-    }
-
-    public File prepareUploadFileTemp() throws IOException {
-        return createImageFile2();
     }
 }

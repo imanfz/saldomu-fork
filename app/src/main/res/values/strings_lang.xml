@@ -1068,6 +1068,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="kembali">Back</string>
     <string name="total_bayar">Total Pay</string>
     <string name="nominal_text">Nominal</string>
+    <string name="nominal_validation">Nominal Required</string>
     <string name="jumlah_text">Amount</string>
     <string name="total">Total</string>
     <string name="pln_warn">For your convenience, please do not make any transaction between 11:45 pm – 00:45 am. Because your transaction can\'t be processed after that period of time.</string>
@@ -1792,4 +1793,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="invoice_failed">Invoice Failed</string>
     <string name="invoice_exist">Invoice Exist</string>
     <string name="outlet_name">Outlet Name</string>
+    <string name="show_detail">Show Detail</string>
 </resources>

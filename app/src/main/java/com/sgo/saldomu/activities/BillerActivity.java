@@ -1,13 +1,10 @@
 package com.sgo.saldomu.activities;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
@@ -17,7 +14,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -37,7 +33,6 @@ import com.sgo.saldomu.fragments.ListBillerMerchant;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.BillerDenomResponse;
 import com.sgo.saldomu.models.BillerItem;
-import com.sgo.saldomu.models.DenomDataItem;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import java.util.ArrayList;
@@ -45,7 +40,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import timber.log.Timber;
 
 /*
@@ -158,6 +152,8 @@ public class BillerActivity extends BaseActivity {
         Fragment mLBM;
         String tag;
         Intent intent = getIntent();
+        ArrayList<BillerItem> billerItemArrayList = new ArrayList<>(billerData.size());
+        billerItemArrayList.addAll(billerData);
 
         if (isOneBiller && !_biller_type_code.equalsIgnoreCase("DATA") && !_biller_type_code.equalsIgnoreCase("PLS")
                 && !_biller_type_code.equalsIgnoreCase("TKN") && !_biller_type_code.equalsIgnoreCase("EMON")
@@ -199,8 +195,6 @@ public class BillerActivity extends BaseActivity {
                 tag = BillerInput.TAG;
             } else if (_biller_type_code.equalsIgnoreCase("GAME")) {
                 mLBM = new FragGridGame();
-                ArrayList<BillerItem> billerItemArrayList = new ArrayList<>(billerData.size());
-                billerItemArrayList.addAll(billerData);
                 mArgs.putSerializable(DefineValue.BILLER_DATA, billerItemArrayList);
                 tag = BillerInput.TAG;
             } else {
@@ -217,6 +211,7 @@ public class BillerActivity extends BaseActivity {
                     tag = BillerInput.TAG;
                 } else {
                     mLBM = new ListBillerMerchant();
+                    mArgs.putSerializable(DefineValue.BILLER_DATA, billerItemArrayList);
                     tag = BillerInput.TAG;
                     Timber.tag("ListBillerMerchant ").wtf("ListBillerMerchant");
                 }
