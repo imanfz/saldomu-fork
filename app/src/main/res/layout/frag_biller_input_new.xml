@@ -157,6 +157,30 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/billerinput_layout_nominal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:text="@string/nominal_text"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
+
+                    <EditText
+                        android:id="@+id/billerinput_et_nominal"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:enabled="true"
+                        android:maxLength="32"
+                        android:inputType="number"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/billerinput_layout_payment_method"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -220,6 +244,27 @@
                     android:textStyle="bold" />
 
                 <RelativeLayout
+                    android:id="@+id/billerinput_detail_layout_cust_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:text="@string/outlet_name" />
+
+                    <TextView
+                        android:id="@+id/billerinput_detail_cust_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="Toko Jaya Jaya Jaya" />
+                </RelativeLayout>
+                
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">
@@ -235,8 +280,8 @@
                         android:id="@+id/billerinput_detail_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:gravity="right"
+                        android:layout_alignParentEnd="true"
+                        android:gravity="end"
                         android:text="Rp. 1.456.789,00" />
                 </RelativeLayout>
 
@@ -256,7 +301,7 @@
                         android:id="@+id/billerinput_detail_admin_fee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:text="Rp. 0,00" />
                 </RelativeLayout>
 
@@ -277,7 +322,7 @@
                         android:id="@+id/billerinput_detail_admin_add_fee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:text="Rp. 0,00" />
                 </RelativeLayout>
 
@@ -304,7 +349,7 @@
                         android:id="@+id/billerinput_detail_total"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:text="Rp. 121.000,00"
                         android:textSize="@dimen/abc_text_size_medium_material"
                         android:textStyle="bold" />
@@ -327,7 +372,7 @@
 
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/favorite_switch"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
