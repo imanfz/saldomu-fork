@@ -980,6 +980,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="no_tujuan">Number Destination</string>
     <string name="no_rekening_tujuan_hint">Destination account number</string>
     <string name="otp_hint">Input OTP Code</string>
+    <string name="otp_hint_confirm_payment">Input OTP Code to Confirm Payment</string>
     <string name="token_hint">Input Token Code</string>
     <string name="nama_rekening_tujuan">Bank/E-Money Beneficiary Name</string>
     <string name="nama_rekening_tujuan_lkd">E-Money Beneficiary Name</string>
@@ -1477,6 +1478,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="upgrade">U P G R A D E</string>
     <string name="terms_bank_acct">*must have a bank account</string>
     <string name="resent_otp">Resend OTP</string>
+    <string name="confirm_otp">Confirm OTP</string>
     <string name="menu_title_cash_collection">Cash Collection</string>
     <string name="business_name">Business Name</string>
     <string name="amount_deposit">Amount</string>
@@ -1787,9 +1789,10 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="acquire_name">Name of the acquirer</string>
     <string name="listatm_topup_bni_3">Input Virtual Account no.</string>
     <string name="user_id">User ID</string>
-    <string name="your_verification_code">Your Verification Code : </string>
+    <string name="your_verification_code">Collector Verification Code : </string>
     <string name="show_verification_code">Please show your verification code to the staff.</string>
     <string name="check">Check</string>
+    <string name="invoice_success">Invoice Success</string>
     <string name="invoice_failed">Invoice Failed</string>
     <string name="invoice_exist">Invoice Exist</string>
     <string name="outlet_name">Outlet Name</string>

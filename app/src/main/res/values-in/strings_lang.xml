@@ -968,6 +968,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="no_tujuan">No. Tujuan</string>
     <string name="no_rekening_tujuan_hint">Nomor rekening tujuan</string>
     <string name="otp_hint">Masukkan kode OTP</string>
+    <string name="otp_hint_confirm_payment">Masukkan kode OTP konfirmasi pembayaran</string>
     <string name="token_hint">Masukkan kode Token</string>
     <string name="nama_rekening_tujuan">Nama pemilik Bank/E-Money Tujuan</string>
     <string name="nama_rekening_tujuan_lkd">Nama pemilik E-Money Tujuan</string>
@@ -1464,7 +1465,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="hint_amount">Masukkan Total Pembayaran</string>
     <string name="upgrade">U P G R A D E</string>
     <string name="terms_bank_acct">*wajib memiliki rekening Bank</string>
-    <string name="resent_otp">Resent OTP</string>
+    <string name="resent_otp">Kirim Ulang OTP</string>
+    <string name="confirm_otp">Konfirmasi OTP</string>
     <string name="menu_title_cash_collection">Cash Collection</string>
     <string name="business_name">Nama Usaha</string>
     <string name="amount_deposit">Jumlah Setoran</string>
@@ -1776,9 +1778,10 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="listatm_topup_bni_2">Pilih menu Virtual Account Billing</string>
     <string name="listatm_topup_bni_3">Masukkan nomor Virtual Account</string>
     <string name="user_id">User ID</string>
-    <string name="your_verification_code">Kode Verifikasi Anda : </string>
+    <string name="your_verification_code">Kode Verifikasi Kolektor : </string>
     <string name="show_verification_code">Silahkan tunjukkan kode verifikasi ini kepada petugas.</string>
     <string name="check">Cek</string>
+    <string name="invoice_success">Invoice Sukses</string>
     <string name="invoice_failed">Invoice Gagal</string>
     <string name="invoice_exist">Invoice Telah Tersedia</string>
     <string name="outlet_name">Nama Outlet</string>

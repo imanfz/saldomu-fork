@@ -83,7 +83,7 @@ public class FragListInvoiceIndomobil extends BaseFragment {
     View view_row_phone;
     TextView lbl_total_pay_amount;
     LinearLayout searchLayout;
-    Button btnDone, btnCheck, btnReset;
+    Button btnDone, btnReset;
     private AutoCompleteTextView search;
     Spinner sp_payment_type, sp_payment_method;
     String mobile_phone, paymentCode, paymentName, ccy_id, buyer_fee, seller_fee, commission_fee, min_amount, max_amount, noId;
@@ -140,7 +140,6 @@ public class FragListInvoiceIndomobil extends BaseFragment {
         lbl_total_pay_amount = view.findViewById(R.id.lbl_total_pay_amount);
 
         btnDone = view.findViewById(R.id.btn_done);
-        btnCheck = view.findViewById(R.id.btn_check);
         btnReset = view.findViewById(R.id.btnReset);
         sp_payment_type = view.findViewById(R.id.cbo_payment_type);
         sp_payment_method = view.findViewById(R.id.sp_metode_pembayaran);
@@ -196,10 +195,6 @@ public class FragListInvoiceIndomobil extends BaseFragment {
                 }
             }
         });
-
-        btnCheck.setOnClickListener(view -> checkNewInvoice());
-        disableButton(btnCheck);
-
         getListInvoice();
     }
 
@@ -377,7 +372,7 @@ public class FragListInvoiceIndomobil extends BaseFragment {
 
     public void parseResponse(JSONObject obj) {
         try {
-            partialPayment = obj.optString("partial_payment", "");
+            partialPayment = obj.optString(WebParams.PARTIAL_PAYMENT, "");
 
             JSONArray mArrayMobilePhone = new JSONArray(obj.optString(WebParams.PHONE_DATA, ""));
 
@@ -543,7 +538,7 @@ public class FragListInvoiceIndomobil extends BaseFragment {
         params.put(WebParams.PHONE_NO, mobile_phone);
         params.put(WebParams.BANK_CODE, "008");
         if (!paymentCode.equalsIgnoreCase("CT")) {
-            params.put(WebParams.PRODUCT_CODE, "SCASH");
+            params.put(WebParams.PRODUCT_CODE, DefineValue.SCASH);
         } else
             params.put(WebParams.PRODUCT_CODE, bankBillerModelArrayList.get(sp_payment_method.getSelectedItemPosition()).getProduct_code());
         params.put(WebParams.INVOICE, invoiceList);
@@ -562,7 +557,7 @@ public class FragListInvoiceIndomobil extends BaseFragment {
         bundle1.putString(DefineValue.PAYMENT_TYPE, paymentTypeDGIModelArrayList.get(sp_payment_type.getSelectedItemPosition()).getPayment_code());
         bundle1.putString(DefineValue.PAYMENT_TYPE_DESC, paymentTypeDGIModelArrayList.get(sp_payment_type.getSelectedItemPosition()).getPayment_name());
         bundle1.putString(DefineValue.CCY_ID, ccy_id);
-        bundle1.putString(DefineValue.PRODUCT_CODE, "SCASH");
+        bundle1.putString(DefineValue.PRODUCT_CODE, DefineValue.SCASH);
         bundle1.putString(DefineValue.REMARK, remark);
         bundle1.putString(DefineValue.MOBILE_PHONE, mobile_phone);
         if (isFav) {
@@ -670,40 +665,11 @@ public class FragListInvoiceIndomobil extends BaseFragment {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null && result.getContents() != null) {
-            try {
-                JSONObject jsonObject = new JSONObject(result.getContents());
-                InvoiceDGI invoiceDGI = new InvoiceDGI();
-                String docNo = jsonObject.optString(WebParams.DOC_NO, "");
-                boolean docNoExist = false;
-                for (InvoiceDGI obj : invoiceDGIModelArrayList) {
-                    if (obj.getDoc_no().equals(docNo)) {
-                        docNoExist = true;
-                        break;
-                    }
-                }
-                if (!docNoExist) {
-                    invoiceDGI.setDoc_no(jsonObject.optString(WebParams.DOC_NO, ""));
-                    invoiceDGI.setRemain_amount(jsonObject.optString(WebParams.AMOUNT, ""));
-                    invoiceDGI.setDue_date(jsonObject.optString(WebParams.DUE_DATE, ""));
-                    invoiceDGI.setMember_code(jsonObject.optString(WebParams.MEMBER_CODE, ""));
-                    invoiceDGI.setReference_number(jsonObject.optString(WebParams.REFERENCE_NUMBER, ""));
-                    invoiceDGI.setDevice_key(jsonObject.optString(WebParams.DEVICE_KEY, ""));
-
-                    newInvoiceDGIArrayList.add(invoiceDGI);
-                    invoiceDGIModelArrayList.add(invoiceDGI);
-                    invoiceDGIAdapter.updateData(invoiceDGIModelArrayList);
-                    enableButton(btnCheck);
-                    disableButton(btnDone);
-                } else {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.invoice_exist), Toast.LENGTH_SHORT).show();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            checkNewInvoice(result.getContents());
         }
     }
 
-    private void checkNewInvoice() {
+    private void checkNewInvoice(String qrString) {
         showProgressDialog();
 
         params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_NEW_INVOICE, commCodeTagih);
@@ -712,8 +678,8 @@ public class FragListInvoiceIndomobil extends BaseFragment {
         params.put(WebParams.MEMBER_CODE_KEYIN, memberCode);
         params.put(WebParams.USER_ID, userPhoneID);
         params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
-        params.put(WebParams.INVOICES, createJsonInvoice());
-        params.put(WebParams.TOTAL_INVOICE, newInvoiceDGIArrayList.size());
+        params.put(WebParams.INVOICES, qrString);
+        params.put(WebParams.TOTAL_INVOICE, "1");
         Timber.d("params new invoices : %s", params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_NEW_INVOICE, params,
@@ -724,13 +690,14 @@ public class FragListInvoiceIndomobil extends BaseFragment {
                             String code = response.getString(WebParams.ERROR_CODE);
                             String errorMessage = response.getString(WebParams.ERROR_MESSAGE);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-                                disableButton(btnCheck);
-                                enableButton(btnDone);
                                 JSONObject invoicesSuccess = response.getJSONObject(WebParams.INVOICES_SUCCESS);
                                 JSONObject invoicesFailed = response.getJSONObject(WebParams.INVOICES_FAILED);
-                                updateInvoiceSuccess(invoicesSuccess);
-                                showInvoiceFailed(invoicesFailed);
-                                newInvoiceDGIArrayList.clear();
+                                if (!invoicesSuccess.toString().equals("{}")) {
+                                    showInvoiceSuccess(invoicesSuccess);
+                                    parseResponse(response.getJSONObject(WebParams.LIST_INVOICES));
+                                }
+                                if (!invoicesFailed.toString().equals("{}"))
+                                    showInvoiceFailed(invoicesFailed);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
                                 jsonModel model = getGson().fromJson(response.toString(), jsonModel.class);
                                 final AppDataModel appModel = model.getApp_data();
@@ -757,41 +724,18 @@ public class FragListInvoiceIndomobil extends BaseFragment {
                 });
     }
 
-    private void updateInvoiceSuccess(JSONObject invoices) throws JSONException {
-        for (InvoiceDGI invoiceDGI1 : newInvoiceDGIArrayList) {
-            JSONObject invoice = invoices.optJSONObject(invoiceDGI1.getDoc_no());
-            if (invoice != null) {
-                String docRefNo = invoice.optString(WebParams.DOC_REF_NO);
-                for (InvoiceDGI invoiceDGI2 : invoiceDGIModelArrayList) {
-                    if (invoiceDGI2.getDoc_no().equals(invoiceDGI1.getDoc_no()))
-                        invoiceDGI2.setDoc_id(docRefNo);
-                }
-            }
-        }
+    private void showInvoiceSuccess(JSONObject invoices) throws JSONException {
+        showDialog(getString(R.string.invoice_success), invoices.optString(WebParams.ERROR_MSG));
     }
 
     private void showInvoiceFailed(JSONObject invoices) throws JSONException {
         StringBuilder message = new StringBuilder();
-        ArrayList<InvoiceDGI> tempInvoiceDGIArrayList = new ArrayList<>();
-        for (InvoiceDGI invoiceDGI1 : newInvoiceDGIArrayList) {
-            JSONObject invoice = invoices.optJSONObject(invoiceDGI1.getDoc_no());
-            if (invoice != null) {
-                for (InvoiceDGI invoiceDGI2 : invoiceDGIModelArrayList) {
-                    if (invoiceDGI2.getDoc_no().equals(invoiceDGI1.getDoc_no())) {
-                        tempInvoiceDGIArrayList.add(invoiceDGI2);
-
-                        message.append("Invoice ").append(invoiceDGI1.getDoc_no()).append(" ").append(invoice.getString(WebParams.ERROR_CODE)).append(" ").append(invoice.getString(WebParams.ERROR_MSG)).append(System.lineSeparator());
-                    }
-                }
-            }
-        }
-        invoiceDGIModelArrayList.removeAll(tempInvoiceDGIArrayList);
-        invoiceDGIAdapter.notifyDataSetChanged();
+        message.append("Invoice ").append(invoices.optString(WebParams.DOC_NO)).append(" ").append(invoices.getString(WebParams.ERROR_CODE)).append(" ").append(invoices.getString(WebParams.ERROR_MSG));
         if (!message.toString().equals(""))
-            showDialog(message.toString());
+            showDialog(getString(R.string.invoice_failed), message.toString());
     }
 
-    private void showDialog(String message) {
+    private void showDialog(String title, String message) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -805,43 +749,11 @@ public class FragListInvoiceIndomobil extends BaseFragment {
         TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
-        Title.setText(getString(R.string.invoice_failed));
+        Title.setText(title);
         Message.setText(message);
 
         btnDialogOk.setOnClickListener(view -> dialog.dismiss());
 
         dialog.show();
-    }
-
-    private String createJsonInvoice() {
-        JSONArray parentArray = new JSONArray();
-
-        for (InvoiceDGI obj : newInvoiceDGIArrayList) {
-            JSONObject parentObject = new JSONObject();
-            try {
-                parentObject.put(WebParams.DOC_NO, obj.getDoc_no());
-                parentObject.put(WebParams.MEMBER_CODE, obj.getMember_code());
-                parentObject.put(WebParams.MEMBER_NAME, "");
-                parentObject.put(WebParams.AMOUNT, obj.getRemain_amount());
-                parentObject.put(WebParams.DUE_DATE, obj.getDue_date());
-                parentObject.put(WebParams.REFERENCE_NUMBER, obj.getReference_number());
-                parentObject.put(WebParams.DEVICE_KEY, obj.getDevice_key());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            parentArray.put(parentObject);
-        }
-
-        return parentArray.toString();
-    }
-
-    private void disableButton(Button button) {
-        button.setEnabled(false);
-        button.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_background_button_disabled, null));
-    }
-
-    private void enableButton(Button button) {
-        button.setEnabled(true);
-        button.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_background_blue, null));
     }
 }

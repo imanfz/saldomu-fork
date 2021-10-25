@@ -81,7 +81,7 @@ public class FragListInvoiceTagih extends BaseFragment {
     RecyclerView listMenu;
     TextView lbl_total_pay_amount;
     LinearLayout searchLayout;
-    Button btnDone, btnCheck, btnReset;
+    Button btnDone, btnReset;
     private AutoCompleteTextView search;
     Spinner sp_payment_type, sp_phone_number, sp_payment_method;
     String mobile_phone, paymentCode, paymentName, ccy_id, buyer_fee, seller_fee, commission_fee, min_amount, max_amount, noId;
@@ -139,7 +139,6 @@ public class FragListInvoiceTagih extends BaseFragment {
         lbl_total_pay_amount = view.findViewById(R.id.lbl_total_pay_amount);
 
         btnDone = view.findViewById(R.id.btn_done);
-        btnCheck = view.findViewById(R.id.btn_check);
         btnReset = view.findViewById(R.id.btnReset);
         sp_payment_type = view.findViewById(R.id.cbo_payment_type);
         sp_payment_method = view.findViewById(R.id.sp_metode_pembayaran);
@@ -193,7 +192,6 @@ public class FragListInvoiceTagih extends BaseFragment {
             }
         });
 
-        btnCheck.setVisibility(View.GONE);
         parseResponse();
     }
 
@@ -309,7 +307,7 @@ public class FragListInvoiceTagih extends BaseFragment {
         try {
             JSONObject obj = new JSONObject(response);
 
-            partialPayment = obj.optString("partial_payment", "");
+            partialPayment = obj.optString(WebParams.PARTIAL_PAYMENT, "");
 
             JSONArray mArrayMobilePhone = new JSONArray(obj.optString(WebParams.PHONE_DATA, ""));
 
@@ -501,7 +499,7 @@ public class FragListInvoiceTagih extends BaseFragment {
         params.put(WebParams.PHONE_NO, phone_no);
         params.put(WebParams.BANK_CODE, "008");
         if (!paymentCode.equalsIgnoreCase("CT")) {
-            params.put(WebParams.PRODUCT_CODE, "SCASH");
+            params.put(WebParams.PRODUCT_CODE, DefineValue.SCASH);
         } else
             params.put(WebParams.PRODUCT_CODE, bankBillerModelArrayList.get(sp_payment_method.getSelectedItemPosition()).getProduct_code());
         params.put(WebParams.INVOICE, invoiceList);
@@ -521,7 +519,7 @@ public class FragListInvoiceTagih extends BaseFragment {
         bundle1.putString(DefineValue.PAYMENT_TYPE, paymentTypeDGIModelArrayList.get(sp_payment_type.getSelectedItemPosition()).getPayment_code());
         bundle1.putString(DefineValue.PAYMENT_TYPE_DESC, paymentTypeDGIModelArrayList.get(sp_payment_type.getSelectedItemPosition()).getPayment_name());
         bundle1.putString(DefineValue.CCY_ID, ccy_id);
-        bundle1.putString(DefineValue.PRODUCT_CODE, "SCASH");
+        bundle1.putString(DefineValue.PRODUCT_CODE, DefineValue.SCASH);
         bundle1.putString(DefineValue.REMARK, remark);
         bundle1.putString(DefineValue.MOBILE_PHONE, phone_no);
         if (isFav == true) {

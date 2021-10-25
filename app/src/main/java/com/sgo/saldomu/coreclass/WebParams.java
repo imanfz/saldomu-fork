@@ -753,4 +753,6 @@ public class WebParams {
     public static String SHOP_CLOSED = "shop_closed";
     public static String DEVICE_KEY = "device_key";
     public static String REFERENCE_NUMBER = "reference_number";
+    public static String PARTIAL_PAYMENT = "partial_payment";
+    public static String LIST_INVOICES = "list_invoices";
 }
