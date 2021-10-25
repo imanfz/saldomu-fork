@@ -74,7 +74,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
 
         extraSignature = memberIDLogin
         val url =
-            if (intent.getBooleanExtra(DefineValue.IS_AGENT_DGI, false) == true && sp.getString(
+            if (intent.getBooleanExtra(DefineValue.IS_AGENT_DGI, false) && sp.getString(
                     DefineValue.USE_DEPOSIT_COL,
                     ""
                 ).equals("LIMIT")
@@ -83,7 +83,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
             } else if (intent.getBooleanExtra(
                     DefineValue.IS_AGENT_CTR,
                     false
-                ) == true && sp.getString(DefineValue.USE_DEPOSIT_CCOL, "").equals("LIMIT")
+                ) && sp.getString(DefineValue.USE_DEPOSIT_CCOL, "").equals("LIMIT")
             ) {
                 MyApiClient.LINK_HISTORY_COLLECTOR_LIMIT
             } else {
@@ -98,35 +98,39 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
             override fun onResponses(`object`: JsonObject) {
                 Timber.tag(TAG).e("onResponses: $`object`")
                 val model = getGson().fromJson(`object`, jsonModel::class.java)
-                next = `object`.get("next").toString()
+
                 val code = model.error_code
                 val message = model.error_message
 
-                if (code == WebParams.SUCCESS_CODE) {
-                    val type = object : TypeToken<List<HistoryModel>>() {
-                    }.type
-                    val list = gson.fromJson<List<HistoryModel>>(`object`.get("report_data"), type)
+                when (code) {
+                    WebParams.SUCCESS_CODE -> {
+                        val type = object : TypeToken<List<HistoryModel>>() {
+                        }.type
+                        val list = gson.fromJson<List<HistoryModel>>(`object`.get("report_data"), type)
 
-                    if (next == "" || next == "0") {
-                        isLastPage = true
+                        next = `object`.get("next").toString()
+                        isLastPage = next == "" || next == "0"
+
+                        adapter.updateAdapter(list)
+                        isLoading = false
                     }
-
-                    adapter.updateAdapter(list)
-                    isLoading = false
-                } else if (code == WebParams.LOGOUT_CODE) {
-                    AlertDialogLogout.getInstance().showDialoginActivity(this@HistoryActivity, message)
-                } else if (code == DefineValue.ERROR_9333) run {
-                    Timber.d("isi response app data:" + model.app_data)
-                    val appModel = model.app_data
-                    AlertDialogUpdateApp.getInstance().showDialogUpdate(
-                        this@HistoryActivity,
-                        appModel.type,
-                        appModel.packageName,
-                        appModel.downloadUrl
-                    )
-                } else if (code == DefineValue.ERROR_0066) run {
-                    Timber.d("isi response maintenance:$`object`")
-                    AlertDialogMaintenance.getInstance().showDialogMaintenance(this@HistoryActivity)
+                    WebParams.LOGOUT_CODE -> {
+                        AlertDialogLogout.getInstance().showDialoginActivity(this@HistoryActivity, message)
+                    }
+                    DefineValue.ERROR_9333 -> run {
+                        Timber.d("isi response app data:" + model.app_data)
+                        val appModel = model.app_data
+                        AlertDialogUpdateApp.getInstance().showDialogUpdate(
+                            this@HistoryActivity,
+                            appModel.type,
+                            appModel.packageName,
+                            appModel.downloadUrl
+                        )
+                    }
+                    DefineValue.ERROR_0066 -> run {
+                        Timber.d("isi response maintenance:$`object`")
+                        AlertDialogMaintenance.getInstance().showDialogMaintenance(this@HistoryActivity)
+                    }
                 }
             }
 
@@ -177,9 +181,11 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
                     }
 
                     override fun loadMoreItems() {
-                        isLoading = true
-                        currentPage++
-                        getHistory()
+                        if (!isLastPage) {
+                            isLoading = true
+                            currentPage++
+                            getHistory()
+                        }
                     }
                 })
             }
@@ -821,8 +827,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
     }
 
     override fun onRefresh() {
-        isLastPage = false
-        currentPage = 0
+        currentPage = 1
         adapter.clearAdapter()
         getHistory()
         swipeRefresh.isRefreshing = false
