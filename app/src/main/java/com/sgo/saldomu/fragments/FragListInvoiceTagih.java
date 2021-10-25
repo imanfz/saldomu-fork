@@ -209,6 +209,7 @@ public class FragListInvoiceTagih extends BaseFragment {
         menu.findItem(R.id.settings).setVisible(false);
         menu.findItem(R.id.search).setVisible(true);
         menu.findItem(R.id.cancel).setVisible(true);
+        menu.findItem(R.id.scan).setVisible(false);
     }
 
     @Override
