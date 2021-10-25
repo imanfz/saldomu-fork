@@ -127,7 +127,7 @@ public class FragTopUpSCADM extends BaseFragment {
                 } else
                     member_code = et_membercode.getText().toString();
 
-                if (selectedProductCode.equalsIgnoreCase("SCASH")) {
+                if (selectedProductCode.equalsIgnoreCase(DefineValue.SCASH)) {
                     sentInsertTopUpSCASH();
                 } else
                     sentInsertTopUp();

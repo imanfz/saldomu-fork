@@ -180,7 +180,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                 changeToSGOPlus(tx_id, product_code, product_name, bank_code,
                         String.valueOf(damount), String.valueOf(dfee), String.valueOf(dtotal_amount), bank_name);
             } else if (bank_gateway.equalsIgnoreCase(DefineValue.STRING_YES)) {
-                if (product_code.equalsIgnoreCase("SCASH")) {
+                if (product_code.equalsIgnoreCase(DefineValue.SCASH)) {
                     btn_next.setEnabled(false);
                     if (isFav == true) {
                         onSaveToFavorite();
@@ -667,7 +667,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
 
                     @Override
                     public void onComplete() {
-                        if (product_code.equalsIgnoreCase("SCASH")) {
+                        if (product_code.equalsIgnoreCase(DefineValue.SCASH)) {
                             confirmToken();
                         } else
                             sentInsertTransTopup(et_otp.getText().toString(), amount);

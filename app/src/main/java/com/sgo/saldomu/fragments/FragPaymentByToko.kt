@@ -78,7 +78,7 @@ class FragPaymentByToko : BaseFragment() {
             txId = arguments!!.getString(DefineValue.TX_ID, "")
         }
 
-        productCode = "SCASH"
+        productCode = DefineValue.SCASH
         val paymentTokoActivity = activity as PaymentTokoActivity
         paymentTokoActivity.initializeToolbar(getString(R.string.detail_document))
 

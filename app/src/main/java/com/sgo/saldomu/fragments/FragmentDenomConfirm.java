@@ -422,7 +422,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                                         changeToSGOPlus(txID, productCode, productName, bankCode,
                                                 String.valueOf(amount), String.valueOf(fee), String.valueOf(totalAmount), bankName);
                                     } else if (bankGateway.equalsIgnoreCase(DefineValue.STRING_YES)) {
-                                        if (productCode.equalsIgnoreCase("SCASH")) {
+                                        if (productCode.equalsIgnoreCase(DefineValue.SCASH)) {
                                             CallPINinput(attempt);
                                         } else {
                                             if (inputValidation()) {
