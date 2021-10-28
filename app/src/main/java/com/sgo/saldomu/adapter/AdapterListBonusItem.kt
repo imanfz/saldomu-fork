@@ -12,7 +12,7 @@ import com.sgo.saldomu.coreclass.CurrencyFormat
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.fragments.FragCreateGR
 import com.sgo.saldomu.models.retrofit.ItemModel
-import java.util.ArrayList
+import java.util.*
 
 class AdapterListBonusItem (var context: FragmentActivity?, var itemList: List<ItemModel>, var listener: FragCreateGR) : RecyclerView.Adapter<AdapterListBonusItem.Holder>()  {
     private var mContext: Activity? = null

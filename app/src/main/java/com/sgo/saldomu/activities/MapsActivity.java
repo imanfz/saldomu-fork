@@ -5,14 +5,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,12 +27,12 @@ import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.OnMapsSdkInitializedCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -43,7 +40,9 @@ import com.sgo.saldomu.widgets.BaseActivity;
 import java.io.IOException;
 import java.util.List;
 
-public class MapsActivity extends BaseActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+import timber.log.Timber;
+
+public class MapsActivity extends BaseActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, OnMapsSdkInitializedCallback {
 
     private GoogleMap map;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -61,6 +60,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        MapsInitializer.initialize(getApplicationContext(), MapsInitializer.Renderer.LATEST, this);
         useCurrLoc = findViewById(R.id.activity_maps_use_curr_loc);
         currLocLayout = findViewById(R.id.activity_maps_use_curr_loc_layout);
 
@@ -294,6 +294,18 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
                 locationUpdateState = true;
                 startLocationUpdates();
             }
+        }
+    }
+
+    @Override
+    public void onMapsSdkInitialized(@NonNull MapsInitializer.Renderer renderer) {
+        switch (renderer) {
+            case LATEST:
+                Timber.tag("MapsDemo").d("The latest version of the renderer is used.");
+                break;
+            case LEGACY:
+                Timber.tag("MapsDemo").d("The legacy version of the renderer is used.");
+                break;
         }
     }
 }

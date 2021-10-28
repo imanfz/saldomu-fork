@@ -1,7 +1,6 @@
 package com.sgo.saldomu.widgets;
 
 import android.net.SSLCertificateSocketFactory;
-import android.os.Build;
 
 import org.apache.http.conn.scheme.HostNameResolver;
 import org.apache.http.conn.ssl.SSLSocketFactory;

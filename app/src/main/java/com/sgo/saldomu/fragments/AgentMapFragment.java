@@ -38,7 +38,6 @@ import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.coreclass.AgentConstant;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.MainResultReceiver;
 import com.sgo.saldomu.models.ShopDetail;
 
 import java.util.ArrayList;

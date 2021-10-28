@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.CanvasserGoodReceiptActivity
-import com.sgo.saldomu.activities.CanvasserPOActivity
 import com.sgo.saldomu.adapter.ListPOAdapter
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.WebParams

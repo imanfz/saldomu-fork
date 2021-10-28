@@ -34,7 +34,9 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.OnMapsSdkInitializedCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.sgo.saldomu.R;
@@ -50,7 +52,7 @@ import timber.log.Timber;
 
 public class BbsSearchByLocationActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, AdapterView.OnItemClickListener, TextView.OnEditorActionListener {
+        LocationListener, AdapterView.OnItemClickListener, TextView.OnEditorActionListener, OnMapsSdkInitializedCallback {
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -63,7 +65,7 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
         initializeToolbar(getString(R.string.search_agent));
 
         mContext = this;
-
+        MapsInitializer.initialize(getApplicationContext(), MapsInitializer.Renderer.LATEST, this);
 
         if (checkPlayServices()) {
             // If this check succeeds, proceed with normal processing.
@@ -424,6 +426,18 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
 
 
             }
+        }
+    }
+
+    @Override
+    public void onMapsSdkInitialized(@NonNull MapsInitializer.Renderer renderer) {
+        switch (renderer) {
+            case LATEST:
+                Timber.tag("MapsDemo").d("The latest version of the renderer is used.");
+                break;
+            case LEGACY:
+                Timber.tag("MapsDemo").d("The legacy version of the renderer is used.");
+                break;
         }
     }
 }

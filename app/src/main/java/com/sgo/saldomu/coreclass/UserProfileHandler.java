@@ -4,11 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
-import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.models.retrofit.UpdateProfileModel;
 

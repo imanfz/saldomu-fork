@@ -2,7 +2,6 @@ package com.sgo.saldomu.coreclass.Singleton;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 
 import com.sgo.saldomu.interfaces.ConfirmDialogInterface;
 

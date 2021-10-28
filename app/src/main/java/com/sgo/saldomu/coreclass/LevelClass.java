@@ -3,7 +3,6 @@ package com.sgo.saldomu.coreclass;/*
  */
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 
 import androidx.fragment.app.Fragment;
@@ -16,9 +15,6 @@ import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.UpgradeMemberActivity;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 public class LevelClass {
 

@@ -36,8 +36,6 @@ import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.securities.RSA
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.frag_order_confirm_toko.*
-import kotlinx.android.synthetic.main.frag_order_confirm_toko.layout_bonus_item
-import kotlinx.android.synthetic.main.frag_order_confirm_toko.layout_payment_method
 import org.json.JSONObject
 import timber.log.Timber
 

@@ -16,8 +16,6 @@ import com.sgo.saldomu.entityRealm.MerchantCommunityList;
 
 import java.util.ArrayList;
 
-import io.realm.Realm;
-
 
 /**
  * Created by Lenovo on 07/03/2017.

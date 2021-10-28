@@ -30,7 +30,9 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.OnMapsSdkInitializedCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -70,7 +72,7 @@ import timber.log.Timber;
 
 public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapsSdkInitializedCallback {
 
     private SecurePreferences sp;
     String txId, memberPhone, categoryName, amount, cancelFee, urlProfilePicture;
@@ -111,6 +113,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        MapsInitializer.initialize(getApplicationContext(), MapsInitializer.Renderer.LATEST, this);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
             //is agent
@@ -665,6 +668,18 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onMapsSdkInitialized(@NonNull MapsInitializer.Renderer renderer) {
+        switch (renderer) {
+            case LATEST:
+                Timber.tag("MapsDemo").d("The latest version of the renderer is used.");
+                break;
+            case LEGACY:
+                Timber.tag("MapsDemo").d("The legacy version of the renderer is used.");
+                break;
         }
     }
 

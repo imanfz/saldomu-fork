@@ -12,7 +12,7 @@ import com.sgo.saldomu.coreclass.CurrencyFormat
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.fragments.FragCreatePOCanvasser
 import com.sgo.saldomu.models.retrofit.ItemModel
-import java.util.ArrayList
+import java.util.*
 
 class AdapterListItemCreatePOCanvasser(var context: Context, var itemList: List<ItemModel>, var listener: FragCreatePOCanvasser) : RecyclerView.Adapter<AdapterListItemCreatePOCanvasser.Holder>()  {
     private var mContext: Activity? = null

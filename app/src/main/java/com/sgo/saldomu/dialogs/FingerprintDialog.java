@@ -1,5 +1,9 @@
 package com.sgo.saldomu.dialogs;
 
+import static android.content.Context.FINGERPRINT_SERVICE;
+import static android.content.Context.KEYGUARD_SERVICE;
+import static androidx.core.content.ContextCompat.getDrawable;
+
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.KeyguardManager;
@@ -30,7 +34,6 @@ import com.sgo.saldomu.R;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -42,10 +45,6 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-
-import static android.content.Context.FINGERPRINT_SERVICE;
-import static android.content.Context.KEYGUARD_SERVICE;
-import static androidx.core.content.ContextCompat.getDrawable;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class FingerprintDialog extends DialogFragment {

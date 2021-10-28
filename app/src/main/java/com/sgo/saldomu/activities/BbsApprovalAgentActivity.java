@@ -2,16 +2,13 @@ package com.sgo.saldomu.activities;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +22,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapsSdkInitializedCallback;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -54,7 +53,7 @@ import timber.log.Timber;
 public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
-        EasyPermissions.PermissionCallbacks {
+        EasyPermissions.PermissionCallbacks, OnMapsSdkInitializedCallback {
 
     private SecurePreferences sp;
     ProgressDialog progdialog, progdialog2;
@@ -73,6 +72,8 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        MapsInitializer.initialize(getApplicationContext(), MapsInitializer.Renderer.LATEST, this);
 
         try {
             if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -121,13 +122,13 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         txId = "";
         customerId = sp.getString(DefineValue.USERID_PHONE, "");
 
-        btnApprove = (Button) findViewById(R.id.btnApprove);
+        btnApprove = findViewById(R.id.btnApprove);
         //btnReject               = (Button) findViewById(R.id.btnReject);
-        tvCategoryName = (TextView) findViewById(R.id.tvCategoryName);
-        tvMemberName = (TextView) findViewById(R.id.tvMemberName);
-        tvAmount = (TextView) findViewById(R.id.tvAmount);
-        tvCountTrx = (TextView) findViewById(R.id.tvCountTrx);
-        tvTotalTrx = (TextView) findViewById(R.id.tvTotalTrx);
+        tvCategoryName = findViewById(R.id.tvCategoryName);
+        tvMemberName = findViewById(R.id.tvMemberName);
+        tvAmount = findViewById(R.id.tvAmount);
+        tvCountTrx = findViewById(R.id.tvCountTrx);
+        tvTotalTrx = findViewById(R.id.tvTotalTrx);
         //tvShop                  = (TextView) findViewById(R.id.tvShop);
         //spPilihan               = (Spinner) findViewById(R.id.spPilihan);
 
@@ -135,7 +136,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         //spPilihan.setVisibility(View.GONE);
         btnApprove.setEnabled(false);
 
-        rlApproval = (RelativeLayout) findViewById(R.id.rlApproval);
+        rlApproval = findViewById(R.id.rlApproval);
         rlApproval.setVisibility(View.GONE);
 
         shopDetail = new ShopDetail();
@@ -510,4 +511,15 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         super.onBackPressed();
     }
 
+    @Override
+    public void onMapsSdkInitialized(@NonNull MapsInitializer.Renderer renderer) {
+        switch (renderer) {
+            case LATEST:
+                Timber.tag("MapsDemo").d("The latest version of the renderer is used.");
+                break;
+            case LEGACY:
+                Timber.tag("MapsDemo").d("The legacy version of the renderer is used.");
+                break;
+        }
+    }
 }

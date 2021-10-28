@@ -23,7 +23,9 @@ import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.dialogs.PopUpDialog
 import com.sgo.saldomu.interfaces.ObjListeners
-import com.sgo.saldomu.models.*
+import com.sgo.saldomu.models.ListPOModel
+import com.sgo.saldomu.models.ListPayMethodModel
+import com.sgo.saldomu.models.PromoCanvasserModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.frag_list.btn_proses_gr

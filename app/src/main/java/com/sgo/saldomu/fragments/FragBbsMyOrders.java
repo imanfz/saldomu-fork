@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.BbsMyOrdersTabAdapter;
 import com.sgo.saldomu.dialogs.InformationDialog;

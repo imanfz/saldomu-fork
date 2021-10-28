@@ -2,7 +2,6 @@ package com.sgo.saldomu.adapter;/*
   Created by Administrator on 12/1/2014.
  */
 
-import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;

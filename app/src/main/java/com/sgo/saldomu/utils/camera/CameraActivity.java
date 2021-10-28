@@ -6,7 +6,6 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +20,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
-import timber.log.Timber;
 
 public class CameraActivity extends Activity implements View.OnClickListener {
 

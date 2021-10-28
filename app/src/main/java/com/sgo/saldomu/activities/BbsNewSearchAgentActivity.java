@@ -1,9 +1,11 @@
 package com.sgo.saldomu.activities;
 
+import static com.sgo.saldomu.coreclass.DefineValue.CTA;
+import static com.sgo.saldomu.coreclass.DefineValue.CTR;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,9 +15,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -41,7 +41,9 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.OnMapsSdkInitializedCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -62,7 +64,6 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
-import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.utils.BbsUtil;
@@ -84,15 +85,12 @@ import io.realm.Realm;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
-import static com.sgo.saldomu.coreclass.DefineValue.CTA;
-import static com.sgo.saldomu.coreclass.DefineValue.CTR;
-
 public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         AdapterView.OnItemClickListener,
         TextView.OnEditorActionListener,
         LocationListener,
-        OnMapReadyCallback {
+        OnMapReadyCallback, OnMapsSdkInitializedCallback {
 
     SecurePreferences sp;
     Double latitude, longitude;
@@ -144,6 +142,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MapsInitializer.initialize(getApplicationContext(), MapsInitializer.Renderer.LATEST, this);
         realmBBSMemberBank = RealmManager.getRealmBBSMemberBank();
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
@@ -1003,4 +1002,15 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     }
 
 
+    @Override
+    public void onMapsSdkInitialized(@NonNull MapsInitializer.Renderer renderer) {
+        switch (renderer) {
+            case LATEST:
+                Timber.tag("MapsDemo").d("The latest version of the renderer is used.");
+                break;
+            case LEGACY:
+                Timber.tag("MapsDemo").d("The legacy version of the renderer is used.");
+                break;
+        }
+    }
 }

@@ -3,7 +3,6 @@ package com.sgo.saldomu.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -29,7 +28,6 @@ import androidx.fragment.app.Fragment;
 
 import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.BBSCommBenef;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;

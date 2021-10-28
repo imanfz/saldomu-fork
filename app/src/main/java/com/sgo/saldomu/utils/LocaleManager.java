@@ -7,7 +7,6 @@ import android.os.Build;
 
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.WebParams;
 
 import java.util.Locale;
 

@@ -1,24 +1,17 @@
 package com.sgo.saldomu.fragments;
 
+import static com.sgo.saldomu.coreclass.GlobalSetting.RC_LOCATION_PERM;
+
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +26,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapsSdkInitializedCallback;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -42,7 +37,6 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
-import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -60,11 +54,9 @@ import java.util.List;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
-import static com.sgo.saldomu.coreclass.GlobalSetting.RC_LOCATION_PERM;
-
 public class FragApprovalAgent extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, EasyPermissions.PermissionCallbacks {
+        LocationListener, EasyPermissions.PermissionCallbacks, OnMapsSdkInitializedCallback {
     public final static String TAG = "com.sgo.saldomu.fragments.Frag_Approval_Agent";
     // TODO: Rename parameter arguments, choose names that match
     private static final String ARG_PARAM1 = "param1";
@@ -95,6 +87,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Timber.d("Flag Login Approvalagent ");
+        MapsInitializer.initialize(requireActivity(), MapsInitializer.Renderer.LATEST, this);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         gcmId = "";
@@ -460,6 +453,18 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     public void onPermissionsDenied(int requestCode, List<String> perms) {
         startActivity(new Intent(getActivity(), MainPage.class));
         getActivity().finish();
+    }
+
+    @Override
+    public void onMapsSdkInitialized(@NonNull MapsInitializer.Renderer renderer) {
+        switch (renderer) {
+            case LATEST:
+                Timber.tag("MapsDemo").d("The latest version of the renderer is used.");
+                break;
+            case LEGACY:
+                Timber.tag("MapsDemo").d("The legacy version of the renderer is used.");
+                break;
+        }
     }
 
     /**

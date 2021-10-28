@@ -1,5 +1,7 @@
 package com.sgo.saldomu.coreclass;
 
+import static android.content.Context.ACTIVITY_SERVICE;
+
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -16,8 +18,6 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import static android.content.Context.ACTIVITY_SERVICE;
 
 /**
  * Created by yuddistirakiki on 3/3/16.

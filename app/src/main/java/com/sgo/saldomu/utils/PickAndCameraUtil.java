@@ -1,7 +1,6 @@
 package com.sgo.saldomu.utils;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -19,8 +18,6 @@ import com.sgo.saldomu.coreclass.GeneralizeImage;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import timber.log.Timber;
 

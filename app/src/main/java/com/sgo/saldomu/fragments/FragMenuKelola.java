@@ -31,8 +31,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import io.realm.Realm;
-
 public class FragMenuKelola extends Fragment {
     SecurePreferences sp;
     ProgressDialog progDialog;

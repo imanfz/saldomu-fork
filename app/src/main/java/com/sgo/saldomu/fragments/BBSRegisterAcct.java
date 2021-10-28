@@ -49,7 +49,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import timber.log.Timber;
 

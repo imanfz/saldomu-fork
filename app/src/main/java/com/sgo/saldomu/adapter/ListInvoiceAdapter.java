@@ -1,11 +1,8 @@
 package com.sgo.saldomu.adapter;
 
-import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,12 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
-import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.models.ListPOModel;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class ListInvoiceAdapter extends RecyclerView.Adapter<ListInvoiceAdapter.ViewHolder> {
 

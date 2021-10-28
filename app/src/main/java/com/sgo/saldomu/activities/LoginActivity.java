@@ -22,6 +22,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapsSdkInitializedCallback;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -45,7 +47,7 @@ import timber.log.Timber;
  */
 public class LoginActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener, OnMapsSdkInitializedCallback {
 
     private static final int REQUEST_EXIT = 0;
     public static final int RESULT_PIN = 1;
@@ -66,7 +68,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.Conne
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        MapsInitializer.initialize(getApplicationContext(), MapsInitializer.Renderer.LATEST, this);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         if (InetHandler.isNetworkAvailable(this))
@@ -340,4 +342,15 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.Conne
 
     }
 
+    @Override
+    public void onMapsSdkInitialized(@NonNull MapsInitializer.Renderer renderer) {
+        switch (renderer) {
+            case LATEST:
+                Timber.tag("MapsDemo").d("The latest version of the renderer is used.");
+                break;
+            case LEGACY:
+                Timber.tag("MapsDemo").d("The legacy version of the renderer is used.");
+                break;
+        }
+    }
 }

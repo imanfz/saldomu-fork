@@ -12,8 +12,6 @@ import com.sgo.saldomu.adapter.GridMenu
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.frag_b2b.*
-import kotlinx.android.synthetic.main.frag_b2b_canvasser_menu.*
 import kotlinx.android.synthetic.main.frag_grid.*
 
 class FragB2BCanvasserMenu : BaseFragment() {

@@ -1,10 +1,7 @@
 package com.sgo.saldomu.coreclass.Singleton;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -66,7 +63,6 @@ import io.reactivex.schedulers.Schedulers;
 import io.realm.RealmObject;
 import okhttp3.CertificatePinner;
 import okhttp3.ConnectionSpec;
-import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;

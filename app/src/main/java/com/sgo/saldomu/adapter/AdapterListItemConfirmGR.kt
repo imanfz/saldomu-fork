@@ -8,12 +8,12 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.sgo.saldomu.R
-import com.sgo.saldomu.adapter.AdapterListItemConfirmGR.*
+import com.sgo.saldomu.adapter.AdapterListItemConfirmGR.Holder
 import com.sgo.saldomu.coreclass.CurrencyFormat
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.fragments.FragCreateGR
 import com.sgo.saldomu.models.retrofit.ItemModel
-import java.util.ArrayList
+import java.util.*
 
 class AdapterListItemConfirmGR(var context: FragmentActivity?, var itemList: List<ItemModel>, var listener: FragCreateGR) : RecyclerView.Adapter<Holder>()  {
     private var mContext: Activity? = null

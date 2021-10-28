@@ -1,5 +1,9 @@
 package com.sgo.saldomu.fcm;
 
+import static com.sgo.saldomu.fcm.FCMManager.MEMBER_RATING_TRX;
+import static com.sgo.saldomu.fcm.FCMManager.SYNC_BBS_DATA;
+import static com.sgo.saldomu.fcm.FCMManager.VERIFY_ACC;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -47,10 +51,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import timber.log.Timber;
-
-import static com.sgo.saldomu.fcm.FCMManager.MEMBER_RATING_TRX;
-import static com.sgo.saldomu.fcm.FCMManager.SYNC_BBS_DATA;
-import static com.sgo.saldomu.fcm.FCMManager.VERIFY_ACC;
 
 /**
  * Created by yuddistirakiki on 8/16/17.
