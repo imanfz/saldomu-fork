@@ -1,58 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/text1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="30dp"
-        android:gravity="center"
-        android:text="@string/your_verification_code"
-        android:textSize="16sp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="0000"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:layout_margin="30dp"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:layout_below="@+id/text1"
-        android:id="@+id/tv_otp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/show_verification_code"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:layout_marginTop="30dp"
-        android:textSize="16sp"
-        android:layout_below="@+id/tv_otp"/>
+    android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/layout_success_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
-        <Button
-
-            android:id="@+id/btn_next"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:text="@string/your_verification_code"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_otp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:text="0000"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/show_verification_code"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_refresh_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:orientation="vertical"
+        android:visibility="invisible">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/verification_code_not_available"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btn_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/margin_10dp"
             android:background="@drawable/rounded_background_blue"
-            android:text="@string/next"
+            android:text="@string/refresh"
             android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            android:textColor="@color/grey_1000w"
-            android:layout_margin="@dimen/margin_10dp"/>
+            android:textColor="@color/grey_1000w" />
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btn_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/rounded_background_blue"
+        android:text="@string/next"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        android:textColor="@color/grey_1000w"
+        android:layout_margin="@dimen/margin_10dp"/>
 </RelativeLayout>

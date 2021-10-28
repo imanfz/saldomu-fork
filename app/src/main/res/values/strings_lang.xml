@@ -1797,4 +1797,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="invoice_exist">Invoice Exist</string>
     <string name="outlet_name">Outlet Name</string>
     <string name="show_detail">Show Detail</string>
+    <string name="verification_code_not_available">Verification code is not yet available, please try again</string>
 </resources>

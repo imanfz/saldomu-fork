@@ -1786,4 +1786,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="invoice_exist">Invoice Telah Tersedia</string>
     <string name="outlet_name">Nama Outlet</string>
     <string name="show_detail">Lihat Detail</string>
+    <string name="verification_code_not_available">Kode verifikasi belum tersedia, silahkan coba kembali</string>
 </resources>
