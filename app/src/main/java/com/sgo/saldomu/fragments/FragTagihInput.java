@@ -183,7 +183,21 @@ public class FragTagihInput extends BaseFragment {
         public void onClick(View view) {
             if (inputValidation()) {
                 if (anchorId.contains("INDOMOBIL")) {
-                    requestOTP();
+                    Bundle bundle = new Bundle();
+                    Fragment newFrag = new FragFirstOTPTagih();
+                    bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
+                    bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
+                    if (favoriteSwitch.isChecked()) {
+                        bundle.putBoolean(DefineValue.IS_FAVORITE, true);
+                        bundle.putString(DefineValue.CUST_ID, et_memberCode.getText().toString());
+                        bundle.putString(DefineValue.NOTES, notesEditText.getText().toString());
+                        bundle.putString(DefineValue.TX_FAVORITE_TYPE, DefineValue.DGI);
+                        bundle.putString(DefineValue.PRODUCT_TYPE, DefineValue.DGI);
+                        bundle.putString(DefineValue.ANCHOR_ID, anchorId);
+                    }
+                    newFrag.setArguments(bundle);
+                    TagihActivity ftf = (TagihActivity) getActivity();
+                    ftf.switchContent(newFrag, "First OTP Tagih", true);
                 } else
                     sendDataTagih();
             }
@@ -471,79 +485,6 @@ public class FragTagihInput extends BaseFragment {
                             }
 
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        dismissProgressDialog();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        dismissProgressDialog();
-                    }
-                });
-    }
-
-
-    public void requestOTP() {
-        showProgressDialog();
-
-        String extraSignature = commCodeTagih + et_memberCode.getText().toString();
-        params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_FIRST_OTP, extraSignature);
-        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-        params.put(WebParams.MEMBER_CODE, et_memberCode.getText().toString());
-        params.put(WebParams.COMM_CODE, commCodeTagih);
-        params.put(WebParams.USER_ID, userPhoneID);
-        Timber.d("params first OTP tagih DGI : %s", params.toString());
-
-        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQ_FIRST_OTP, params,
-                new ObjListeners() {
-                    @Override
-                    public void onResponses(JSONObject response) {
-                        try {
-                            dismissProgressDialog();
-                            jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
-                            Timber.d("response first OTP tagih DGI  : %s", response.toString());
-                            String code = response.getString(WebParams.ERROR_CODE);
-                            String error_message = response.getString(WebParams.ERROR_MESSAGE);
-                            if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                                Bundle bundle = new Bundle();
-                                Fragment newFrag = new FragFirstOTPTagih();
-                                bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
-                                bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
-                                bundle.putString(DefineValue.OTP, response.getString(WebParams.otp));
-                                if (favoriteSwitch.isChecked()) {
-                                    bundle.putBoolean(DefineValue.IS_FAVORITE, true);
-                                    bundle.putString(DefineValue.CUST_ID, et_memberCode.getText().toString());
-                                    bundle.putString(DefineValue.NOTES, notesEditText.getText().toString());
-                                    bundle.putString(DefineValue.TX_FAVORITE_TYPE, DefineValue.DGI);
-                                    bundle.putString(DefineValue.PRODUCT_TYPE, DefineValue.DGI);
-                                    bundle.putString(DefineValue.ANCHOR_ID, anchorId);
-                                }
-
-//                                SecurePreferences.Editor mEditor = sp.edit();
-//                                mEditor.putString(DefineValue.COMM_CODE_DGI, response.getString(WebParams.COMM_CODE_DGI));
-//                                mEditor.apply();
-
-                                newFrag.setArguments(bundle);
-                                TagihActivity ftf = (TagihActivity) getActivity();
-                                ftf.switchContent(newFrag, "First OTP Tagih", true);
-
-                            } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:%s", model.getApp_data());
-                                final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
-                            } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:%s", response.toString());
-                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
-                            } else {
-                                Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
-                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
