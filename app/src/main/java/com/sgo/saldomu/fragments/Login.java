@@ -1,14 +1,14 @@
 package com.sgo.saldomu.fragments;
 
+import static android.content.Context.FINGERPRINT_SERVICE;
+
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Typeface;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,11 +60,7 @@ import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import java.util.List;
-
 import timber.log.Timber;
-
-import static android.content.Context.FINGERPRINT_SERVICE;
 
 /**
  * Created by Administrator on 7/10/2014.

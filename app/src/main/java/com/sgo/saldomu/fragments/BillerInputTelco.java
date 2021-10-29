@@ -1,7 +1,6 @@
 package com.sgo.saldomu.fragments;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -23,7 +22,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -39,11 +37,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.listBankModel;
-import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.ActivitySearch;
 import com.sgo.saldomu.activities.BillerActivity;
@@ -61,7 +57,6 @@ import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.PrefixOperatorValidator;
-import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
@@ -77,10 +72,8 @@ import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.BankBillerItem;
-import com.sgo.saldomu.models.BillerDenomResponse;
 import com.sgo.saldomu.models.BillerItem;
 import com.sgo.saldomu.models.ContactList;
-import com.sgo.saldomu.models.DenomDataItem;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusModel;
 import com.sgo.saldomu.models.retrofit.InqBillerModel;
@@ -98,12 +91,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
-import io.reactivex.Observable;
-import io.reactivex.functions.BiFunction;
-import io.realm.Realm;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class BillerInputTelco extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {

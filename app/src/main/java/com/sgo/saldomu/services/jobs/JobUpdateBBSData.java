@@ -1,7 +1,5 @@
 package com.sgo.saldomu.services.jobs;
 
-import android.os.Bundle;
-
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.sgo.saldomu.coreclass.BBSDataManager;

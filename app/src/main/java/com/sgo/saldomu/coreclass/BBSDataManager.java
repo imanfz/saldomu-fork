@@ -2,7 +2,6 @@ package com.sgo.saldomu.coreclass;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 

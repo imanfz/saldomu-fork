@@ -13,10 +13,8 @@ import androidx.annotation.NonNull;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
-import com.sgo.saldomu.models.ReportListCommFeeModel;
 import com.sgo.saldomu.models.retrofit.ReportDataModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

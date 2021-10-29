@@ -3,14 +3,11 @@ package com.sgo.saldomu.dialogs;/*
  */
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -33,7 +30,6 @@ import androidx.fragment.app.FragmentManager;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
 import timber.log.Timber;

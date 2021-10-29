@@ -1,9 +1,6 @@
 package com.sgo.saldomu.fragments;
 
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -23,7 +20,6 @@ import com.sgo.saldomu.adapter.MainFragmentAdapter;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.viewpagerindicator.TitlePageIndicator;
 

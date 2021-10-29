@@ -1,9 +1,7 @@
 package com.sgo.saldomu.services;
 
-import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,10 +22,8 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.interfaces.ObjListeners;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;

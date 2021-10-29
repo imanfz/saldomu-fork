@@ -20,10 +20,7 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.sgo.saldomu.BuildConfig
 import com.sgo.saldomu.R
@@ -44,7 +41,7 @@ class SearchAgentUpgradeActivity : BaseActivity(),
         GoogleApiClient.OnConnectionFailedListener,
         OnMapReadyCallback,
         LocationListener,
-        GoogleMap.OnMarkerClickListener {
+        GoogleMap.OnMarkerClickListener, OnMapsSdkInitializedCallback {
 
     private var categoryId: String? = ""
     private var type: String? = ""
@@ -70,15 +67,16 @@ class SearchAgentUpgradeActivity : BaseActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MapsInitializer.initialize(applicationContext, MapsInitializer.Renderer.LATEST, this)
         initialize()
     }
 
     private fun initialize() {
         type = intent.getStringExtra(DefineValue.TYPE)
-        if (type.equals("ALL")) {
-            actionBarTitle = getString(R.string.title_search_agent)
-        } else
-            actionBarTitle = getString(R.string.menu_item_title_upgrade_via_agent)
+        actionBarTitle = if (type.equals("ALL"))
+            getString(R.string.title_search_agent)
+        else
+            getString(R.string.menu_item_title_upgrade_via_agent)
         setActionBarIcon(R.drawable.ic_arrow_left)
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
         categoryId = sp.getString(DefineValue.CATEGORY_ID_UPG, "")
@@ -186,7 +184,7 @@ class SearchAgentUpgradeActivity : BaseActivity(),
 
     }
 
-    override fun onMapReady(map: GoogleMap?) {
+    override fun onMapReady(map: GoogleMap) {
         googleMap = map
 
         if (googleMap != null) {
@@ -425,11 +423,11 @@ class SearchAgentUpgradeActivity : BaseActivity(),
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onMarkerClick(marker: Marker?): Boolean {
-        if (marker!! != markerCurrent) {
+    override fun onMarkerClick(marker: Marker): Boolean {
+        if (marker != markerCurrent) {
             cardDetail.visibility = View.VISIBLE
-            var position = marker.tag.toString().toInt()
-            var urlProfilePicture = shopDetails[position].urlSmallProfilePicture
+            val position = marker.tag.toString().toInt()
+            val urlProfilePicture = shopDetails[position].urlSmallProfilePicture
             tvMemberName.text = shopDetails[position].memberName
             tvMemberDetail.text = NoHPFormat.formatTo08(shopDetails[position].memberCust) + "\n" +
                     shopDetails[position].shopAddress + ", " + shopDetails[position].shopDistrict + ", " +
@@ -457,7 +455,7 @@ class SearchAgentUpgradeActivity : BaseActivity(),
     }
 
     fun resizeMapIcons(image: Int, width: Int, height: Int): Bitmap {
-        var imageBitmap = BitmapFactory.decodeResource(resources, image)
+        val imageBitmap = BitmapFactory.decodeResource(resources, image)
         return Bitmap.createScaledBitmap(imageBitmap, width, height, false)
     }
 
@@ -475,5 +473,14 @@ class SearchAgentUpgradeActivity : BaseActivity(),
                 }
         val alert = builder.create()
         alert.show()
+    }
+
+    override fun onMapsSdkInitialized(renderer: MapsInitializer.Renderer) {
+        when (renderer) {
+            MapsInitializer.Renderer.LATEST -> Timber.tag("MapsDemo")
+                .d("The latest version of the renderer is used.")
+            MapsInitializer.Renderer.LEGACY -> Timber.tag("MapsDemo")
+                .d("The legacy version of the renderer is used.")
+        }
     }
 }

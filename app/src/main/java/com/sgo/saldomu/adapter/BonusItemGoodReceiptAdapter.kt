@@ -8,11 +8,10 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.sgo.saldomu.R
-import com.sgo.saldomu.models.retrofit.ItemModel
 import com.sgo.saldomu.adapter.BonusItemGoodReceiptAdapter.Holder
 import com.sgo.saldomu.fragments.FragInputQtyGoodReceipt
 import com.sgo.saldomu.models.EBDCatalogModel
-import java.util.ArrayList
+import java.util.*
 
 open class BonusItemGoodReceiptAdapter(var context: FragmentActivity?, var itemList: List<EBDCatalogModel>, var listener: FragInputQtyGoodReceipt) : RecyclerView.Adapter<Holder>()  {
     private var mContext: Activity? = null

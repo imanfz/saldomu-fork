@@ -17,7 +17,6 @@ import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.CurrencyFormat
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.models.EBDCatalogModel
-import com.sgo.saldomu.models.retrofit.ItemModel
 import java.util.*
 
 class AdapterListAddItemGRCanvasser(var context: Context, var listener: Listener) : RecyclerView.Adapter<AdapterListAddItemGRCanvasser.Holder>(), Filterable {

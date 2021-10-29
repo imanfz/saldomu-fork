@@ -24,13 +24,11 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;

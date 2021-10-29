@@ -1,7 +1,5 @@
 package com.sgo.saldomu.adapter;
 
-import android.content.Context;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;

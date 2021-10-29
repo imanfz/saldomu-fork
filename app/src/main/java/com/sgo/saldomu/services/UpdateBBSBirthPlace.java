@@ -3,7 +3,6 @@ package com.sgo.saldomu.services;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;

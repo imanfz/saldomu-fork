@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sgo.saldomu.R
 import com.sgo.saldomu.adapter.UpdateProductGoodReceiptAdapter.Holder
 import com.sgo.saldomu.models.EBDCatalogModel
-import com.sgo.saldomu.models.retrofit.ItemModel
 import java.util.*
 
 class UpdateProductGoodReceiptAdapter(var context: FragmentActivity?, var itemList: List<EBDCatalogModel>, var listener: UpdateProductGoodReceiptAdapter.UpdateProductGoodReceiptListener) : RecyclerView.Adapter<Holder>() {

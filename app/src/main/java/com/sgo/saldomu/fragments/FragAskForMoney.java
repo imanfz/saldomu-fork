@@ -1,8 +1,6 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;

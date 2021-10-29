@@ -1,9 +1,7 @@
 package com.sgo.saldomu.fcm;
 
 import android.content.Context;
-import android.widget.Toast;
 
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;

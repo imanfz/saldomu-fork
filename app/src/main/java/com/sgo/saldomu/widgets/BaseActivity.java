@@ -22,7 +22,6 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.PermissionResult;
 import com.sgo.saldomu.receivers.FcmReceiver;

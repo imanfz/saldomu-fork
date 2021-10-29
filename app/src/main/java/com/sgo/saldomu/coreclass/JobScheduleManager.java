@@ -11,7 +11,6 @@ import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
 import com.sgo.saldomu.services.UpdateLocationService;
-import com.sgo.saldomu.services.jobs.JobRegisterFCM;
 import com.sgo.saldomu.services.jobs.JobUpdateBBSData;
 
 import timber.log.Timber;

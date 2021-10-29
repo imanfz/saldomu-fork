@@ -27,6 +27,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapsSdkInitializedCallback;
 import com.google.android.material.tabs.TabLayout;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
@@ -69,7 +71,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         LocationListener,
         EasyPermissions.PermissionCallbacks,
         AgentListFragment.OnListAgentItemClick,
-        FragCancelTrxRequest.CancelTrxRequestListener {
+        FragCancelTrxRequest.CancelTrxRequestListener, OnMapsSdkInitializedCallback {
 
     private int REQUEST_CODE_RECOVER_PLAY_SERVICES = 200;
 
@@ -124,6 +126,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MapsInitializer.initialize(getApplicationContext(), MapsInitializer.Renderer.LATEST, this);
         realmBBSMemberBank = Realm.getInstance(RealmManager.BBSMemberBankConfiguration);
 
         intentData = getIntent();
@@ -917,6 +920,18 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
         mEditor.apply();
         finish();
+    }
+
+    @Override
+    public void onMapsSdkInitialized(@NonNull MapsInitializer.Renderer renderer) {
+        switch (renderer) {
+            case LATEST:
+                Timber.tag("MapsDemo").d("The latest version of the renderer is used.");
+                break;
+            case LEGACY:
+                Timber.tag("MapsDemo").d("The legacy version of the renderer is used.");
+                break;
+        }
     }
 
     private class GoogleMapRouteTask extends AsyncTask<Void, Void, ArrayList<ShopDetail>> {

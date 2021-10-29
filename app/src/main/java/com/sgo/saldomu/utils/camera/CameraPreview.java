@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 

@@ -1,7 +1,6 @@
 package com.sgo.saldomu.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,6 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.sgo.saldomu.R
-import com.sgo.saldomu.coreclass.CoreApp
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.utils.LocaleManager
 import timber.log.Timber

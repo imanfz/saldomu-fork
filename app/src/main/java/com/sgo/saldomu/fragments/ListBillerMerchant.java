@@ -1,17 +1,14 @@
 package com.sgo.saldomu.fragments;
 
-import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 
@@ -19,20 +16,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BillerActivity;
-import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.adapter.EasyAdapterFilterable;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.models.BankBillerItem;
 import com.sgo.saldomu.models.BillerItem;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import io.realm.Realm;

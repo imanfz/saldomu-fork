@@ -18,7 +18,6 @@ import androidx.fragment.app.DialogFragment;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.RealmManager;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.DateFormat;
@@ -29,7 +28,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-import io.realm.Realm;
 import timber.log.Timber;
 
 public class PaymentRemarkDialog extends DialogFragment {

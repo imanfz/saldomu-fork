@@ -1,6 +1,5 @@
 package com.sgo.saldomu.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -13,7 +12,6 @@ import androidx.fragment.app.ListFragment;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.EvoucherHPActivity;
-import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.DefineValue;
 
