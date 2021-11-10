@@ -221,6 +221,11 @@ class FragRegisterNewMember : BaseFragment() {
                 .show()
             return false
         }
+        if (memberDOB == "") {
+            Toast.makeText(context, getString(R.string.rsb_validation_dob), Toast.LENGTH_SHORT)
+                .show()
+            return false
+        }
         return true
     }
 

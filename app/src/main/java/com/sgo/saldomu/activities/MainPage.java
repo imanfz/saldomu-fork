@@ -65,6 +65,7 @@ import com.sgo.saldomu.models.retrofit.GetMemberModel;
 import com.sgo.saldomu.models.retrofit.MemberDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.AppInfoService;
 import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.services.UpdateBBSBirthPlace;
@@ -977,6 +978,7 @@ public class MainPage extends BaseActivity {
             RealmManager.getInstance().setRealm(Realm.getDefaultInstance());
             callBBSCityService();
             checkAndRunServiceBBS();
+            callAgentShopService();
         }
         callBBSBirthPlaceService();
     }
@@ -1507,4 +1509,9 @@ public class MainPage extends BaseActivity {
 //        sp.edit().clear().apply();
         CustomSecurePref.getInstance().ClearAllCustomData();
     }
+
+    private void callAgentShopService() {
+        AgentShopService.getAgentShop(MainPage.this);
+    }
+
 }

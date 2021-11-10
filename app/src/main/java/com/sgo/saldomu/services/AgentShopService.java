@@ -38,6 +38,11 @@ public class AgentShopService extends IntentService {
         super("AgentShopService");
     }
 
+    public static void getAgentShop(Context context) {
+        Intent intent = new Intent(context, AgentShopService.class);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         getAgentShop();
