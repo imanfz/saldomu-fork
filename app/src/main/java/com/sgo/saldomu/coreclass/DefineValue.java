@@ -276,7 +276,6 @@ public class DefineValue {
     public static String WITH_PROF_PIC = "withProfPic";
     public static String POST_TYPE = "postType";
 
-    public static String LIST_CONTACT_CENTER = "listContactCenter";
     public static String CASHOUT_TYPE = "cashoutType";
     public static int CASHOUT_BANK = 0;
     public static int CASHOUT_AGEN = 1;
@@ -763,5 +762,8 @@ public class DefineValue {
     public static String OUTLET_NAME = "outletName";
     public static String IS_HISTORY = "isHistory";
     public static String BANK_BILLER = "bankBiller";
+    public static String ENCRYPTION_PATTERN = "encryptionPattern";
+    public static String GOOGLE_MAPS_KEY = "googleMapsKey";
+    public static String GOOGLE_MAPS_KEY_WS = "googleMapsKeyWs";
 }
 

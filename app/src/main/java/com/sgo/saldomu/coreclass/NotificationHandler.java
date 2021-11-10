@@ -11,7 +11,6 @@ import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.NotificationActivity;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
-import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.NotifModel;
 
@@ -75,8 +74,6 @@ public class NotificationHandler {
                                         }
                                         setNotifCount(String.valueOf(idx));
                                         //setNotifCount(response.getString(WebParams.UNREAD));
-                                    } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                        setLogout(message);
                                     } else {
                                         //Toast.makeText(mContext, code, Toast.LENGTH_LONG).show();
                                         Timber.d("error Notification handler:" + code + ":" + message);
@@ -111,14 +108,5 @@ public class NotificationHandler {
 
         MainPage fca = (MainPage) mContext;
         fca.setNotifAmount(_count);
-    }
-
-    private void setLogout(String _message) {
-        Timber.w("masuk setLogout");
-        if (mContext == null)
-            return;
-
-        MainPage fca = (MainPage) mContext;
-        AlertDialogLogout.getInstance().showDialoginMain(fca, _message);
     }
 }

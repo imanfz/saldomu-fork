@@ -271,7 +271,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
             populateBanner();
         if (isAgent)
             tv_balance.setText(getString(R.string.agent_balance));
-        getHelpList();
 
         if (isAgent && agentTrxCodeArray.length() > 0)
             for (int i = 0; i < agentTrxCodeArray.length(); i++)
@@ -580,58 +579,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
         });
         carouselView.setVisibility(View.VISIBLE);
         progBanner.setVisibility(View.GONE);
-    }
-
-    private void getHelpList() {
-        try {
-            String ownerId = sp.getString(DefineValue.USERID_PHONE, "");
-
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_HELP_LIST);
-            params.put(WebParams.USER_ID, ownerId);
-            params.put(WebParams.FLAG_LOGIN, sp.getString(DefineValue.FLAG_LOGIN, ""));
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.FLAG_LOGIN, DefineValue.STRING_YES);
-            Timber.d("isi params help list:%s", params.toString());
-
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_HELP_LIST, params,
-                    new ObjListeners() {
-                        @Override
-                        public void onResponses(JSONObject response) {
-                            try {
-                                String code = response.getString(WebParams.ERROR_CODE);
-                                String message = response.getString(WebParams.ERROR_MESSAGE);
-
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("isi response help list:%s", response.toString());
-
-                                    SecurePreferences.Editor mEditor = sp.edit();
-                                    mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
-                                    mEditor.apply();
-                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:%s", response.toString());
-                                    AlertDialogLogout.getInstance().showDialoginMain(getActivity(), message);
-                                } else {
-                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-                                }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
-        } catch (Exception e) {
-            Timber.d("httpclient:%s", e.getMessage());
-        }
     }
 
     void animateRefreshBtn(boolean isLoad) {

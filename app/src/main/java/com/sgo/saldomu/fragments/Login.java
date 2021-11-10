@@ -514,7 +514,6 @@ public class Login extends BaseFragment implements View.OnClickListener {
             mEditor.putString(DefineValue.PROFILE_BOM, model.getMotherName());
 
             mEditor.putString(DefineValue.LIST_ID_TYPES, getGson().toJson(model.getIdTypes()));
-//            mEditor.putString(DefineValue.LIST_CONTACT_CENTER,response.getString(WebParams.CONTACT_CENTER));
 
             mEditor.putString(DefineValue.IS_FIRST, model.getUserIsNew());
             mEditor.putString(DefineValue.IS_CHANGED_PASS, model.getChangedPass());

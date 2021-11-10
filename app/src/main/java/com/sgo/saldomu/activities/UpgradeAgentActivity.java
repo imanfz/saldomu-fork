@@ -123,8 +123,6 @@ public class UpgradeAgentActivity extends BaseActivity {
         remark_siup = sp.getString(DefineValue.REMARK_SIUP, "");
         remark_npwp = sp.getString(DefineValue.REMARK_NPWP, "");
 
-//        contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER, "");
-
         View v = this.findViewById(android.R.id.content);
         pbSIUP = v.findViewById(R.id.pb1_upgradeAgent);
         pbNPWP = v.findViewById(R.id.pb2_upgradeAgent);

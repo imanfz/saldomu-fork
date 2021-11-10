@@ -424,12 +424,12 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
         HashMap<String, Object> options = new HashMap<>();
         options.put("sensor", false);
-        options.put("key", getResources().getString(R.string.google_maps_key_ws));
+        options.put("key", MyApiClient.getGoogleMapsKeyWS());
         options.put("language", "id");
         options.put("latlng", currentLatitude + "," + currentLongitude);
 
         RetrofitService.getInstance().QueryRequestSSL(
-                "https://maps.google.com/maps/api/geocode/json"
+                MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE
                 , options,
                 new ObjListeners() {
                     @Override
@@ -968,7 +968,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             query.put("units", "metric");
             query.put("mode", DefineValue.GMAP_MODE);
             query.put("language", DefineValue.DEFAULT_LANGUAGE_CODE);
-            query.put("key", getString(R.string.google_maps_key));
+            query.put("key", MyApiClient.getGoogleMapsKey());
 
 //            RequestParams rqParams = new RequestParams();
 //            rqParams.put("origin", dataCurrentLatitude.toString()+","+dataCurrentLongitude.toString());

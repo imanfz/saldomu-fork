@@ -6,6 +6,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +33,7 @@ public class GooglePlacesAutoCompleteArrayAdapter extends ArrayAdapter implement
 
     public GooglePlacesAutoCompleteArrayAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
-        apiKey = context.getString(R.string.google_maps_key_ws);
+        apiKey = MyApiClient.getGoogleMapsKeyWS();
     }
 
     @Override
