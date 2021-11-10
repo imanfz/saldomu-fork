@@ -75,6 +75,11 @@ public class CoreApp extends Application {
 
         Iconify.with(new FontAwesomeModule());
         CustomSecurePref.initialize(this);
+        CustomEncryptedSharedPreferences.initialize(this);
+        CustomEncryptedSharedPreferences preferences = CustomEncryptedSharedPreferences.getInstance();
+        preferences.putString(DefineValue.ENCRYPTION_PATTERN, "AES/CBC/PKCS5Padding");
+        preferences.putString(DefineValue.GOOGLE_MAPS_KEY, getString(R.string.google_maps_key));
+        preferences.putString(DefineValue.GOOGLE_MAPS_KEY_WS, getString(R.string.google_maps_key_ws));
         MyApiClient myApiClient = MyApiClient.Initialize(this);
         setsDefSystemLanguage(null);
 

@@ -133,7 +133,6 @@ public class CustomSecurePref {
         mEdit.remove(DefineValue.PROFILE_BOM);
 
         mEdit.remove(DefineValue.LIST_ID_TYPES);
-        mEdit.remove(DefineValue.LIST_CONTACT_CENTER);
         mEdit.remove(DefineValue.IS_CHANGED_PASS);
         mEdit.remove(DefineValue.IMG_URL);
         mEdit.remove(DefineValue.IMG_SMALL_URL);

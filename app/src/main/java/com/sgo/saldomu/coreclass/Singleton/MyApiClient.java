@@ -5,6 +5,7 @@ import android.content.Context;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CustomEncryptedSharedPreferences;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.utils.LocaleManager;
@@ -262,7 +263,6 @@ public class MyApiClient {
     public static String LINK_SET_MEMBER_LOC;
     public static String LINK_CANCEL_VISIT_DGI;
 
-    public static String LINK_GOOGLE_MAPS_API_GEOCODE;
     public static String LINK_GOOGLE_MAPS_API_GEOCODE_BASE;
 
     public static String LINK_GET_OTP;
@@ -510,8 +510,6 @@ public class MyApiClient {
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 //        LINK_REG_TOKEN_FCM = urlMNotif + "sendnotification/invoke";
 
-        String googleMapsKey = getmContext().getString(R.string.google_maps_key_ws);
-        LINK_GOOGLE_MAPS_API_GEOCODE = "https://maps.google.com/maps/api/geocode/json?sensor=false&key=" + googleMapsKey + "&language=id";
         LINK_GOOGLE_MAPS_API_GEOCODE_BASE = "https://maps.google.com/maps/api/geocode/json";
 
         LINK_REQ_CHANGE_EMAIL = headaddressfinal + "ReqChangeEmail/Invoke";
@@ -632,7 +630,7 @@ public class MyApiClient {
     public HashMap<String, Object> googleQuery() {
         HashMap<String, Object> query = new HashMap<>();
         query.put("sensor", false);
-        query.put("key", getmContext().getString(R.string.google_maps_key_ws));
+        query.put("key", getGoogleMapsKeyWS());
         query.put("language", "id");
         return query;
     }
@@ -646,8 +644,18 @@ public class MyApiClient {
         if (language.equals("in"))
             language = "id";
         query.put("language", language);
-        query.put("key", getInstance().getmContext().getString(R.string.google_maps_key));
+        query.put("key", getGoogleMapsKey());
         return query;
+    }
+
+    public static String getGoogleMapsKeyWS(){
+        CustomEncryptedSharedPreferences preferences = CustomEncryptedSharedPreferences.getInstance();
+        return preferences.getString(DefineValue.GOOGLE_MAPS_KEY_WS,"");
+    }
+
+    public static String getGoogleMapsKey(){
+        CustomEncryptedSharedPreferences preferences = CustomEncryptedSharedPreferences.getInstance();
+        return preferences.getString(DefineValue.GOOGLE_MAPS_KEY,"");
     }
 
     public static String URL_HELP_DEV = "https://mobile-dev.saldomu.com/static/pages/help/";

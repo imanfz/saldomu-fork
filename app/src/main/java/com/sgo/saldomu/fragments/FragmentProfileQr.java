@@ -197,7 +197,6 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         if (getActivity().getIntent() != null) {
             sourceAcct = NoHPFormat.formatTo08(sp.getString(DefineValue.USERID_PHONE, ""));
             sourceAcctName = sp.getString(DefineValue.CUST_NAME, "");
-//            contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER, "");
         }
 
         isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL, false);

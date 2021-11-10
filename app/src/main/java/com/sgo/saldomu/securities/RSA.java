@@ -3,6 +3,8 @@ package com.sgo.saldomu.securities;
 import android.util.Base64;
 
 import com.sgo.saldomu.BuildConfig;
+import com.sgo.saldomu.coreclass.CustomEncryptedSharedPreferences;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
 import java.io.ByteArrayOutputStream;
@@ -102,16 +104,17 @@ public class RSA {
         Timber.d("data: %s", data);
         String strIv = BuildConfig.AES_ENCRYPT_IV;
         String encryptedValue = "";
+        CustomEncryptedSharedPreferences preferences = CustomEncryptedSharedPreferences.getInstance();
         try {
-            Cipher ciper = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            Cipher cipher = Cipher.getInstance(preferences.getString(DefineValue.ENCRYPTION_PATTERN,""));
             SecretKeySpec key = new SecretKeySpec(strKey.getBytes(), "AES");
-            IvParameterSpec iv = new IvParameterSpec(strIv.getBytes(), 0, ciper.getBlockSize());
+            IvParameterSpec iv = new IvParameterSpec(strIv.getBytes(), 0, cipher.getBlockSize());
 
             // Encrypt
-            ciper.init(Cipher.ENCRYPT_MODE, key, iv);
-            byte[] encryptedCiperBytes = ciper.doFinal(data.getBytes(StandardCharsets.UTF_8));
+            cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+            byte[] encryptedCipherBytes = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
 
-            encryptedValue = Base64.encodeToString(encryptedCiperBytes, Base64.DEFAULT);
+            encryptedValue = Base64.encodeToString(encryptedCipherBytes, Base64.DEFAULT);
             encryptedValue = encryptedValue.trim();
             Timber.d("encrypt data: %s", encryptedValue);
         } catch (Exception e) {
