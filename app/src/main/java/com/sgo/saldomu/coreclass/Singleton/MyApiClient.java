@@ -227,7 +227,7 @@ public class MyApiClient {
     public static String LINK_BBS_OTP_MEMBER_A2C;
     public static String LINK_GLOBAL_BBS_INSERT_C2R;
 
-    public static String LINK_BBS_LIST_COMMUNITY_ALL;
+    public static String LINK_BBS_LIST_COMMUNITY_AGENT;
     public static String LINK_REG_TOKEN_FCM;
 
     public static String LINK_INQUIRY_TOKEN_ATC;
@@ -487,7 +487,7 @@ public class MyApiClient {
         LINK_GLOBAL_BBS_INSERT_A2C = headaddressfinal + "GlobalBBSInsertA2C/Invoke";
         LINK_BBS_LIST_MEMBER_A2C = headaddressfinal + "BBSListMemberATC/Retrieve";
         LINK_BBS_OTP_MEMBER_A2C = headaddressfinal + "BBSOTPMemberATC/Invoke";
-        LINK_BBS_LIST_COMMUNITY_ALL = headaddressfinal + "ListCommunity/Retrieve";
+        LINK_BBS_LIST_COMMUNITY_AGENT = headaddressfinal + "ListCommunityAgent/Retrieve";
         LINK_INQUIRY_TOKEN_ATC = headaddressfinal + "InquiryTokenATC/Retrieve";
         LINK_INQUIRY_DATA_ATC = headaddressfinal + "InquiryDataATC/Retrieve";
         LINK_CANCEL_ATC = headaddressfinal + "CancelATC/Invoke";
