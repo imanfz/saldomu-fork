@@ -157,12 +157,27 @@ public class UpdateBBSData extends IntentService {
                         try {
                             String code = response.getString(WebParams.ERROR_CODE);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-                                CommDataModel modelCommunityCTA = new Gson().fromJson(response.getString(CTA), CommDataModel.class);
-                                insertToRealm(new JSONArray(new Gson().toJson(modelCommunityCTA.getCommunity())), CTA);
-                                CommDataModel modelCommunityATC = new Gson().fromJson(response.getString(ATC), CommDataModel.class);
-                                insertToRealm(new JSONArray(new Gson().toJson(modelCommunityATC.getCommunity())), ATC);
-                                CommDataModel modelCommunityCTR = new Gson().fromJson(response.getString(CTR), CommDataModel.class);
-                                insertToRealm(new JSONArray(new Gson().toJson(modelCommunityCTR.getCommunity())), CTR);
+                                CommDataModel modelCommunity;
+                                String stringComm;
+
+                                stringComm = response.optString(CTA,"");
+                                if (!stringComm.equals("")) {
+                                    modelCommunity = new Gson().fromJson(stringComm, CommDataModel.class);
+                                    insertToRealm(new JSONArray(new Gson().toJson(modelCommunity.getCommunity())), CTA);
+                                }
+
+                                stringComm = response.optString(ATC,"");
+                                if (!stringComm.equals("")) {
+                                    modelCommunity = new Gson().fromJson(stringComm, CommDataModel.class);
+                                    insertToRealm(new JSONArray(new Gson().toJson(modelCommunity.getCommunity())), ATC);
+                                }
+
+                                stringComm = response.optString(CTR,"");
+                                if (!stringComm.equals("")) {
+                                    modelCommunity = new Gson().fromJson(stringComm, CommDataModel.class);
+                                    insertToRealm(new JSONArray(new Gson().toJson(modelCommunity.getCommunity())), CTR);
+                                }
+
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
