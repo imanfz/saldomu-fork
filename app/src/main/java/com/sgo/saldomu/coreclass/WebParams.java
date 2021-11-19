@@ -226,6 +226,7 @@ public class WebParams {
 
     public static String NO_DATA_CODE = "0003";
     public static String TRX_ID = "trx_id";
+    public static String TRX_ID_REF = "trx_id_ref";
     public static String TX_TYPE = "tx_type";
     public static String STATUS = "status";
     public static String UNREAD = "unread";

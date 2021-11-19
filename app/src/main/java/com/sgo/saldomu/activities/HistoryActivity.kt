@@ -764,6 +764,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
             args.putString(DefineValue.DGI_MEMBER_NAME, resp.dgi_member_name)
             args.putString(DefineValue.DGI_ANCHOR_NAME, resp.dgi_anchor_name)
             args.putString(DefineValue.DGI_COMM_NAME, resp.dgi_comm_name)
+            args.putString(DefineValue.TRX_ID_REF, response.optString(WebParams.TRX_ID_REF))
 
             dialog.arguments = args
             val ft = this.supportFragmentManager.beginTransaction()

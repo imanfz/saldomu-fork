@@ -1,5 +1,7 @@
 package com.sgo.saldomu.securities;
 
+import android.os.Build;
+import android.security.keystore.KeyProperties;
 import android.util.Base64;
 
 import com.sgo.saldomu.BuildConfig;
@@ -36,11 +38,20 @@ import timber.log.Timber;
 public class RSA {
     private static final int pswdIterations = 10;
     private static final int keySize = 128;
-    private static final String cypherInstance = "AES/CBC/PKCS5Padding";
+    private static String cypherInstance;
     private static final String secretKeyInstance = "PBKDF2WithHmacSHA1";
     private static final String plainText = "sampleText";
     private static final String AESSalt = "exampleSalt";
     private static final String initializationVector = "8119745113154120";
+
+    static {
+        try {
+            cypherInstance = decrypt2(BuildConfig.ENCRYPTION_PATTERN);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static String opensslEncrypt(String data) {
 
         String encryptedValue = "";
@@ -48,7 +59,7 @@ public class RSA {
         String strIv = BuildConfig.OPENSSL_ENCRYPT_IV;
 
         try {
-            Cipher ciper = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            Cipher ciper = Cipher.getInstance(cypherInstance);
             SecretKeySpec key = new SecretKeySpec(strKey.getBytes(), "AES");
             IvParameterSpec iv = new IvParameterSpec(strIv.getBytes(), 0, ciper.getBlockSize());
 
@@ -104,9 +115,8 @@ public class RSA {
         Timber.d("data: %s", data);
         String strIv = BuildConfig.AES_ENCRYPT_IV;
         String encryptedValue = "";
-        CustomEncryptedSharedPreferences preferences = CustomEncryptedSharedPreferences.getInstance();
         try {
-            Cipher cipher = Cipher.getInstance(preferences.getString(DefineValue.ENCRYPTION_PATTERN,""));
+            Cipher cipher = Cipher.getInstance(cypherInstance);
             SecretKeySpec key = new SecretKeySpec(strKey.getBytes(), "AES");
             IvParameterSpec iv = new IvParameterSpec(strIv.getBytes(), 0, cipher.getBlockSize());
 
@@ -123,8 +133,8 @@ public class RSA {
         return encryptedValue;
     }
 
+    //dipake buat kalau mau encrypt manual
     public static String encrypt2(String textToEncrypt) throws Exception {
-
         SecretKeySpec skeySpec = new SecretKeySpec(getRaw(plainText, AESSalt), "AES");
         Cipher cipher = Cipher.getInstance(cypherInstance);
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec, new IvParameterSpec(initializationVector.getBytes()));
@@ -133,10 +143,13 @@ public class RSA {
     }
 
     public static String decrypt2(String textToDecrypt) throws Exception {
-
         byte[] encryted_bytes = Base64.decode(textToDecrypt, Base64.DEFAULT);
         SecretKeySpec skeySpec = new SecretKeySpec(getRaw(plainText, AESSalt), "AES");
-        Cipher cipher = Cipher.getInstance(cypherInstance);
+        Cipher cipher;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/PKCS5Padding");
+        else
+            cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, skeySpec, new IvParameterSpec(initializationVector.getBytes()));
         byte[] decrypted = cipher.doFinal(encryted_bytes);
         return new String(decrypted, "UTF-8");
@@ -153,18 +166,18 @@ public class RSA {
         return new byte[0];
     }
 
-    public static String decrypt(String strKey, String data){
+    public static String decrypt(String strKey, String data) {
 
         String strIv = BuildConfig.AES_ENCRYPT_IV;
         String decryptedValue = "";
         try {
-            Cipher ciper = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            Cipher ciper = Cipher.getInstance(cypherInstance);
             SecretKeySpec key = new SecretKeySpec(strKey.getBytes(), "AES");
             IvParameterSpec iv = new IvParameterSpec(strIv.getBytes());
 
             // Decrypt
             ciper.init(Cipher.DECRYPT_MODE, key, iv);
-            byte[] original = ciper.doFinal(Base64.decode(data,0));
+            byte[] original = ciper.doFinal(Base64.decode(data, 0));
 
             decryptedValue = new String(original);
 

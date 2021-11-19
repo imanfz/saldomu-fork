@@ -15,12 +15,6 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Locale;
-
 import timber.log.Timber;
 
 //import com.facebook.stetho.Stetho;
@@ -71,7 +65,6 @@ public class CoreApp extends MultiDexApplication {
         CustomSecurePref.initialize(this);
         CustomEncryptedSharedPreferences.initialize(this);
         CustomEncryptedSharedPreferences preferences = CustomEncryptedSharedPreferences.getInstance();
-        preferences.putString(DefineValue.ENCRYPTION_PATTERN, "AES/CBC/PKCS5Padding");
         preferences.putString(DefineValue.GOOGLE_MAPS_KEY, getString(R.string.google_maps_key));
         preferences.putString(DefineValue.GOOGLE_MAPS_KEY_WS, getString(R.string.google_maps_key_ws));
         MyApiClient myApiClient = MyApiClient.Initialize(this);
