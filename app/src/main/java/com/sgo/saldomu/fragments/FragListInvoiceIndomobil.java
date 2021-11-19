@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,7 +50,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
-import com.sgo.saldomu.dialogs.InputAmountTagihBillerDialog;
+import com.sgo.saldomu.dialogs.InputAmountTagihBillerIndomobilDialog;
 import com.sgo.saldomu.dialogs.PaymentRemarkDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.ResponseListener;
@@ -310,7 +309,7 @@ public class FragListInvoiceIndomobil extends BaseFragment {
 
     void showInputDialog(InvoiceDGI model) {
         int pos = invoiceDGIModelArrayList.indexOf(model);
-        InputAmountTagihBillerDialog dialog = InputAmountTagihBillerDialog.newDialog(pos, invoiceDGIModelArrayList.get(pos), partialPayment,
+        InputAmountTagihBillerIndomobilDialog dialog = InputAmountTagihBillerIndomobilDialog.newDialog(pos, invoiceDGIModelArrayList.get(pos), partialPayment,
                 (pos1, value) -> {
                     invoiceDGIModelArrayList.get(pos1).setInput_amount(value);
                     invoiceDGIAdapter.notifyItemChanged(pos1);

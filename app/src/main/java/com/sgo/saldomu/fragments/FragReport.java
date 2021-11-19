@@ -1198,6 +1198,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             args.putString(DefineValue.DGI_MEMBER_NAME, resp.getDgi_member_name());
             args.putString(DefineValue.DGI_ANCHOR_NAME, resp.getDgi_anchor_name());
             args.putString(DefineValue.DGI_COMM_NAME, resp.getDgi_comm_name());
+            args.putString(DefineValue.TRX_ID_REF, response.optString(WebParams.TRX_ID_REF));
 
             dialog.setArguments(args);
 //        dialog.show(getFragmentManager(), "report biller dialog");

@@ -30,6 +30,7 @@
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -161,32 +162,39 @@
             android:layout_margin="8dp"
             android:background="@color/grey_300" />
 
-        <!--<TableRow>-->
+        <TableRow android:id="@+id/tr_dialog_report_trx_id_ref">
 
-        <!--<TextView-->
-        <!--android:id="@+id/dialog_reportbiller_text_dest_remark"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_gravity="center_vertical"-->
-        <!--android:layout_weight="1"-->
-        <!--android:padding="3dip"-->
-        <!--android:text="@string/billerinput_text_keterangan" />-->
-        <!--<TextView-->
-        <!--android:id="@+id/dialog_reportbiller_dest_remark_value"-->
-        <!--android:text="82389238923"-->
-        <!--android:layout_weight="2"-->
-        <!--android:layout_gravity="center_vertical"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:gravity="right"-->
-        <!--android:padding="3dip" />-->
-        <!--</TableRow>-->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:padding="3dip"
+                android:text="@string/transaction_id_ref" />
+
+            <TextView
+                android:id="@+id/dialog_report_trx_id_ref_value"
+                android:layout_width="0dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="2"
+                android:gravity="right"
+                android:padding="3dip" />
+        </TableRow>
+
+        <View
+            android:id="@+id/view_dialog_report_trx_id_ref"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300" />
+
         <TableRow>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Invoice "
-                android:textStyle="bold"/>
+                android:text="Invoice"
+                android:textStyle="bold" />
 
         </TableRow>
 

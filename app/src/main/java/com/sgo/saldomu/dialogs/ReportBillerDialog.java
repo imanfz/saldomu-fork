@@ -890,6 +890,9 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_community_name = inflated.findViewById(R.id.dialog_report_community_name_value);
                 TextView tv_shop_name = inflated.findViewById(R.id.dialog_report_shop_name_value);
                 TextView tv_payment_type = inflated.findViewById(R.id.dialog_report_payment_type_value);
+                TextView tv_trx_id_ref = inflated.findViewById(R.id.dialog_report_trx_id_ref_value);
+                TableRow tr_trx_id_ref = inflated.findViewById(R.id.tr_dialog_report_trx_id_ref);
+                View view_trx_id_ref = inflated.findViewById(R.id.view_dialog_report_trx_id_ref);
                 TextView tv_amount = inflated.findViewById(R.id.dialog_reportbiller_amount_value);
                 TextView tv_fee = inflated.findViewById(R.id.dialog_reportbiller_fee_value);
                 TextView tv_total_amount = inflated.findViewById(R.id.dialog_reportbiller_total_amount_value);
@@ -900,6 +903,13 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_community_name.setText(args.getString(DefineValue.DGI_COMM_NAME, ""));
                 tv_shop_name.setText(args.getString(DefineValue.DGI_MEMBER_NAME, ""));
                 tv_payment_type.setText(args.getString(DefineValue.PAYMENT_TYPE_DESC, ""));
+                String trx_id_ref = args.getString(DefineValue.TRX_ID_REF, "");
+                if (!trx_id_ref.equals(""))
+                    tv_trx_id_ref.setText(args.getString(DefineValue.TRX_ID_REF, ""));
+                else {
+                    tr_trx_id_ref.setVisibility(View.GONE);
+                    view_trx_id_ref.setVisibility(View.GONE);
+                }
                 tv_amount.setText(args.getString(DefineValue.AMOUNT));
                 tv_fee.setText(args.getString(DefineValue.FEE));
                 tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
