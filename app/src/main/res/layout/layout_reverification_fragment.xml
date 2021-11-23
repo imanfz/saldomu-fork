@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -13,24 +13,24 @@
         android:layout_marginTop="20dp"
         android:layout_marginRight="20dp"
         android:animateLayoutChanges="true"
-        android:src="@drawable/logo" />
+        android:src="@drawable/logo"
+        android:contentDescription="@string/SALDOMU"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Version"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginRight="20dp"
-        />
+        android:text="Version" />
 
     <TextView
+        android:id="@+id/tv_version"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="1.0"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:id="@+id/tv_version"/>
+        android:text="1.0" />
 
 
     <TextView
@@ -45,39 +45,42 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="@string/text_copyright"
         android:layout_margin="20dp"
+        android:text="@string/text_copyright"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption"
         android:textStyle="bold" />
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_gravity="center"
-    android:gravity="center">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_background_blue"
-        android:text="@string/menu_item_title_help"
-        android:layout_margin="20dp"
-        android:padding="@dimen/margin_10dp"
-        android:layout_gravity="center"
-        android:textColor="@color/white"
-        android:id="@+id/btn_help"
-        android:layout_weight="1"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_background_blue"
-        android:text="@string/reverfication"
-        android:layout_margin="20dp"
-        android:padding="@dimen/margin_10dp"
-        android:layout_gravity="center"
-        android:textColor="@color/white"
-        android:id="@+id/btn_reverification"
-        android:layout_weight="1"/>
-</LinearLayout>
+        <Button
+            android:id="@+id/btn_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_background_blue"
+            android:padding="@dimen/margin_10dp"
+            android:text="@string/menu_item_title_help"
+            android:textColor="@color/white"
+            style="?android:attr/buttonBarButtonStyle" />
+
+        <Button
+            android:id="@+id/btn_reverification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_background_blue"
+            android:padding="@dimen/margin_10dp"
+            android:text="@string/reverification"
+            android:textColor="@color/white"
+            style="?android:attr/buttonBarButtonStyle" />
+    </LinearLayout>
 </LinearLayout>

@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_marginTop="20dp"
         android:layout_weight="11"
-        android:layout_marginTop="20dp">
+        android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,47 +25,49 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
+                android:layout_weight="1"
                 android:animateLayoutChanges="true"
                 android:src="@drawable/logo"
-                android:layout_weight="1"/>
+                android:contentDescription="@string/SALDOMU"/>
+
             <ImageButton
                 android:id="@+id/btn_warn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:src="@drawable/icon_i_filled"
+                android:layout_gravity="end"
                 android:layout_weight="8"
                 android:background="@color/white"
-                />
+                android:contentDescription="@string/reverification"
+                android:minHeight="48dp"
+                android:src="@drawable/icon_i_filled" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="50dp"
             android:animateLayoutChanges="true"
             android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            android:layout_marginTop="50dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:src="@drawable/account_circle"
+                android:layout_gravity="start"
+                android:layout_marginStart="20dp"
                 android:layout_weight="8"
                 android:background="@color/white"
-                android:layout_marginLeft="20dp"
-                />
+                android:src="@drawable/account_circle" />
 
             <EditText
                 android:id="@+id/userID_value"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_10dp"
                 android:layout_marginRight="@dimen/margin_10dp"
-                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:digits="1234567890"
                 android:enabled="true"
                 android:hint="@string/userid_hint_otp"
@@ -75,24 +78,22 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/grey_400"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:textStyle="bold"
-                android:layout_weight="1">
+                android:textStyle="bold">
+
                 <requestFocus />
             </EditText>
         </LinearLayout>
 
 
-
         <Button
-            android:layout_margin="30dp"
+            android:id="@+id/btn_send"
             android:layout_width="100dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
+            android:layout_margin="30dp"
             android:background="@drawable/rounded_background_blue"
-            android:id="@+id/btn_send"
             android:text="@string/login_button_login"
-            android:textColor="@color/white"
-            />
+            android:textColor="@color/white" />
     </LinearLayout>
 
     <TextView
@@ -113,8 +114,8 @@
         android:layout_weight="0.5"
         android:background="@color/colorPrimaryDark"
         android:gravity="center"
-        android:textSize="16sp"
+        android:text="PT. Mitra Pembayaran Elektronik 2019"
         android:textColor="@color/white"
-        android:text="PT. Mitra Pembayaran Elektronik 2019"/>
+        android:textSize="16sp" />
 
 </LinearLayout>
