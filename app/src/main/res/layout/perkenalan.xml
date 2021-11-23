@@ -15,23 +15,25 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:padding="12dp">
+
         <Button
             android:id="@+id/btn_start_now"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/transparent"
+            android:text="@string/start_now"
             android:textColor="@color/white"
-            android:textStyle="bold"
             android:textSize="16sp"
-            android:text="@string/start_now" />
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/btn_pos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentEnd="true"
+            android:contentDescription="@null"
+            android:background="@color/transparent" />
     </RelativeLayout>
 </RelativeLayout>
