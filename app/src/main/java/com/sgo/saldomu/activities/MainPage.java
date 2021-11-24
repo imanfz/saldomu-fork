@@ -1,6 +1,7 @@
 package com.sgo.saldomu.activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -31,6 +32,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonObject;
+import com.google.zxing.client.android.Intents;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.journeyapps.barcodescanner.CaptureActivity;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -42,6 +46,7 @@ import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.NotificationActionView;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.RootUtil;
+import com.sgo.saldomu.coreclass.ScanQRUtils;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
@@ -58,8 +63,10 @@ import com.sgo.saldomu.fragments.FragHelp;
 import com.sgo.saldomu.fragments.FragMainPage;
 import com.sgo.saldomu.fragments.FragmentProfileQr;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.QrModel;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.GetMemberModel;
 import com.sgo.saldomu.models.retrofit.MemberDataModel;
@@ -90,6 +97,7 @@ import timber.log.Timber;
 public class MainPage extends BaseActivity {
 
     public static final int REQUEST_FINISH = 0;//untuk Request Code dari child activity ke parent activity
+    private static final int RESULT_SCAN = 49374;//untuk Result Code dari IntentIntegrator
     private static final int RESULT_ERROR = -1;//untuk Result Code dari child activity ke parent activity kalau error (aplikasi exit)
     public static final int RESULT_LOGOUT = 1;//untuk Result Code dari child activity ke parent activity kalau sukses (aplikasi auto logout)
     public static final int RESULT_NORMAL = 2;//untuk Result Code dari child activity ke parent activity kalau normal (aplikasi close ke parent activity)
@@ -239,7 +247,16 @@ public class MainPage extends BaseActivity {
     }
 
     private void showScan() {
-        startActivity(new Intent(MainPage.this, QrisActivity.class));
+//        startActivity(new Intent(MainPage.this, QrisActivity.class));
+        new IntentIntegrator(this)
+                .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
+                .setCameraId(0)
+                .setOrientationLocked(true)
+                .setPrompt("Scanning")
+                .setBeepEnabled(true)
+                .setBarcodeImageEnabled(true)
+                .setCaptureActivity(CaptureActivity.class)
+                .initiateScan();
     }
 
     private void showHelpFragment() {
@@ -1295,6 +1312,21 @@ public class MainPage extends BaseActivity {
                 mNavDrawer.refreshUINavDrawer();
                 mNavDrawer.refreshDataNavDrawer();
             }
+        } else if (requestCode == RESULT_SCAN) {
+            String qrString = data.getStringExtra(Intents.Scan.RESULT);
+            if (!qrString.equals("")) {
+                if (qrString.contains("qr_type=QR_TYPE_FROM_DEFAULT_ACCOUNT")) {
+                    if (sp.getBoolean(DefineValue.ALLOW_TRANSFER, false)) {
+                        QrModel qrModel = divideResult(qrString);
+                        Intent intent = new Intent(MainPage.this, PayFriendsActivity.class);
+                        intent.putExtra(DefineValue.QR_OBJ, qrModel);
+                        startActivity(intent);
+                    } else
+                        dialogUnavailable();
+                } else
+//                    dialogUnavailable();
+                    parsingQR(qrString);
+            }
         } else {
             if (resultCode == -1) {
                 Fragment fragmentProfileQr = getSupportFragmentManager().findFragmentByTag(getString(R.string.myprofilelist_ab_title));
@@ -1305,6 +1337,87 @@ public class MainPage extends BaseActivity {
                 }
             }
         }
+    }
+
+    private void parsingQR(String qrisString) {
+        showProgressDialog();
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_QRIS_PARSING, qrisString);
+        params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.QRIS_STRING, qrisString);
+
+        Timber.d("isi params qris parsing:%s", params);
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_QRIS_PARSING, params, new ObjListeners() {
+            @Override
+            public void onResponses(JSONObject response) {
+                try {
+                    String code = response.getString(WebParams.ERROR_CODE);
+                    String message = response.getString(WebParams.ERROR_MESSAGE);
+
+                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                        Intent intent = new Intent(MainPage.this, ConfirmationQrisActivity.class);
+                        intent.putExtra(DefineValue.RESPONSE, response.toString());
+                        startActivity(intent);
+                    } else if (code.equals(WebParams.LOGOUT_CODE) || code.equals(WebParams.ERROR_0003)) {
+                        AlertDialogLogout.getInstance().showDialoginMain(MainPage.this, message);
+                    } else if (code.equals(DefineValue.ERROR_9333)) {
+                        jsonModel model = getGson().fromJson(response.toString(), jsonModel.class);
+                        final AppDataModel appModel = model.getApp_data();
+                        AlertDialogUpdateApp.getInstance().showDialogUpdate(MainPage.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                    } else if (code.equals(DefineValue.ERROR_0066)) {
+                        AlertDialogMaintenance.getInstance().showDialogMaintenance(MainPage.this);
+                    } else {
+                        Toast.makeText(MainPage.this, message, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                dismissProgressDialog();
+            }
+
+            @Override
+            public void onComplete() {
+                dismissProgressDialog();
+            }
+        });
+    }
+
+    private void dialogUnavailable() {
+        Dialog dialog = DefinedDialog.MessageDialog(this, getString(R.string.alertbox_title_information),
+                getString(R.string.cashout_dialog_message),
+                () -> {
+                }
+        );
+
+        dialog.show();
+    }
+
+    private QrModel divideResult(String rawResult) {
+        String[] array = new String[10];
+        String qrType = "";
+        String benef = "";
+        String benefName = "";
+
+        int i = 0;
+        for (String value : rawResult.split(ScanQRUtils.SCAN_QR_SEPARATOR)) {
+            Timber.d("split string:%s", value);
+            array[i] = value;
+
+            if (array[i].contains(DefineValue.QR_TYPE)) {
+                qrType = array[i].substring(array[i].indexOf(ScanQRUtils.EQUALS_SEPARATOR) + 1);
+            } else if (array[i].contains(DefineValue.NO_HP_BENEF)) {
+                benef = array[i].substring(array[i].indexOf(ScanQRUtils.EQUALS_SEPARATOR) + 1);
+                Timber.d("TEST benef:%s", benef);
+            } else if (array[i].contains(DefineValue.SOURCE_ACCT_NAME)) {
+                benefName = array[i].substring(array[i].indexOf(ScanQRUtils.EQUALS_SEPARATOR) + 1);
+                Timber.d("TEST benefName:%s", benefName);
+            }
+            i++;
+        }
+        return new QrModel(benef, benefName, qrType);
     }
 
 
