@@ -2,8 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:fillViewport="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -30,20 +30,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp"
+                    android:layout_weight="1"
                     android:animateLayoutChanges="true"
                     android:src="@drawable/logo"
-                    android:layout_weight="1"/>
+                    android:contentDescription="@string/SALDOMU" />
+
                 <ImageButton
                     android:id="@+id/btn_warn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:src="@drawable/icon_i_filled"
+                    android:minHeight="48dp"
+                    android:layout_gravity="end"
                     android:layout_weight="8"
                     android:background="@color/white"
-                    />
+                    android:contentDescription="@string/reverification"
+                    android:src="@drawable/icon_i_filled" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -52,7 +55,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:orientation="vertical">
 
@@ -61,6 +63,7 @@
                 style="@style/EditTextyellow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="48dp"
                 android:digits="1234567890"
                 android:enabled="true"
                 android:hint="@string/login_edittext_hint_id"
@@ -73,7 +76,6 @@
                 android:textSize="@dimen/abc_text_size_medium_material"
                 android:textStyle="bold"
                 android:visibility="gone">
-
                 <requestFocus />
             </EditText>
 
@@ -87,10 +89,11 @@
                     style="@style/EditTextyellow"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="48dp"
                     android:layout_centerVertical="true"
                     android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
                     android:enabled="true"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:hint="@string/login_edithint_pass"
                     android:inputType="textPassword"
                     android:maxLength="@integer/nomor_lenght_20"
@@ -103,10 +106,11 @@
                     android:id="@+id/passLogin_toogle_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:contentDescription="@string/changepass_checkbox_showpass"
                     android:padding="10dp"
                     android:src="@drawable/icon_filled_eye"
                     android:visibility="invisible" />
@@ -117,8 +121,6 @@
                 android:id="@+id/btn_login"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
@@ -183,7 +185,10 @@
                 android:id="@+id/tv_privacypolicy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:background="@drawable/button_transparant"
                 android:text="@string/terms_and_condition"
                 android:textColor="@color/colorPrimary"
@@ -194,7 +199,6 @@
                 android:id="@+id/btn_register"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="0dp"

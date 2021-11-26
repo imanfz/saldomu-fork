@@ -1643,7 +1643,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="item_search">Cari Barang</string>
     <string name="agent_no">Nomor Agen</string>
     <string name="store_code">Kode Toko</string>
-    <string name="reverfication">Verifikasi Ulang</string>
+    <string name="reverification">Verifikasi Ulang</string>
     <string name="agent_lp_dialog_message">Layanan ini belum tersedia, anda belum menjadi agen Mandiri Laku Pandai</string>
     <string name="otp_login_verification1">Masukkan kode akses yang dikirimkan ke nomor</string>
     <string name="otp_reff_id">Reff ID</string>

@@ -1675,7 +1675,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="item_search">Search Item</string>
     <string name="agent_no">Agent Number</string>
     <string name="store_code">Store Code</string>
-    <string name="reverfication">Re-verification</string>
+    <string name="reverification">Reverification</string>
     <string name="agent_lp_dialog_message">This service is not yet available, you are not yet a Mandiri Laku Pandai Agent</string>
     <string name="otp_login_verification1">Enter access code that sent to</string>
     <string name="otp_reff_id">Reff ID</string>
