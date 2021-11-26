@@ -146,10 +146,10 @@ class FragInputStoreCode : BaseFragment() {
                                     WebParams.SUCCESS_CODE -> {
                                         goToPOList(response)
                                     }
-//                                    "2124" -> {
-//                                        //"Document no is not found"
-//                                        goToPOList(response)
-//                                    }
+                                    "2124" -> {
+                                        //"Document no is not found"
+                                        goToPOList(response)
+                                    }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
                                         AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
