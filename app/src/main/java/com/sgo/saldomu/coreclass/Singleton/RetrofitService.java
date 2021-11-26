@@ -339,7 +339,6 @@ public class RetrofitService {
         params.put(WebParams.CLIENT_APP, DefineValue.ANDROID);
         params.put(WebParams.SIGNATURE, hash);
         params.put(WebParams.PACKAGE_VERSION, BuildConfig.VERSION_NAME);
-        params.put(WebParams.CLIENT_APP, DefineValue.ANDROID);
         String language = LocaleManager.getLanguagePref();
         if (language.equals(DefineValue.LANGUAGE_CODE_IND))
             language = "id";

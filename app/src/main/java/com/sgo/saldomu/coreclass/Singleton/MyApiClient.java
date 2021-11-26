@@ -77,6 +77,7 @@ public class MyApiClient {
     //    public static final String headaddressDEV = "http://116.90.162.173:18080/akardaya/";
 //    public static final String headaddressPROD = "https://mobile.goworld.asia/akardaya2/";
     private static String headaddressfinal = BuildConfig.HEAD_ADDRESSS + "saldomu/";
+    private static String headaddressfinalV2 = BuildConfig.HEAD_ADDRESS_V2 + "api/member/";
 
     public static String headaodaddressfinal = BuildConfig.HEAD_ADDRESSS + "saldomu/agentlocation/";
     public static String urlMNotif = BuildConfig.URL_MNOTIF;
@@ -266,6 +267,7 @@ public class MyApiClient {
     public static String LINK_GOOGLE_MAPS_API_GEOCODE_BASE;
 
     public static String LINK_GET_OTP;
+    public static String LINK_GET_OTP_V2;
     public static String LINK_CONFIRM_OTP;
     public static String LINK_INQUIRY_SOF;
     public static String LINK_CANCEL_PAYMENT_SOF;
@@ -530,6 +532,7 @@ public class MyApiClient {
 
         //OTP
         LINK_GET_OTP = headaddressfinal + "VerifySIMCardByOTP/Retrieve";
+        LINK_GET_OTP_V2 = headaddressfinalV2 + "verifysimcard/requestotp";
         LINK_CONFIRM_OTP = headaddressfinal + "VerifySIMCardConfirmOTP/Retrieve";
 
         //SOF

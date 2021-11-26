@@ -756,4 +756,5 @@ public class WebParams {
     public static String REFERENCE_NUMBER = "reference_number";
     public static String PARTIAL_PAYMENT = "partial_payment";
     public static String LIST_INVOICES = "list_invoices";
+    public static String REQ_PARAMS = "req_params";
 }

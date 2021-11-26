@@ -9,10 +9,15 @@ import com.sgo.saldomu.coreclass.CustomEncryptedSharedPreferences;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -23,6 +28,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
@@ -39,6 +45,7 @@ public class RSA {
     private static final int pswdIterations = 10;
     private static final int keySize = 128;
     private static String cypherInstance;
+    private static PublicKey publicKey;;
     private static final String secretKeyInstance = "PBKDF2WithHmacSHA1";
     private static final String plainText = "sampleText";
     private static final String AESSalt = "exampleSalt";
@@ -50,6 +57,10 @@ public class RSA {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void setPublicKey(PublicKey key) {
+        publicKey = key;
     }
 
     public static String opensslEncrypt(String data) {
@@ -188,33 +199,6 @@ public class RSA {
         return decryptedValue;
     }
 
-    private PublicKey publicKey;
-
-    public void setPublicKey(PublicKey publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    public String readTxt(InputStream inputStream) {
-
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        int i;
-        try {
-            i = inputStream.read();
-            while (i != -1) {
-                byteArrayOutputStream.write(i);
-                i = inputStream.read();
-            }
-            inputStream.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return byteArrayOutputStream.toString();
-    }
-
     /*public byte[] readFileBytes(String filename) throws IOException
     {
         Path path = Paths.get(filename);
@@ -235,21 +219,14 @@ public class RSA {
         return keyFactory.generatePrivate(keySpec);
     }*/
 
-    public String encryptData(String txt) {
-        String encoded = "";
-        byte[] encrypted = null;
+    public static String encryptParams(JSONObject params) {
+        String stringParams= params.toString();
         try {
-            byte[] publicBytes = Base64.decode(this.publicKey.toString(), Base64.DEFAULT);
-            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicBytes);
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            PublicKey pubKey = keyFactory.generatePublic(keySpec);
-            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS7Padding"); //or try with "RSA"
-            cipher.init(Cipher.ENCRYPT_MODE, pubKey);
-            encrypted = cipher.doFinal(txt.getBytes());
-            encoded = Base64.encodeToString(encrypted, Base64.DEFAULT);
-        } catch (Exception e) {
+            Cipher cipher = Cipher.getInstance(cypherInstance);
+            cipher.init(Cipher.ENCRYPT_MODE,publicKey);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
             e.printStackTrace();
         }
-        return encoded;
+        return "";
     }
 }
