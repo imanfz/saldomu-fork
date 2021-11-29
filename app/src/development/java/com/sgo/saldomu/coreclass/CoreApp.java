@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.util.Base64;
 
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
@@ -14,6 +15,22 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.securities.RSA;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPublicKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 
 import timber.log.Timber;
 
@@ -71,6 +88,38 @@ public class CoreApp extends MultiDexApplication {
         setsDefSystemLanguage();
 
         RealmManager.init(this, R.raw.saldomudevrealm);
+
+//        try {
+//            InputStream inputStream = this.getResources().openRawResource(R.raw.public_key);
+//            byte[] bytes = new byte[inputStream.available()];
+//            inputStream.read(bytes);
+//            inputStream.close();
+//            X509EncodedKeySpec spec = new X509EncodedKeySpec(bytes);
+//            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+//            PublicKey publicKey = keyFactory.generatePublic(spec);
+//            RSA.setPublicKey(publicKey);
+//            Timber.e("pub key :%s", String.valueOf(RSA.getPublicKey()));
+//        } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+//            e.printStackTrace();
+//        }
+
+        try {
+            InputStream inputStream = this.getResources().openRawResource(R.raw.public_key);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            for (int length; (length = inputStream.read(buffer)) != -1; ) {
+                byteArrayOutputStream.write(buffer, 0, length);
+            }
+            String pubKeyString = byteArrayOutputStream.toString("UTF-8").replace("-----BEGIN PUBLIC KEY-----\n", "").replace("-----END PUBLIC KEY-----", "");
+
+            byte[] encoded = Base64.decode(pubKeyString,Base64.DEFAULT);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(encoded);
+            PublicKey publicKey = keyFactory.generatePublic(spec);
+            RSA.setPublicKey(publicKey);
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
 
         PackageInfo pInfo;
         try {

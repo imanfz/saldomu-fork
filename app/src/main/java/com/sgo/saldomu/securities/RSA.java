@@ -27,7 +27,9 @@ import java.security.spec.KeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -45,7 +47,8 @@ public class RSA {
     private static final int pswdIterations = 10;
     private static final int keySize = 128;
     private static String cypherInstance;
-    private static PublicKey publicKey;;
+
+    private static PublicKey publicKey;
     private static final String secretKeyInstance = "PBKDF2WithHmacSHA1";
     private static final String plainText = "sampleText";
     private static final String AESSalt = "exampleSalt";
@@ -61,6 +64,10 @@ public class RSA {
 
     public static void setPublicKey(PublicKey key) {
         publicKey = key;
+    }
+
+    public static PublicKey getPublicKey() {
+        return publicKey;
     }
 
     public static String opensslEncrypt(String data) {
@@ -220,13 +227,16 @@ public class RSA {
     }*/
 
     public static String encryptParams(JSONObject params) {
-        String stringParams= params.toString();
+        String stringParams = params.toString();
+        String encryptedValue = "";
         try {
-            Cipher cipher = Cipher.getInstance(cypherInstance);
-            cipher.init(Cipher.ENCRYPT_MODE,publicKey);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            byte[] encryptedCipherBytes = cipher.doFinal(stringParams.getBytes(StandardCharsets.UTF_8));
+            encryptedValue = Base64.encodeToString(encryptedCipherBytes, Base64.DEFAULT);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
         }
-        return "";
+        return encryptedValue;
     }
 }

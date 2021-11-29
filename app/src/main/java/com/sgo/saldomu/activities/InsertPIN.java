@@ -200,55 +200,6 @@ public class InsertPIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
         return super.onOptionsItemSelected(item);
     }
 
-    public void getHelpPin(final ProgressBar progDialog, final TextView Message) {
-        try {
-
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_HELP_PIN, "");
-
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_HELP_PIN, params,
-                    new ObjListeners() {
-                        @Override
-                        public void onResponses(JSONObject response) {
-                            String message_value;
-                            try {
-                                JSONArray arrayContact = new JSONArray(response.optString(WebParams.CONTACT_DATA));
-                                JSONObject mObject;
-                                Timber.tag("getHelpPin").d(response.toString());
-                                for (int i = 0; i < arrayContact.length(); i++) {
-                                    mObject = arrayContact.getJSONObject(i);
-//                            id = mObject.optString(WebParams.ID, "0");
-                                    if (i == 1) {
-                                        message_value = mObject.optString(WebParams.DESCRIPTION, "") + " " +
-                                                mObject.optString(WebParams.NAME, "") + "\n" +
-                                                mObject.optString(WebParams.CONTACT_PHONE, "") + " " +
-                                                getString(R.string.or) + " " +
-                                                mObject.optString(WebParams.CONTACT_EMAIL, "");
-                                        Message.setText(message_value);
-                                        break;
-                                    }
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            progDialog.setIndeterminate(false);
-                            progDialog.setVisibility(View.GONE);
-                            Message.setVisibility(View.VISIBLE);
-                        }
-                    });
-        } catch (Exception e) {
-            Timber.d("httpclient%s", e.getMessage());
-        }
-    }
-
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();

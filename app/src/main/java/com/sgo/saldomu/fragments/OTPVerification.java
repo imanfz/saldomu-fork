@@ -111,7 +111,7 @@ public class OTPVerification extends BaseFragment {
 
     public void getOTP() {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "Requesting OTP");
             progdialog.show();
 
             UUID uuid = MyApiClient.getUUID();
@@ -123,15 +123,15 @@ public class OTPVerification extends BaseFragment {
             jsonObject.put(WebParams.PACKAGE_VERSION, BuildConfig.VERSION_NAME);
             jsonObject.put(WebParams.DEVICE_NAME, getDeviceName());
             jsonObject.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID, ""));
-            String signature = "## " + uuid + " ## " + dateTime + " ## " + user_id + " ## VERIFYSIMREQUESTOTP ##";
+            String signature = "##" + uuid + "##" + dateTime + "##" + user_id + "##VERIFYSIMREQUESTOTP##";
             jsonObject.put(WebParams.SIGNATURE, signature);
 
-            Timber.d("isi params get OTP:%s", params.toString());
+            Timber.d("isi params get OTP:%s", jsonObject.toString());
 
             HashMap<String, Object> encryptedParams = new HashMap<>();
             encryptedParams.put(WebParams.REQ_PARAMS, RSA.encryptParams(jsonObject));
             encryptedParams.put(WebParams.CLIENT_APP, DefineValue.ANDROID);
-
+            Timber.d("isi encryptedParams get OTP:%s", encryptedParams.toString());
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_OTP_V2, encryptedParams
                     , new ResponseListener() {
                         @Override

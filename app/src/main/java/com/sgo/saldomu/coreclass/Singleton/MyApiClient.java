@@ -195,7 +195,6 @@ public class MyApiClient {
     public static String LINK_REQUEST_CASHOUT;
     public static String LINK_CONFIRM_CASHOUT;
     public static String LINK_REJECT_CONFIRM_CASHOUT;
-    public static String LINK_HELP_PIN;
 
     public static String LINK_INQUIRY_WITHDRAW;
     public static String LINK_REQCODE_WITHDRAW;
@@ -452,7 +451,6 @@ public class MyApiClient {
         LINK_REQUEST_CASHOUT = headaddressfinal + "RequestCashout/Invoke";
         LINK_CONFIRM_CASHOUT = headaddressfinal + "ConfirmCashout/Invoke";
         LINK_REJECT_CONFIRM_CASHOUT = headaddressfinal + "Rejectatc/Invoke";
-        LINK_HELP_PIN = headaddressfinal + "HelpPIN/Retrieve";
 
         LINK_INQUIRY_WITHDRAW = headaddressfinal + "InquiryWithdraw/Retrieve";
         LINK_REQCODE_WITHDRAW = headaddressfinal + "ReqCodeWithdraw/Invoke";
