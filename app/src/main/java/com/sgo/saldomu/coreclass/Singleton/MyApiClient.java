@@ -77,6 +77,7 @@ public class MyApiClient {
     //    public static final String headaddressDEV = "http://116.90.162.173:18080/akardaya/";
 //    public static final String headaddressPROD = "https://mobile.goworld.asia/akardaya2/";
     private static String headaddressfinal = BuildConfig.HEAD_ADDRESSS + "saldomu/";
+    private static String headaddressfinalV2 = BuildConfig.HEAD_ADDRESS_V2 + "api/member/";
 
     public static String headaodaddressfinal = BuildConfig.HEAD_ADDRESSS + "saldomu/agentlocation/";
     public static String urlMNotif = BuildConfig.URL_MNOTIF;
@@ -194,7 +195,6 @@ public class MyApiClient {
     public static String LINK_REQUEST_CASHOUT;
     public static String LINK_CONFIRM_CASHOUT;
     public static String LINK_REJECT_CONFIRM_CASHOUT;
-    public static String LINK_HELP_PIN;
 
     public static String LINK_INQUIRY_WITHDRAW;
     public static String LINK_REQCODE_WITHDRAW;
@@ -227,7 +227,7 @@ public class MyApiClient {
     public static String LINK_BBS_OTP_MEMBER_A2C;
     public static String LINK_GLOBAL_BBS_INSERT_C2R;
 
-    public static String LINK_BBS_LIST_COMMUNITY_ALL;
+    public static String LINK_BBS_LIST_COMMUNITY_AGENT;
     public static String LINK_REG_TOKEN_FCM;
 
     public static String LINK_INQUIRY_TOKEN_ATC;
@@ -266,6 +266,7 @@ public class MyApiClient {
     public static String LINK_GOOGLE_MAPS_API_GEOCODE_BASE;
 
     public static String LINK_GET_OTP;
+    public static String LINK_GET_OTP_V2;
     public static String LINK_CONFIRM_OTP;
     public static String LINK_INQUIRY_SOF;
     public static String LINK_CANCEL_PAYMENT_SOF;
@@ -450,7 +451,6 @@ public class MyApiClient {
         LINK_REQUEST_CASHOUT = headaddressfinal + "RequestCashout/Invoke";
         LINK_CONFIRM_CASHOUT = headaddressfinal + "ConfirmCashout/Invoke";
         LINK_REJECT_CONFIRM_CASHOUT = headaddressfinal + "Rejectatc/Invoke";
-        LINK_HELP_PIN = headaddressfinal + "HelpPIN/Retrieve";
 
         LINK_INQUIRY_WITHDRAW = headaddressfinal + "InquiryWithdraw/Retrieve";
         LINK_REQCODE_WITHDRAW = headaddressfinal + "ReqCodeWithdraw/Invoke";
@@ -487,7 +487,7 @@ public class MyApiClient {
         LINK_GLOBAL_BBS_INSERT_A2C = headaddressfinal + "GlobalBBSInsertA2C/Invoke";
         LINK_BBS_LIST_MEMBER_A2C = headaddressfinal + "BBSListMemberATC/Retrieve";
         LINK_BBS_OTP_MEMBER_A2C = headaddressfinal + "BBSOTPMemberATC/Invoke";
-        LINK_BBS_LIST_COMMUNITY_ALL = headaddressfinal + "ListCommunity/Retrieve";
+        LINK_BBS_LIST_COMMUNITY_AGENT = headaddressfinal + "ListCommunityAgent/Retrieve";
         LINK_INQUIRY_TOKEN_ATC = headaddressfinal + "InquiryTokenATC/Retrieve";
         LINK_INQUIRY_DATA_ATC = headaddressfinal + "InquiryDataATC/Retrieve";
         LINK_CANCEL_ATC = headaddressfinal + "CancelATC/Invoke";
@@ -530,6 +530,7 @@ public class MyApiClient {
 
         //OTP
         LINK_GET_OTP = headaddressfinal + "VerifySIMCardByOTP/Retrieve";
+        LINK_GET_OTP_V2 = headaddressfinalV2 + "verifysimcard/requestotp";
         LINK_CONFIRM_OTP = headaddressfinal + "VerifySIMCardConfirmOTP/Retrieve";
 
         //SOF

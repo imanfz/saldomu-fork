@@ -21,6 +21,7 @@ import com.google.gson.JsonObject;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.OTPVerificationActivity;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
@@ -33,9 +34,13 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.OTPModel;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
+import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -84,7 +89,7 @@ public class OTPVerification extends BaseFragment {
         btn_send = v.findViewById(R.id.btn_send);
         btn_warn = v.findViewById(R.id.btn_warn);
 
-        tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME + " (" +BuildConfig.VERSION_CODE +")");
+        tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")");
 
         btn_send.setOnClickListener(view -> {
             if (inputValidation()) {
@@ -97,30 +102,37 @@ public class OTPVerification extends BaseFragment {
         btn_warn.setOnClickListener(v -> {
             Fragment newFrag = new FragHelp();
             Bundle bundle = new Bundle();
-            bundle.putBoolean(DefineValue.NOT_YET_LOGIN,true);
+            bundle.putBoolean(DefineValue.NOT_YET_LOGIN, true);
             newFrag.setArguments(bundle);
             switchFragment(newFrag, "Help", true);
         });
 
     }
 
-    public void  getOTP()
-    {
+    public void getOTP() {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "Requesting OTP");
             progdialog.show();
 
-            extraSignature = user_id;
+            UUID uuid = MyApiClient.getUUID();
+            String dateTime = DateTimeFormat.getCurrentDateTime();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(WebParams.RQ_UUID, uuid);
+            jsonObject.put(WebParams.RQ_DTIME, dateTime);
+            jsonObject.put(WebParams.USER_ID, user_id);
+            jsonObject.put(WebParams.PACKAGE_VERSION, BuildConfig.VERSION_NAME);
+            jsonObject.put(WebParams.DEVICE_NAME, getDeviceName());
+            jsonObject.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID, ""));
+            String signature = "##" + uuid + "##" + dateTime + "##" + user_id + "##VERIFYSIMREQUESTOTP##";
+            jsonObject.put(WebParams.SIGNATURE, signature);
 
-            HashMap<String, Object> params = RetrofitService.getInstance()
-                    .getSignatureSecretKey(MyApiClient.LINK_GET_OTP, extraSignature);
-            params.put(WebParams.USER_ID, user_id);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.DEVICE_NAME, getDeviceName());
+            Timber.d("isi params get OTP:%s", jsonObject.toString());
 
-            Timber.d("isi params get OTP:%s", params.toString());
-
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_OTP, params
+            HashMap<String, Object> encryptedParams = new HashMap<>();
+            encryptedParams.put(WebParams.REQ_PARAMS, RSA.encryptParams(jsonObject));
+            encryptedParams.put(WebParams.CLIENT_APP, DefineValue.ANDROID);
+            Timber.d("isi encryptedParams get OTP:%s", encryptedParams.toString());
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_OTP_V2, encryptedParams
                     , new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
@@ -150,8 +162,7 @@ public class OTPVerification extends BaseFragment {
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:%s", object.toString());
                                     AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
-                                }
-                                else {
+                                } else {
                                     Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 }
                             } else {
@@ -168,7 +179,7 @@ public class OTPVerification extends BaseFragment {
                         public void onComplete() {
                             progdialog.dismiss();
                         }
-                    } );
+                    });
         } catch (Exception e) {
             Timber.d("httpclient:%s", e.getMessage());
             Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -176,10 +187,8 @@ public class OTPVerification extends BaseFragment {
     }
 
 
-    public boolean inputValidation()
-    {
-        if (et_phone_value.length()==0 || et_phone_value.equals(""))
-        {
+    public boolean inputValidation() {
+        if (et_phone_value.length() == 0 || et_phone_value.equals("")) {
             et_phone_value.requestFocus();
             et_phone_value.setError(getActivity().getString(R.string.login_validation_userID));
             return false;

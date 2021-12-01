@@ -753,6 +753,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
         args.putString(DefineValue.DGI_MEMBER_NAME, response.optString(WebParams.DGI_MEMBER_NAME));
         args.putString(DefineValue.DGI_ANCHOR_NAME, response.optString(WebParams.DGI_ANCHOR_NAME));
         args.putString(DefineValue.DGI_COMM_NAME, response.optString(WebParams.DGI_COMM_NAME));
+        args.putString(DefineValue.TRX_ID_REF, response.optString(WebParams.TRX_ID_REF));
 
         dialog.setArguments(args);
 //        dialog.show(getFragmentManager(), "report biller dialog");

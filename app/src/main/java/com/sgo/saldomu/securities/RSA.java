@@ -1,5 +1,7 @@
 package com.sgo.saldomu.securities;
 
+import android.os.Build;
+import android.security.keystore.KeyProperties;
 import android.util.Base64;
 
 import com.sgo.saldomu.BuildConfig;
@@ -7,10 +9,15 @@ import com.sgo.saldomu.coreclass.CustomEncryptedSharedPreferences;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -20,7 +27,10 @@ import java.security.spec.KeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
@@ -36,11 +46,30 @@ import timber.log.Timber;
 public class RSA {
     private static final int pswdIterations = 10;
     private static final int keySize = 128;
-    private static final String cypherInstance = "AES/CBC/PKCS5Padding";
+    private static String cypherInstance;
+
+    private static PublicKey publicKey;
     private static final String secretKeyInstance = "PBKDF2WithHmacSHA1";
     private static final String plainText = "sampleText";
     private static final String AESSalt = "exampleSalt";
     private static final String initializationVector = "8119745113154120";
+
+    static {
+        try {
+            cypherInstance = decrypt2(BuildConfig.ENCRYPTION_PATTERN);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void setPublicKey(PublicKey key) {
+        publicKey = key;
+    }
+
+    public static PublicKey getPublicKey() {
+        return publicKey;
+    }
+
     public static String opensslEncrypt(String data) {
 
         String encryptedValue = "";
@@ -48,7 +77,7 @@ public class RSA {
         String strIv = BuildConfig.OPENSSL_ENCRYPT_IV;
 
         try {
-            Cipher ciper = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            Cipher ciper = Cipher.getInstance(cypherInstance);
             SecretKeySpec key = new SecretKeySpec(strKey.getBytes(), "AES");
             IvParameterSpec iv = new IvParameterSpec(strIv.getBytes(), 0, ciper.getBlockSize());
 
@@ -104,9 +133,8 @@ public class RSA {
         Timber.d("data: %s", data);
         String strIv = BuildConfig.AES_ENCRYPT_IV;
         String encryptedValue = "";
-        CustomEncryptedSharedPreferences preferences = CustomEncryptedSharedPreferences.getInstance();
         try {
-            Cipher cipher = Cipher.getInstance(preferences.getString(DefineValue.ENCRYPTION_PATTERN,""));
+            Cipher cipher = Cipher.getInstance(cypherInstance);
             SecretKeySpec key = new SecretKeySpec(strKey.getBytes(), "AES");
             IvParameterSpec iv = new IvParameterSpec(strIv.getBytes(), 0, cipher.getBlockSize());
 
@@ -123,8 +151,8 @@ public class RSA {
         return encryptedValue;
     }
 
+    //dipake buat kalau mau encrypt manual
     public static String encrypt2(String textToEncrypt) throws Exception {
-
         SecretKeySpec skeySpec = new SecretKeySpec(getRaw(plainText, AESSalt), "AES");
         Cipher cipher = Cipher.getInstance(cypherInstance);
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec, new IvParameterSpec(initializationVector.getBytes()));
@@ -133,10 +161,13 @@ public class RSA {
     }
 
     public static String decrypt2(String textToDecrypt) throws Exception {
-
         byte[] encryted_bytes = Base64.decode(textToDecrypt, Base64.DEFAULT);
         SecretKeySpec skeySpec = new SecretKeySpec(getRaw(plainText, AESSalt), "AES");
-        Cipher cipher = Cipher.getInstance(cypherInstance);
+        Cipher cipher;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/PKCS5Padding");
+        else
+            cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, skeySpec, new IvParameterSpec(initializationVector.getBytes()));
         byte[] decrypted = cipher.doFinal(encryted_bytes);
         return new String(decrypted, "UTF-8");
@@ -153,18 +184,18 @@ public class RSA {
         return new byte[0];
     }
 
-    public static String decrypt(String strKey, String data){
+    public static String decrypt(String strKey, String data) {
 
         String strIv = BuildConfig.AES_ENCRYPT_IV;
         String decryptedValue = "";
         try {
-            Cipher ciper = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            Cipher ciper = Cipher.getInstance(cypherInstance);
             SecretKeySpec key = new SecretKeySpec(strKey.getBytes(), "AES");
             IvParameterSpec iv = new IvParameterSpec(strIv.getBytes());
 
             // Decrypt
             ciper.init(Cipher.DECRYPT_MODE, key, iv);
-            byte[] original = ciper.doFinal(Base64.decode(data,0));
+            byte[] original = ciper.doFinal(Base64.decode(data, 0));
 
             decryptedValue = new String(original);
 
@@ -173,33 +204,6 @@ public class RSA {
             e.printStackTrace();
         }
         return decryptedValue;
-    }
-
-    private PublicKey publicKey;
-
-    public void setPublicKey(PublicKey publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    public String readTxt(InputStream inputStream) {
-
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        int i;
-        try {
-            i = inputStream.read();
-            while (i != -1) {
-                byteArrayOutputStream.write(i);
-                i = inputStream.read();
-            }
-            inputStream.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return byteArrayOutputStream.toString();
     }
 
     /*public byte[] readFileBytes(String filename) throws IOException
@@ -222,21 +226,17 @@ public class RSA {
         return keyFactory.generatePrivate(keySpec);
     }*/
 
-    public String encryptData(String txt) {
-        String encoded = "";
-        byte[] encrypted = null;
+    public static String encryptParams(JSONObject params) {
+        String stringParams = params.toString();
+        String encryptedValue = "";
         try {
-            byte[] publicBytes = Base64.decode(this.publicKey.toString(), Base64.DEFAULT);
-            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicBytes);
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            PublicKey pubKey = keyFactory.generatePublic(keySpec);
-            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS7Padding"); //or try with "RSA"
-            cipher.init(Cipher.ENCRYPT_MODE, pubKey);
-            encrypted = cipher.doFinal(txt.getBytes());
-            encoded = Base64.encodeToString(encrypted, Base64.DEFAULT);
-        } catch (Exception e) {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            byte[] encryptedCipherBytes = cipher.doFinal(stringParams.getBytes(StandardCharsets.UTF_8));
+            encryptedValue = Base64.encodeToString(encryptedCipherBytes, Base64.DEFAULT);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
         }
-        return encoded;
+        return encryptedValue;
     }
 }

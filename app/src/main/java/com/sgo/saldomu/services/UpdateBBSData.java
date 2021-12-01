@@ -21,11 +21,13 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.CommDataModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -73,22 +75,13 @@ public class UpdateBBSData extends IntentService {
         setUpdatingData(true);
 
         if (!userID.isEmpty() && !accessKey.isEmpty()) {
-            if (BBSDataManager.isDataCTANotValid())
-                getBBSdata(CTA);
-            else
+            if (BBSDataManager.isDataCTANotValid() && BBSDataManager.isDataATCNotValid() && BBSDataManager.isDataCTRNotValid())
+                getBBSData();
+            else {
                 ctaState = true;
-
-            if (BBSDataManager.isDataATCNotValid())
-                getBBSdata(ATC);
-            else
                 atcState = true;
-
-            if (BBSDataManager.isDataCTRNotValid())
-                getBBSdata(CTR);
-            else
                 ctrState = true;
-
-
+            }
         } else
             Timber.d("user id atau access key kosong semua");
 
@@ -148,49 +141,59 @@ public class UpdateBBSData extends IntentService {
 //            realm.close();
 //    }
 
-    private void getBBSdata(final String schemeCode) {
-        try {
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_LIST_COMMUNITY_ALL);
+    private void getBBSData() {
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_LIST_COMMUNITY_AGENT);
 
-            params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
-            params.put(WebParams.SCHEME_CODE, schemeCode);
-            params.put(WebParams.CUST_ID, userID);
-            params.put(WebParams.USER_ID, userID);
+        params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
+        params.put(WebParams.CUST_ID, userID);
+        params.put(WebParams.USER_ID, userID);
 
-            Timber.d("params list community %1$s : %2$s", schemeCode, params.toString());
+        Timber.d("params list community agent : %s", params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_LIST_COMMUNITY_ALL, params,
-                    new ResponseListener() {
-                        @Override
-                        public void onResponses(JsonObject object) {
-                            try {
-//                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                if (object.get("error_code").getAsString().equals(WebParams.SUCCESS_CODE)) {
-                                    Gson gson = new Gson();
-                                    CommDataModel model = gson.fromJson(gson.toJson(object), CommDataModel.class);
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_BBS_LIST_COMMUNITY_AGENT, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                CommDataModel modelCommunity;
+                                String stringComm;
 
-//                                    String code = model.getError_code();
-                                    insertToRealm(new JSONArray(gson.toJson(model.getCommunity())), schemeCode);
+                                stringComm = response.optString(CTA,"");
+                                if (!stringComm.equals("")) {
+                                    modelCommunity = new Gson().fromJson(stringComm, CommDataModel.class);
+                                    insertToRealm(new JSONArray(new Gson().toJson(modelCommunity.getCommunity())), CTA);
                                 }
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                stringComm = response.optString(ATC,"");
+                                if (!stringComm.equals("")) {
+                                    modelCommunity = new Gson().fromJson(stringComm, CommDataModel.class);
+                                    insertToRealm(new JSONArray(new Gson().toJson(modelCommunity.getCommunity())), ATC);
+                                }
+
+                                stringComm = response.optString(CTR,"");
+                                if (!stringComm.equals("")) {
+                                    modelCommunity = new Gson().fromJson(stringComm, CommDataModel.class);
+                                    insertToRealm(new JSONArray(new Gson().toJson(modelCommunity.getCommunity())), CTR);
+                                }
+
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+                    }
 
-                        @Override
-                        public void onError(Throwable throwable) {
+                    @Override
+                    public void onError(Throwable throwable) {
 
-                        }
+                    }
 
-                        @Override
-                        public void onComplete() {
+                    @Override
+                    public void onComplete() {
 
-                        }
-                    });
-        } catch (Exception e) {
-            Timber.d("httpclient %1$s : %2$s", schemeCode, e.getMessage());
-        }
+                    }
+                });
     }
 
     private void clearDataRealm(String scheme_code, Realm realm) {
