@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <include android:id="@+id/main_toolbar"
-        layout="@layout/toolbar_main"/>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
+
             <LinearLayout
+                android:id="@+id/member_basic_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:orientation="horizontal"
-                android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
-                android:paddingRight="15dp"
                 android:paddingTop="5dp"
-                android:id="@+id/member_basic_layout">
+                android:paddingRight="15dp"
+                android:paddingBottom="5dp">
 
                 <TextView
                     android:id="@+id/group_title1"
@@ -37,28 +41,29 @@
                     android:textStyle="bold" />
 
                 <!--<ImageView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:id="@+id/triangle"-->
-                    <!--android:src="@drawable/triangle_close"-->
-                    <!--android:layout_gravity="right|center_vertical"-->
-                    <!--/>-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/triangle"-->
+                <!--android:src="@drawable/triangle_close"-->
+                <!--android:layout_gravity="right|center_vertical"-->
+                <!--/>-->
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
-                android:background="@color/colorPrimaryDark"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:background="@color/colorPrimaryDark" />
+
             <LinearLayout
                 android:id="@+id/data_member_basic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
                 android:layout_marginTop="10dp"
-                android:orientation="vertical"
-                >
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="12dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -109,14 +114,16 @@
                     android:layout_marginTop="4dp"
                     android:inputType="textEmailAddress"
                     android:textSize="@dimen/abc_text_size_medium_material" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingBottom="10sp"
                     android:text="@string/myprofile_email_warning"
                     android:textColor="@color/red"
-                    android:textStyle="italic"
                     android:textSize="12sp"
-                    android:paddingBottom="10sp"/>
+                    android:textStyle="italic" />
+
                 <TextView
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
@@ -137,13 +144,15 @@
                     android:text="@string/myprofile_text_date_click"
                     android:textColor="@color/grey_1000b"
                     android:textSize="@dimen/abc_text_size_medium_material" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/myprofile_dob_warning"
                     android:textColor="@color/red"
-                    android:textStyle="italic"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp"
+                    android:textStyle="italic" />
+
                 <Button
                     android:id="@+id/button1"
                     android:layout_width="150dp"
@@ -157,25 +166,27 @@
 
             <LinearLayout
                 android:id="@+id/lyt_verifying_member"
-                android:visibility="gone"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorPrimaryDark"
-                    android:layout_marginBottom="10dp"/>
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/colorPrimaryDark" />
+
                 <LinearLayout
+                    android:id="@+id/verified_member_layout"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:orientation="horizontal"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
-                    android:paddingRight="15dp"
                     android:paddingTop="5dp"
-                    android:id="@+id/verified_member_layout">
+                    android:paddingRight="15dp"
+                    android:paddingBottom="5dp">
 
                     <TextView
                         android:id="@+id/group_title2"
@@ -197,71 +208,77 @@
                     <!--android:layout_gravity="right|center_vertical"-->
                     <!--/>-->
                 </LinearLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorPrimaryDark"
-                    android:layout_marginBottom="15dp"/>
+                    android:layout_marginBottom="15dp"
+                    android:background="@color/colorPrimaryDark" />
+
                 <LinearLayout
+                    android:id="@+id/data_verified_member"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:id="@+id/data_verified_member"
-                    android:visibility="visible"
+                    android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginLeft="16dp">
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
                     <RelativeLayout
+                        android:id="@+id/layout_foto_ktp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/layout_foto_ktp">
+                        android:layout_height="wrap_content">
+
                         <TextView
+                            android:id="@+id/tv_foto_ktp_paspor"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="12dp"
                             android:text="@string/KTP_title"
                             android:textColor="@color/grey_1000b"
-                            android:textSize="16dp"
-                            android:id="@+id/tv_foto_ktp_paspor"/>
+                            android:textSize="16dp" />
+
                         <ImageButton
+                            android:id="@+id/camera_ktp"
                             android:layout_width="wrap_content"
                             android:layout_height="96dp"
                             android:layout_below="@+id/tv_foto_ktp_paspor"
-                            android:id="@+id/camera_ktp"
                             android:layout_centerInParent="true"
-                            android:onClick="camera_ktp_paspor_dialog"
-                            android:background="@drawable/ktp_new"/>
+                            android:background="@drawable/ktp_new"
+                            android:onClick="camera_ktp_paspor_dialog" />
 
                         <TextView
                             android:id="@+id/tv_respon_reject_ktp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/camera_ktp"
-                            android:textColor="@color/red"
-                            android:gravity="left"/>
+                            android:gravity="left"
+                            android:textColor="@color/red" />
+
                         <TextView
                             android:id="@+id/tv_pb1_myprofileactivity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/tv_respon_reject_ktp"
-                            android:textColor="@color/grey_1000b"
-                            android:gravity="right"/>
+                            android:gravity="right"
+                            android:textColor="@color/grey_1000b" />
+
                         <ProgressBar
                             android:id="@+id/pb1_myprofileactivity"
+                            style="?android:attr/progressBarStyleHorizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tv_pb1_myprofileactivity"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:minWidth="200dp"
-                            android:progress="1"
                             android:max="100"
-                            />
+                            android:minWidth="200dp"
+                            android:progress="1" />
 
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/layout_selfie"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/layout_selfie">
+                        android:layout_height="wrap_content">
 
                         <TextView
                             android:id="@+id/tv_selfie_ktp_paspor"
@@ -275,43 +292,44 @@
                         <ImageButton
                             android:id="@+id/camera_selfie_ktp"
                             android:layout_width="wrap_content"
-                            android:layout_centerInParent="true"
                             android:layout_height="96dp"
-                            android:scaleType="centerCrop"
                             android:layout_below="@+id/tv_selfie_ktp_paspor"
+                            android:layout_centerInParent="true"
+                            android:background="@drawable/selfie_with_ktp_new"
                             android:onClick="selfie_ktp_paspor_dialog"
-                            android:background="@drawable/selfie_with_ktp_new" />
+                            android:scaleType="centerCrop" />
 
                         <TextView
                             android:id="@+id/tv_respon_reject_selfie"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/camera_selfie_ktp"
-                            android:textColor="@color/red"
-                            android:gravity="left"/>
+                            android:gravity="left"
+                            android:textColor="@color/red" />
+
                         <TextView
                             android:id="@+id/tv_pb2_myprofileactivity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/camera_selfie_ktp"
-                            android:textColor="@color/grey_1000b"
-                            android:gravity="right"/>
+                            android:gravity="right"
+                            android:textColor="@color/grey_1000b" />
+
                         <ProgressBar
                             android:id="@+id/pb2_myprofileactivity"
+                            style="?android:attr/progressBarStyleHorizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tv_pb2_myprofileactivity"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:minWidth="200dp"
-                            android:progress="1"
                             android:max="100"
-                            />
+                            android:minWidth="200dp"
+                            android:progress="1" />
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/layout_ttd"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/layout_ttd">
+                        android:layout_height="wrap_content">
 
                         <TextView
                             android:id="@+id/tv_ttd"
@@ -327,34 +345,35 @@
                             android:layout_width="wrap_content"
                             android:layout_height="96dp"
                             android:layout_below="@+id/tv_ttd"
-                            android:onClick="camera_ttd_dialog"
                             android:layout_centerInParent="true"
-                            android:background="@drawable/new_signature" />
+                            android:background="@drawable/new_signature"
+                            android:onClick="camera_ttd_dialog" />
 
                         <TextView
                             android:id="@+id/tv_respon_reject_ttd"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/camera_ttd"
-                            android:textColor="@color/red"
-                            android:gravity="left"/>
+                            android:gravity="left"
+                            android:textColor="@color/red" />
+
                         <TextView
                             android:id="@+id/tv_pb3_myprofileactivity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/camera_ttd"
-                            android:textColor="@color/grey_1000b"
-                            android:gravity="right"/>
+                            android:gravity="right"
+                            android:textColor="@color/grey_1000b" />
+
                         <ProgressBar
                             android:id="@+id/pb3_myprofileactivity"
+                            style="?android:attr/progressBarStyleHorizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tv_pb3_myprofileactivity"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:minWidth="200dp"
-                            android:progress="1"
                             android:max="100"
-                            />
+                            android:minWidth="200dp"
+                            android:progress="1" />
 
                     </RelativeLayout>
 
@@ -401,8 +420,8 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingTop="8dp"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:paddingTop="8dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -434,15 +453,14 @@
                     </LinearLayout>
 
                     <CheckBox
+                        android:id="@+id/cb_termnsncond"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="@string/terms_condition_upload_ktp"
                         android:textColor="@color/black"
-                        android:id="@+id/cb_termnsncond"
-                        android:textStyle="italic"
                         android:textSize="12sp"
-                        />
+                        android:textStyle="italic" />
 
                     <Button
                         android:id="@+id/button2"
@@ -451,8 +469,8 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="30dp"
                         android:background="@drawable/rounded_background_blue"
-                        android:text="@string/proses"
                         android:saveEnabled="false"
+                        android:text="@string/proses"
                         android:textColor="@color/white" />
 
                 </LinearLayout>
