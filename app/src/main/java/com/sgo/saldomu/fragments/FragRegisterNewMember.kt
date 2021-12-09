@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.InputFilter
 import android.view.*
@@ -11,6 +12,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.MapsActivity
 import com.sgo.saldomu.activities.TokoEBDActivity
@@ -98,6 +100,28 @@ class FragRegisterNewMember : BaseFragment() {
         binding!!.etPostalCode.onRightDrawableRegisterEBDClicked { it.text.clear() }
         binding!!.llSetLocation.setOnClickListener(openMap)
         binding!!.changeLocation.setOnClickListener(openMap)
+        binding!!.cbTermsncond.setOnCheckedChangeListener { compoundButton, isChecked ->
+            if (isChecked) {
+                binding!!.btnSubmit.isEnabled = true
+                binding!!.btnSubmit.background =
+                    ResourcesCompat.getDrawable(resources, R.drawable.rounded_background_blue, null)
+            } else {
+                binding!!.btnSubmit.isEnabled = false
+                binding!!.btnSubmit.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.rounded_background_button_disabled,
+                    null
+                )
+            }
+        }
+        binding!!.tvTermsncond.setOnClickListener {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(MyApiClient.LINK_TERMS_AND_CONDITION)
+                )
+            )
+        }
         binding!!.btnSubmit.setOnClickListener { if (inputValidation()) submitRegisterEBD() }
 
         binding!!.districtAutoText.setOnFocusChangeListener { _, hasFocus -> if (hasFocus) binding!!.districtAutoText.showDropDown() }

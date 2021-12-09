@@ -3,7 +3,6 @@ package com.sgo.saldomu.fragments;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +67,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
     int attempt = 0;
     DetailInvoiceTagihDialog detailInvoiceTagihDialog;
     String notes, cust_id, tx_favorite_type, product_type;
-    TextView tv_total, tv_desc;
+    TextView tv_total, tv_desc, tv_sms_ref;
     String paymentType, remark, phone, total, product_code, paymentTypeCode, anchorId, commCode;
     Bundle bundle;
     Boolean click = false;
@@ -111,6 +110,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
 
         listInvoice = view.findViewById(R.id.listMenu);
         et_otp = view.findViewById(R.id.txtOtp);
+        tv_sms_ref = view.findViewById(R.id.tv_sms_ref);
         tv_desc = view.findViewById(R.id.tv_desc);
         btn_resend = view.findViewById(R.id.btnResend);
         btn_confirm = view.findViewById(R.id.btnDone);
@@ -125,7 +125,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
 
         initializeRecyclerview();
 
-        resendToken();
+        reqToken();
     }
 
     @Override
@@ -186,7 +186,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
         public void onClick(View v) {
             click = true;
             et_otp.setText("");
-            resendToken();
+            reqToken();
         }
     };
 
@@ -212,7 +212,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
         return true;
     }
 
-    public void resendToken() {
+    public void reqToken() {
         showProgressDialog();
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQ_TOKEN_INVOICE_DGI, DataManager.getInstance().getInvoiceParam(),
@@ -230,6 +230,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
                                     Toast.makeText(getActivity(), "Token berhasil dikirim ulang!", Toast.LENGTH_LONG).show();
                                 }
                                 tx_id = response.getString(WebParams.TX_ID);
+                                tv_sms_ref.setText(response.getString(WebParams.SMS_REF_ID).substring(0,6));
                             } else if (code.equals("0057")) {
                                 Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                                 getFragmentManager().popBackStack();
@@ -469,7 +470,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
 
                                         startActivityForResult(i, MainPage.REQUEST_FINISH);
                                     } else {
-                                        resendToken();
+                                        reqToken();
                                         et_otp.setText("");
                                     }
                                 }
@@ -558,7 +559,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
 
                                         startActivityForResult(i, MainPage.REQUEST_FINISH);
                                     } else {
-                                        resendToken();
+                                        reqToken();
                                         et_otp.setText("");
                                     }
                                 }
