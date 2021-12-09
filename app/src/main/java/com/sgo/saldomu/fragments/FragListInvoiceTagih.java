@@ -51,6 +51,7 @@ import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.InputAmountTagihBillerDialog;
 import com.sgo.saldomu.dialogs.PaymentRemarkDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.FeeDGIModel;
 import com.sgo.saldomu.models.InvoiceDGI;
@@ -477,6 +478,8 @@ public class FragListInvoiceTagih extends BaseFragment {
 
     void checkOutPayment(String remark, String noId, String due_date) {
 
+        showProgressDialog();
+
         String phone_no = mobilePhoneArr.get(sp_phone_number.getSelectedItemPosition());
 
         List<InvoiceDGI> temp = new ArrayList<>();
@@ -516,28 +519,68 @@ public class FragListInvoiceTagih extends BaseFragment {
         DataManager.getInstance().setListInvoice(temp);
         DataManager.getInstance().setInvoiceParam(params);
 
-        Fragment newFrag = new FragInvoiceDGIConfirm();
-        bundle1.putString(DefineValue.PAYMENT_TYPE, paymentTypeDGIModelArrayList.get(sp_payment_type.getSelectedItemPosition()).getPayment_code());
-        bundle1.putString(DefineValue.PAYMENT_TYPE_DESC, paymentTypeDGIModelArrayList.get(sp_payment_type.getSelectedItemPosition()).getPayment_name());
-        bundle1.putString(DefineValue.CCY_ID, ccy_id);
-        bundle1.putString(DefineValue.PRODUCT_CODE, DefineValue.SCASH);
-        bundle1.putString(DefineValue.REMARK, remark);
-        bundle1.putString(DefineValue.MOBILE_PHONE, phone_no);
-        if (isFav == true) {
-            bundle1.putBoolean(DefineValue.IS_FAVORITE, true);
-            bundle1.putString(DefineValue.CUST_ID, cust_id);
-            bundle1.putString(DefineValue.NOTES, notes);
-            bundle1.putString(DefineValue.TX_FAVORITE_TYPE, DefineValue.DGI);
-            bundle1.putString(DefineValue.PRODUCT_TYPE, DefineValue.DGI);
-            bundle1.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
-            bundle1.putString(DefineValue.ANCHOR_ID, anchorId);
-        }
-        newFrag.setArguments(bundle1);
-        if (getActivity() == null) {
-            return;
-        }
-        TagihActivity ftf = (TagihActivity) getActivity();
-        ftf.switchContent(newFrag, "Konfirmasi", true);
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQ_TOKEN_INVOICE_DGI, DataManager.getInstance().getInvoiceParam(),
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            dismissProgressDialog();
+                            jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            String error_message = response.getString(WebParams.ERROR_MESSAGE);
+                            Timber.d("response req token DGI : %s", response.toString());
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                Fragment newFrag = new FragInvoiceDGIConfirm();
+                                bundle1.putString(DefineValue.PAYMENT_TYPE, paymentTypeDGIModelArrayList.get(sp_payment_type.getSelectedItemPosition()).getPayment_code());
+                                bundle1.putString(DefineValue.PAYMENT_TYPE_DESC, paymentTypeDGIModelArrayList.get(sp_payment_type.getSelectedItemPosition()).getPayment_name());
+                                bundle1.putString(DefineValue.CCY_ID, ccy_id);
+                                bundle1.putString(DefineValue.PRODUCT_CODE, DefineValue.SCASH);
+                                bundle1.putString(DefineValue.REMARK, remark);
+                                bundle1.putString(DefineValue.MOBILE_PHONE, mobile_phone);
+                                if (isFav) {
+                                    bundle1.putBoolean(DefineValue.IS_FAVORITE, true);
+                                    bundle1.putString(DefineValue.CUST_ID, cust_id);
+                                    bundle1.putString(DefineValue.NOTES, notes);
+                                    bundle1.putString(DefineValue.TX_FAVORITE_TYPE, DefineValue.DGI);
+                                    bundle1.putString(DefineValue.PRODUCT_TYPE, DefineValue.DGI);
+                                    bundle1.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
+                                    bundle1.putString(DefineValue.ANCHOR_ID, anchorId);
+                                }
+                                newFrag.setArguments(bundle1);
+                                if (getActivity() == null) {
+                                    return;
+                                }
+                                TagihActivity ftf = (TagihActivity) getActivity();
+                                ftf.switchContent(newFrag, "Konfirmasi", true);
+                            } else if (code.equals("0057")) {
+                                Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
+                                getFragmentManager().popBackStack();
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:%s", model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:%s", response.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
+                            } else {
+                                Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        dismissProgressDialog();
+                    }
+                });
     }
 
     public void getBankCashout() {
