@@ -68,11 +68,10 @@
         android:layout_height="wrap_content" />
 
     <Button
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:minWidth="100dp"
-            android:text="@string/ok"
+            android:text="@string/next_1"
             android:background="@drawable/rounded_background_blue"
             android:textStyle="bold"
             android:textSize="@dimen/abc_text_size_button_material"

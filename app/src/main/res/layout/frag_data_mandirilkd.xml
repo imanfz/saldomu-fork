@@ -39,7 +39,6 @@
             android:background="@drawable/rounded_background_outline"
             android:gravity="center"
             android:text="@string/cancel"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:textColor="@color/black" />
         <!--        </com.balysv.materialripple.MaterialRippleLayout>-->
 
@@ -65,7 +64,6 @@
             android:background="@drawable/rounded_background_blue"
             android:gravity="center"
             android:text="@string/proses"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:textColor="@color/white" />
         <!--        </com.balysv.materialripple.MaterialRippleLayout>-->
     </LinearLayout>

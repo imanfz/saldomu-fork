@@ -337,7 +337,6 @@
                             android:layout_height="wrap_content"
                             android:padding="6dp"
                             android:maxEms="10"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Button"
                             android:textColor="@color/black"
                             android:gravity="center"
                             android:text="@string/reg2_btn_text_resend_token_sms"
@@ -361,7 +360,6 @@
                             android:id="@+id/bbscashoutmember_btn_ok"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Button"
                             android:textColor="@color/white"
                             android:gravity="center"
                             android:text="@string/ok"
@@ -389,7 +387,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@string/cancel"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
                         android:background="@drawable/rounded_background_outline"
                         android:textColor="@color/black"
                         />

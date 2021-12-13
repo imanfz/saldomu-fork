@@ -400,7 +400,6 @@
                     android:background="@drawable/rounded_background_blue"
                     android:gravity="center"
                     android:text="@string/submit"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
                     android:textColor="@color/grey_1000w" />
             </com.balysv.materialripple.MaterialRippleLayout>
 

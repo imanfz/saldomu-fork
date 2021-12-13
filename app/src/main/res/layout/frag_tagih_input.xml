@@ -130,7 +130,6 @@
             android:layout_weight="2"
             android:background="@drawable/rounded_background_outline"
             android:text="@string/rsb_register"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:textColor="@color/colorPrimary" />
 
     </LinearLayout>
@@ -197,7 +196,6 @@
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_background_blue"
             android:text="@string/submit"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:textColor="@color/grey_1000w" />
 
     </LinearLayout>

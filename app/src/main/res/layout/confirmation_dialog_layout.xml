@@ -226,7 +226,6 @@
                 android:background="@drawable/rounded_background_outline"
                 android:gravity="center"
                 android:text="@string/cancel"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/black" />
 
 <!--        </com.balysv.materialripple.MaterialRippleLayout>-->
@@ -246,7 +245,6 @@
                 android:id="@+id/confirmation_dialog_ok_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/white"
                 android:gravity="center"
                 android:text="@string/ok"

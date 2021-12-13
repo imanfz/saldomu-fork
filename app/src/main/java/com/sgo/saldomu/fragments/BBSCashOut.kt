@@ -51,7 +51,7 @@ class BBSCashOut : BaseFragment() {
 
     private val ATC = "ATC"
     private val SOURCE = "SOURCE"
-    private val SALDO_AGEN = "SALDO AGEN"
+    private val SALDO_AGEN = "Saldo Agen"
     private val MANDIRISMS = "MANDIRISMS"
     private val RC_READ_PHONE_STATE = 122
     private val RC_SEND_SMS = 123

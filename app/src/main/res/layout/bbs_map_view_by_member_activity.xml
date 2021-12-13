@@ -172,7 +172,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/cancel"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
                         android:textColor="#99000000"/>
                 </LinearLayout>
             </com.balysv.materialripple.MaterialRippleLayout>
@@ -205,7 +204,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/call"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
                         android:textColor="@color/colorPrimary"/>
                 </LinearLayout>
             </com.balysv.materialripple.MaterialRippleLayout>

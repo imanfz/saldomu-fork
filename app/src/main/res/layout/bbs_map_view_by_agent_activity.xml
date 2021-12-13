@@ -312,7 +312,7 @@
                     android:layout_weight="1"
                     android:id="@+id/btnTibaLokasi"
                     android:background="@drawable/rounded_background_blue"
-                    android:text="@string/tiba_di_lokasi"
+                    android:text="@string/next_1"
                     android:textColor="@color/white"/>
             </LinearLayout>
         </LinearLayout>

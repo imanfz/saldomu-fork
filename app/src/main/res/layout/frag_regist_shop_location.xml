@@ -233,7 +233,6 @@
             android:layout_weight="1"
             android:background="@drawable/rounded_background_outline"
             android:text="@string/cancel"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:textColor="@color/black"
             android:id="@+id/btn_cancel"/>
         <Button
@@ -244,7 +243,6 @@
             android:layout_weight="1"
             android:text="@string/submit"
             android:id="@+id/btn_shop_register"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:textColor="@color/grey_1000w"
             android:background="@drawable/rounded_background_blue"/>
     </LinearLayout>

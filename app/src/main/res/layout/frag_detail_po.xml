@@ -108,7 +108,6 @@
         android:background="@drawable/rounded_background_blue"
         android:gravity="center"
         android:text="@string/pay"
-        android:textAppearance="@style/TextAppearance.AppCompat.Button"
         android:textColor="@color/grey_1000w"
         android:visibility="gone" />
 

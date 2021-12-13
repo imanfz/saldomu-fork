@@ -228,7 +228,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:id="@+id/btnApprove"
-                android:text="@string/agent_approve"
+                android:text="@string/next_1"
                 android:textColor="@color/white"
                 android:background="@drawable/rounded_background_blue"
                 android:layout_weight="1"

@@ -140,7 +140,6 @@
                     android:layout_marginEnd="10dp"
                     android:background="@drawable/rounded_background_outline"
                     android:text="@string/call"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
                     android:textColor="@color/colorPrimary"/>
                 <Button
                     android:id="@+id/btnDirection"
@@ -152,7 +151,6 @@
                     android:layout_marginStart="10dp"
                     android:background="@drawable/rounded_background_blue"
                     android:text="@string/direction"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
                     android:textColor="@color/grey_1000w"/>
             </LinearLayout>
         </LinearLayout>

@@ -167,7 +167,6 @@
             android:maxWidth="140dp"
             android:maxHeight="35dp"
             android:text="@string/cancel"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:textColor="@color/colorPrimary" />
 
         <Button
@@ -180,7 +179,6 @@
             android:maxWidth="140dp"
             android:maxHeight="35dp"
             android:text="@string/submit"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:textColor="@color/grey_1000w" />
     </LinearLayout>
 </LinearLayout>

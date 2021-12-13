@@ -51,7 +51,6 @@
                 android:background="@drawable/rounded_background_outline"
                 android:gravity="center"
                 android:text="@string/resend"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/colorPrimary" />
         </com.balysv.materialripple.MaterialRippleLayout>
         <com.balysv.materialripple.MaterialRippleLayout
@@ -70,7 +69,6 @@
                 android:background="@drawable/rounded_background_blue"
                 android:gravity="center"
                 android:text="@string/confirmation"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/white" />
         </com.balysv.materialripple.MaterialRippleLayout>
 

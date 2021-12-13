@@ -174,7 +174,6 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="@string/submit"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:textColor="@color/white" />
     </com.balysv.materialripple.MaterialRippleLayout>
 

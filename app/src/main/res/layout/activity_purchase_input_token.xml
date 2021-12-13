@@ -151,7 +151,6 @@
                                 android:layout_gravity="center"
                                 android:ems="6"
                                 android:text="@string/reg2_btn_text_resend_token_sms"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Button"
                                 android:background="@drawable/button_transparant"
                                 android:textColor="@color/colorPrimaryDark"
                                 />
@@ -180,7 +179,6 @@
                     android:id="@+id/btn_submit_purchase_token"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
                     android:textColor="@color/colorPrimaryDark"
                     android:gravity="center"
                     android:text="@string/proses"

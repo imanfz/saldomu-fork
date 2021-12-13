@@ -108,7 +108,7 @@
     <string name="regist2_validation_otp">Token dibutuhkan!</string>
     <string name="reg2_activation_code">Kode Aktivasi</string>
     <string name="reg2_hint_token_code">Kode Token</string>
-    <string name="reg2_btn_text_resend_token_sms">Kirim ulang token ke sms</string>
+    <string name="reg2_btn_text_resend_token_sms">Kirim ulang token ke SMS</string>
     <string name="reg2_btn_text_resend_token_tcash">Kirim ulang token T-Cash</string>
     <string name="reg2_btn_text_resend_token_email">Kirim ulang token ke email</string>
     <string name="reg2_dialog_token_message_sms">Kode token sudah dikirim lewat sms. Mohon ditunggu.</string>
@@ -536,6 +536,7 @@
 
     <string name="create_pin">Buat PIN</string>
     <string name="next">Lanjut</string>
+    <string name="next_1">Lanjutkan</string>
     <string name="get_otp">Kirim OTP</string>
 
     <string name="listatm_topup_danamon_1">Pilih menu Pembayaran > menu Lainnya > menu Virtual Account</string>
@@ -1295,7 +1296,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="bbs_setor_ke">Setor ke Rek.</string>
     <string name="bbs_tarik_dari">Tarik dari Rek.</string>
     <string name="msg_notif_tidak_bisa_batal">Maaf. Transaksi Anda tidak dapat dibatalkan.</string>
-    <string name="canceled_trx_reason">ALASAN BATAL</string>
+    <string name="canceled_trx_reason">Alasan Batal</string>
     <string name="err_empty_cancel_reason">Silakan isi alasan pembatalan</string>
     <string name="txt_explanation_cancel_reason">contoh: respon agen terlalu lama</string>
     <string name="notif_pelanggan">Notif Pelanggan</string>
@@ -1404,7 +1405,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="good_afternoon">Selamat Siang, </string>
     <string name="good_evening">Selamat Sore, </string>
     <string name="good_night">Selamat Malam, </string>
-    <string name="top_up">TAMBAH SALDO</string>
+    <string name="top_up">Tambah Saldo</string>
     <string name="terms_and_condition">Syarat dan Ketentuan</string>
     <string name="additional_fee">Biaya Layanan</string>
     <string name="payment_confirm">Konfirmasi Pembayaran</string>
@@ -1671,7 +1672,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="EMO">EMO</string>
     <string name="EMOSALDOMU">EMOSALDOMU</string>
-    <string name="SALDOMU">SALDOMU</string>
+    <string name="SALDOMU">Saldomu</string>
     <string name="LP">LP</string>
     <string name="LKD">LKD</string>
     <string name="success_forgot_pin">PIN baru akan dikirimkan melalui SMS.</string>

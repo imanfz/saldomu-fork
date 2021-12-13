@@ -74,7 +74,6 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_background_blue"
                 android:text="@string/bbs_agent_search"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/grey_1000w" />
         </LinearLayout>
 
@@ -297,6 +296,5 @@
         android:background="@drawable/rounded_background_blue"
         android:text="@string/submit"
         android:visibility="gone"
-        android:textAppearance="@style/TextAppearance.AppCompat.Button"
         android:textColor="@color/grey_1000w" />
 </RelativeLayout>

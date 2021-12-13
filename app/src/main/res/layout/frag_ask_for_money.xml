@@ -30,7 +30,6 @@
                     android:id="@+id/btn_request_money"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
                     android:textColor="@color/colorPrimaryDark"
                     android:gravity="center"
                     android:text="@string/askfriends_btn_proses_request"

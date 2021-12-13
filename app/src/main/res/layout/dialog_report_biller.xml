@@ -26,7 +26,6 @@
                 android:id="@+id/dialog_reportbiller_btn_ok"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/colorPrimaryDark"
                 android:text="@string/ok"
                 android:background="@drawable/button_transparant"

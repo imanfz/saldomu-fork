@@ -39,7 +39,6 @@
                     android:background="@drawable/rounded_background_outline"
                     android:gravity="center"
                     android:text="@string/kembali"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
                     android:textColor="@color/black" />
 
             </com.balysv.materialripple.MaterialRippleLayout>
@@ -63,7 +62,6 @@
                     android:background="@drawable/rounded_background_blue"
                     android:gravity="center"
                     android:text="@string/sent"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
                     android:textColor="@color/white" />
 
             </com.balysv.materialripple.MaterialRippleLayout>
@@ -92,7 +90,6 @@
                 android:maxEms="10"
                 android:padding="6dp"
                 android:text="@string/reg2_btn_text_resend_token_sms"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/white" />
 
         </com.balysv.materialripple.MaterialRippleLayout>

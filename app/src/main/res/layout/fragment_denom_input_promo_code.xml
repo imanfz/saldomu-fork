@@ -20,7 +20,6 @@
             android:layout_gravity="end"
             android:background="@drawable/rounded_background_blue"
             android:text="@string/add_promo_code"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:textColor="@color/grey_1000w" />
 
         <LinearLayout
@@ -70,7 +69,6 @@
             android:background="@drawable/rounded_background_blue"
             android:gravity="center"
             android:text="@string/next"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:textColor="@color/white" />
     </com.balysv.materialripple.MaterialRippleLayout>
 </RelativeLayout>

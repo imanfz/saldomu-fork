@@ -28,7 +28,6 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_transparant"
             android:text="@string/ok"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:textColor="@color/colorPrimaryDark" />
     </com.balysv.materialripple.MaterialRippleLayout>
 

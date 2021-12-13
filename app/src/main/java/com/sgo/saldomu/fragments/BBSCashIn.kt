@@ -53,7 +53,7 @@ class BBSCashIn : BaseFragment() {
     private val CTA = "CTA"
     private val SOURCE = "SOURCE"
     private val BENEF = "BENEF"
-    private val SALDO_AGEN = "SALDO AGEN"
+    private val SALDO_AGEN = "Saldo Agen"
     private val MANDIRISMS = "MANDIRISMS"
     private val RC_READ_PHONE_STATE = 122
     private val RC_SEND_SMS = 123

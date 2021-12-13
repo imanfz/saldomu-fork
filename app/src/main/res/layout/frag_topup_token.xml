@@ -267,7 +267,6 @@
                         android:id="@+id/reqTopup_btn_resend_token"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
                         android:textColor="@color/grey_1000w"
                         android:maxEms="9"
                         android:padding="6dp"
@@ -294,7 +293,6 @@
                         android:id="@+id/reqTopup_btn_verification"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
                         android:textColor="@color/grey_1000w"
                         android:padding="6dp"
                         android:gravity="center"
@@ -324,7 +322,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/cancel"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:background="@drawable/rounded_background_outline"
                 android:textColor="@color/black"
                 />

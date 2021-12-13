@@ -212,7 +212,6 @@
                 android:id="@+id/btn_submit_pulsainput"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/colorPrimaryDark"
                 android:gravity="center"
                 android:text="@string/next"

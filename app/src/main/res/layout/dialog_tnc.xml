@@ -41,7 +41,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
                 android:layout_marginStart="5dp"
-                android:text="@string/ok"
+                android:text="@string/next_1"
                 android:textColor="@color/white"/>
         </LinearLayout>
     </LinearLayout>

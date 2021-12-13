@@ -119,7 +119,6 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/resent_otp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/black" />
 
             <Button
@@ -132,7 +131,6 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/confirm_otp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/grey_1000w"/>
         </LinearLayout>
 

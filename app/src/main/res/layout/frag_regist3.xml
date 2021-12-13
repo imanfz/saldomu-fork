@@ -152,7 +152,6 @@
                         android:layout_height="wrap_content"
                         android:padding="6dp"
                         android:maxEms="7"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
                         android:textColor="@color/colorPrimaryDark"
                         android:gravity="center"
                         android:text="@string/reg2_btn_text_resend_token_sms"
@@ -178,7 +177,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="6dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
                         android:textColor="@color/colorPrimaryDark"
                         android:gravity="center"
                         android:text="@string/proses"
@@ -209,7 +207,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="@string/cancel"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
                     android:background="@drawable/button_transparant"
                     android:textColor="@color/grey_1000b"
                     />

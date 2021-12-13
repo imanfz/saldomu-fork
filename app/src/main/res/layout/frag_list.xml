@@ -73,7 +73,6 @@
         android:layout_margin="@dimen/margin_10dp"
         android:background="@drawable/rounded_background_blue"
         android:text="@string/create_gr"
-        android:textAppearance="@style/TextAppearance.AppCompat.Button"
         android:textColor="@color/grey_1000w" />
 
 

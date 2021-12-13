@@ -247,7 +247,6 @@
             android:background="@drawable/rounded_background_outline"
             android:gravity="center"
             android:text="@string/kembali"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:textColor="@color/grey_500" />
 
         <Button
@@ -260,7 +259,6 @@
             android:background="@drawable/rounded_background_blue"
             android:gravity="center"
             android:text="@string/proses"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:textColor="@color/white" />
     </LinearLayout>
 </LinearLayout>

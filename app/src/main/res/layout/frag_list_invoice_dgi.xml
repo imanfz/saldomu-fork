@@ -208,7 +208,6 @@
                     android:layout_marginTop="5dp"
                     android:layout_weight="1"
                     android:text="@string/reset"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
                     android:textColor="@color/black"/>
 
                 <Button
@@ -222,7 +221,6 @@
                     android:layout_marginTop="5dp"
                     android:layout_weight="1"
                     android:text="@string/checkout"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
                     android:textColor="@color/grey_1000w"/>
             </TableRow>
 

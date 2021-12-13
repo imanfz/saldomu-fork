@@ -104,7 +104,7 @@
     <string name="regist2_validation_otp">Token is required!</string>
     <string name="reg2_activation_code">Activation Code</string>
     <string name="reg2_hint_token_code">Token Code</string>
-    <string name="reg2_btn_text_resend_token_sms">resend token message</string>
+    <string name="reg2_btn_text_resend_token_sms">Resend Token Message</string>
     <string name="reg2_btn_text_resend_token_tcash">resend T-Cash Token</string>
     <string name="reg2_btn_text_resend_token_email">Resend Token to email</string>
     <string name="reg2_dialog_token_message_sms">Token code has been sent through the message. Please wait.</string>
@@ -543,6 +543,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
 
     <string name="create_pin">Create PIN</string>
     <string name="next">Next</string>
+    <string name="next_1">Next</string>
     <string name="get_otp">Send OTP</string>
 
     <string name="listatm_topup_danamon_1">Choose payment method > other menu > Virtual Account menu</string>
@@ -1308,7 +1309,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="bbs_setor_ke">Deposit to Account</string>
     <string name="bbs_tarik_dari">Withdraw from Account</string>
     <string name="msg_notif_tidak_bisa_batal">Sorry. Your transaction cannot be canceled.</string>
-    <string name="canceled_trx_reason">REASONS CANCELLATION</string>
+    <string name="canceled_trx_reason">Reasons Cancellation</string>
     <string name="err_empty_cancel_reason">Please fill in the reason for cancellation</string>
     <string name="txt_explanation_cancel_reason">example: agent response too long</string>
     <string name="notif_pelanggan">Customer Notifications</string>
@@ -1416,7 +1417,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="good_afternoon">Good Afternoon, </string>
     <string name="good_evening">Good Evening, </string>
     <string name="good_night">Good Night, </string>
-    <string name="top_up">TOP UP</string>
+    <string name="top_up">Top Up</string>
     <string name="terms_and_condition">Terms and Conditions</string>
     <string name="additional_fee">Service Charge</string>
     <string name="payment_confirm">Payment Confirmation</string>
@@ -1490,7 +1491,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
 
     <string name="EMO">EMO</string>
     <string name="EMOSALDOMU">EMOSALDOMU</string>
-    <string name="SALDOMU">SALDOMU</string>
+    <string name="SALDOMU">Saldomu</string>
     <string name="LP">LP</string>
     <string name="LKD">LKD</string>
     <string name="success_forgot_pin">New PIN will be sent by SMS.</string>
