@@ -228,6 +228,7 @@ public class MainPage extends BaseActivity {
         });
 
         enableHomeLayout();
+        showHomeFragment();
     }
 
     private void showHomeFragment() {
@@ -813,13 +814,6 @@ public class MainPage extends BaseActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.left_menu_layout, mNavDrawer, NavigationDrawMenu.TAG).commitAllowingStateLoss();
     }
 
-    private void initializeNavDrawer() {
-        if (mNavDrawer != null) {
-            mNavDrawer.initializeNavDrawer();
-            mNavDrawer.getBalance(true);
-        }
-    }
-
     private void getDataListMember() {
 
         if (sp.getString(DefineValue.BBS_MODULE, "").equals(DefineValue.BBS_REVIEW)) {
@@ -873,8 +867,6 @@ public class MainPage extends BaseActivity {
 
                                     if (mNavDrawer != null && serviceReferenceBalance != null)
                                         serviceReferenceBalance.runBalance();
-
-                                    initializeNavDrawer();
 
                                     String is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK, DefineValue.STRING_NO);
 
