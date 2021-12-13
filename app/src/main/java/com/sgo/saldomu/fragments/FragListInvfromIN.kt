@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
@@ -70,7 +71,11 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
     private val paymentListOption = ArrayList<String>()
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         v = inflater.inflate(R.layout.frag_list_invoice, container, false)
         memberCode = memberIDLogin
         commCode = commIDLogin
@@ -90,14 +95,19 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
         btn_proses_gr.setOnClickListener {
             if (inputValidation()) {
                 if (obj!!.paid_status.equals(DefineValue.STRING_YES)) {
-                    Toast.makeText(activity, getString(R.string.invoice_already_paid), Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        activity,
+                        getString(R.string.invoice_already_paid),
+                        Toast.LENGTH_LONG
+                    ).show()
                 } else {
                     requestPayment(obj!!)
                 }
             }
         }
 
-        val paymentOptionsAdapter = ArrayAdapter(activity!!, R.layout.layout_spinner_list_cust, paymentListOption)
+        val paymentOptionsAdapter =
+            ArrayAdapter(activity!!, R.layout.layout_spinner_list_cust, paymentListOption)
         paymentOptionsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner_bank_produk.adapter = paymentOptionsAdapter
         spinner_bank_produk.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -117,19 +127,43 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
     private fun inputValidation(): Boolean {
         if (obj == null) {
-            Toast.makeText(activity, getString(R.string.choose_invoice_validation), Toast.LENGTH_LONG).show()
-        } else if (paymentOption.equals(getString(R.string.lbl_choose))) {
-            Toast.makeText(activity, getString(R.string.billerinput_validation_spinner_default_payment), Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                activity,
+                getString(R.string.choose_invoice_validation),
+                Toast.LENGTH_LONG
+            ).show()
+        } else if (paymentOption == getString(R.string.lbl_choose)) {
+            Toast.makeText(
+                activity,
+                getString(R.string.billerinput_validation_spinner_default_payment),
+                Toast.LENGTH_LONG
+            ).show()
         }
 
         return true
     }
 
-    private fun initializeListInv() {
+    private fun buttonSubmit(enable: Boolean) {
+        if (enable) {
+            btn_proses_gr.isEnabled = true
+            btn_proses_gr.background =
+                ResourcesCompat.getDrawable(resources, R.drawable.rounded_background_blue, null)
+        } else {
+            btn_proses_gr.isEnabled = false
+            btn_proses_gr.background = ResourcesCompat.getDrawable(
+                resources,
+                R.drawable.rounded_background_button_disabled,
+                null
+            )
+        }
+    }
 
+    private fun initializeListInv() {
+        buttonSubmit(false)
         listInvoiceAdapter = ListInvoiceAdapter(docListArrayList, this)
         recyclerViewList.adapter = listInvoiceAdapter
-        recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerViewList.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
         val bundle = arguments
 
@@ -192,7 +226,9 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
         for (i in 0 until mArrayPayMethod.length()) {
 
-            paymentListOption.add(mArrayPayMethod.getJSONObject(i).getString(WebParams.PAYMENT_NAME))
+            paymentListOption.add(
+                mArrayPayMethod.getJSONObject(i).getString(WebParams.PAYMENT_NAME)
+            )
 
             val payCode = mArrayPayMethod.getJSONObject(i).getString(WebParams.PAYMENT_CODE)
             val payName = mArrayPayMethod.getJSONObject(i).getString(WebParams.PAYMENT_NAME)
@@ -203,8 +239,6 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             obj.payment_name = payName
             payMethodArrayList.add(obj)
         }
-
-
     }
 
     private fun requestPayment(obj: ListPOModel) {
@@ -213,7 +247,8 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
             showProgressDialog()
             extraSignature = obj.member_code + obj.comm_code + obj.doc_no
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQUEST_PAYMENT, extraSignature)
+            val params = RetrofitService.getInstance()
+                .getSignature(MyApiClient.LINK_REQUEST_PAYMENT, extraSignature)
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.COMM_CODE_ESPAY] = obj.comm_code
             params[WebParams.MEMBER_CODE_ESPAY] = obj.member_code
@@ -240,12 +275,14 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
 
             Timber.d("params request payment canvasser:$params")
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQUEST_PAYMENT, params,
+            RetrofitService.getInstance()
+                .PostJsonObjRequest(MyApiClient.LINK_REQUEST_PAYMENT, params,
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) {
                             try {
                                 val gson = Gson()
-                                val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                                val model =
+                                    gson.fromJson(response.toString(), jsonModel::class.java)
                                 val code = response.getString(WebParams.ERROR_CODE)
                                 val code_msg = response.getString(WebParams.ERROR_MESSAGE)
                                 Timber.d("isi response request payment canvasser:$response")
@@ -256,16 +293,23 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
                                         val message = response.getString(WebParams.ERROR_MESSAGE)
-                                        AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
+                                        AlertDialogLogout.getInstance()
+                                            .showDialoginActivity(activity, message)
                                     }
                                     DefineValue.ERROR_9333 -> {
                                         Timber.d("isi response app data:%s", model.app_data)
                                         val appModel = model.app_data
-                                        AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                        AlertDialogUpdateApp.getInstance().showDialogUpdate(
+                                            activity,
+                                            appModel.type,
+                                            appModel.packageName,
+                                            appModel.downloadUrl
+                                        )
                                     }
                                     DefineValue.ERROR_0066 -> {
                                         Timber.d("isi response maintenance:$response")
-                                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
+                                        AlertDialogMaintenance.getInstance()
+                                            .showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         Timber.d("isi error request payment canvasser:$response")
@@ -296,12 +340,11 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
     fun showPopUp() {
         val bundle = Bundle()
-        val dialogFragment: DialogFragment = PopUpDialog.newDialog(bundle, object : PopUpDialog.PopUpListener {
-            override fun onClick(dialog: DialogFragment?) {
+        val dialogFragment: DialogFragment =
+            PopUpDialog.newDialog(bundle) { dialog ->
                 dialog!!.dismiss()
                 activity!!.finish()
             }
-        })
         dialogFragment.show(activity!!.supportFragmentManager, "Dialog Pop Up")
     }
 
@@ -309,6 +352,6 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
         obj = item
         tv_phone_no.text = obj!!.cust_id
         tv_total.text = MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(obj!!.nett_amount)
-
+        buttonSubmit(true)
     }
 }

@@ -327,6 +327,7 @@ public class MyApiClient {
     public static String LINK_GENERATE_URL;
     public static String LINK_REQ_FIRST_OTP;
     public static String LINK_NEW_INVOICE;
+    public static String LINK_TERMS_AND_CONDITION;
 
 
     public void InitializeAddress(){
@@ -603,6 +604,8 @@ public class MyApiClient {
         LINK_ADD_FAVORITE = headaddressfinal + "espaycatalog/ItemFavorite/New";
         LINK_DELETE_FAVORITE = headaddressfinal + "espaycatalog/ItemFavorite/Delete";
         LINK_GENERATE_URL = headaddressfinal + "espaycatalog/GenerateURL/Invoke";
+
+        LINK_TERMS_AND_CONDITION = BuildConfig.HEAD_ADDRESSS + "terms-and-condition.html";
 
 
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);

@@ -108,6 +108,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         Timber.d("isi intent:%s", mIntent.getExtras().toString());
 
         //if(MyApiClient.PROD_FAILURE_FLAG && topUpType.equals(CoreApp.PULSA))masterDomainSGOplus = prodDomainSGOPlus;
+        //if(MyApiClient.PROD_FAILURE_FLAG && topUpType.equals(CoreApp.PULSA))masterDomainSGOplus = prodDomainSGOPlus;
         if (MyApiClient.IS_PROD) {
             if (bankCode.equals("008")) masterDomainSGOplus = prodDomainSGOPlus;
             else masterDomainSGOplus = prodDomainSGOPlus;
@@ -123,10 +124,11 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
         if (!bankCode.equals("008")) {
             try {
-                String callbackUrl = mIntent.getStringExtra(DefineValue.CALLBACK_URL);
-                if (!callbackUrl.isEmpty())
-                    SGO_PLUS_URL = SGO_PLUS_URL + "&url=" + URLEncoder.encode(callbackUrl + "?refid=" + gen_numb() + "&ref_back_url=" + productCode + "&isclose=1", "utf-8");
-
+                if (mIntent.hasExtra(DefineValue.CALLBACK_URL)) {
+                    String callbackUrl = mIntent.getStringExtra(DefineValue.CALLBACK_URL);
+                    if (!callbackUrl.isEmpty())
+                        SGO_PLUS_URL = SGO_PLUS_URL + "&url=" + URLEncoder.encode(callbackUrl + "?refid=" + gen_numb() + "&ref_back_url=" + productCode + "&isclose=1", "utf-8");
+                }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -158,6 +160,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
     private void loadUrl(final String userName, String url, final String payment_id, final String userId, final String totalAmount,
                          final String fee, final String amount, final String reportType, final String commId,
                          final String transType, final String commCode, final String shareType) {
+        showProgressDialog();
         webview = findViewById(R.id.webview);
         assert webview != null;
         WebSettings webSettings = webview.getSettings();
@@ -167,7 +170,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setUseWideViewPort(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-        if (Build.VERSION.SDK_INT >= 21 && BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
             // Clear all the Application Cache, Web SQL Database and the HTML5 Web Storage
             WebStorage.getInstance().deleteAllData();
@@ -175,9 +178,6 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
             // Clear all the cookies
             CookieManager.getInstance().removeAllCookies(null);
             CookieManager.getInstance().flush();
-        }
-        if (android.os.Build.VERSION.SDK_INT <= 11) {
-            webSettings.setAppCacheMaxSize(1024 * 1024 * 8);
         }
 
         webview.clearCache(true);
@@ -200,10 +200,9 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         });
 
         webview.setWebViewClient(new WebViewClient() {
-
-
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                dismissProgressDialog();
                 Timber.d("isi url tombol-tombolnya:%s", url);
                 if (URLUtil.isValidUrl(url)) {
                     if (url.contains("isclose=1")) {
@@ -220,6 +219,9 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                     } else if (url.contains("isback=1")) {
                         setResult(MainPage.RESULT_BALANCE);
                         onOkButton();
+                    } else if (url.contains("tr_status=settlement")) {
+                        getTrxStatus(userName, DateTimeFormat.getCurrentDateTime(), payment_id, userId, totalAmount,
+                                fee, amount, reportType, commId, transType, shareType);
                     } else
                         view.loadUrl(url);
                 }
@@ -536,6 +538,10 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                 args.putString(DefineValue.AMOUNT_DESIRED, amountDesired);
             else
                 args.putString(DefineValue.AMOUNT_DESIRED, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amountDesired));
+            args.putString(DefineValue.BILLER_DETAIL, response.optString(WebParams.BILLER_DETAIL));
+            args.putString(DefineValue.PRODUCT_NAME, model.getProduct_name());
+            args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(0.0));
+
             setResult(MainPage.RESULT_BILLER);
         } else if (reportType.equals(DefineValue.COLLECTION) || reportType.equals(DefineValue.TOPUP)) {
             args.putString(DefineValue.BANK_NAME, bankName);

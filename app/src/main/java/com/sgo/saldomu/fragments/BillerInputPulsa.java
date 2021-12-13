@@ -890,6 +890,9 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                     if (code.equals(WebParams.SUCCESS_CODE)) {
                         if (mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)) {
                             submitBiller(bank_code, product_code, -1);
+                        } else if (mTempBank.getProduct_type().equals("ATM")) {
+                            dismissProgressDialog();
+                            changeToSgoPlus(bank_code, product_code);
                         } else {
                             int attempt = sentPaymentBillerModel.getFailed_attempt();
                             if (attempt != -1)
@@ -1393,10 +1396,10 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         Intent i = new Intent(getActivity(), SgoPlusWeb.class);
         i.putExtra(DefineValue.PRODUCT_CODE, _product_code);
         i.putExtra(DefineValue.BANK_CODE, _bank_code);
-        i.putExtra(DefineValue.FEE, fee);
+        i.putExtra(DefineValue.FEE, fee.toString());
         i.putExtra(DefineValue.COMMUNITY_CODE, biller_comm_code);
         i.putExtra(DefineValue.TX_ID, tx_id);
-        i.putExtra(DefineValue.AMOUNT, amount);
+        i.putExtra(DefineValue.AMOUNT, amount.toString());
         i.putExtra(DefineValue.API_KEY, biller_api_key);
         i.putExtra(DefineValue.COMMUNITY_ID, biller_comm_id);
         i.putExtra(DefineValue.REPORT_TYPE, DefineValue.BILLER);
@@ -1407,7 +1410,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         i.putExtra(DefineValue.BILLER_NAME, biller_comm_name);
         i.putExtra(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription);
         i.putExtra(DefineValue.DESTINATION_REMARK, cust_id);
-        i.putExtra(DefineValue.TOTAL_AMOUNT, totalAmount);
+        i.putExtra(DefineValue.TOTAL_AMOUNT, totalAmount.toString());
 
         if (buy_type == BillerActivity.PURCHASE_TYPE)
             i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.BIL_PURCHASE_TYPE);
