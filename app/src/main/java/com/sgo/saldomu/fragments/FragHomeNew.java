@@ -350,7 +350,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                     @Override
                     public void onError(Throwable throwable) {
-
+                        getCategoryList();
                     }
 
                     @Override
@@ -524,7 +524,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                         @Override
                         public void onError(Throwable throwable) {
-
+                            getPromoList();
                         }
 
                         @Override
