@@ -55,7 +55,7 @@ public class BalanceService extends Service {
     };
 
     public void runBalance(){
-        if(isServiceDestroyed()) {
+//        if(isServiceDestroyed()) {
             mBl.getDataBalance(true,new OnLoadDataListener() {
                 @Override
                 public void onSuccess(Object deData) {
@@ -72,7 +72,7 @@ public class BalanceService extends Service {
 
                 }
             });
-        }
+//        }
     }
 
 

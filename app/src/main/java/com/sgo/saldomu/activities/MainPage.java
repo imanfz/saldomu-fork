@@ -397,7 +397,7 @@ public class MainPage extends BaseActivity {
     }
 
     void initializeLogin() {
-        showProgLoading(getString(R.string.please_wait), false);
+//        showProgLoading(getString(R.string.please_wait), false);
 
         startLocationService();
 
@@ -1197,6 +1197,7 @@ public class MainPage extends BaseActivity {
 //            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LOGOUT);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
+            Timber.d("isi params logout:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGOUT, params
                     , new ResponseListener() {

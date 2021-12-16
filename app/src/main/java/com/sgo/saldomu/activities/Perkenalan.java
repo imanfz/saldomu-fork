@@ -728,6 +728,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
 //            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LOGOUT);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
+            Timber.d("isi params logout:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGOUT, params
                     , new ResponseListener() {
