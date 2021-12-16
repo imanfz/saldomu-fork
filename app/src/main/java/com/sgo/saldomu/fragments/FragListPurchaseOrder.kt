@@ -43,12 +43,17 @@ class FragListPurchaseOrder : BaseFragment() {
     var partner: String? = ""
     var anchorCompany: String? = ""
 
-    var isDisconnected : Boolean = false
+    var isDisconnected: Boolean = false
+    var isBat: Boolean = false
     var itemList = ArrayList<ListPOModel>()
     var itemListAdapter: ListPOTokoAdapter? = null
 
     var tokoPurchaseOrderActivity: TokoPurchaseOrderActivity? = null
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         setHasOptionsMenu(true)
         v = inflater.inflate(R.layout.frag_list_po, container, false)
         return v
@@ -71,42 +76,62 @@ class FragListPurchaseOrder : BaseFragment() {
             commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
             shopName = arguments!!.getString(DefineValue.MEMBER_SHOP_NAME, "")
             anchorCompany = arguments!!.getString(DefineValue.ANCHOR_COMPANY, "")
+            isBat = arguments!!.getBoolean(DefineValue.IS_BAT, false)
         }
 
         btn_create_po.setOnClickListener {
-            generatingURL()
-//            val fragment = FragListItemToko()
-//            val bundle = Bundle()
-//            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
-//            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
-//            bundle.putString(DefineValue.MEMBER_SHOP_NAME, shopName)
-//            bundle.putString(DefineValue.PARTNER, partner)
-//            bundle.putString(DefineValue.ANCHOR_COMPANY, anchorCompany)
-//            fragment.arguments = bundle
-//            tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.choose_catalog), true, (activity as TokoPurchaseOrderActivity).FRAG_INPUT_ITEM_TAG)
-        }
-
-        itemListAdapter = ListPOTokoAdapter(itemList, activity, object : ListPOTokoAdapter.listener {
-            override fun onClick(docNo: String) {
-                val fragment = FragPurchaseOrderDetail()
+            if (isBat)
+                generatingURL()
+            else {
+                val fragment = FragListItemToko()
                 val bundle = Bundle()
                 bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
                 bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
-                bundle.putString(DefineValue.DOC_NO, docNo)
+                bundle.putString(DefineValue.MEMBER_SHOP_NAME, shopName)
                 bundle.putString(DefineValue.PARTNER, partner)
+                bundle.putString(DefineValue.ANCHOR_COMPANY, anchorCompany)
                 fragment.arguments = bundle
-                tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.detail_document), true, "FragPurchaseOrderDetail")
+                tokoPurchaseOrderActivity!!.switchContent(
+                    fragment,
+                    getString(R.string.choose_catalog),
+                    true,
+                    (activity as TokoPurchaseOrderActivity).FRAG_INPUT_ITEM_TAG
+                )
             }
+        }
 
-            override fun onCancel(docNo: String) {
-                cancelPO(docNo)
-            }
+        itemListAdapter =
+            ListPOTokoAdapter(itemList, activity, object : ListPOTokoAdapter.listener {
+                override fun onClick(docNo: String) {
+                    val fragment = FragPurchaseOrderDetail()
+                    val bundle = Bundle()
+                    bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
+                    bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
+                    bundle.putString(DefineValue.DOC_NO, docNo)
+                    bundle.putString(DefineValue.PARTNER, partner)
+                    fragment.arguments = bundle
+                    tokoPurchaseOrderActivity!!.switchContent(
+                        fragment,
+                        getString(R.string.detail_document),
+                        true,
+                        "FragPurchaseOrderDetail"
+                    )
+                }
 
-        })
+                override fun onCancel(docNo: String) {
+                    cancelPO(docNo)
+                }
+
+            })
         recyclerViewList.adapter = itemListAdapter
-        recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerViewList.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
-        val docStatusAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, resources.getStringArray(R.array.list_doc_status_po_bat))
+        val docStatusAdapter = ArrayAdapter(
+            requireActivity(),
+            android.R.layout.simple_spinner_item,
+            resources.getStringArray(R.array.list_doc_status_po_bat)
+        )
         docStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner_doc_status.adapter = docStatusAdapter
         spinner_doc_status.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -135,7 +160,8 @@ class FragListPurchaseOrder : BaseFragment() {
     private fun generatingURL() {
         try {
             showProgressDialog()
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GENERATE_URL, commCode + memberCode)
+            val params = RetrofitService.getInstance()
+                .getSignature(MyApiClient.LINK_GENERATE_URL, commCode + memberCode)
             params[WebParams.COMM_ID] = commIDLogin
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.COMM_CODE_ESPAY] = commCode
@@ -144,53 +170,59 @@ class FragListPurchaseOrder : BaseFragment() {
             params[WebParams.MEMBER_CODE_ESPAY] = memberCode
             Timber.d("params generate url bat:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GENERATE_URL, params,
-                    object : ObjListeners {
-                        override fun onResponses(response: JSONObject) {
-                            try {
-                                val gson = Gson()
-                                val model = gson.fromJson(response.toString(), jsonModel::class.java)
-                                val code = response.getString(WebParams.ERROR_CODE)
-                                val code_msg = response.getString(WebParams.ERROR_MESSAGE)
-                                Timber.d("isi response generate url bat:$response")
-                                when (code) {
-                                    WebParams.SUCCESS_CODE -> {
-                                        var url = response.getString(WebParams.URL)
-                                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                        startActivity(browserIntent)
+                object : ObjListeners {
+                    override fun onResponses(response: JSONObject) {
+                        try {
+                            val gson = Gson()
+                            val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                            val code = response.getString(WebParams.ERROR_CODE)
+                            val code_msg = response.getString(WebParams.ERROR_MESSAGE)
+                            Timber.d("isi response generate url bat:$response")
+                            when (code) {
+                                WebParams.SUCCESS_CODE -> {
+                                    var url = response.getString(WebParams.URL)
+                                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                    startActivity(browserIntent)
 
-                                    }
-                                    WebParams.LOGOUT_CODE -> {
-                                        Timber.d("isi response autologout:$response")
-                                        val message = response.getString(WebParams.ERROR_MESSAGE)
-                                        val test = AlertDialogLogout.getInstance()
-                                        test.showDialoginActivity(activity, message)
-                                    }
-                                    DefineValue.ERROR_9333 -> {
-                                        Timber.d("isi response app data:%s", model.app_data)
-                                        val appModel = model.app_data
-                                        val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                        alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                                    }
-                                    DefineValue.ERROR_0066 -> {
-                                        Timber.d("isi response maintenance:$response")
-                                        val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                        alertDialogMaintenance.showDialogMaintenance(activity)
-                                    }
-                                    else -> {
-                                        Timber.d("isi error generate url bat:$response")
-                                        Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
-                                    }
                                 }
-                            } catch (e: JSONException) {
-                                e.printStackTrace()
+                                WebParams.LOGOUT_CODE -> {
+                                    Timber.d("isi response autologout:$response")
+                                    val message = response.getString(WebParams.ERROR_MESSAGE)
+                                    val test = AlertDialogLogout.getInstance()
+                                    test.showDialoginActivity(activity, message)
+                                }
+                                DefineValue.ERROR_9333 -> {
+                                    Timber.d("isi response app data:%s", model.app_data)
+                                    val appModel = model.app_data
+                                    val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                    alertDialogUpdateApp.showDialogUpdate(
+                                        activity,
+                                        appModel.type,
+                                        appModel.packageName,
+                                        appModel.downloadUrl
+                                    )
+                                }
+                                DefineValue.ERROR_0066 -> {
+                                    Timber.d("isi response maintenance:$response")
+                                    val alertDialogMaintenance =
+                                        AlertDialogMaintenance.getInstance()
+                                    alertDialogMaintenance.showDialogMaintenance(activity)
+                                }
+                                else -> {
+                                    Timber.d("isi error generate url bat:$response")
+                                    Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
+                                }
                             }
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
                         }
+                    }
 
-                        override fun onError(throwable: Throwable) {}
-                        override fun onComplete() {
-                            dismissProgressDialog()
-                        }
-                    })
+                    override fun onError(throwable: Throwable) {}
+                    override fun onComplete() {
+                        dismissProgressDialog()
+                    }
+                })
         } catch (e: java.lang.Exception) {
             Timber.d("httpclient:%s", e.message)
         }
@@ -198,7 +230,8 @@ class FragListPurchaseOrder : BaseFragment() {
 
     private fun getPOList() {
         showProgressDialog()
-        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LIST_PO, memberCode + commCode)
+        val params = RetrofitService.getInstance()
+            .getSignature(MyApiClient.LINK_LIST_PO, memberCode + commCode)
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.MEMBER_CODE_ESPAY] = memberCode
         params[WebParams.COMM_CODE_ESPAY] = commCode
@@ -209,69 +242,76 @@ class FragListPurchaseOrder : BaseFragment() {
         }
         Timber.d("isi params get $docTypeID list:$params")
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_LIST_PO, params,
-                object : ObjListeners {
-                    override fun onResponses(response: JSONObject) {
-                        val code = response.getString(WebParams.ERROR_CODE)
-                        val message = response.getString(WebParams.ERROR_MESSAGE)
-                        itemList.clear()
-                        when (code) {
-                            WebParams.SUCCESS_CODE -> {
-                                partner = response.getString(WebParams.PARTNER)
-                                val jsonArray = response.getJSONArray(WebParams.DOC_LIST)
-                                for (i in 0 until jsonArray.length()) {
-                                    val jsonObject = jsonArray.getJSONObject(i)
-                                    val docNo = jsonObject.getString(WebParams.DOC_NO)
-                                    val docStatus = jsonObject.getString(WebParams.DOC_STATUS)
-                                    val nettAmount = jsonObject.getString(WebParams.NETT_AMOUNT)
-                                    val dueDate = jsonObject.getString(WebParams.DUE_DATE)
-                                    val issueDate = jsonObject.getString(WebParams.ISSUE_DATE)
-                                    val custID = jsonObject.getString(WebParams.CUST_ID)
-                                    val memberCode = jsonObject.getString(WebParams.MEMBER_CODE)
-                                    val commCode = jsonObject.getString(WebParams.COMM_CODE)
-                                    val paidStatus = jsonObject.getString(WebParams.PAID_STATUS)
-                                    val paidStatusRemark = jsonObject.getString(WebParams.PAID_STATUS_REMARK)
-                                    val listPOModel = ListPOModel()
-                                    listPOModel.doc_no = docNo
-                                    listPOModel.doc_status = docStatus
-                                    listPOModel.nett_amount = nettAmount
-                                    listPOModel.due_date = dueDate
-                                    listPOModel.issue_date = issueDate
-                                    listPOModel.cust_id = custID
-                                    listPOModel.member_code = memberCode
-                                    listPOModel.comm_code = commCode
-                                    listPOModel.paid_status = paidStatus
-                                    listPOModel.paid_status_remark = paidStatusRemark
-                                    listPOModel.partner = partner
-                                    itemList.add(listPOModel)
-                                }
-                            }
-                            WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginActivity(tokoPurchaseOrderActivity, message)
-                            }
-                            DefineValue.ERROR_9333 -> {
-                                val model = gson.fromJson(response.toString(), jsonModel::class.java)
-                                val appModel = model.app_data
-                                AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                            }
-                            DefineValue.ERROR_0066 -> {
-                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
-                            }
-                            else -> {
-                                Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+            object : ObjListeners {
+                override fun onResponses(response: JSONObject) {
+                    val code = response.getString(WebParams.ERROR_CODE)
+                    val message = response.getString(WebParams.ERROR_MESSAGE)
+                    itemList.clear()
+                    when (code) {
+                        WebParams.SUCCESS_CODE -> {
+                            partner = response.getString(WebParams.PARTNER)
+                            val jsonArray = response.getJSONArray(WebParams.DOC_LIST)
+                            for (i in 0 until jsonArray.length()) {
+                                val jsonObject = jsonArray.getJSONObject(i)
+                                val docNo = jsonObject.getString(WebParams.DOC_NO)
+                                val docStatus = jsonObject.getString(WebParams.DOC_STATUS)
+                                val nettAmount = jsonObject.getString(WebParams.NETT_AMOUNT)
+                                val dueDate = jsonObject.getString(WebParams.DUE_DATE)
+                                val issueDate = jsonObject.getString(WebParams.ISSUE_DATE)
+                                val custID = jsonObject.getString(WebParams.CUST_ID)
+                                val memberCode = jsonObject.getString(WebParams.MEMBER_CODE)
+                                val commCode = jsonObject.getString(WebParams.COMM_CODE)
+                                val paidStatus = jsonObject.getString(WebParams.PAID_STATUS)
+                                val paidStatusRemark =
+                                    jsonObject.getString(WebParams.PAID_STATUS_REMARK)
+                                val listPOModel = ListPOModel()
+                                listPOModel.doc_no = docNo
+                                listPOModel.doc_status = docStatus
+                                listPOModel.nett_amount = nettAmount
+                                listPOModel.due_date = dueDate
+                                listPOModel.issue_date = issueDate
+                                listPOModel.cust_id = custID
+                                listPOModel.member_code = memberCode
+                                listPOModel.comm_code = commCode
+                                listPOModel.paid_status = paidStatus
+                                listPOModel.paid_status_remark = paidStatusRemark
+                                listPOModel.partner = partner
+                                itemList.add(listPOModel)
                             }
                         }
-                        itemListAdapter!!.notifyDataSetChanged()
+                        WebParams.LOGOUT_CODE -> {
+                            AlertDialogLogout.getInstance()
+                                .showDialoginActivity(tokoPurchaseOrderActivity, message)
+                        }
+                        DefineValue.ERROR_9333 -> {
+                            val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                            val appModel = model.app_data
+                            AlertDialogUpdateApp.getInstance().showDialogUpdate(
+                                activity,
+                                appModel.type,
+                                appModel.packageName,
+                                appModel.downloadUrl
+                            )
+                        }
+                        DefineValue.ERROR_0066 -> {
+                            AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
+                        }
+                        else -> {
+                            Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+                        }
                     }
+                    itemListAdapter!!.notifyDataSetChanged()
+                }
 
-                    override fun onError(throwable: Throwable?) {
-                        dismissProgressDialog()
-                    }
+                override fun onError(throwable: Throwable?) {
+                    dismissProgressDialog()
+                }
 
-                    override fun onComplete() {
-                        dismissProgressDialog()
-                    }
+                override fun onComplete() {
+                    dismissProgressDialog()
+                }
 
-                })
+            })
     }
 
 
@@ -292,7 +332,12 @@ class FragListPurchaseOrder : BaseFragment() {
             bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
             bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
             fragment.arguments = bundle
-            tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.list_promo), true, "FragListPromo")
+            tokoPurchaseOrderActivity!!.switchContent(
+                fragment,
+                getString(R.string.list_promo),
+                true,
+                "FragListPromo"
+            )
         }
         return super.onOptionsItemSelected(item)
     }
@@ -303,7 +348,12 @@ class FragListPurchaseOrder : BaseFragment() {
         for (i in 0 until menu.size()) {
             val item = menu.getItem(i)
             val spanString = SpannableString(menu.getItem(i).title.toString())
-            spanString.setSpan(ForegroundColorSpan(Color.WHITE), 0, spanString.length, 0) //fix the color to white
+            spanString.setSpan(
+                ForegroundColorSpan(Color.WHITE),
+                0,
+                spanString.length,
+                0
+            ) //fix the color to white
             item.title = spanString
         }
     }
@@ -311,7 +361,8 @@ class FragListPurchaseOrder : BaseFragment() {
     private fun cancelPO(docNo: String) {
         showProgressDialog()
 
-        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CANCEL_DOC, memberCode + commCode + docNo)
+        val params = RetrofitService.getInstance()
+            .getSignature(MyApiClient.LINK_CANCEL_DOC, memberCode + commCode + docNo)
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.MEMBER_CODE_ESPAY] = memberCode
         params[WebParams.COMM_CODE_ESPAY] = commCode
@@ -324,40 +375,46 @@ class FragListPurchaseOrder : BaseFragment() {
 
         Timber.d("isi params cancel $docTypeID :$params")
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CANCEL_DOC, params,
-                object : ObjListeners {
-                    override fun onResponses(response: JSONObject) {
-                        val code = response.getString(WebParams.ERROR_CODE)
-                        val message = response.getString(WebParams.ERROR_MESSAGE)
-                        when (code) {
-                            WebParams.SUCCESS_CODE -> {
-                                showDialog(getString(R.string.order_canceled))
-                            }
-                            WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginActivity(tokoPurchaseOrderActivity, message)
-                            }
-                            DefineValue.ERROR_9333 -> {
-                                val model = gson.fromJson(response.toString(), jsonModel::class.java)
-                                val appModel = model.app_data
-                                AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                            }
-                            DefineValue.ERROR_0066 -> {
-                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
-                            }
-                            else -> {
-                                Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
-                            }
+            object : ObjListeners {
+                override fun onResponses(response: JSONObject) {
+                    val code = response.getString(WebParams.ERROR_CODE)
+                    val message = response.getString(WebParams.ERROR_MESSAGE)
+                    when (code) {
+                        WebParams.SUCCESS_CODE -> {
+                            showDialog(getString(R.string.order_canceled))
+                        }
+                        WebParams.LOGOUT_CODE -> {
+                            AlertDialogLogout.getInstance()
+                                .showDialoginActivity(tokoPurchaseOrderActivity, message)
+                        }
+                        DefineValue.ERROR_9333 -> {
+                            val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                            val appModel = model.app_data
+                            AlertDialogUpdateApp.getInstance().showDialogUpdate(
+                                activity,
+                                appModel.type,
+                                appModel.packageName,
+                                appModel.downloadUrl
+                            )
+                        }
+                        DefineValue.ERROR_0066 -> {
+                            AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
+                        }
+                        else -> {
+                            Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
                         }
                     }
+                }
 
-                    override fun onError(throwable: Throwable?) {
-                        dismissProgressDialog()
-                    }
+                override fun onError(throwable: Throwable?) {
+                    dismissProgressDialog()
+                }
 
-                    override fun onComplete() {
-                        dismissProgressDialog()
-                    }
+                override fun onComplete() {
+                    dismissProgressDialog()
+                }
 
-                })
+            })
     }
 
     private fun showDialog(msg: String) {

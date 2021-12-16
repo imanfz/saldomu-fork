@@ -99,7 +99,7 @@ class FragReportEBD : BaseFragment() {
                             val status = jsonObject.getString(WebParams.STATUS)
                             val mobilePhoneNo = jsonObject.getString(WebParams.MOBILE_PHONE_NO)
                             val email = jsonObject.getString(WebParams.EMAIL)
-                            ebdCommunityModelArrayList.add(EBDCommunityModel(memberCode, custID, custName, commCode, commName, status, mobilePhoneNo, shopName, "", email))
+                            ebdCommunityModelArrayList.add(EBDCommunityModel(memberCode, custID, custName, commCode, commName, status, mobilePhoneNo, shopName, "", email, false))
                         }
                         adapterEBDCommunityList!!.notifyDataSetChanged()
                     }
