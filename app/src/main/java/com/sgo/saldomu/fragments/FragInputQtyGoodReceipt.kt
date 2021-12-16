@@ -111,10 +111,15 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
             bundle.putString(DefineValue.DOC_NO, docNo)
             bundle.putString(DefineValue.PARTNER, partner)
             bundle.putString(DefineValue.PARTNER_CODE_ESPAY, partnerCodeEspay)
-            val frag: Fragment = FragInputPromoCodeGRCanvasser()
-            frag.arguments = bundle
-            switchFragment(frag, "", "", true, "")
 
+            //selain ERATEL skip promo (kebutuhan demo)
+            if (partnerCodeEspay.contains("ERATEL")) {
+                val frag: Fragment = FragInputPromoCodeGRCanvasser()
+                frag.arguments = bundle
+                switchFragment(frag, "", "", true, "")
+            } else {
+                confirmDocument()
+            }
         }
     }
 
