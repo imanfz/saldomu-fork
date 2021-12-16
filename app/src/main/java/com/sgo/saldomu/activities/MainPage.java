@@ -135,7 +135,7 @@ public class MainPage extends BaseActivity {
     private BalanceService serviceReferenceBalance;
     private AppInfoService serviceAppInfoReference;
     private UserProfileService serviceUserProfileReference;
-    private boolean isBound, isBoundAppInfo, isBoundUserProfile, isForeground = false, isAgent = false;
+    private boolean isBound, isBoundAppInfo, isBoundUserProfile, isForeground = false, isAgent = false, isLogoutMode = false;
 
     AlertDialog devRootedDeviceAlertDialog;
     private String userNameLogin;
@@ -378,7 +378,8 @@ public class MainPage extends BaseActivity {
                 } else
                     openFirstScreen(FIRST_SCREEN_INTRO);
             } else {
-                initializeLogin();
+                if (!isLogoutMode)
+                    initializeLogin();
             }
         }
     }
@@ -1236,6 +1237,7 @@ public class MainPage extends BaseActivity {
         Timber.d("isi result Code:%s", String.valueOf(resultCode));
         if (requestCode == REQUEST_FINISH) {
             if (resultCode == RESULT_LOGOUT) {
+                isLogoutMode = true;
                 switchLogout();
             }
             if (resultCode == RESULT_ERROR) {
