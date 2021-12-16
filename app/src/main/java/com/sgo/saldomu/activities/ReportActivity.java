@@ -60,7 +60,7 @@ public class ReportActivity extends BaseActivity {
             dialogI = InformationDialog.newInstance(10);
 //            dialogI.setTargetFragment(this,0);
             List<ListFragment> mList = new ArrayList<>();
-            mList.add(FragReport.newInstance(FragReport.REPORT_PENDING));
+//            mList.add(FragReport.newInstance(FragReport.REPORT_PENDING));
             mList.add(FragReport.newInstance(FragReport.REPORT_ESPAY));
             if (isAgent) {
                 mList.add(FragReport.newInstance(FragReport.REPORT_FEE));
@@ -74,7 +74,7 @@ public class ReportActivity extends BaseActivity {
             pager.setAdapter(adapternya);
             pager.setPageMargin(pageMargin);
             tabs.setViewPager(pager);
-            pager.setCurrentItem(1);
+            pager.setCurrentItem(0);
 
             setCurrentAdapternya(adapternya);
         }
