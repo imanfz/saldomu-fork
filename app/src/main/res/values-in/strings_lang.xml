@@ -33,7 +33,7 @@
     <string name="transaction_failed">Transaksi Gagal</string>
     <string name="internal_error" translatable="false">Internal Error</string>
     <string name="atm" translatable="false">ATM</string>
-    <string name="pending">Sedang di Proses</string>
+    <string name="pending">Sedang diproses</string>
     <string name="paid">Terbayar</string>
     <string name="failed">Gagal</string>
     <string name="suspect">Menggantung</string>
@@ -1789,4 +1789,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="show_detail">Lihat Detail</string>
     <string name="verification_code_not_available">Kode verifikasi belum tersedia, silahkan coba kembali</string>
     <string name="transaction_id_ref">ID Transaksi Ref</string>
+    <string name="validation_length_min_15">Minimal 15 karakter!</string>
 </resources>

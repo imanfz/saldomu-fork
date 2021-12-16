@@ -1800,4 +1800,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="show_detail">Show Detail</string>
     <string name="verification_code_not_available">Verification code is not yet available, please try again</string>
     <string name="transaction_id_ref">Transaction ID Ref</string>
+    <string name="validation_length_min_15">15 characters minimum!</string>
 </resources>

@@ -389,10 +389,17 @@ class BillerInputPLN : BaseFragment() {
     }
 
     private fun inputValidation(): Boolean {
-        if (billerinput_et_id_remark.text.length < 10 ||
-                billerinput_et_id_remark.text.length > 15) {
+        if (billerinput_et_id_remark.text.isEmpty()) {
             billerinput_et_id_remark.requestFocus()
             billerinput_et_id_remark.error = getString(R.string.billerinput_validation_payment_remark)
+            return false
+        }
+        if (payment_name == getString(R.string.billerinput_text_spinner_default_payment)) {
+            Toast.makeText(
+                activity,
+                getString(R.string.billerinput_validation_spinner_default_payment),
+                Toast.LENGTH_LONG
+            ).show()
             return false
         }
         if (buy_type_detail.equals("PRABAYAR", ignoreCase = true)) {
