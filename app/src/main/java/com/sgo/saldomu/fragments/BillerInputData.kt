@@ -384,7 +384,17 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
             billerinput_et_id.text!!.length > 15
         ) {
             billerinput_et_id.requestFocus()
-            billerinput_et_id.error = getString(R.string.regist1_validation_length_nohp)
+            if (billerinput_et_id.text!!.length < 10)
+                billerinput_et_id.error = getString(R.string.regist1_validation_length_nohp)
+            else if (billerinput_et_id.text!!.length > 15)
+                billerinput_et_id.error = getString(R.string.validation_length_min_15)
+            return false
+        } else if (payment_name == getString(R.string.billerinput_text_spinner_default_payment)) {
+            Toast.makeText(
+                activity,
+                getString(R.string.billerinput_validation_spinner_default_payment),
+                Toast.LENGTH_LONG
+            ).show()
             return false
         }
         return true

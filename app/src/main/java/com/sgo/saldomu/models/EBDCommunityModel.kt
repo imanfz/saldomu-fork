@@ -10,4 +10,5 @@ open class EBDCommunityModel (
         var mobile_phone_no: String,
         var shop_name: String,
         var anchor_company: String,
-        var email: String)
+        var email: String,
+        var is_bat: Boolean)

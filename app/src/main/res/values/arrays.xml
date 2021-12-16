@@ -107,12 +107,14 @@
     </string-array>
 
     <string-array name="report_list">
+<!--        <item>@string/pending</item>-->
         <item>@string/transaction</item>
         <!--<item>Transfer</item>-->
         <!--<item>Permintaan</item>-->
     </string-array>
 
     <string-array name="report_list_agen">
+<!--        <item>@string/pending</item>-->
         <item>@string/transaction</item>
         <!--<item>Transfer</item>-->
         <!--<item>Permintaan</item>-->

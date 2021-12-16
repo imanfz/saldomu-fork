@@ -791,7 +791,7 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
 
     override fun onRefresh() {
         isLastPage = false
-        currentPage = 0
+        currentPage = 1
         adapter.clearAdapter()
         getHistory()
         swipeRefresh.isRefreshing = false

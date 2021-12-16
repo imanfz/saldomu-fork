@@ -780,6 +780,10 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                 Toast.makeText(getActivity(), getString(R.string.billerinput_validation_spinner_default_pulsa), Toast.LENGTH_LONG).show();
                 return false;
             }
+        if (payment_name.equals(getString(R.string.billerinput_text_spinner_default_payment))) {
+            Toast.makeText(getActivity(), getString(R.string.billerinput_validation_spinner_default_payment), Toast.LENGTH_LONG).show();
+            return false;
+        }
         if (favoriteSwitch.isChecked() && notesEditText.getText().toString().length() == 0) {
             notesEditText.requestFocus();
             notesEditText.setError(getString(R.string.payfriends_notes_zero));
@@ -787,6 +791,8 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         }
         return true;
     }
+//https://mobile-dev.saldomu.com/saldomu/agentlocation/Category/Retrieve
+    //https://mobile-dev.saldomu.com/saldomu/ServicePromo/PromoList
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

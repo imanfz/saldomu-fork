@@ -765,5 +765,6 @@ public class DefineValue {
     public static String ENCRYPTION_PATTERN = "encryptionPattern";
     public static String GOOGLE_MAPS_KEY = "googleMapsKey";
     public static String GOOGLE_MAPS_KEY_WS = "googleMapsKeyWs";
+    public static String IS_BAT = "isBat";
 }
 

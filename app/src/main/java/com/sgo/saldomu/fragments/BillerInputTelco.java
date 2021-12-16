@@ -531,9 +531,13 @@ public class BillerInputTelco extends BaseFragment implements ReportBillerDialog
             et_payment_remark.requestFocus();
             et_payment_remark.setError(getString(R.string.regist1_validation_nohp));
             return false;
-        } else if (et_nominal.getText().toString().isEmpty()) {
+        } else if (payment_name.equals(getString(R.string.billerinput_text_spinner_default_payment))) {
+            Toast.makeText(getActivity(), getString(R.string.billerinput_validation_spinner_default_payment), Toast.LENGTH_LONG).show();
+            return false;
+        }else if (et_nominal.getText().toString().isEmpty()) {
             et_nominal.requestFocus();
             et_nominal.setError(getString(R.string.nominal_validation));
+            return false;
         }
         return true;
     }
