@@ -154,6 +154,7 @@ public class MyApiClient {
     public static String LINK_INQUIRY_BILLER;
     public static String LINK_PAYMENT_BILLER;
     public static String LINK_TRANSACTION_REPORT;
+    public static String LINK_TRANSACTION_REPORT_PENDING;
     public static String LINK_PROMO_LIST;
 
     public static String LINK_BANK_ACCOUNT_COLLECTION;
@@ -410,6 +411,7 @@ public class MyApiClient {
         LINK_CHANGE_EMAIL = headaddressfinal + "ChangeEmail/Invoke";
         LINK_PAYMENT_BILLER = headaddressfinal + "PaymentBiller/Invoke";
         LINK_TRANSACTION_REPORT = headaddressfinal + "ReportTrx/Retrieve";
+        LINK_TRANSACTION_REPORT_PENDING = headaddressfinal + "ReportTrxPending/Retrieve";
 
         LINK_PROMO_LIST = headaddressfinal + "ServicePromo/PromoList";
         LINK_INQUIRY_BILLER = headaddressfinal + "InquiryBiller/Invoke";

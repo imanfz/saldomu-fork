@@ -5,7 +5,6 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.View;
 
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.ListFragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -61,20 +60,21 @@ public class ReportActivity extends BaseActivity {
             dialogI = InformationDialog.newInstance(10);
 //            dialogI.setTargetFragment(this,0);
             List<ListFragment> mList = new ArrayList<>();
+            mList.add(FragReport.newInstance(FragReport.REPORT_PENDING));
             mList.add(FragReport.newInstance(FragReport.REPORT_ESPAY));
             if (isAgent) {
                 mList.add(FragReport.newInstance(FragReport.REPORT_FEE));
                 mList.add(FragReport.newInstance(FragReport.REPORT_ADDITIONAL_FEE));
             }
 
-            tabs = (TabPageIndicator) findViewById(R.id.report_tabs_activity);
-            pager = (ViewPager) findViewById(R.id.report_pager_activity);
+            tabs = findViewById(R.id.report_tabs_activity);
+            pager = findViewById(R.id.report_pager_activity);
             adapternya = new ReportTabAdapter(getSupportFragmentManager(), mList, titles);
 //            setTargetFragment(this, 0);
             pager.setAdapter(adapternya);
             pager.setPageMargin(pageMargin);
             tabs.setViewPager(pager);
-            pager.setCurrentItem(0);
+            pager.setCurrentItem(1);
 
             setCurrentAdapternya(adapternya);
         }

@@ -83,6 +83,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     public static int REPORT_ASK = 0x0299395;
     public static int REPORT_SCASH = 0x0299394;
     public static int REPORT_ESPAY = 0x0299393;
+    public static int REPORT_PENDING = 0x0299398;
     public static int REPORT_FEE = 0x0299396;
     public static int REPORT_ADDITIONAL_FEE = 0x0299397;
     private final String DATEFROM = "tagFrom";
@@ -231,7 +232,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         if (report_type == REPORT_SCASH) {
             reportListAdapter = new ReportListAdapter(getActivity(), R.layout.list_transaction_report_item, reportData);
             lv_report.setAdapter(reportListAdapter);
-        } else if (report_type == REPORT_ESPAY) {
+        } else if (report_type == REPORT_ESPAY || report_type == REPORT_PENDING) {
             reportListEspayAdapter = new ReportListEspayAdapter(getActivity(), R.layout.list_transaction_report_espay_item, reportData);
             lv_report.setAdapter(reportListEspayAdapter);
         } else if (report_type == REPORT_ASK) {
@@ -258,7 +259,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 setUniAdapter(tempAdap);
             else setUniAdapter(lv_report.getAdapter());
         }
-        if (report_type == REPORT_ESPAY || report_type == REPORT_SCASH) {
+        if (report_type == REPORT_ESPAY || report_type == REPORT_PENDING || report_type == REPORT_SCASH) {
             lv_report.setOnItemClickListener(reportItemListener);
         }
 
@@ -382,6 +383,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             if (report_type == REPORT_SCASH) {
                 url = MyApiClient.LINK_TRANSACTION_REPORT;
                 signature = member_id;
+            } else if (report_type == REPORT_PENDING) {
+                url = MyApiClient.LINK_TRANSACTION_REPORT_PENDING;
             } else if (report_type == REPORT_ESPAY) {
                 url = MyApiClient.LINK_REPORT_ESPAY;
             } else if (report_type == REPORT_ASK) {
@@ -403,7 +406,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
             if (report_type == REPORT_SCASH) {
                 params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
-            } else if (report_type == REPORT_ESPAY) {
+            } else if (report_type == REPORT_ESPAY || report_type == REPORT_PENDING) {
                 params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
             } else if (report_type == REPORT_FEE || report_type == REPORT_ADDITIONAL_FEE) {
                 params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
@@ -589,7 +592,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     private void NotifyDataChange() {
         if (report_type == REPORT_SCASH) {
             reportListAdapter.notifyDataSetChanged();
-        } else if (report_type == REPORT_ESPAY) {
+        } else if (report_type == REPORT_ESPAY || report_type == REPORT_PENDING) {
             reportListEspayAdapter.notifyDataSetChanged();
         } else if (report_type == REPORT_ASK) {
             reportAskListAdapter.notifyDataSetChanged();
@@ -631,7 +634,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                     call = false;
                 }
 //                call =
-            } else if (report_type == REPORT_ESPAY) {
+            } else if (report_type == REPORT_ESPAY || report_type == REPORT_PENDING) {
                 _tx_id = _object.getTx_id();
                 _comm_id = _object.getComm_id();
                 tx_type = DefineValue.ESPAY;
@@ -712,7 +715,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                     showReportBillerDialog(_object, response, ccyId);
                     break;
             }
-        } else if (report_type == REPORT_ESPAY) {
+        } else if (report_type == REPORT_ESPAY || report_type == REPORT_PENDING) {
             if (_object.getBuss_scheme_code().equals(DefineValue.BIL)) {
                 showReportEspayBillerDialog(sp.getString(DefineValue.USER_NAME, ""), response);
             } else if (_object.getBuss_scheme_code().equals(DefineValue.CTA)) {
