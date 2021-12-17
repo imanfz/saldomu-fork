@@ -85,6 +85,7 @@ import com.sgo.saldomu.models.retrofit.CategoryListModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
+import com.sgo.saldomu.utils.UserUtils;
 import com.synnapps.carouselview.CarouselView;
 
 import org.json.JSONArray;
@@ -205,84 +206,86 @@ public class FragHomeNew extends BaseFragmentMainPage {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+        if (UserUtils.isLogin()){
+            isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
-        isDormant = sp.getString(DefineValue.IS_DORMANT, DefineValue.STRING_NO);
+            isDormant = sp.getString(DefineValue.IS_DORMANT, DefineValue.STRING_NO);
 
-        agentSchemeCode = sp.getString(DefineValue.AGENT_SCHEME_CODES, "");
-        memberSchemeCode = sp.getString(DefineValue.CATEGORY, "");
-        agentBillerCode = sp.getString(DefineValue.AGENT_BILLER_CODES, "");
-        agentEBDCode = sp.getString(DefineValue.AGENT_EBD_CODES, "");
-        agentTrxCode = sp.getString(DefineValue.AGENT_TRX_CODES, "");
-        try {
-            agentTrxCodeArray = new JSONArray(agentTrxCode);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            agentSchemeCode = sp.getString(DefineValue.AGENT_SCHEME_CODES, "");
+            memberSchemeCode = sp.getString(DefineValue.CATEGORY, "");
+            agentBillerCode = sp.getString(DefineValue.AGENT_BILLER_CODES, "");
+            agentEBDCode = sp.getString(DefineValue.AGENT_EBD_CODES, "");
+            agentTrxCode = sp.getString(DefineValue.AGENT_TRX_CODES, "");
+            try {
+                agentTrxCodeArray = new JSONArray(agentTrxCode);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-        getRealmBillerData();
-        getRealmCustomMenuData();
-        setMenuAdapter();
+            getRealmBillerData();
+            getRealmCustomMenuData();
+            setMenuAdapter();
 
-        if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
-            goneStatusOnline();
-        } else {
-            if (sp.getString(DefineValue.IS_AGENT_APPROVE, "").equals(DefineValue.STRING_YES)) {
-                showStatusOnline();
-            } else {
+            if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
                 goneStatusOnline();
-            }
-        }
-
-        if (isAgent) {
-            setupTitleMenu();
-        } else {
-            if (memberSchemeCode.equals("") || memberSchemeCode == null) {
-                getCategoryList();
             } else {
-                setupTitleMenu();
-            }
-        }
-
-        gridView.setOnItemClickListener((parent, view1, position, id) -> {
-            Timber.d("masuk gridhomeonitemclicklistener");
-
-            String menuItemName = ((TextView) view1.findViewById(R.id.grid_text)).getText().toString();
-            Timber.d("menuItemName : %s", menuItemName);
-            onClickMenuItem(menuItemName);
-        });
-
-        if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
-
-            swSettingOnline.setOnCheckedChangeListener(null);
-            swSettingOnline.setChecked(sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO));
-            swSettingOnline.setOnCheckedChangeListener(switchListener);
-        }
-
-        RefreshSaldo();
-        if (getLvlClass() != null)
-            getLvlClass().refreshData();
-
-        refreshBtn.setOnClickListener(v -> getBalance(true));
-
-        if (!sp.getBoolean(DefineValue.SAME_BANNER, false))
-            getPromoList();
-        else
-            populateBanner();
-        if (isAgent)
-            tv_balance.setText(getString(R.string.agent_balance));
-
-        if (isAgent && agentTrxCodeArray.length() > 0)
-            for (int i = 0; i < agentTrxCodeArray.length(); i++)
-                try {
-                    if (agentTrxCodeArray.get(i).equals(DefineValue.P2P))
-                        allowedTransfer = true;
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (sp.getString(DefineValue.IS_AGENT_APPROVE, "").equals(DefineValue.STRING_YES)) {
+                    showStatusOnline();
+                } else {
+                    goneStatusOnline();
                 }
-        else allowedTransfer = !isAgent && sp.getInt(DefineValue.LEVEL_VALUE, 1) == 2;
+            }
 
-        sp.edit().putBoolean(DefineValue.ALLOW_TRANSFER, allowedTransfer).commit();
+            if (isAgent) {
+                setupTitleMenu();
+            } else {
+                if (memberSchemeCode.equals("") || memberSchemeCode == null) {
+                    getCategoryList();
+                } else {
+                    setupTitleMenu();
+                }
+            }
+
+            gridView.setOnItemClickListener((parent, view1, position, id) -> {
+                Timber.d("masuk gridhomeonitemclicklistener");
+
+                String menuItemName = ((TextView) view1.findViewById(R.id.grid_text)).getText().toString();
+                Timber.d("menuItemName : %s", menuItemName);
+                onClickMenuItem(menuItemName);
+            });
+
+            if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
+
+                swSettingOnline.setOnCheckedChangeListener(null);
+                swSettingOnline.setChecked(sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO));
+                swSettingOnline.setOnCheckedChangeListener(switchListener);
+            }
+
+            RefreshSaldo();
+            if (getLvlClass() != null)
+                getLvlClass().refreshData();
+
+            refreshBtn.setOnClickListener(v -> getBalance(true));
+
+            if (!sp.getBoolean(DefineValue.SAME_BANNER, false))
+                getPromoList();
+            else
+                populateBanner();
+            if (isAgent)
+                tv_balance.setText(getString(R.string.agent_balance));
+
+            if (isAgent && agentTrxCodeArray.length() > 0)
+                for (int i = 0; i < agentTrxCodeArray.length(); i++)
+                    try {
+                        if (agentTrxCodeArray.get(i).equals(DefineValue.P2P))
+                            allowedTransfer = true;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+            else allowedTransfer = !isAgent && sp.getInt(DefineValue.LEVEL_VALUE, 1) == 2;
+
+            sp.edit().putBoolean(DefineValue.ALLOW_TRANSFER, allowedTransfer).commit();
+        }
     }
 
     private void getCategoryList() {
