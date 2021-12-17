@@ -971,8 +971,6 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_BillerInqReq)
-            sentInquryBiller()
         if (requestCode == MainPage.REQUEST_FINISH) {
             if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
                 value_pin = data?.getStringExtra(DefineValue.PIN_VALUE)

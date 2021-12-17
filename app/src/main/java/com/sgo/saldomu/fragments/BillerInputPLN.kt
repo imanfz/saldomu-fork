@@ -812,8 +812,6 @@ class BillerInputPLN : BaseFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_BillerInqReq)
-            sentInquiryBiller()
     }
 
     @SuppressLint("SetTextI18n")
