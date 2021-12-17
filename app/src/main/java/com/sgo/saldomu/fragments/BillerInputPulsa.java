@@ -1154,8 +1154,6 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_BillerInqReq)
-            sentInquryBiller();
         if (requestCode == MainPage.REQUEST_FINISH) {
             if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
                 value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
