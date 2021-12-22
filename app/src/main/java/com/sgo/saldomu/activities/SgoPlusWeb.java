@@ -78,7 +78,6 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
     private String bankCode;
     private Boolean isDisconnected;
     private Intent mIntent;
-    private ProgressDialog out;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -195,6 +194,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                 if (progress == 100) {
                     getProgressSpinner().setVisibility(View.GONE);
                     view.setVisibility(View.VISIBLE);
+                    dismissProgressDialog();
                 }
             }
         });
@@ -202,7 +202,6 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         webview.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                dismissProgressDialog();
                 Timber.d("isi url tombol-tombolnya:%s", url);
                 if (URLUtil.isValidUrl(url)) {
                     if (url.contains("isclose=1")) {
@@ -219,9 +218,6 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                     } else if (url.contains("isback=1")) {
                         setResult(MainPage.RESULT_BALANCE);
                         onOkButton();
-                    } else if (url.contains("tr_status=settlement")) {
-                        getTrxStatus(userName, DateTimeFormat.getCurrentDateTime(), payment_id, userId, totalAmount,
-                                fee, amount, reportType, commId, transType, shareType);
                     } else
                         view.loadUrl(url);
                 }
@@ -278,8 +274,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                                 final String totalAmount, final String fee, final String amount, final String reportType,
                                 final String comm_id, String commCode) {
         try {
-            out = DefinedDialog.CreateProgressDialog(this, null);
-            out.show();
+            showProgressDialog();
 
             extraSignature = txId + commCode;
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRX_STATUS_BBS, extraSignature);
@@ -349,9 +344,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
                         @Override
                         public void onComplete() {
-                            if (out.isShowing()) {
-                                out.dismiss();
-                            }
+                            dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {
@@ -363,9 +356,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                               final String totalAmount, final String fee, final String amount, final String reportType,
                               final String comm_id, final String transtype, final String shareType) {
         try {
-            out = DefinedDialog.CreateProgressDialog(this, null);
-            out.show();
-
+            showProgressDialog();
 
             extraSignature = txId + comm_id;
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
@@ -434,8 +425,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
                         @Override
                         public void onComplete() {
-                            if (out.isShowing())
-                                out.dismiss();
+                            dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {
