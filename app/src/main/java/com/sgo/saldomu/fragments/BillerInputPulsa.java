@@ -573,6 +573,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                         sentInquryBiller();
                 } else {
                     denom_item_id = null;
+                    initLayout();
                 }
             }
         }
@@ -791,8 +792,6 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         }
         return true;
     }
-//https://mobile-dev.saldomu.com/saldomu/agentlocation/Category/Retrieve
-    //https://mobile-dev.saldomu.com/saldomu/ServicePromo/PromoList
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -1154,6 +1153,8 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_BillerInqReq)
+            resetDenom();
         if (requestCode == MainPage.REQUEST_FINISH) {
             if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
                 value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
@@ -1176,6 +1177,10 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
             }
         }
 
+    }
+
+    private void resetDenom() {
+        spin_denom.setSelection(0);
     }
 
     private void setActionBarTitle(String _title) {
