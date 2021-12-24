@@ -156,7 +156,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         swipeRefresh.setOnRefreshListener(this)
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary)
         setActionBarIcon(R.drawable.ic_arrow_left)
-        actionBarTitle = intent.getStringExtra(DefineValue.HISTORY_TITLE)
+        actionBarTitle = getString(R.string.menu_item_title_mutation)
 
         val builder = AlertDialog.Builder(this)
         builder.setView(R.layout.progress)

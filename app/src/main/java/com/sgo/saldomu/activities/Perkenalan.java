@@ -122,10 +122,10 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         sp.edit().remove(DefineValue.SENDER_ID).commit();
 
         btnStartNow = findViewById(R.id.btn_start_now);
-        btnPOS = findViewById(R.id.btn_pos);
+//        btnPOS = findViewById(R.id.btn_pos);
 
         btnStartNow.setOnClickListener(VerifyListener);
-        btnPOS.setOnClickListener(POSlistener);
+//        btnPOS.setOnClickListener(POSlistener);
 
         if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) {
             //cheat kalo diteken lama skip ke register (-1)
@@ -137,13 +137,13 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
                 return false;
             });
             //cheat kalo diteken lama next ke Login (-2)
-            btnPOS.setOnLongClickListener(v -> {
-                Intent i = new Intent(Perkenalan.this, LoginActivity.class);
-                i.putExtra(DefineValue.USER_IS_NEW, -2);
-                startActivity(i);
-                Perkenalan.this.finish();
-                return false;
-            });
+//            btnPOS.setOnLongClickListener(v -> {
+//                Intent i = new Intent(Perkenalan.this, LoginActivity.class);
+//                i.putExtra(DefineValue.USER_IS_NEW, -2);
+//                startActivity(i);
+//                Perkenalan.this.finish();
+//                return false;
+//            });
         }
 
         perms = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE};

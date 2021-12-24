@@ -56,7 +56,7 @@ class AdapterSubMenu(var context: Context?, var itemList: List<EditMenuModel>?, 
             getString(R.string.menu_item_search_agent_bbs) + " " + getString(R.string.cash_out) -> return R.drawable.ic_setor_tunai
             getString(R.string.title_cash_out_member) -> return R.drawable.ic_permintaan_transaksi
             getString(R.string.menu_item_title_ask_for_money) -> return R.drawable.ic_minta_saldo
-            getString(R.string.menu_item_title_report) -> return R.drawable.ic_laporan
+            getString(R.string.menu_item_title_mutation) -> return R.drawable.ic_mutasi
             getString(R.string.menu_item_history_detail) -> return R.drawable.ic_history
             getString(R.string.menu_item_lending) -> return R.drawable.ic_lending
             getString(R.string.menu_item_title_b2b_eratel)+ " "+ getString(R.string.menu_item_title_ebd_toko) -> return R.drawable.ic_menu_b2b

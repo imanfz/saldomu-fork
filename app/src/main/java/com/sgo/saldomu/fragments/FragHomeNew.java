@@ -49,7 +49,6 @@ import com.sgo.saldomu.activities.GridLendingActivity;
 import com.sgo.saldomu.activities.HistoryActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MandiriLPActivity;
-import com.sgo.saldomu.activities.ReportActivity;
 import com.sgo.saldomu.activities.ReportEBDActivity;
 import com.sgo.saldomu.activities.ReportEBDListActivity;
 import com.sgo.saldomu.activities.SearchMemberToVerifyActivity;
@@ -653,7 +652,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     menuStrings.add(getResources().getString(R.string.menu_item_title_report_ebd));
                 }
 
-                menuStrings.add(getResources().getString(R.string.menu_item_title_report));
+                menuStrings.add(getResources().getString(R.string.menu_item_title_mutation));
 
 //                menuStrings.add(getResources().getString(R.string.menu_item_lending));
             } else
@@ -1154,8 +1153,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             return R.drawable.ic_setor_tunai;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.title_cash_out_member)))
             return R.drawable.ic_permintaan_transaksi;
-        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_report)))
-            return R.drawable.ic_laporan;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_mutation)))
+            return R.drawable.ic_mutasi;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_report_ebd)))
             return R.drawable.ic_laporan;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_lending)))
@@ -1216,8 +1215,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 i.putExtra(DefineValue.BILLER_TYPE, DefineValue.BIL_TYPE_PAY);
                 switchActivity(i, MainPage.ACTIVITY_RESULT);
             }
-        } else if (menuItemName.equals(getString(R.string.menu_item_title_report))) {
-            Intent i = new Intent(getActivity(), ReportActivity.class);
+        } else if (menuItemName.equals(getString(R.string.menu_item_title_mutation))) {
+            Intent i = new Intent(getActivity(), HistoryActivity.class);
             switchActivity(i, MainPage.ACTIVITY_RESULT);
         } else if (menuItemName.equals(getString(R.string.menu_item_title_report_ebd))) {
             Intent i = new Intent();

@@ -193,7 +193,7 @@
     <string name="menu_item_title_cash_out">Transfer ke Bank via Setor Tunai</string>
     <string name="menu_item_title_topup" translatable="false">Tambah Saldo</string>
     <string name="menu_item_title_pulsa_agent" translatable="false">Pulsa</string>
-    <string name="menu_item_title_report">Laporan</string>
+    <string name="menu_item_title_mutation">Mutasi</string>
     <string name="menu_item_title_scadm">B2B</string>
     <string name="menu_item_title_b2b_eratel">B2B Eratel</string>
     <string name="menu_item_title_ebd_toko">(Toko)</string>

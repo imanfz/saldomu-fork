@@ -14,6 +14,11 @@ public class OTPModel extends jsonModel{
     private
     String is_new;
 
+    @SerializedName("is_pos")
+    @Expose
+    private
+    String is_pos;
+
     @SerializedName("additional_fee")
     @Expose
     private
@@ -30,6 +35,10 @@ public class OTPModel extends jsonModel{
 
     public String getIs_new() {
         return is_new;
+    }
+
+    public String getIs_pos() {
+        return is_pos;
     }
 
     public String getAdditional_fee() {

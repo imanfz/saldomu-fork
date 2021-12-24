@@ -573,6 +573,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                         sentInquryBiller();
                 } else {
                     denom_item_id = null;
+                    initLayout();
                 }
             }
         }
@@ -791,8 +792,6 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         }
         return true;
     }
-//https://mobile-dev.saldomu.com/saldomu/agentlocation/Category/Retrieve
-    //https://mobile-dev.saldomu.com/saldomu/ServicePromo/PromoList
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -895,10 +894,10 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                     String message = sentPaymentBillerModel.getError_message();
                     if (code.equals(WebParams.SUCCESS_CODE)) {
                         if (mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)) {
-                            submitBiller(bank_code, product_code, -1);
+                            submitBiller(bank_code, product_code, -1, sentPaymentBillerModel.getCallback_url());
                         } else if (mTempBank.getProduct_type().equals("ATM")) {
                             dismissProgressDialog();
-                            changeToSgoPlus(bank_code, product_code);
+                            changeToSgoPlus(bank_code, product_code, sentPaymentBillerModel.getCallback_url());
                         } else {
                             int attempt = sentPaymentBillerModel.getFailed_attempt();
                             if (attempt != -1)
@@ -966,7 +965,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                                 else if (merchant_type.equals(DefineValue.AUTH_TYPE_OTP))
                                     showDialog(product_code, bank_code);
                                 else
-                                    submitBiller(bank_code, product_code, attempt);
+                                    submitBiller(bank_code, product_code, attempt, sentPaymentBillerModel.getCallback_url());
 
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
@@ -1022,7 +1021,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         }
     }
 
-    private void submitBiller(String bank_code, String product_code, int attempt) {
+    private void submitBiller(String bank_code, String product_code, int attempt, String callback_url) {
         isPIN = true;
         new UtilsLoader(getActivity(), sp).getFailedPIN(userPhoneID, new OnLoadDataListener() {
             @Override
@@ -1042,7 +1041,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         });
         is_sgo_plus = mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB);
         if (is_sgo_plus) {
-            changeToSgoPlus(bank_code, product_code);
+            changeToSgoPlus(bank_code, product_code, callback_url);
         } else {
             if (isPIN) {
                 CallPINinput(attempt);
@@ -1126,7 +1125,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         Message.setText(getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms));
 
         btnDialogOTP.setOnClickListener(view -> {
-            submitBiller(bank_code, product_code, -1);
+            submitBiller(bank_code, product_code, -1, sentPaymentBillerModel.getCallback_url());
 
             dialog.dismiss();
         });
@@ -1154,6 +1153,8 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_BillerInqReq)
+            resetDenom();
         if (requestCode == MainPage.REQUEST_FINISH) {
             if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
                 value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
@@ -1176,6 +1177,10 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
             }
         }
 
+    }
+
+    private void resetDenom() {
+        spin_denom.setSelection(0);
     }
 
     private void setActionBarTitle(String _title) {
@@ -1394,9 +1399,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         startActivityForResult(i, MainPage.REQUEST_FINISH);
     }
 
-    private void changeToSgoPlus(String _bank_code, String _product_code) {
-        Bundle args = getArguments();
-
+    private void changeToSgoPlus(String _bank_code, String _product_code, String callback_url) {
         Intent i = new Intent(getActivity(), SgoPlusWeb.class);
         i.putExtra(DefineValue.PRODUCT_CODE, _product_code);
         i.putExtra(DefineValue.BANK_CODE, _bank_code);
@@ -1415,6 +1418,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         i.putExtra(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription);
         i.putExtra(DefineValue.DESTINATION_REMARK, cust_id);
         i.putExtra(DefineValue.TOTAL_AMOUNT, totalAmount.toString());
+        i.putExtra(DefineValue.CALLBACK_URL, callback_url);
 
         if (buy_type == BillerActivity.PURCHASE_TYPE)
             i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.BIL_PURCHASE_TYPE);
@@ -1427,7 +1431,6 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         if (is_input_amount) _isi_amount_desired = amount_desire;
 
         i.putExtra(DefineValue.AMOUNT_DESIRED, _isi_amount_desired);
-        Timber.d("isi args:%s", args.toString());
         btn_submit.setEnabled(true);
 
         if (getActivity() == null)

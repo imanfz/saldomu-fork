@@ -269,7 +269,7 @@
         <item>@string/menu_item_title_pay_friends</item>
         <item>@string/menu_item_title_ask_for_money</item>
         <item>@string/menu_item_title_biller</item>
-        <item>@string/menu_item_title_report</item>
+        <item>@string/menu_item_title_mutation</item>
         <!--<item>@string/menu_item_title_scadm</item>-->
     </string-array>
     <string-array name="list_menu_frag_new_home_not_agent">
