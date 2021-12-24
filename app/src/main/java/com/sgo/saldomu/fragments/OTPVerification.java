@@ -2,6 +2,7 @@ package com.sgo.saldomu.fragments;
 
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -20,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import com.google.gson.JsonObject;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.OTPVerificationActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.NoHPFormat;
@@ -51,9 +53,6 @@ import timber.log.Timber;
 public class OTPVerification extends BaseFragment {
 
     View v;
-
-    private ProgressDialog progdialog;
-
     String user_id;
 
     Button btn_send;
@@ -88,7 +87,6 @@ public class OTPVerification extends BaseFragment {
 
         btn_send.setOnClickListener(view -> {
             if (inputValidation()) {
-
                 user_id = NoHPFormat.formatTo62(et_phone_value.getText().toString());
                 getOTP();
             }
@@ -101,14 +99,13 @@ public class OTPVerification extends BaseFragment {
             newFrag.setArguments(bundle);
             switchFragment(newFrag, "Help", true);
         });
-
+        et_phone_value.requestFocus();
     }
 
     public void  getOTP()
     {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-            progdialog.show();
+            showProgressDialog();
 
             extraSignature = user_id;
 
@@ -134,13 +131,22 @@ public class OTPVerification extends BaseFragment {
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     Timber.d("Sukses");
-                                    Fragment mFragment = new OTPVerificationConfirm();
-                                    Bundle mBun = new Bundle();
-                                    mBun.putString(DefineValue.USER_ID, user_id);
-                                    mBun.putString(DefineValue.DEVICE_NAME, getDeviceName());
-                                    mBun.putString(DefineValue.REFFERENCE_ID, model.getRef_id());
-                                    mFragment.setArguments(mBun);
-                                    switchFragment(mFragment, "OtpConfirmation", true);
+                                    if (model.getIs_pos().equals(DefineValue.STRING_YES)) {
+                                        Intent intent = new Intent(getContext(), LoginActivity.class);
+                                        sp.edit().putString(DefineValue.SENDER_ID, user_id).commit();
+                                        intent.putExtra(DefineValue.USER_IS_NEW, -2);
+                                        intent.putExtra(DefineValue.IS_POS, DefineValue.STRING_YES);
+                                        startActivity(intent);
+                                        getActivity().finish();
+                                    } else {
+                                        Fragment mFragment = new OTPVerificationConfirm();
+                                        Bundle mBun = new Bundle();
+                                        mBun.putString(DefineValue.USER_ID, user_id);
+                                        mBun.putString(DefineValue.DEVICE_NAME, getDeviceName());
+                                        mBun.putString(DefineValue.REFFERENCE_ID, model.getRef_id());
+                                        mFragment.setArguments(mBun);
+                                        switchFragment(mFragment, "OtpConfirmation", true);
+                                    }
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), model.getError_message());
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
@@ -166,7 +172,7 @@ public class OTPVerification extends BaseFragment {
 
                         @Override
                         public void onComplete() {
-                            progdialog.dismiss();
+                            dismissProgressDialog();
                         }
                     } );
         } catch (Exception e) {
