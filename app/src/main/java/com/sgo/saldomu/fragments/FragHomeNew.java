@@ -465,7 +465,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 String message = response.getString(WebParams.ERROR_MESSAGE);
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("isi params promo list:%s", response.toString());
+                                    Timber.d("isi response promo list:%s", response.toString());
                                     String count = response.getString(WebParams.COUNT);
                                     if (!count.equals("0")) {
                                         JSONArray mArrayPromo = new JSONArray(response.getString(WebParams.PROMO_DATA));
