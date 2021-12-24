@@ -205,7 +205,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (UserUtils.isLogin()){
+        if (UserUtils.isLogin()) {
             isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
             isDormant = sp.getString(DefineValue.IS_DORMANT, DefineValue.STRING_NO);
@@ -299,7 +299,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         showView(gridview_progbar);
 
-        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CATEGORY_LIST, params,
+        RetrofitService.getInstance().PostObjectRequestDebounce(MyApiClient.LINK_CATEGORY_LIST, params,
                 new ResponseListener() {
                     @Override
                     public void onResponses(JsonObject object) {
@@ -455,20 +455,19 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             Timber.d("isi params get promo list:%s", params.toString());
 
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_PROMO_LIST, params,
-                    new ObjListeners() {
+            RetrofitService.getInstance().PostObjectRequestDebounce(MyApiClient.LINK_PROMO_LIST, params,
+                    new ResponseListener() {
                         @Override
-                        public void onResponses(JSONObject response) {
-                            try {
-                                jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
-                                String code = response.getString(WebParams.ERROR_CODE);
-                                String message = response.getString(WebParams.ERROR_MESSAGE);
-
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("isi response promo list:%s", response.toString());
-                                    String count = response.getString(WebParams.COUNT);
-                                    if (!count.equals("0")) {
-                                        JSONArray mArrayPromo = new JSONArray(response.getString(WebParams.PROMO_DATA));
+                        public void onResponses(JsonObject object) {
+                            jsonModel model = getGson().fromJson(object, jsonModel.class);
+                            String code = model.getError_code();
+                            String message = model.getError_message();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                String count = object.get(WebParams.COUNT).toString();
+                                if (!count.equals("0")) {
+                                    try {
+                                        String promoData = object.get(WebParams.PROMO_DATA).toString();
+                                        JSONArray mArrayPromo = new JSONArray(promoData);
 
                                         for (int i = 0; i < mArrayPromo.length(); i++) {
                                             String id = mArrayPromo.getJSONObject(i).getString(WebParams.ID);
@@ -480,7 +479,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                                     if (mArrayPromo.getJSONObject(i).getString(WebParams.ID).equals(id)) {
                                                         flagSame = true;
                                                         sp.edit().putBoolean(DefineValue.SAME_BANNER, true).commit();
-                                                        sp.edit().putString(DefineValue.DATA_BANNER, response.getString(WebParams.PROMO_DATA)).commit();
+                                                        sp.edit().putString(DefineValue.DATA_BANNER, promoData).commit();
                                                         break;
                                                     } else {
                                                         flagSame = false;
@@ -508,19 +507,18 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                             }
                                         }
                                         populateBanner();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
-                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    AlertDialogLogout.getInstance().showDialoginMain(getActivity(), message);
-                                } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:%s", model.getApp_data());
-                                    final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
-                                } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:%s", response.toString());
-                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                AlertDialogLogout.getInstance().showDialoginMain(getActivity(), message);
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:%s", model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             }
                         }
 
@@ -531,7 +529,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                         @Override
                         public void onComplete() {
-
+                            getBalance(true);
                         }
                     });
         } catch (Exception e) {
