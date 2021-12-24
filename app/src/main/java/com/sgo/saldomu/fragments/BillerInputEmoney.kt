@@ -290,6 +290,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
             } else {
                 itemId = null
                 itemName = null
+                initLayout()
             }
 
         }
@@ -629,6 +630,8 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_BillerInqReq)
+            resetDenom()
         if (requestCode == MainPage.REQUEST_FINISH) {
             if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
                 valuePin = data?.getStringExtra(DefineValue.PIN_VALUE)
@@ -640,6 +643,10 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                 }
             }
         }
+    }
+
+    private fun resetDenom() {
+        billerinput_spinner_denom.setSelection(0)
     }
 
     @SuppressLint("SetTextI18n")
@@ -655,7 +662,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
             else
                 billerinput_et_id_remark.error = getString(R.string.regist1_validation_nohp)
             billerinput_et_id_remark.requestFocus()
-            billerinput_spinner_denom.setSelection(0)
+            resetDenom()
             return false
         }
         if (itemName == null) {

@@ -58,7 +58,6 @@ import com.sgo.saldomu.activities.InfoHargaWebActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.PayFriendsActivity;
-import com.sgo.saldomu.activities.ReportActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CoreApp;
@@ -551,12 +550,6 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
             case MMYGROUP:
                 newFragment = new FragMyGroup();
                 switchFragment(newFragment, getString(R.string.toolbar_title_mygroup));
-                break;
-            case MREPORT:
-//                newFragment = new ReportTab();
-//                switchFragment(newFragment, getString(R.string.menu_item_title_report));
-                i = new Intent(getActivity(), ReportActivity.class);
-                switchActivity(i, MainPage.ACTIVITY_RESULT);
                 break;
             case MSETTINGS:
 //                newFragment = new ListSettings();
