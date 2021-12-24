@@ -32,6 +32,10 @@ public class SentPaymentBillerModel extends jsonModel {
     @Expose
     private
     String amount;
+    @SerializedName("callback_url")
+    @Expose
+    private
+    String callback_url;
 
     public String getMerchant_type() {
         return merchant_type;
@@ -60,5 +64,9 @@ public class SentPaymentBillerModel extends jsonModel {
 
     public String getAmount() {
         return amount;
+    }
+
+    public String getCallback_url() {
+        return callback_url;
     }
 }

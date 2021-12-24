@@ -69,9 +69,9 @@ public class FragBbsMyOrders extends Fragment {
             dialogI = InformationDialog.newInstance(10);
             dialogI.setTargetFragment(this,0);
             List<ListFragment> mList = new ArrayList<>();
-            mList.add(FragReport.newInstance(FragReport.REPORT_ESPAY));
-            mList.add(FragReport.newInstance(FragReport.REPORT_SCASH));
-            mList.add(FragReport.newInstance(FragReport.REPORT_ASK));
+            mList.add(ListFragmentReport.newInstance(ListFragmentReport.REPORT_ESPAY));
+            mList.add(ListFragmentReport.newInstance(ListFragmentReport.REPORT_SCASH));
+            mList.add(ListFragmentReport.newInstance(ListFragmentReport.REPORT_ASK));
 
             tabs = (TabPageIndicator) getCurrentView().findViewById(R.id.report_tabs);
             pager = (ViewPager) getCurrentView().findViewById(R.id.report_pager);

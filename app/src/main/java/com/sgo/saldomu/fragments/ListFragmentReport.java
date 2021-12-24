@@ -3,8 +3,6 @@ package com.sgo.saldomu.fragments;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -57,7 +55,6 @@ import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.ReportDataModel;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -78,7 +75,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 5/19/2015.
  */
-public class FragReport extends ListFragment implements ReportBillerDialog.OnDialogOkCallback {
+public class ListFragmentReport extends ListFragment implements ReportBillerDialog.OnDialogOkCallback {
 
     public static int REPORT_ASK = 0x0299395;
     public static int REPORT_SCASH = 0x0299394;
@@ -132,15 +129,14 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
     private Gson gson;
 
-    public static FragReport newInstance(int _report_type) {
-        FragReport mFrag = new FragReport();
+    public static ListFragmentReport newInstance(int _report_type) {
+        ListFragmentReport mFrag = new ListFragmentReport();
         mFrag.report_type = _report_type;
         return mFrag;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         setV(inflater.inflate(R.layout.frag_report, container, false));
         return getV();
     }
@@ -297,12 +293,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
     private boolean canScroolUp() {
         return lv_report != null && (lv_report.getAdapter().getCount() == 0 || lv_report.getFirstVisiblePosition() == 0 && lv_report.getChildAt(0).getTop() == 0);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.filter, menu);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private Calendar StringToCal(String src) {
@@ -1340,15 +1330,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         } else {
             lv_report.removeFooterView(footerLayout);
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        if (item.getItemId() == R.id.action_filter) {
-            slidingView(layout_filter);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private View getV() {

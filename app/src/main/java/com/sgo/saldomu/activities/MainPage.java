@@ -62,6 +62,7 @@ import com.sgo.saldomu.fcm.GooglePlayUtils;
 import com.sgo.saldomu.fragments.FragHelp;
 import com.sgo.saldomu.fragments.FragMainPage;
 import com.sgo.saldomu.fragments.FragmentProfileQr;
+import com.sgo.saldomu.fragments.FragmentReport;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
@@ -212,7 +213,7 @@ public class MainPage extends BaseActivity {
         });
 
         historyLayoutTab.setOnClickListener(view -> {
-            showHistoryFragment();
+            showReportFragment();
         });
 
         scanLayoutTab.setOnClickListener(view -> {
@@ -239,16 +240,15 @@ public class MainPage extends BaseActivity {
         enableHomeLayout();
     }
 
-    private void showHistoryFragment() {
+    private void showReportFragment() {
         resetTab();
         getSupportActionBar().show();
-        Fragment fragmentHistory = new FragmentHistory();
-        switchContent(fragmentHistory, getString(R.string.menu_item_history_detail));
+        Fragment fragmentReport = new FragmentReport();
+        switchContent(fragmentReport, getString(R.string.menu_item_history_detail));
         enableHistoryLayout();
     }
 
     private void showScan() {
-//        startActivity(new Intent(MainPage.this, QrisActivity.class));
         new IntentIntegrator(this)
                 .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
                 .setCameraId(0)

@@ -171,12 +171,13 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 }
             }
 
-        } else if (m != null) {
+        }
+
+        if (m != null) {
             if (m.containsKey(DefineValue.IS_POS)) {
                 if (m.getString(DefineValue.IS_POS).equalsIgnoreCase(DefineValue.STRING_YES)) {
                     is_pos = m.getString(DefineValue.IS_POS, DefineValue.STRING_NO);
                     logo.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.logo_pos, null));
-                    getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
                     userIDValue.setEnabled(true);
                     userIDValue.setHint(getString(R.string.pos_hint));
                 }
@@ -443,8 +444,8 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
 
         btnDialogOTP.setOnClickListener(view -> {
-            Intent i = new Intent(getActivity(), Perkenalan.class);
-            startActivity(i);
+//            Intent i = new Intent(getActivity(), Perkenalan.class);
+//            startActivity(i);
             getActivity().finish();
         });
 
