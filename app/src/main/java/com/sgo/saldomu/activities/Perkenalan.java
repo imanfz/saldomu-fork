@@ -774,10 +774,10 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         deleteData();
         SecurePreferences.Editor mEditor = sp.edit();
         mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        if (sp.getString(DefineValue.IS_POS, DefineValue.STRING_NO).equals(DefineValue.STRING_NO)) {
+//        if (sp.getString(DefineValue.IS_POS, DefineValue.STRING_NO).equals(DefineValue.STRING_NO))
             mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userPhoneID);
-        } else
-            mEditor.remove(DefineValue.PREVIOUS_LOGIN_USER_ID);
+//        else
+//            mEditor.remove(DefineValue.PREVIOUS_LOGIN_USER_ID);
         mEditor.putString(DefineValue.PREVIOUS_BALANCE, balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME, contact_first_time);
 
