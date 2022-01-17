@@ -277,7 +277,7 @@ class BBSCashOut : BaseFragment() {
             defaultProductCode = if (BuildConfig.FLAVOR.equals("development", ignoreCase = true))
                 "EMO SALDOMU"
             else
-                getString(R.string.SALDOMU)
+                "SALDOMU"
             btn_change_source.visibility = View.GONE
             listBankSource = realmBBS!!.where(BBSBankModel::class.java)
                 .equalTo(WebParams.SCHEME_CODE, ATC)
