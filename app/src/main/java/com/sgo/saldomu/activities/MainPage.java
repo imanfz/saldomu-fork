@@ -138,7 +138,6 @@ public class MainPage extends BaseActivity {
     private UserProfileService serviceUserProfileReference;
     private boolean isBound, isBoundAppInfo, isBoundUserProfile, isForeground = false, isAgent = false, isLogoutMode = false;
 
-    AlertDialog devRootedDeviceAlertDialog;
     private String userNameLogin;
     private MenuItem itemData;
     private NotificationActionView actionView;
@@ -311,15 +310,21 @@ public class MainPage extends BaseActivity {
         if (GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
             if (RootUtil.isDeviceRooted() || RootUtil.isEmulator()) {
                 if (BuildConfig.FLAVOR.equals("development")) {
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
-                    builder.setMessage("Apakah anda ingin melewati pengecekan device?")
-                            .setPositiveButton(getString(R.string.ok), (dialog, which) -> initializeDashboard());
-                    builder.setNegativeButton(getString(R.string.no), (dialog, which) -> switchErrorActivity(ErrorActivity.DEVICE_ROOTED));
-                    builder.setCancelable(false);
-                    devRootedDeviceAlertDialog = builder.create();
-                    if (!isFinishing())
-                        devRootedDeviceAlertDialog.show();
+                    if (!isFinishing()) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
+                        builder.setMessage("Apakah anda ingin melewati pengecekan device?")
+                                .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+                                    sp.edit().putBoolean(DefineValue.PASS_DEVICE_CHECKING, true).apply();
+                                    initializeDashboard();
+                                });
+                        builder.setNegativeButton(getString(R.string.no), (dialog, which) -> switchErrorActivity(ErrorActivity.DEVICE_ROOTED));
+                        builder.setCancelable(false);
+                        AlertDialog devRootedDeviceAlertDialog = builder.create();
+                        if (!sp.getBoolean(DefineValue.PASS_DEVICE_CHECKING, false))
+                            devRootedDeviceAlertDialog.show();
+                        else
+                            initializeDashboard();
+                    }
                 } else {
                     switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
 //                    initializeDashboard();
@@ -1074,7 +1079,7 @@ public class MainPage extends BaseActivity {
                 i = new Intent(this, LoginActivity.class);
                 break;
         }
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
         this.finish();
     }
@@ -1145,7 +1150,7 @@ public class MainPage extends BaseActivity {
         SecurePreferences.Editor mEditor = sp.edit();
         mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
 //        if (sp.getString(DefineValue.IS_POS, DefineValue.STRING_NO).equals(DefineValue.STRING_NO))
-            mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userPhoneID);
+        mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userPhoneID);
 //        else
 //            mEditor.remove(DefineValue.PREVIOUS_LOGIN_USER_ID);
         mEditor.putString(DefineValue.PREVIOUS_BALANCE, balance);
@@ -1160,13 +1165,11 @@ public class MainPage extends BaseActivity {
         mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, "");
         mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
         mEditor.putString(DefineValue.IS_MEMBER_SHOP_DGI, "");
-        mEditor.putString(DefineValue.IS_POS, "");
         mEditor.remove(DefineValue.IS_DORMANT);
         mEditor.remove(DefineValue.IS_REGISTERED_LEVEL);
         mEditor.remove(DefineValue.CATEGORY);
         mEditor.remove(DefineValue.SAME_BANNER);
         mEditor.remove(DefineValue.DATA_BANNER);
-        mEditor.remove(DefineValue.IS_POS);
         mEditor.remove(DefineValue.COMM_UPGRADE_MEMBER);
         mEditor.remove(DefineValue.MEMBER_CREATED);
         mEditor.remove(DefineValue.LAST_CURRENT_LONGITUDE);

@@ -98,7 +98,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         Bundle m = getIntent().getExtras();
         if (m != null && m.containsKey(DefineValue.LOG_OUT)) {
-            if (m.getBoolean(DefineValue.LOG_OUT) == true)
+            if (m.getBoolean(DefineValue.LOG_OUT))
                 sentLogout();
         }
         if (InetHandler.isNetworkAvailable(this))
@@ -189,7 +189,6 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         @Override
         public void onClick(View view) {
 
-            sp.edit().putString(DefineValue.IS_POS, DefineValue.STRING_NO).commit();
             boolean logoutBySession = sp.getBoolean(DefineValue.LOGOUT_FROM_SESSION_TIMEOUT, false);
             if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "") != null && logoutBySession) {
                 if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("") && logoutBySession) {
@@ -211,17 +210,6 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
             }
 //            else
 //                showSmsDialog();
-        }
-    };
-
-    private Button.OnClickListener POSlistener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent i = new Intent(Perkenalan.this, LoginActivity.class);
-            i.putExtra(DefineValue.USER_IS_NEW, -2);
-            i.putExtra(DefineValue.IS_POS, DefineValue.STRING_YES);
-            sp.edit().putString(DefineValue.IS_POS, DefineValue.STRING_YES).commit();
-            startActivity(i);
         }
     };
 
@@ -431,7 +419,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
         params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
         params.put(WebParams.IMEI_ID, imeiDevice.toUpperCase());
-        params.put(WebParams.IS_POS, DefineValue.STRING_NO);
+        params.put(WebParams.IS_POS, sp.getString(DefineValue.IS_POS, DefineValue.STRING_NO));
         if (sp.getString(DefineValue.FCM_ID, "") != null)
             params.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID, ""));
 
@@ -444,7 +432,6 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
                 String code = loginModel.getError_code();
 
                 if (code.equalsIgnoreCase(WebParams.SUCCESS_CODE)) {
-                    sp.edit().putString(DefineValue.IS_POS, DefineValue.STRING_NO).commit();
                     sp.edit().putString(DefineValue.EXTRA_SIGNATURE, extraSignature).commit();
                     Toast.makeText(Perkenalan.this, getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
                     setLoginProfile(loginModel);
@@ -790,13 +777,11 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, "");
         mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
         mEditor.putString(DefineValue.IS_MEMBER_SHOP_DGI, "");
-        mEditor.putString(DefineValue.IS_POS, "");
         mEditor.remove(DefineValue.IS_DORMANT);
         mEditor.remove(DefineValue.IS_REGISTERED_LEVEL);
         mEditor.remove(DefineValue.CATEGORY);
         mEditor.remove(DefineValue.SAME_BANNER);
         mEditor.remove(DefineValue.DATA_BANNER);
-        mEditor.remove(DefineValue.IS_POS);
         mEditor.remove(DefineValue.COMM_UPGRADE_MEMBER);
         mEditor.remove(DefineValue.MEMBER_CREATED);
         mEditor.remove(DefineValue.LAST_CURRENT_LONGITUDE);
@@ -806,6 +791,14 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         mEditor.remove(DefineValue.SMS_CONTENT_ENCRYPTED);
         mEditor.remove(DefineValue.PROFILE_DOB);
         mEditor.remove(DefineValue.IS_INQUIRY_SMS);
+        mEditor.remove(DefineValue.AGENT_COL);
+        mEditor.remove(DefineValue.IS_AGENT_TOP);
+        mEditor.remove(DefineValue.IS_AGENT_BDK);
+        mEditor.remove(DefineValue.USE_DEPOSIT_CCOL);
+        mEditor.remove(DefineValue.USE_DEPOSIT_COL);
+        mEditor.remove(DefineValue.IS_AGENT_DGI);
+        mEditor.remove(DefineValue.IS_AGENT_CTR);
+        mEditor.remove(DefineValue.AGENT_EBD_CODES);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();

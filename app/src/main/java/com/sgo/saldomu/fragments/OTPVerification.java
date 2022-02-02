@@ -134,6 +134,7 @@ public class OTPVerification extends BaseFragment {
                                     if (model.getIs_pos().equals(DefineValue.STRING_YES)) {
                                         Intent intent = new Intent(getContext(), LoginActivity.class);
                                         sp.edit().putString(DefineValue.SENDER_ID, user_id).commit();
+                                        sp.edit().putString(DefineValue.IS_POS, DefineValue.STRING_YES).commit();
                                         intent.putExtra(DefineValue.USER_IS_NEW, -2);
                                         intent.putExtra(DefineValue.IS_POS, DefineValue.STRING_YES);
                                         startActivity(intent);

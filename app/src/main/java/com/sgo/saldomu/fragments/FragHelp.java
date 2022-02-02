@@ -106,7 +106,7 @@ public class FragHelp extends BaseFragment {
                                 String message = response.getString(WebParams.ERROR_MESSAGE);
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("isi params help list:%s", response.toString());
+                                    Timber.d("isi response help list:%s", response.toString());
                                     String count = response.getString(WebParams.COUNT);
                                     if (count.equals("0")) {
                                         Timber.d("isi help list kosong");
@@ -128,7 +128,7 @@ public class FragHelp extends BaseFragment {
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     Timber.d("isi response autologout:%s", response.toString());
-                                    AlertDialogLogout.getInstance().showDialoginActivity(act, message);
+                                    AlertDialogLogout.getInstance().showDialoginMain(act, message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
                                     Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();

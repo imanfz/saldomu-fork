@@ -125,15 +125,16 @@ public class Login extends BaseFragment implements View.OnClickListener {
         imeiIdDevice = smSclass.getDeviceAndroidId();
 
         Bundle m = getArguments();
-
-        if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) { //untuk shorcut dari tombol di activity LoginActivity
-            if (m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
-                getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
+        if (m != null) {
+            if (m.containsKey(DefineValue.IS_POS)) {
+                if (m.getString(DefineValue.IS_POS).equalsIgnoreCase(DefineValue.STRING_YES)) {
+                    is_pos = m.getString(DefineValue.IS_POS, DefineValue.STRING_NO);
+                    logo.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.logo_pos, null));
+                }
             }
-            userIDValue.setEnabled(true);
         }
 
-        if (sp.contains(DefineValue.SENDER_ID) && !sp.getString(DefineValue.IS_POS, DefineValue.STRING_NO).equalsIgnoreCase(DefineValue.STRING_YES)) {
+        if (sp.contains(DefineValue.SENDER_ID) && sp.getString(DefineValue.IS_POS, DefineValue.STRING_NO).equalsIgnoreCase(DefineValue.STRING_YES)) {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
             userIDValue.setText(userIDfinale);
             userIDValue.setVisibility(View.GONE);
@@ -171,20 +172,6 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 }
             }
 
-        }
-
-        if (m != null) {
-            if (m.containsKey(DefineValue.IS_POS)) {
-                if (m.getString(DefineValue.IS_POS).equalsIgnoreCase(DefineValue.STRING_YES)) {
-                    is_pos = m.getString(DefineValue.IS_POS, DefineValue.STRING_NO);
-                    logo.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.logo_pos, null));
-                    userIDValue.setEnabled(true);
-                    userIDValue.setHint(getString(R.string.pos_hint));
-                }
-            }
-        } else if (sp.getString(DefineValue.IS_POS, DefineValue.STRING_NO).equalsIgnoreCase(DefineValue.STRING_YES)) {
-            getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
-            userIDValue.setEnabled(true);
         }
 
         btnLogin.setOnClickListener(this);
