@@ -275,33 +275,40 @@ class FragRegisterNewMember : BaseFragment() {
                         val jsonObject = JSONObject(jsonArray[i].toString())
                         when {
                             provinceID == "" -> {
+                                provinceList.clear()
                                 provinceList.add(
                                     ProvinceModel(
                                         jsonObject.optString(WebParams.KODE_PROVINSI),
                                         jsonObject.optString(WebParams.NAMA_PROVINSI)
                                     )
                                 )
+                                provincesNameList.clear()
                                 provincesNameList.add(provinceList[i].provinceName)
                             }
                             districtID == "" -> {
+                                districtList.clear()
                                 districtList.add(
                                     DistrictModel(
                                         jsonObject.optString(WebParams.KODE_KOT_KAB),
                                         jsonObject.optString(WebParams.NAMA_KOT_KAB)
                                     )
                                 )
+                                districtNameList.clear()
                                 districtNameList.add(districtList[i].districtName)
                             }
                             subDistrictID == "" -> {
+                                subDistrictList.clear()
                                 subDistrictList.add(
                                     SubDistrictModel(
                                         jsonObject.optString(WebParams.KODE_KECAMATAN),
                                         jsonObject.optString(WebParams.NAMA_KECAMATAN)
                                     )
                                 )
+                                subDistrictNameList.clear()
                                 subDistrictNameList.add(subDistrictList[i].subDistrictName)
                             }
                             else -> {
+                                urbanVillageList.clear()
                                 urbanVillageList.add(
                                     UrbanVillageModel(
                                         jsonObject.optString(
@@ -309,6 +316,7 @@ class FragRegisterNewMember : BaseFragment() {
                                         ), jsonObject.optString(WebParams.NAMA_LUR_DES)
                                     )
                                 )
+                                urbanVillageNameList.clear()
                                 urbanVillageNameList.add(urbanVillageList[i].urbanVillageName)
                             }
                         }
