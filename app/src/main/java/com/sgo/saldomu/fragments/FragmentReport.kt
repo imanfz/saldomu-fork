@@ -41,17 +41,27 @@ class FragmentReport : BaseFragment() {
             else this.resources.getStringArray(R.array.report_list)
 
             val mList: MutableList<ListFragment> = ArrayList()
-//            mList.add(FragReport.newInstance(FragReport.REPORT_PENDING));
             mList.add(
                 ListFragmentReport.newInstance(
-                    ListFragmentReport.REPORT_ESPAY))
+                    ListFragmentReport.REPORT_PENDING
+                )
+            )
+            mList.add(
+                ListFragmentReport.newInstance(
+                    ListFragmentReport.REPORT_ESPAY
+                )
+            )
             if (isAgent) {
                 mList.add(
                     ListFragmentReport.newInstance(
-                        ListFragmentReport.REPORT_FEE))
+                        ListFragmentReport.REPORT_FEE
+                    )
+                )
                 mList.add(
                     ListFragmentReport.newInstance(
-                        ListFragmentReport.REPORT_ADDITIONAL_FEE))
+                        ListFragmentReport.REPORT_ADDITIONAL_FEE
+                    )
+                )
             }
 
             val adapternya = ReportTabAdapter(activity!!.supportFragmentManager, mList, titles)
