@@ -54,31 +54,31 @@ public abstract class BaseFragment extends Fragment {
         userNameLogin = sp.getString(DefineValue.USER_NAME, "");
     }
 
-    protected LevelClass getLvlClass(){
+    protected LevelClass getLvlClass() {
         if (levelClass == null)
             levelClass = new LevelClass(getActivity());
         return levelClass;
     }
 
-    protected Gson getGson(){
-        if (gson == null){
+    protected Gson getGson() {
+        if (gson == null) {
             gson = new Gson();
         }
         return gson;
     }
 
-    protected JsonParser getJsonParser(){
-        if (jsonParser == null){
+    protected JsonParser getJsonParser() {
+        if (jsonParser == null) {
             jsonParser = new JsonParser();
         }
         return jsonParser;
     }
 
-    protected JsonElement toJson(Object model){
+    protected JsonElement toJson(Object model) {
         return getJsonParser().parse(getGson().toJson(model));
     }
 
-    protected void SwitchFragment(Fragment mFragment, String fragName, Boolean isBackstack){
+    protected void SwitchFragment(Fragment mFragment, String fragName, Boolean isBackstack) {
         ToggleKeyboard.hide_keyboard(getActivity());
         FragmentTransaction fragManager = getActivity().getSupportFragmentManager().beginTransaction();
         fragManager.replace(R.id.denom_scadm_content, mFragment, fragName)
@@ -94,7 +94,7 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
-    protected void SwitchFragmentTop(Fragment mFragment, String fragName, Boolean isBackstack){
+    protected void SwitchFragmentTop(Fragment mFragment, String fragName, Boolean isBackstack) {
         ToggleKeyboard.hide_keyboard(getActivity());
         FragmentTransaction fragManager = getActivity().getSupportFragmentManager().beginTransaction();
         fragManager.replace(R.id.topup_scadm_content, mFragment, fragName)
@@ -110,7 +110,7 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
-    public void addFragment(Fragment mFragment, String fragName){
+    public void addFragment(Fragment mFragment, String fragName) {
         ToggleKeyboard.hide_keyboard(getActivity());
         FragmentTransaction fragManager = getActivity().getSupportFragmentManager().beginTransaction();
         fragManager.add(R.id.denom_scadm_content, mFragment, fragName).commit();
@@ -118,33 +118,35 @@ public abstract class BaseFragment extends Fragment {
 
     ProgressDialog getProgDialog() {
         if (progressDialog == null && getActivity() != null)
-            progressDialog = DefinedDialog.CreateProgressDialog(getActivity(),getString(R.string.please_wait));
+            progressDialog = DefinedDialog.CreateProgressDialog(getActivity(), getString(R.string.please_wait));
         return progressDialog;
     }
 
     protected void showProgressDialog() {
-        if (getProgDialog()!=null)
-        if (!getProgDialog().isShowing())
-            getProgDialog().show();
+        if (getProgDialog() != null)
+            if (!getProgDialog().isShowing())
+                if (getActivity() != null)
+                    if (!getActivity().isFinishing())
+                        getProgDialog().show();
     }
 
     protected void dismissProgressDialog() {
-        if (getProgDialog()!=null)
-        if (getProgDialog().isShowing())
-            getProgDialog().dismiss();
+        if (getProgDialog() != null)
+            if (getProgDialog().isShowing())
+                getProgDialog().dismiss();
     }
 
-    protected FragmentManager getFragManager(){
+    protected FragmentManager getFragManager() {
         return getActivity().getSupportFragmentManager();
     }
 
-    protected void hideView(View view){
+    protected void hideView(View view) {
         if (view.getVisibility() == View.VISIBLE) {
             view.setVisibility(View.GONE);
         }
     }
 
-    protected void showView(View view){
+    protected void showView(View view) {
         if (view.getVisibility() != View.VISIBLE)
             view.setVisibility(View.VISIBLE);
     }
