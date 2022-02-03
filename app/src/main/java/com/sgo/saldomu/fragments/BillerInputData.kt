@@ -716,6 +716,13 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
                         if (code == WebParams.SUCCESS_CODE) {
                             if (mTempBank!!.product_type == DefineValue.BANKLIST_TYPE_IB) {
                                 submitBiller(-1)
+                            } else if (mTempBank!!.product_type == DefineValue.BANKLIST_TYPE_PAYLATER) {
+                                dismissProgressDialog()
+                                changeToSgoPlus(
+                                    bankCode,
+                                    productCode,
+                                    sentPaymentBillerModel.callback_url
+                                )
                             } else {
                                 var attempt = sentPaymentBillerModel.failed_attempt
                                 if (attempt != -1)
@@ -762,6 +769,34 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         } catch (e: Exception) {
             Timber.d("httpclient:%s", e.message)
         }
+    }
+
+    private fun changeToSgoPlus(bankCode: String?, productCode: String?, callbackUrl: String?) {
+        val i = Intent(activity, SgoPlusWeb::class.java)
+        i.putExtra(DefineValue.PRODUCT_CODE, productCode)
+        i.putExtra(DefineValue.BANK_CODE, bankCode)
+        i.putExtra(DefineValue.FEE, fee.toString())
+        i.putExtra(DefineValue.COMMUNITY_CODE, biller_comm_code)
+        i.putExtra(DefineValue.TX_ID, tx_id)
+        i.putExtra(DefineValue.AMOUNT, amount.toString())
+        i.putExtra(DefineValue.API_KEY, biller_api_key)
+        i.putExtra(DefineValue.COMMUNITY_ID, biller_comm_id)
+        i.putExtra(DefineValue.REPORT_TYPE, DefineValue.BILLER)
+        i.putExtra(DefineValue.SHARE_TYPE, "")
+        i.putExtra(DefineValue.DENOM_DATA, item_name)
+        i.putExtra(DefineValue.BUY_TYPE, BillerActivity.PURCHASE_TYPE)
+        i.putExtra(DefineValue.PAYMENT_NAME, payment_name)
+        i.putExtra(DefineValue.BILLER_NAME, biller_comm_name)
+        i.putExtra(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription)
+        i.putExtra(DefineValue.DESTINATION_REMARK, cust_id)
+        i.putExtra(DefineValue.TOTAL_AMOUNT, totalAmount.toString())
+        i.putExtra(DefineValue.CALLBACK_URL, callbackUrl)
+        i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.BIL_PURCHASE_TYPE)
+
+        if (activity == null) return
+
+        val fca = activity as BillerActivity?
+        fca!!.switchActivity(i, MainPage.ACTIVITY_RESULT)
     }
 
     private fun submitBiller(attempt: Int) {

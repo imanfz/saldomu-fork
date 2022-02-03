@@ -1311,19 +1311,21 @@ public class MainPage extends BaseActivity {
                 mNavDrawer.refreshDataNavDrawer();
             }
         } else if (requestCode == RESULT_SCAN) {
-            String qrString = data.getStringExtra(Intents.Scan.RESULT);
-            if (!qrString.equals("")) {
-                if (qrString.contains("qr_type=QR_TYPE_FROM_DEFAULT_ACCOUNT")) {
-                    if (sp.getBoolean(DefineValue.ALLOW_TRANSFER, false)) {
-                        QrModel qrModel = divideResult(qrString);
-                        Intent intent = new Intent(MainPage.this, PayFriendsActivity.class);
-                        intent.putExtra(DefineValue.QR_OBJ, qrModel);
-                        startActivity(intent);
+            if (data != null) {
+                String qrString = data.getStringExtra(Intents.Scan.RESULT);
+                if (!qrString.equals("")) {
+                    if (qrString.contains("qr_type=QR_TYPE_FROM_DEFAULT_ACCOUNT")) {
+                        if (sp.getBoolean(DefineValue.ALLOW_TRANSFER, false)) {
+                            QrModel qrModel = divideResult(qrString);
+                            Intent intent = new Intent(MainPage.this, PayFriendsActivity.class);
+                            intent.putExtra(DefineValue.QR_OBJ, qrModel);
+                            startActivity(intent);
+                        } else
+                            dialogUnavailable();
                     } else
-                        dialogUnavailable();
-                } else
 //                    dialogUnavailable();
-                    parsingQR(qrString);
+                        parsingQR(qrString);
+                }
             }
         } else {
             if (resultCode == -1) {

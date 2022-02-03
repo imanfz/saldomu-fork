@@ -596,7 +596,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                                 //Start
                                 handlerSearchAgent.postDelayed(runnableSearchAgent, timeDelayed);
 
-                                JSONArray shops = response.getJSONArray("shop");
+                                JSONArray shops = response.getJSONArray(WebParams.SHOP);
 
                                 shopDetails.clear();
 

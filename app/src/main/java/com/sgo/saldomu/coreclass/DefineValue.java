@@ -53,6 +53,7 @@ public class DefineValue {
     public static String BANKLIST_TYPE_SMS = "SMS";
     public static String BANKLIST_TYPE_IB = "IB";
     public static String BANKLIST_TYPE_EMO = "EMO";
+    public static String BANKLIST_TYPE_PAYLATER = "PLR";
     public static String AUTH_TYPE_PIN = "PIN";
     public static String AUTH_TYPE_OTP = "OTP";
     public static String TOKEN = "toKen";

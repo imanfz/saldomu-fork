@@ -69,6 +69,7 @@ class FragmentReport : BaseFragment() {
             report_pager_activity.pageMargin = pageMargin
             report_pager_activity.currentItem = 0
             report_tabs_activity.setViewPager(report_pager_activity)
+            report_tabs_activity.setCurrentItem(1)
         }
     }
 }

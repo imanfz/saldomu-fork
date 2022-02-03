@@ -27,8 +27,12 @@ import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.*
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
+import com.sgo.saldomu.dialogs.AlertDialogLogout
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.ShopDetail
+import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseActivity
 import kotlinx.android.synthetic.main.activity_search_agent_upgrade.*
 import org.json.JSONObject
@@ -37,11 +41,11 @@ import timber.log.Timber
 import java.util.*
 
 class SearchAgentUpgradeActivity : BaseActivity(),
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        OnMapReadyCallback,
-        LocationListener,
-        GoogleMap.OnMarkerClickListener, OnMapsSdkInitializedCallback {
+    GoogleApiClient.ConnectionCallbacks,
+    GoogleApiClient.OnConnectionFailedListener,
+    OnMapReadyCallback,
+    LocationListener,
+    GoogleMap.OnMarkerClickListener, OnMapsSdkInitializedCallback {
 
     private var categoryId: String? = ""
     private var type: String? = ""
@@ -92,10 +96,18 @@ class SearchAgentUpgradeActivity : BaseActivity(),
             }
         } else {
             //Do not have permissions, request them now
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location), RC_LOCATION_PERM, *perms)
+            EasyPermissions.requestPermissions(
+                this,
+                getString(R.string.rationale_location),
+                RC_LOCATION_PERM,
+                *perms
+            )
         }
 
-        bitmap = BitmapFactory.decodeResource(Objects.requireNonNull<Context>(this).resources, R.drawable.user_unknown_menu)
+        bitmap = BitmapFactory.decodeResource(
+            Objects.requireNonNull<Context>(this).resources,
+            R.drawable.user_unknown_menu
+        )
         roundedImage = RoundImageTransformation(bitmap)
     }
 
@@ -135,7 +147,11 @@ class SearchAgentUpgradeActivity : BaseActivity(),
 
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient)
 
-                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this)
+                LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient,
+                    mLocationRequest,
+                    this
+                )
                 latitude = mLastLocation.latitude
                 longitude = mLastLocation.longitude
 
@@ -154,25 +170,35 @@ class SearchAgentUpgradeActivity : BaseActivity(),
 
                     //add camera position and configuration
                     val cameraPosition = CameraPosition.Builder()
-                            .target(latLng) // Center Set
-                            .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
-                            .build() // Creates a CameraPosition from the builder
+                        .target(latLng) // Center Set
+                        .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
+                        .build() // Creates a CameraPosition from the builder
 
-                    googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), object : GoogleMap.CancelableCallback {
-                        override fun onFinish() {
-                            //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
-                            googleMap?.uiSettings?.setAllGesturesEnabled(true)
-                            isZoomedAlready = true
-                        }
+                    googleMap?.animateCamera(
+                        CameraUpdateFactory.newCameraPosition(cameraPosition),
+                        object : GoogleMap.CancelableCallback {
+                            override fun onFinish() {
+                                //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
+                                googleMap?.uiSettings?.setAllGesturesEnabled(true)
+                                isZoomedAlready = true
+                            }
 
-                        override fun onCancel() {}
-                    })
+                            override fun onCancel() {}
+                        })
 
                     if (markerCurrent != null) markerCurrent?.remove()
 
                     val markerOptions = MarkerOptions()
-                            .position(latLng)
-                            .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.search_location, 70, 90)))
+                        .position(latLng)
+                        .icon(
+                            BitmapDescriptorFactory.fromBitmap(
+                                resizeMapIcons(
+                                    R.drawable.search_location,
+                                    70,
+                                    90
+                                )
+                            )
+                        )
                     markerCurrent = googleMap?.addMarker(markerOptions)
 
                 }
@@ -201,24 +227,34 @@ class SearchAgentUpgradeActivity : BaseActivity(),
 
                 //add camera position and configuration
                 val cameraPosition = CameraPosition.Builder()
-                        .target(latLng) // Center Set
-                        .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
-                        .build() // Creates a CameraPosition from the builder
+                    .target(latLng) // Center Set
+                    .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
+                    .build() // Creates a CameraPosition from the builder
 
-                googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), object : GoogleMap.CancelableCallback {
-                    override fun onFinish() {
-                        //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
-                        googleMap?.uiSettings?.setAllGesturesEnabled(true)
-                    }
+                googleMap?.animateCamera(
+                    CameraUpdateFactory.newCameraPosition(cameraPosition),
+                    object : GoogleMap.CancelableCallback {
+                        override fun onFinish() {
+                            //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
+                            googleMap?.uiSettings?.setAllGesturesEnabled(true)
+                        }
 
-                    override fun onCancel() {}
-                })
+                        override fun onCancel() {}
+                    })
 
                 if (markerCurrent != null) markerCurrent?.remove()
 
                 val markerOptions = MarkerOptions()
-                        .position(latLng)
-                        .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.search_location, 70, 90)))
+                    .position(latLng)
+                    .icon(
+                        BitmapDescriptorFactory.fromBitmap(
+                            resizeMapIcons(
+                                R.drawable.search_location,
+                                70,
+                                90
+                            )
+                        )
+                    )
                 markerCurrent = googleMap?.addMarker(markerOptions)
 
                 googleMap?.setOnMarkerClickListener(this)
@@ -263,8 +299,16 @@ class SearchAgentUpgradeActivity : BaseActivity(),
                     if (markerCurrent != null) markerCurrent?.remove()
 
                     val markerOptions = MarkerOptions()
-                            .position(latLng)
-                            .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.search_location, 70, 90)))
+                        .position(latLng)
+                        .icon(
+                            BitmapDescriptorFactory.fromBitmap(
+                                resizeMapIcons(
+                                    R.drawable.search_location,
+                                    70,
+                                    90
+                                )
+                            )
+                        )
                     markerCurrent = googleMap?.addMarker(markerOptions)
                 }
 
@@ -293,9 +337,9 @@ class SearchAgentUpgradeActivity : BaseActivity(),
     @Synchronized
     protected fun buildGoogleApiClient() {
         mGoogleApiClient = GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API).build()
+            .addConnectionCallbacks(this)
+            .addOnConnectionFailedListener(this)
+            .addApi(LocationServices.API).build()
     }
 
     /**
@@ -318,7 +362,8 @@ class SearchAgentUpgradeActivity : BaseActivity(),
         Timber.d("GPS Test checkPlayServices : $result")
         if (result != ConnectionResult.SUCCESS) {
             if (googleAPI.isUserResolvableError(result)) {
-                Toast.makeText(this, "GOOGLE API LOCATION CONNECTION FAILED", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "GOOGLE API LOCATION CONNECTION FAILED", Toast.LENGTH_SHORT)
+                    .show()
             }
 
             return false
@@ -332,8 +377,8 @@ class SearchAgentUpgradeActivity : BaseActivity(),
 //            showProgressDialog()
             if (type.equals("ALL")) {
                 link = MyApiClient.LINK_SEARCH_AGENT
-                extraSignature =""
-            } else{
+                extraSignature = ""
+            } else {
                 link = MyApiClient.LINK_SEARCH_AGENT_UPG
                 extraSignature = categoryId
             }
@@ -344,79 +389,114 @@ class SearchAgentUpgradeActivity : BaseActivity(),
             params[WebParams.USER_ID] = userPhoneID
             if (!type.equals("ALL")) {
                 params[WebParams.CATEGORY_ID] = categoryId
-            }
-            else{
-                params[WebParams.SHOP_TYPE] = sp.getString(DefineValue.COMPANY_TYPE,"")
+            } else {
+                params[WebParams.SHOP_TYPE] = sp.getString(DefineValue.COMPANY_TYPE, "")
                 params[WebParams.LATITUDE] = latitude
                 params[WebParams.LONGITUDE] = longitude
             }
             Timber.d("Params search agent upgrade :$params")
 
             RetrofitService.getInstance().PostJsonObjRequest(link, params,
-                    object : ObjListeners {
-                        override fun onResponses(response: JSONObject?) {
-                            Timber.d("Respon search agent upgrade :$response")
+                object : ObjListeners {
+                    override fun onResponses(response: JSONObject?) {
+                        Timber.d("Respon search agent upgrade :$response")
+                        val code = response?.getString(WebParams.ERROR_CODE)
+                        val message = response?.getString(WebParams.ERROR_MESSAGE)
+                        if (code!! == WebParams.SUCCESS_CODE) {
+                            val shops = response.getJSONArray(WebParams.SHOP)
+                            shopDetails.clear()
+                            if (shops.length() > 0) {
+                                for (i in 0 until shops.length()) {
+                                    val jsonObject = shops.getJSONObject(i)
+                                    val shopDetail = ShopDetail()
 
-                            var code = response?.getString(WebParams.ERROR_CODE)
-                            if (code!! == WebParams.SUCCESS_CODE) {
-                                var shops = response?.getJSONArray("shop")
-                                shopDetails.clear()
-                                if (shops!!.length() > 0) {
-                                    for (i in 0 until shops.length()) {
-                                        var jsonObject = shops.getJSONObject(i)
-                                        var shopDetail = ShopDetail()
-
-                                        shopDetail.shopId = jsonObject.getString(WebParams.SHOP_ID)
-                                        shopDetail.memberCust = jsonObject.getString("member_cust")
-                                        shopDetail.memberId = jsonObject.getString("member_id")
-                                        shopDetail.shopLatitude = jsonObject.getDouble("shop_latitude")
-                                        shopDetail.shopLongitude = jsonObject.getDouble("shop_longitude")
-                                        shopDetail.memberName = jsonObject.getString(WebParams.MEMBER_NAME)
-                                        shopDetail.shopAddress = jsonObject.getString("shop_address")
-                                        shopDetail.shopDistrict = jsonObject.getString("shop_district")
-                                        shopDetail.shopProvince = jsonObject.getString("shop_province")
-                                        shopDetail.shopCountry = jsonObject.getString("shop_country")
-                                        shopDetail.urlSmallProfilePicture = jsonObject.getString("shop_picture")
-                                        shopDetail.lastActivity = jsonObject.getString("shop_lastactivity")
-                                        shopDetail.shopMobility = jsonObject.getString("shop_mobility")
-                                        shopDetails.add(shopDetail)
-                                    }
-                                    for (i in 0 until shopDetails.size) {
-                                        if (shopDetails[i].shopLatitude != null && shopDetails[i].shopLongitude != null) {
-                                            var latlng = LatLng(shopDetails[i].shopLatitude, shopDetails[i].shopLongitude)
-                                            if (hashMapMarkers!!.containsKey(shopDetails[i].shopId)) {
-                                                markerShop = hashMapMarkers?.get(shopDetails[i].shopId)
-                                                markerShop?.position = latlng
-                                                hashMapMarkers?.remove(shopDetails[i].shopId)
-                                                hashMapMarkers?.put(shopDetails[i].shopId, markerShop!!)
+                                    shopDetail.shopId = jsonObject.getString(WebParams.SHOP_ID)
+                                    shopDetail.memberCust = jsonObject.getString("member_cust")
+                                    shopDetail.memberId = jsonObject.getString("member_id")
+                                    shopDetail.shopLatitude = jsonObject.getDouble("shop_latitude")
+                                    shopDetail.shopLongitude =
+                                        jsonObject.getDouble("shop_longitude")
+                                    shopDetail.memberName =
+                                        jsonObject.getString(WebParams.MEMBER_NAME)
+                                    shopDetail.shopAddress = jsonObject.getString("shop_address")
+                                    shopDetail.shopDistrict = jsonObject.getString("shop_district")
+                                    shopDetail.shopProvince = jsonObject.getString("shop_province")
+                                    shopDetail.shopCountry = jsonObject.getString("shop_country")
+                                    shopDetail.urlSmallProfilePicture =
+                                        jsonObject.getString("shop_picture")
+                                    shopDetail.lastActivity =
+                                        jsonObject.getString("shop_lastactivity")
+                                    shopDetail.shopMobility = jsonObject.getString("shop_mobility")
+                                    shopDetails.add(shopDetail)
+                                }
+                                for (i in 0 until shopDetails.size) {
+                                    if (shopDetails[i].shopLatitude != null && shopDetails[i].shopLongitude != null) {
+                                        val latlng = LatLng(
+                                            shopDetails[i].shopLatitude,
+                                            shopDetails[i].shopLongitude
+                                        )
+                                        if (hashMapMarkers!!.containsKey(shopDetails[i].shopId)) {
+                                            markerShop = hashMapMarkers?.get(shopDetails[i].shopId)
+                                            markerShop?.position = latlng
+                                            hashMapMarkers?.remove(shopDetails[i].shopId)
+                                            hashMapMarkers?.put(shopDetails[i].shopId, markerShop!!)
+                                        } else {
+                                            val markerOptions = MarkerOptions().position(latlng)
+                                            if (shopDetails[i].shopMobility == DefineValue.STRING_YES) {
+                                                markerOptions.icon(
+                                                    BitmapDescriptorFactory.fromBitmap(
+                                                        resizeMapIcons(
+                                                            R.drawable.map_person,
+                                                            90,
+                                                            90
+                                                        )
+                                                    )
+                                                )
                                             } else {
-                                                val markerOptions = MarkerOptions().position(latlng)
-                                                if (shopDetails[i].shopMobility == DefineValue.STRING_YES) {
-                                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_person, 90, 90)))
-                                                } else {
-                                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_home, 90, 90)))
-                                                }
-                                                markerShop = googleMap?.addMarker(markerOptions)
-                                                markerShop!!.tag = i
-                                                hashMapMarkers!![shopDetails[i].shopId] = markerShop
+                                                markerOptions.icon(
+                                                    BitmapDescriptorFactory.fromBitmap(
+                                                        resizeMapIcons(R.drawable.map_home, 90, 90)
+                                                    )
+                                                )
                                             }
+                                            markerShop = googleMap?.addMarker(markerOptions)
+                                            markerShop!!.tag = i
+                                            hashMapMarkers!![shopDetails[i].shopId] = markerShop
                                         }
                                     }
                                 }
-                            } else {
-                                shopDetails.clear()
                             }
+                        } else if (code == WebParams.LOGOUT_CODE) {
+                            AlertDialogLogout.getInstance()
+                                .showDialoginActivity(this@SearchAgentUpgradeActivity, message)
+                        } else if (code == DefineValue.ERROR_9333) {
+                            val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                            Timber.d("isi response app data:%s", model.app_data)
+                            val appModel = model.app_data
+                            AlertDialogUpdateApp.getInstance().showDialogUpdate(
+                                this@SearchAgentUpgradeActivity,
+                                appModel.type,
+                                appModel.packageName,
+                                appModel.downloadUrl
+                            )
+                        } else if (code == DefineValue.ERROR_0066) {
+                            Timber.d("isi response maintenance:$response")
+                            AlertDialogMaintenance.getInstance()
+                                .showDialogMaintenance(this@SearchAgentUpgradeActivity)
+                        } else {
+                            shopDetails.clear()
                         }
+                    }
 
-                        override fun onError(throwable: Throwable?) {
+                    override fun onError(throwable: Throwable?) {
 
-                        }
+                    }
 
-                        override fun onComplete() {
-                            dismissProgressDialog()
-                        }
+                    override fun onComplete() {
+                        dismissProgressDialog()
+                    }
 
-                    })
+                })
         } catch (e: Exception) {
             Timber.d("httpclient:" + e.message)
         }
@@ -434,18 +514,30 @@ class SearchAgentUpgradeActivity : BaseActivity(),
                     shopDetails[position].shopProvince + ", " + shopDetails[position].shopCountry + "."
 
             if (urlProfilePicture != null && urlProfilePicture.isEmpty()) {
-                GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, ivMemberPhoto)
+                GlideManager.sharedInstance().initializeGlide(
+                    this,
+                    R.drawable.user_unknown_menu,
+                    roundedImage,
+                    ivMemberPhoto
+                )
             } else {
-                GlideManager.sharedInstance().initializeGlide(this, urlProfilePicture, roundedImage, ivMemberPhoto)
+                GlideManager.sharedInstance()
+                    .initializeGlide(this, urlProfilePicture, roundedImage, ivMemberPhoto)
             }
 
             btnCall.setOnClickListener {
-                val callIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + NoHPFormat.formatTo08(shopDetails[position].memberCust)))
+                val callIntent = Intent(
+                    Intent.ACTION_DIAL,
+                    Uri.parse("tel:" + NoHPFormat.formatTo08(shopDetails[position].memberCust))
+                )
                 startActivity(callIntent)
             }
 
             btnDirection.setOnClickListener {
-                val directionIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + shopDetails[position].shopLatitude + "," + shopDetails[position].shopLongitude))
+                val directionIntent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("http://maps.google.com/maps?daddr=" + shopDetails[position].shopLatitude + "," + shopDetails[position].shopLongitude)
+                )
                 startActivity(directionIntent)
             }
             var animation = AnimationUtils.loadAnimation(this, R.anim.slide_up)
@@ -462,15 +554,15 @@ class SearchAgentUpgradeActivity : BaseActivity(),
     private fun showAlertEnabledGPS() {
         val builder = AlertDialog.Builder(this)
         builder.setMessage(getString(R.string.alertbox_gps_warning))
-                .setCancelable(false)
-                .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                    val ilocation = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                    startActivityForResult(ilocation, RC_GPS_REQUEST)
-                }
-                .setNegativeButton(getString(R.string.no)) { dialog, _ ->
-                    dialog.cancel()
-                    startActivity(Intent(applicationContext, MainPage::class.java))
-                }
+            .setCancelable(false)
+            .setPositiveButton(getString(R.string.yes)) { _, _ ->
+                val ilocation = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivityForResult(ilocation, RC_GPS_REQUEST)
+            }
+            .setNegativeButton(getString(R.string.no)) { dialog, _ ->
+                dialog.cancel()
+                startActivity(Intent(applicationContext, MainPage::class.java))
+            }
         val alert = builder.create()
         alert.show()
     }

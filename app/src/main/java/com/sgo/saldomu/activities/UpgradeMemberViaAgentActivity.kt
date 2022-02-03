@@ -14,7 +14,15 @@ import com.sgo.saldomu.R
 import com.sgo.saldomu.adapter.CustomAutoCompleteAdapter
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.RealmManager
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService
+import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.entityRealm.List_BBS_Birth_Place
+import com.sgo.saldomu.interfaces.ObjListeners
+import com.sgo.saldomu.models.retrofit.DistrictModel
+import com.sgo.saldomu.models.retrofit.ProvinceModel
+import com.sgo.saldomu.models.retrofit.SubDistrictModel
+import com.sgo.saldomu.models.retrofit.UrbanVillageModel
 import com.sgo.saldomu.widgets.BaseActivity
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.*
@@ -34,22 +42,17 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
     var memberDOB: String = ""
     private lateinit var fromFormat: DateFormat
 
-    var provincesName: String = String()
-    var kabupatenName: String = String()
-    var kecamatanName: String = String()
-    var kelurahanName: String = String()
-    val provincesList: ArrayList<String> = arrayListOf()
-    var provincesObject = JSONObject()
-    var provincesArray = JSONArray()
-    val kabupatenList: ArrayList<String> = arrayListOf()
-    var kabupatenObject = JSONObject()
-    var kabupatenArray = JSONArray()
-    val kecamatanList: ArrayList<String> = arrayListOf()
-    var kecamatanObject = JSONObject()
-    var kecamatanArray = JSONArray()
-    val kelurahanList: ArrayList<String> = arrayListOf()
-    var kelurahanObject = JSONObject()
-    var kelurahanArray = JSONArray()
+    var provinceID = ""
+    var districtID = ""
+    var subDistrictID = ""
+    val provinceList: ArrayList<ProvinceModel> = arrayListOf()
+    val provincesNameList: ArrayList<String> = arrayListOf()
+    val districtList: ArrayList<DistrictModel> = arrayListOf()
+    val districtNameList: ArrayList<String> = arrayListOf()
+    val subDistrictList: ArrayList<SubDistrictModel> = arrayListOf()
+    val subDistrictNameList: ArrayList<String> = arrayListOf()
+    val urbanVillageList: ArrayList<UrbanVillageModel> = arrayListOf()
+    val urbanVillageNameList: ArrayList<String> = arrayListOf()
 
     override fun getLayoutResource(): Int {
         return R.layout.activity_upgrade_member_via_agent
@@ -68,18 +71,46 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
 
         initGenderSpinner()
 
-        val handler = Handler()
-        val runnable = Runnable {
-            initProvinceSpinner()
-        }
-        showProgressDialog()
-        val swipeTimer = Timer()
-        swipeTimer.schedule(object : TimerTask() {
-            override fun run() {
-                handler.post(runnable)
-                swipeTimer.cancel()
+        province_auto_text.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
+            for (i in 0 until provinceList.size) {
+                if (provinceList[i].provinceName == province_auto_text.text.toString()) {
+                    provinceID = provinceList[i].provinceCode
+                    district_auto_text.setText("")
+                    sub_district_auto_text.setText("")
+                    urban_village_auto_text.setText("")
+                }
             }
-        }, 1000)
+            clearListDistrict()
+            clearListSubDistrict()
+            clearListUrbanVillage()
+            getLocationData()
+        }
+
+        district_auto_text.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
+            for (i in 0 until districtList.size) {
+                if (districtList[i].districtName == district_auto_text.text.toString()) {
+                    districtID = districtList[i].districtCode
+                    sub_district_auto_text.setText("")
+                    urban_village_auto_text.setText("")
+                }
+            }
+            clearListSubDistrict()
+            clearListUrbanVillage()
+            getLocationData()
+        }
+
+        sub_district_auto_text.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
+            for (i in 0 until subDistrictList.size) {
+                if (subDistrictList[i].subDistrictName == sub_district_auto_text.text.toString()) {
+                    subDistrictID = subDistrictList[i].subDistrictCode
+                    urban_village_auto_text.setText("")
+                }
+            }
+            clearListUrbanVillage()
+            getLocationData()
+        }
+
+        getLocationData()
 
         initReligionSpinner()
 
@@ -99,10 +130,10 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
                 intent.putExtra(DefineValue.MEMBER_ADDRESS, address_edit_text.text.toString())
                 intent.putExtra(DefineValue.MEMBER_RT, rt_edit_text.text.toString())
                 intent.putExtra(DefineValue.MEMBER_RW, rw_edit_text.text.toString())
-                intent.putExtra(DefineValue.MEMBER_KELURAHAN, kelurahanName)
-                intent.putExtra(DefineValue.MEMBER_KECAMATAN, kecamatanName)
-                intent.putExtra(DefineValue.MEMBER_KABUPATEN, kabupatenName)
-                intent.putExtra(DefineValue.MEMBER_PROVINSI, provincesName)
+                intent.putExtra(DefineValue.MEMBER_KELURAHAN, urban_village_auto_text.text.toString())
+                intent.putExtra(DefineValue.MEMBER_KECAMATAN, sub_district_auto_text.text.toString())
+                intent.putExtra(DefineValue.MEMBER_KABUPATEN, district_auto_text.text.toString())
+                intent.putExtra(DefineValue.MEMBER_PROVINSI, province_auto_text.text.toString())
                 intent.putExtra(DefineValue.MEMBER_RELIGION, religion_spinner.selectedItem.toString())
                 intent.putExtra(DefineValue.MEMBER_STATUS, status_spinner.selectedItem.toString())
                 intent.putExtra(DefineValue.MEMBER_OCUPATION, job_edit_text.text.toString())
@@ -117,114 +148,127 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
         }
     }
 
+    private fun clearListDistrict(){
+        districtID = ""
+        districtList.clear()
+        districtNameList.clear()
+    }
+
+    private fun clearListSubDistrict(){
+        subDistrictID = ""
+        subDistrictList.clear()
+        subDistrictNameList.clear()
+    }
+
+    private fun clearListUrbanVillage(){
+        urbanVillageList.clear()
+        urbanVillageNameList.clear()
+    }
+
+    private fun getLocationData() {
+        showProgressDialog()
+        val params = RetrofitService.getInstance()
+            .getSignatureSecretKey(MyApiClient.LINK_GET_LOCATION_DATA, "")
+        params[WebParams.USER_ID] = userPhoneID
+        params[WebParams.COMM_ID] = MyApiClient.COMM_ID
+        if (provinceID != "")
+            params[WebParams.PROVINSI_ID] = provinceID
+        if (districtID != "")
+            params[WebParams.KABUPATEN_ID] = districtID
+        if (subDistrictID != "")
+            params[WebParams.KECAMATAN_ID] = subDistrictID
+
+        Timber.d("isi params get loc data :%s", params.toString())
+        RetrofitService.getInstance()
+            .PostJsonObjRequest(MyApiClient.LINK_GET_LOCATION_DATA, params, object : ObjListeners {
+                override fun onResponses(response: JSONObject) {
+                    val jsonArray = response.getJSONArray("data")
+                    for (i in 0 until jsonArray.length()) {
+                        val jsonObject = JSONObject(jsonArray[i].toString())
+                        when {
+                            provinceID == "" -> {
+                                provinceList.add(
+                                    ProvinceModel(
+                                        jsonObject.optString(WebParams.KODE_PROVINSI),
+                                        jsonObject.optString(WebParams.NAMA_PROVINSI)
+                                    )
+                                )
+                                provincesNameList.add(provinceList[i].provinceName)
+                            }
+                            districtID == "" -> {
+                                districtList.add(
+                                    DistrictModel(
+                                        jsonObject.optString(WebParams.KODE_KOT_KAB),
+                                        jsonObject.optString(WebParams.NAMA_KOT_KAB)
+                                    )
+                                )
+                                districtNameList.add(districtList[i].districtName)
+                            }
+                            subDistrictID == "" -> {
+                                subDistrictList.add(
+                                    SubDistrictModel(
+                                        jsonObject.optString(WebParams.KODE_KECAMATAN),
+                                        jsonObject.optString(WebParams.NAMA_KECAMATAN)
+                                    )
+                                )
+                                subDistrictNameList.add(subDistrictList[i].subDistrictName)
+                            }
+                            else -> {
+                                urbanVillageList.add(
+                                    UrbanVillageModel(
+                                        jsonObject.optString(
+                                            WebParams.KODE_LUR_DES
+                                        ), jsonObject.optString(WebParams.NAMA_LUR_DES)
+                                    )
+                                )
+                                urbanVillageNameList.add(urbanVillageList[i].urbanVillageName)
+                            }
+                        }
+
+                    }
+
+                    val provincesAdapter = ArrayAdapter(
+                        applicationContext,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        provincesNameList
+                    )
+                    province_auto_text.setAdapter(provincesAdapter)
+                    val districtAdapter = ArrayAdapter(
+                        applicationContext,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        districtNameList
+                    )
+                    district_auto_text.setAdapter(districtAdapter)
+                    val subDistrictAdapter = ArrayAdapter(
+                        applicationContext,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        subDistrictNameList
+                    )
+                    sub_district_auto_text.setAdapter(subDistrictAdapter)
+                    val urbanVillageAdapter = ArrayAdapter(
+                        applicationContext,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        urbanVillageNameList
+                    )
+                    urban_village_auto_text.setAdapter(urbanVillageAdapter)
+                }
+
+                override fun onError(throwable: Throwable?) {
+                    dismissProgressDialog()
+                }
+
+                override fun onComplete() {
+                    dismissProgressDialog()
+                }
+
+            })
+    }
+
     private fun initGenderSpinner() {
         val genderAdapter = ArrayAdapter.createFromResource(this,
                 R.array.gender_type, android.R.layout.simple_spinner_item)
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         gender_spinner.adapter = genderAdapter
-    }
-
-    private fun initProvinceSpinner() {
-        val jsonString =
-                applicationContext.assets.open("province.txt").bufferedReader()
-                        .use { it.readText() }
-        val jsonObject = JSONObject(jsonString)
-
-        provincesArray = jsonObject.getJSONArray("provinces")
-        for (i in 0 until provincesArray.length()) {
-            provincesObject = JSONObject(provincesArray[i].toString())
-            provincesList.add(provincesObject.optString("nama_provinsi"))
-        }
-
-        val provincesAdapter =
-                ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, provincesList)
-
-        province_auto_text.setAdapter(provincesAdapter)
-        province_auto_text.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
-            for (i in 0 until provincesList.size) {
-                provincesObject = JSONObject(provincesArray[i].toString())
-                provincesName = provincesObject.optString("nama_provinsi")
-                if (provincesName == province_auto_text.text.toString()) {
-                    kabupatenList.clear()
-                    kabupatenArray = provincesObject.getJSONArray("kabs")
-                    for (j in 0 until kabupatenArray.length()) {
-                        kabupatenObject = JSONObject(kabupatenArray[j].toString())
-                        kabupatenList.add(kabupatenObject.optString("nama_kot_kab"))
-                    }
-
-                    val kabupatenAdapter =
-                            ArrayAdapter(
-                                    this,
-                                    android.R.layout.simple_spinner_dropdown_item,
-                                    kabupatenList
-                            )
-                    district_auto_text.setAdapter(kabupatenAdapter)
-                    break
-                }
-            }
-        }
-
-        district_auto_text.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
-            for (i in 0 until kabupatenList.size) {
-                kabupatenObject = JSONObject(kabupatenArray[i].toString())
-                kabupatenName = kabupatenObject.optString("nama_kot_kab")
-                if (kabupatenName == district_auto_text.text.toString()) {
-                    kecamatanList.clear()
-                    kecamatanArray = kabupatenObject.getJSONArray("kecamatans")
-                    for (j in 0 until kecamatanArray.length()) {
-                        kecamatanObject = JSONObject(kecamatanArray[j].toString())
-                        kecamatanList.add(kecamatanObject.optString("nama_kecamatan"))
-                    }
-
-                    val kecamatanAdapter =
-                            ArrayAdapter(
-                                    this,
-                                    android.R.layout.simple_spinner_dropdown_item,
-                                    kecamatanList
-                            )
-                    sub_district_auto_text.setAdapter(kecamatanAdapter)
-                    break
-                }
-            }
-        }
-
-        sub_district_auto_text.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
-            for (i in 0 until kecamatanList.size) {
-                kecamatanObject = JSONObject(kecamatanArray[i].toString())
-                kecamatanName = kecamatanObject.optString("nama_kecamatan")
-                if (kecamatanName == sub_district_auto_text.text.toString()) {
-                    kelurahanList.clear()
-                    kelurahanArray = kecamatanObject.getJSONArray("kelurahan")
-                    for (j in 0 until kelurahanArray.length()) {
-                        kelurahanObject = JSONObject(kelurahanArray[j].toString())
-                        kelurahanList.add(kelurahanObject.optString("nama_lur_des"))
-                    }
-
-                    val kelurahanAdapter =
-                            ArrayAdapter(
-                                    this,
-                                    android.R.layout.simple_spinner_dropdown_item,
-                                    kelurahanList
-                            )
-                    urban_village_auto_text.setAdapter(kelurahanAdapter)
-                    break
-                }
-            }
-        }
-
-        urban_village_auto_text.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
-            for (i in 0 until kelurahanList.size) {
-                kelurahanObject = JSONObject(kelurahanArray[i].toString())
-                kelurahanName = kelurahanObject.optString("nama_lur_des")
-                if (kelurahanName == urban_village_auto_text.text.toString())
-                    break
-            }
-            Timber.e("prov : $provincesName")
-            Timber.e("kab : $kabupatenName")
-            Timber.e("kec : $kecamatanName")
-            Timber.e("kel : $kelurahanName")
-        }
-        dismissProgressDialog()
     }
 
     private fun initNationalitySpinner() {
@@ -293,35 +337,19 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             birth_place_list.requestFocus()
             birth_place_list.error = resources.getString(R.string.city_empty_message)
             return false
-        } else if (!provincesList.contains(province_auto_text.text.toString())) run {
-            province_auto_text.requestFocus()
-            province_auto_text.error = resources.getString(R.string.province_not_found_message)
-            return false
-        } else if (province_auto_text.text.toString().trim({ it <= ' ' }).isEmpty()) run {
+        } else if (province_auto_text.text.isEmpty()) {
             province_auto_text.requestFocus()
             province_auto_text.error = resources.getString(R.string.province_validation)
             return false
-        } else if (!kabupatenList.contains(district_auto_text.text.toString())) run {
-            district_auto_text.requestFocus()
-            district_auto_text.error = resources.getString(R.string.district_not_found_message)
-            return false
-        } else if (district_auto_text.text.toString().trim({ it <= ' ' }).isEmpty()) run {
+        } else if (district_auto_text.text.isEmpty()) {
             district_auto_text.requestFocus()
             district_auto_text.error = resources.getString(R.string.district_validation)
             return false
-        } else if (!kecamatanList.contains(sub_district_auto_text.text.toString())) run {
-            sub_district_auto_text.requestFocus()
-            sub_district_auto_text.error = resources.getString(R.string.sub_district_not_found_message)
-            return false
-        } else if (sub_district_auto_text.text.toString().trim({ it <= ' ' }).isEmpty()) run {
+        } else if (sub_district_auto_text.text.isEmpty()) {
             sub_district_auto_text.requestFocus()
             sub_district_auto_text.error = resources.getString(R.string.sub_district_validation)
             return false
-        } else if (!kelurahanList.contains(urban_village_auto_text.text.toString())) run {
-            urban_village_auto_text.requestFocus()
-            urban_village_auto_text.error = resources.getString(R.string.urban_village_not_found_message)
-            return false
-        } else if (urban_village_auto_text.text.toString().trim({ it <= ' ' }).isEmpty()) run {
+        } else if (urban_village_auto_text.text.isEmpty()) {
             urban_village_auto_text.requestFocus()
             urban_village_auto_text.error = resources.getString(R.string.urban_village_validation)
             return false

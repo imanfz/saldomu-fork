@@ -758,4 +758,5 @@ public class WebParams {
     public static String LIST_INVOICES = "list_invoices";
     public static String SMS_REF_ID = "sms_ref_id";
     public static String IS_BAT = "is_bat";
+    public static String SHOP = "shop";
 }

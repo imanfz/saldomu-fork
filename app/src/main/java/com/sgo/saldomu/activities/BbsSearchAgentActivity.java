@@ -562,7 +562,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                     clicked = true;
                                     txId = response.getString(DefineValue.TX_ID2);
 
-                                    JSONArray shops = response.getJSONArray("shop");
+                                    JSONArray shops = response.getJSONArray(WebParams.SHOP);
 
                                     shopDetails.clear();
 

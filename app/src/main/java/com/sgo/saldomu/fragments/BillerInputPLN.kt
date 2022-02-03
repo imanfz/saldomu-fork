@@ -20,10 +20,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.sgo.saldomu.Beans.listBankModel
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.BillerActivity
-import com.sgo.saldomu.activities.MainPage
-import com.sgo.saldomu.activities.RegisterSMSBankingActivity
-import com.sgo.saldomu.activities.TopUpActivity
+import com.sgo.saldomu.activities.*
 import com.sgo.saldomu.coreclass.*
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -43,7 +40,6 @@ import io.realm.RealmResults
 import kotlinx.android.synthetic.main.dialog_notification.*
 import kotlinx.android.synthetic.main.frag_biller_input_new.*
 import timber.log.Timber
-import java.util.*
 
 class BillerInputPLN : BaseFragment() {
 
@@ -98,7 +94,11 @@ class BillerInputPLN : BaseFragment() {
     var realmResults: RealmResults<BillerItem>? = null
     private var billerItemList = ArrayList<BillerItem>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewLayout = inflater.inflate(R.layout.frag_biller_input_new, container, false)
         return viewLayout
     }
@@ -180,7 +180,8 @@ class BillerInputPLN : BaseFragment() {
                     buy_type_detail = "PRABAYAR"
                     biller_type_code = "TKN"
                     buyCode = BillerActivity.PURCHASE_TYPE
-                    billerinput_text_id_remark.text = getString(R.string.billerinput_text_payment_remark_Listrik)
+                    billerinput_text_id_remark.text =
+                        getString(R.string.billerinput_text_payment_remark_Listrik)
                 }
                 R.id.radioPascabayar -> {
                     billerinput_text_denom.visibility = View.GONE
@@ -193,7 +194,8 @@ class BillerInputPLN : BaseFragment() {
                     buy_type_detail = "PASCABAYAR"
                     biller_type_code = "PLN"
                     buyCode = BillerActivity.PAYMENT_TYPE
-                    billerinput_text_id_remark.text = getString(R.string.billerinput_text_payment_remark)
+                    billerinput_text_id_remark.text =
+                        getString(R.string.billerinput_text_payment_remark)
                 }
             }
             realm?.refresh()
@@ -209,7 +211,8 @@ class BillerInputPLN : BaseFragment() {
                 } else {
                     additional_fee = string.toDouble()
                 }
-                billerinput_detail_admin_add_fee.text = getString(R.string.rp_) + " " + CurrencyFormat.format(additional_fee)
+                billerinput_detail_admin_add_fee.text =
+                    getString(R.string.rp_) + " " + CurrencyFormat.format(additional_fee)
                 countTotal()
             }
 
@@ -227,11 +230,12 @@ class BillerInputPLN : BaseFragment() {
     private fun initLayout() {
         billerinput_radio.visibility = View.VISIBLE
         layout_warn_pln.visibility = View.VISIBLE
-        billerinput_text_id_remark.text = getString(R.string.billerinput_text_payment_remark_Listrik)
+        billerinput_text_id_remark.text =
+            getString(R.string.billerinput_text_payment_remark_Listrik)
         billerinput_et_id_remark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(13))
         billerinput_et_id_remark.inputType = InputType.TYPE_CLASS_NUMBER
         billerinput_et_id_remark.keyListener = DigitsKeyListener.getInstance(digitsListener)
-        billerinput_et_id_remark.setText(arguments!!.getString(DefineValue.CUST_ID,""))
+        billerinput_et_id_remark.setText(arguments!!.getString(DefineValue.CUST_ID, ""))
         billerinput_et_add_fee.inputType = InputType.TYPE_CLASS_NUMBER
         billerinput_detail_layout_add_fee.visibility = View.GONE
         billerinput_layout_denom.visibility = View.VISIBLE
@@ -279,7 +283,9 @@ class BillerInputPLN : BaseFragment() {
 //    }
 
     private fun initRealm() {
-         realmResults = realm?.where(BillerItem::class.java)?.equalTo(DefineValue.BILLER_TYPE, biller_type_code)?.findAll()
+        realmResults =
+            realm?.where(BillerItem::class.java)?.equalTo(DefineValue.BILLER_TYPE, biller_type_code)
+                ?.findAll()
 
 //        mListBillerData = ArrayList()
 
@@ -288,11 +294,11 @@ class BillerInputPLN : BaseFragment() {
             biller_comm_id = result.commId
             biller_comm_name = result.commName
             biller_item_id = result.itemId
-            
+
             _data.add(result.commName)
         }
 
-        if (biller_type_code.equals("TKN")){
+        if (biller_type_code.equals("TKN")) {
             initSpinnerDenom()
         }
     }
@@ -306,7 +312,8 @@ class BillerInputPLN : BaseFragment() {
         mListDenomData = billerItemList[0].denomData
         if (mListDenomData!!.isNotEmpty()) {
             denomData = ArrayList()
-            adapterDenom = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, denomData!!)
+            adapterDenom =
+                ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, denomData!!)
             adapterDenom?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             billerinput_spinner_denom.adapter = adapterDenom
             billerinput_spinner_denom.onItemSelectedListener = spinnerDenomListener
@@ -323,7 +330,7 @@ class BillerInputPLN : BaseFragment() {
 
                     activity!!.runOnUiThread {
 
-                        if(buy_type_detail == "PRABAYAR") {
+                        if (buy_type_detail == "PRABAYAR") {
                             billerinput_text_denom.visibility = View.VISIBLE
                             billerinput_spinner_denom.visibility = View.VISIBLE ///INI
                             adapterDenom!!.notifyDataSetChanged()
@@ -335,12 +342,18 @@ class BillerInputPLN : BaseFragment() {
         } else {
             item_id = mDenomData?.itemId
         }
-        val spinAdapter = ArrayAdapter.createFromResource(activity!!, R.array.privacy_list, android.R.layout.simple_spinner_item)
+        val spinAdapter = ArrayAdapter.createFromResource(
+            activity!!,
+            R.array.privacy_list,
+            android.R.layout.simple_spinner_item
+        )
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
 
         mBillerData = BillerItem()
-        mBillerData = realm?.where(BillerItem::class.java)?.equalTo(WebParams.COMM_ID, biller_comm_id)?.equalTo(WebParams.COMM_NAME, biller_comm_name)?.findFirst()
+        mBillerData =
+            realm?.where(BillerItem::class.java)?.equalTo(WebParams.COMM_ID, biller_comm_id)
+                ?.equalTo(WebParams.COMM_NAME, biller_comm_name)?.findFirst()
         mListBankBiller = realm?.copyFromRealm(mBillerData!!.bankBiller)
 
         biller_comm_code = mBillerData?.commCode
@@ -348,7 +361,8 @@ class BillerInputPLN : BaseFragment() {
 //        callback_url = mBillerData?.callback_url
         if (realmResults!!.isNotEmpty()) {
             paymentData = ArrayList()
-            adapterPaymentOptions = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, paymentData!!)
+            adapterPaymentOptions =
+                ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, paymentData!!)
             adapterPaymentOptions?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             billerinput_spinner_payment_options.adapter = adapterPaymentOptions
             billerinput_spinner_payment_options.onItemSelectedListener = spinnerPaymentListener
@@ -391,7 +405,8 @@ class BillerInputPLN : BaseFragment() {
     private fun inputValidation(): Boolean {
         if (billerinput_et_id_remark.text.isEmpty()) {
             billerinput_et_id_remark.requestFocus()
-            billerinput_et_id_remark.error = getString(R.string.billerinput_validation_payment_remark)
+            billerinput_et_id_remark.error =
+                getString(R.string.billerinput_validation_payment_remark)
             return false
         }
         if (payment_name == getString(R.string.billerinput_text_spinner_default_payment)) {
@@ -405,7 +420,11 @@ class BillerInputPLN : BaseFragment() {
         if (buy_type_detail.equals("PRABAYAR", ignoreCase = true)) {
             if (item_name == null) {
                 billerinput_spinner_denom.requestFocus()
-                Toast.makeText(activity, getString(R.string.billerinput_validation_spinner_default_listrik), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    activity,
+                    getString(R.string.billerinput_validation_spinner_default_listrik),
+                    Toast.LENGTH_LONG
+                ).show()
                 return false
             }
         }
@@ -413,7 +432,12 @@ class BillerInputPLN : BaseFragment() {
     }
 
     private val spinnerDenomListener = object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(adapterView: AdapterView<*>, view: View?, position: Int, l: Long) {
+        override fun onItemSelected(
+            adapterView: AdapterView<*>,
+            view: View?,
+            position: Int,
+            l: Long
+        ) {
             if (position != 0) {
                 item_id = mListDenomData?.get(position - 1)?.itemId
                 item_name = mListDenomData?.get(position - 1)?.itemName
@@ -440,7 +464,8 @@ class BillerInputPLN : BaseFragment() {
 
             extraSignature = biller_comm_id + item_id + cust_id
 
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INQUIRY_BILLER, extraSignature)
+            val params = RetrofitService.getInstance()
+                .getSignature(MyApiClient.LINK_INQUIRY_BILLER, extraSignature)
             params[WebParams.DENOM_ITEM_ID] = item_id
             params[WebParams.DENOM_ITEM_REMARK] = cust_id
             params[WebParams.COMM_ID] = biller_comm_id
@@ -450,70 +475,78 @@ class BillerInputPLN : BaseFragment() {
             Timber.d("isi params sent inquiry biller:$params")
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INQUIRY_BILLER, params,
-                    object : ResponseListener {
-                        @SuppressLint("SetTextI18n")
-                        override fun onResponses(response: JsonObject?) {
-                            val model = getGson().fromJson(response, InqBillerModel::class.java)
-                            var code = model.error_code
-                            if (code == WebParams.SUCCESS_CODE) {
-                                setIsInputAmount(model.biller_input_amount == DefineValue.STRING_YES)
-                                is_display_amount = model.biller_display_amount == DefineValue.STRING_YES
+                object : ResponseListener {
+                    @SuppressLint("SetTextI18n")
+                    override fun onResponses(response: JsonObject?) {
+                        val model = getGson().fromJson(response, InqBillerModel::class.java)
+                        var code = model.error_code
+                        if (code == WebParams.SUCCESS_CODE) {
+                            setIsInputAmount(model.biller_input_amount == DefineValue.STRING_YES)
+                            is_display_amount =
+                                model.biller_display_amount == DefineValue.STRING_YES
 
-                                tx_id = model.tx_id
-                                item_id = model.item_id
-                                ccy_id = model.ccy_id
-                                item_price = model.amount.toDouble() - model.admin_fee.toDouble()
-                                item_name = model.item_name
-                                description = getGson().toJson(model.description)
-                                fee = model.admin_fee.toDouble()
-                                enabledAdditionalFee = model.enabled_additional_fee
+                            tx_id = model.tx_id
+                            item_id = model.item_id
+                            ccy_id = model.ccy_id
+                            item_price = model.amount.toDouble() - model.admin_fee.toDouble()
+                            item_name = model.item_name
+                            description = getGson().toJson(model.description)
+                            fee = model.admin_fee.toDouble()
+                            enabledAdditionalFee = model.enabled_additional_fee
 
-                                if (isAgent!! && enabledAdditionalFee.equals(DefineValue.STRING_YES)) {
-                                    billerinput_layout_add_fee.visibility = View.VISIBLE
-                                    billerinput_detail_layout_add_fee.visibility = View.VISIBLE
-                                }
-
-                                billerinput_layout_detail.visibility = View.VISIBLE
-                                billerinput_layout_favorite.visibility = View.GONE
-                                if (is_display_amount)
-                                    isShowDescription = true
-                                billerinput_detail_text_name.text = item_name
-                                billerinput_detail_price.text = getString(R.string.rp_) + " " + CurrencyFormat.format(item_price)
-                                billerinput_detail_admin_fee.text = getString(R.string.rp_) + " " + CurrencyFormat.format(fee)
-                            } else if (code == WebParams.LOGOUT_CODE) {
-                                val message = model.error_message
-                                val test = AlertDialogLogout.getInstance()
-                                test.showDialoginActivity(activity, message)
-                            } else if (code == DefineValue.ERROR_9333) run {
-                                Timber.d("isi response app data:%s", model.app_data)
-                                val appModel = model.app_data
-                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                            } else if (code == DefineValue.ERROR_0066) run {
-                                Timber.d("isi response maintenance:%s", response.toString())
-                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity)
-                            } else {
-                                code = model.error_code + " : " + model.error_message
-                                if (isVisible) {
-                                    Toast.makeText(activity, code, Toast.LENGTH_LONG).show()
-                                    fragManager.popBackStack()
-                                }
-                                billerinput_layout_detail.visibility = View.GONE
+                            if (isAgent!! && enabledAdditionalFee.equals(DefineValue.STRING_YES)) {
+                                billerinput_layout_add_fee.visibility = View.VISIBLE
+                                billerinput_detail_layout_add_fee.visibility = View.VISIBLE
                             }
+
+                            billerinput_layout_detail.visibility = View.VISIBLE
+                            billerinput_layout_favorite.visibility = View.GONE
+                            if (is_display_amount)
+                                isShowDescription = true
+                            billerinput_detail_text_name.text = item_name
+                            billerinput_detail_price.text =
+                                getString(R.string.rp_) + " " + CurrencyFormat.format(item_price)
+                            billerinput_detail_admin_fee.text =
+                                getString(R.string.rp_) + " " + CurrencyFormat.format(fee)
+                        } else if (code == WebParams.LOGOUT_CODE) {
+                            val message = model.error_message
+                            val test = AlertDialogLogout.getInstance()
+                            test.showDialoginActivity(activity, message)
+                        } else if (code == DefineValue.ERROR_9333) run {
+                            Timber.d("isi response app data:%s", model.app_data)
+                            val appModel = model.app_data
+                            val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                            alertDialogUpdateApp.showDialogUpdate(
+                                activity,
+                                appModel.type,
+                                appModel.packageName,
+                                appModel.downloadUrl
+                            )
+                        } else if (code == DefineValue.ERROR_0066) run {
+                            Timber.d("isi response maintenance:%s", response.toString())
+                            val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                            alertDialogMaintenance.showDialogMaintenance(activity)
+                        } else {
+                            code = model.error_code + " : " + model.error_message
+                            if (isVisible) {
+                                Toast.makeText(activity, code, Toast.LENGTH_LONG).show()
+                                fragManager.popBackStack()
+                            }
+                            billerinput_layout_detail.visibility = View.GONE
                         }
+                    }
 
-                        override fun onError(throwable: Throwable?) {
-                            fragManager.popBackStack()
-                        }
+                    override fun onError(throwable: Throwable?) {
+                        fragManager.popBackStack()
+                    }
 
-                        override fun onComplete() {
-                            dismissProgressDialog()
+                    override fun onComplete() {
+                        dismissProgressDialog()
 
-                            countTotal()
-                        }
+                        countTotal()
+                    }
 
-                    })
+                })
         } catch (e: Exception) {
             Timber.d("httpclient:%s", e.message)
         }
@@ -551,7 +584,8 @@ class BillerInputPLN : BaseFragment() {
 
             extraSignature = tx_id + item_id + biller_comm_id + productCode
 
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_PAYMENT_BILLER, extraSignature)
+            val params = RetrofitService.getInstance()
+                .getSignature(MyApiClient.LINK_PAYMENT_BILLER, extraSignature)
             params[WebParams.DENOM_ITEM_ID] = item_id
             params[WebParams.DENOM_ITEM_REMARK] = cust_id
             params[WebParams.TX_ID] = tx_id
@@ -577,54 +611,126 @@ class BillerInputPLN : BaseFragment() {
             Timber.d("isi params sent payment biller:$params")
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_PAYMENT_BILLER, params,
-                    object : ResponseListener {
-                        override fun onResponses(response: JsonObject?) {
-                            sentPaymentBillerModel = getGson().fromJson(response, SentPaymentBillerModel::class.java)
-                            val code = sentPaymentBillerModel.error_code
-                            val message = sentPaymentBillerModel.error_message
-                            if (code == WebParams.SUCCESS_CODE) {
-                                if (mTempBank!!.product_type == DefineValue.BANKLIST_TYPE_IB) {
-                                    changeToConfirmBiller(sentPaymentBillerModel.merchant_type, bankCode, productCode, -1)
-                                } else {
-                                    var attempt = sentPaymentBillerModel.failed_attempt
-                                    if (attempt != -1)
-                                        attempt = sentPaymentBillerModel.max_failed - attempt
-                                    sentDataReqToken(tx_id, productCode, biller_comm_code, sentPaymentBillerModel.merchant_type, bankCode, attempt)
+                object : ResponseListener {
+                    override fun onResponses(response: JsonObject?) {
+                        sentPaymentBillerModel =
+                            getGson().fromJson(response, SentPaymentBillerModel::class.java)
+                        val code = sentPaymentBillerModel.error_code
+                        val message = sentPaymentBillerModel.error_message
+                        when (code) {
+                            WebParams.SUCCESS_CODE -> {
+                                when (mTempBank!!.product_type) {
+                                    DefineValue.BANKLIST_TYPE_IB -> {
+                                        changeToConfirmBiller(
+                                            sentPaymentBillerModel.merchant_type,
+                                            bankCode,
+                                            productCode,
+                                            -1
+                                        )
+                                    }
+                                    DefineValue.BANKLIST_TYPE_PAYLATER -> {
+                                        dismissProgressDialog()
+                                        changeToSgoPlus(
+                                            bankCode,
+                                            productCode,
+                                            sentPaymentBillerModel.callback_url
+                                        )
+                                    }
+                                    else -> {
+                                        var attempt = sentPaymentBillerModel.failed_attempt
+                                        if (attempt != -1)
+                                            attempt = sentPaymentBillerModel.max_failed - attempt
+                                        sentDataReqToken(
+                                            tx_id,
+                                            productCode,
+                                            biller_comm_code,
+                                            sentPaymentBillerModel.merchant_type,
+                                            bankCode,
+                                            attempt
+                                        )
+                                    }
                                 }
-                            } else if (code == WebParams.LOGOUT_CODE) {
+                            }
+                            WebParams.LOGOUT_CODE -> {
                                 val alertDialog = AlertDialogLogout.getInstance()
                                 alertDialog.showDialoginActivity(activity, message)
-                            } else if (code == DefineValue.ERROR_9333) run {
-                                Timber.d("isi response app data:%s", sentPaymentBillerModel.app_data)
+                            }
+                            DefineValue.ERROR_9333 -> run {
+                                Timber.d(
+                                    "isi response app data:%s",
+                                    sentPaymentBillerModel.app_data
+                                )
                                 val appModel = sentPaymentBillerModel.app_data
                                 val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                            } else if (code == DefineValue.ERROR_0066) run {
+                                alertDialogUpdateApp.showDialogUpdate(
+                                    activity,
+                                    appModel.type,
+                                    appModel.packageName,
+                                    appModel.downloadUrl
+                                )
+                            }
+                            DefineValue.ERROR_0066 -> run {
                                 Timber.d("isi response maintenance:%s", response.toString())
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
                                 alertDialogMaintenance.showDialogMaintenance(activity)
-                            } else {
-                                Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG).show()
+                            }
+                            else -> {
+                                Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG)
+                                    .show()
                                 fragmentManager?.popBackStack()
                                 dismissProgressDialog()
                             }
                         }
+                    }
 
-                        override fun onError(throwable: Throwable?) {
+                    override fun onError(throwable: Throwable?) {
 
-                        }
+                    }
 
-                        override fun onComplete() {
-                            btn_submit_billerinput.isEnabled = true
-                        }
+                    override fun onComplete() {
+                        btn_submit_billerinput.isEnabled = true
+                    }
 
-                    })
+                })
         } catch (e: Exception) {
             Timber.d("httpclient:%s", e.message)
         }
     }
 
-    private fun changeToConfirmBiller(merchant_type: String, bank_code: String?, product_code: String?, attempt: Int) {
+    private fun changeToSgoPlus(bankCode: String?, productCode: String?, callbackUrl: String?) {
+        val i = Intent(activity, SgoPlusWeb::class.java)
+        i.putExtra(DefineValue.PRODUCT_CODE, productCode)
+        i.putExtra(DefineValue.BANK_CODE, bankCode)
+        i.putExtra(DefineValue.FEE, fee.toString())
+        i.putExtra(DefineValue.COMMUNITY_CODE, biller_comm_code)
+        i.putExtra(DefineValue.TX_ID, tx_id)
+        i.putExtra(DefineValue.AMOUNT, amount.toString())
+        i.putExtra(DefineValue.API_KEY, biller_api_key)
+        i.putExtra(DefineValue.COMMUNITY_ID, biller_comm_id)
+        i.putExtra(DefineValue.REPORT_TYPE, DefineValue.BILLER)
+        i.putExtra(DefineValue.SHARE_TYPE, "")
+        i.putExtra(DefineValue.DENOM_DATA, item_name)
+        i.putExtra(DefineValue.BUY_TYPE, BillerActivity.PURCHASE_TYPE)
+        i.putExtra(DefineValue.PAYMENT_NAME, payment_name)
+        i.putExtra(DefineValue.BILLER_NAME, biller_comm_name)
+        i.putExtra(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription)
+        i.putExtra(DefineValue.DESTINATION_REMARK, cust_id)
+        i.putExtra(DefineValue.TOTAL_AMOUNT, total.toString())
+        i.putExtra(DefineValue.CALLBACK_URL, callbackUrl)
+        i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.BIL_PURCHASE_TYPE)
+
+        if (activity == null) return
+
+        val fca = activity as BillerActivity?
+        fca!!.switchActivity(i, MainPage.ACTIVITY_RESULT)
+    }
+
+    private fun changeToConfirmBiller(
+        merchant_type: String,
+        bank_code: String?,
+        product_code: String?,
+        attempt: Int
+    ) {
         val mArgs = Bundle()
         mArgs.putString(DefineValue.TX_ID, tx_id)
         mArgs.putString(DefineValue.CCY_ID, ccy_id)
@@ -649,12 +755,15 @@ class BillerInputPLN : BaseFragment() {
         mArgs.putBoolean(DefineValue.IS_DISPLAY, is_display_amount)
         mArgs.putBoolean(DefineValue.IS_INPUT, getIsInputAmount()!!)
         mArgs.putString(DefineValue.SHARE_TYPE, "")
-        mArgs.putBoolean(DefineValue.IS_SGO_PLUS, mTempBank?.product_type == DefineValue.BANKLIST_TYPE_IB)
+        mArgs.putBoolean(
+            DefineValue.IS_SGO_PLUS,
+            mTempBank?.product_type == DefineValue.BANKLIST_TYPE_IB
+        )
         mArgs.putString(DefineValue.AUTHENTICATION_TYPE, merchant_type)
         mArgs.putInt(DefineValue.ATTEMPT, attempt)
         mArgs.putString(DefineValue.ADDITIONAL_FEE, sentPaymentBillerModel.additional_fee)
 
-        if (is_display_amount){
+        if (is_display_amount) {
             mArgs.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription!!)
             mArgs.putString(DefineValue.DESCRIPTION, description)
         }
@@ -667,11 +776,19 @@ class BillerInputPLN : BaseFragment() {
         switchFragment(fragment, BillerConfirm.TAG)
     }
 
-    private fun sentDataReqToken(tx_id: String?, product_code: String?, biller_comm_code: String?, merchant_type: String, bank_code: String?, attempt: Int) {
+    private fun sentDataReqToken(
+        tx_id: String?,
+        product_code: String?,
+        biller_comm_code: String?,
+        merchant_type: String,
+        bank_code: String?,
+        attempt: Int
+    ) {
         try {
             extraSignature = tx_id + biller_comm_code + product_code
 
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature)
+            val params = RetrofitService.getInstance()
+                .getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature)
             params[WebParams.COMM_CODE] = biller_comm_code
             params[WebParams.TX_ID] = tx_id
             params[WebParams.PRODUCT_CODE] = product_code
@@ -681,74 +798,110 @@ class BillerInputPLN : BaseFragment() {
             Timber.d("isi params regtoken Sgo+:$params")
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REQ_TOKEN_SGOL, params,
-                    object : ResponseListener {
-                        override fun onResponses(response: JsonObject?) {
-                            val model = getGson().fromJson(response, jsonModel::class.java)
-                            val code = model.error_code
-                            val message = model.error_message
-                            when (code) {
-                                WebParams.SUCCESS_CODE -> {
-                                    when {
-                                        mTempBank!!.product_type == DefineValue.BANKLIST_TYPE_SMS -> showDialog(merchant_type, product_code, bank_code)
-                                        merchant_type == DefineValue.AUTH_TYPE_OTP -> showDialog(merchant_type, product_code, bank_code)
-                                        else -> changeToConfirmBiller(merchant_type, bank_code, product_code, attempt)
-                                    }
+                object : ResponseListener {
+                    override fun onResponses(response: JsonObject?) {
+                        val model = getGson().fromJson(response, jsonModel::class.java)
+                        val code = model.error_code
+                        val message = model.error_message
+                        when (code) {
+                            WebParams.SUCCESS_CODE -> {
+                                when {
+                                    mTempBank!!.product_type == DefineValue.BANKLIST_TYPE_SMS -> showDialog(
+                                        merchant_type,
+                                        product_code,
+                                        bank_code
+                                    )
+                                    merchant_type == DefineValue.AUTH_TYPE_OTP -> showDialog(
+                                        merchant_type,
+                                        product_code,
+                                        bank_code
+                                    )
+                                    else -> changeToConfirmBiller(
+                                        merchant_type,
+                                        bank_code,
+                                        product_code,
+                                        attempt
+                                    )
                                 }
-                                WebParams.LOGOUT_CODE -> {
-                                    val alertDialog = AlertDialogLogout.getInstance()
-                                    alertDialog.showDialoginActivity(activity, message)
-                                }
-                                ErrorDefinition.WRONG_PIN_BILLER -> {
-                                    showDialogError(message)
-                                }
-                                DefineValue.ERROR_9333 -> {
-                                    Timber.d("isi response app data:%s", model.app_data)
-                                    val appModel = model.app_data
-                                    val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                    alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                                }
-                                DefineValue.ERROR_0066 -> {
-                                    Timber.d("isi response maintenance:%s", response.toString())
-                                    val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                    alertDialogMaintenance.showDialogMaintenance(activity)
-                                }
-                                else -> {
-                                    when (code) {
-                                        "0059" -> showDialogSMS(mTempBank?.bank_name)
-                                        ErrorDefinition.ERROR_CODE_LESS_BALANCE -> {
-                                            val messageDialog = "\"" + message + "\"\n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname))
+                            }
+                            WebParams.LOGOUT_CODE -> {
+                                val alertDialog = AlertDialogLogout.getInstance()
+                                alertDialog.showDialoginActivity(activity, message)
+                            }
+                            ErrorDefinition.WRONG_PIN_BILLER -> {
+                                showDialogError(message)
+                            }
+                            DefineValue.ERROR_9333 -> {
+                                Timber.d("isi response app data:%s", model.app_data)
+                                val appModel = model.app_data
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(
+                                    activity,
+                                    appModel.type,
+                                    appModel.packageName,
+                                    appModel.downloadUrl
+                                )
+                            }
+                            DefineValue.ERROR_0066 -> {
+                                Timber.d("isi response maintenance:%s", response.toString())
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(activity)
+                            }
+                            else -> {
+                                when (code) {
+                                    "0059" -> showDialogSMS(mTempBank?.bank_name)
+                                    ErrorDefinition.ERROR_CODE_LESS_BALANCE -> {
+                                        val messageDialog = "\"" + message + "\"\n" + getString(
+                                            R.string.dialog_message_less_balance,
+                                            getString(R.string.appname)
+                                        )
 
-                                            val dialogFrag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance), messageDialog, getString(R.string.ok), getString(R.string.cancel), false)
-                                            dialogFrag.okListener = DialogInterface.OnClickListener { dialog, which ->
+                                        val dialogFrag = AlertDialogFrag.newInstance(
+                                            getString(R.string.dialog_title_less_balance),
+                                            messageDialog,
+                                            getString(R.string.ok),
+                                            getString(R.string.cancel),
+                                            false
+                                        )
+                                        dialogFrag.okListener =
+                                            DialogInterface.OnClickListener { dialog, which ->
                                                 val mI = Intent(activity, TopUpActivity::class.java)
                                                 mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true)
                                                 startActivityForResult(mI, REQUEST_BillerInqReq)
                                             }
-                                            dialogFrag.cancelListener = DialogInterface.OnClickListener { dialog, which ->
+                                        dialogFrag.cancelListener =
+                                            DialogInterface.OnClickListener { dialog, which ->
                                                 sentInquiryBiller()
                                             }
-                                            dialogFrag.setTargetFragment(this@BillerInputPLN, 0)
-                                            dialogFrag.show(activity!!.supportFragmentManager, AlertDialogFrag.TAG)
-                                        }
-                                        else -> {
-                                            Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG).show()
-                                            fragManager.popBackStack()
-                                        }
+                                        dialogFrag.setTargetFragment(this@BillerInputPLN, 0)
+                                        dialogFrag.show(
+                                            activity!!.supportFragmentManager,
+                                            AlertDialogFrag.TAG
+                                        )
+                                    }
+                                    else -> {
+                                        Toast.makeText(
+                                            activity,
+                                            "$code : $message",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                        fragManager.popBackStack()
                                     }
                                 }
                             }
                         }
+                    }
 
-                        override fun onError(throwable: Throwable?) {
+                    override fun onError(throwable: Throwable?) {
 
-                        }
+                    }
 
-                        override fun onComplete() {
-                            btn_submit_billerinput.isEnabled = true
-                            dismissProgressDialog()
-                        }
+                    override fun onComplete() {
+                        btn_submit_billerinput.isEnabled = true
+                        dismissProgressDialog()
+                    }
 
-                    })
+                })
 
         } catch (e: Exception) {
             Timber.d("httpclient:%s", e.message)
@@ -787,7 +940,11 @@ class BillerInputPLN : BaseFragment() {
     }
 
     private fun showDialogError(code: String?) {
-        val dialog = DefinedDialog.MessageDialog(activity, getString(R.string.error), code) { fragmentManager?.popBackStack() }
+        val dialog = DefinedDialog.MessageDialog(
+            activity,
+            getString(R.string.error),
+            code
+        ) { fragmentManager?.popBackStack() }
         dialog.show()
     }
 
@@ -801,7 +958,8 @@ class BillerInputPLN : BaseFragment() {
         dialog.title_dialog.text = getString(R.string.smsBanking_dialog_validation_title)
         dialog.title_dialog.text = resources.getString(R.string.regist1_notif_title_verification)
         dialog.message_dialog.visibility = View.VISIBLE
-        dialog.message_dialog.text = getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms)
+        dialog.message_dialog.text =
+            getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms)
 
         dialog.btn_dialog_notification_ok.setOnClickListener {
             changeToConfirmBiller(merchantType, bankCode, productCode, -1)
@@ -822,18 +980,25 @@ class BillerInputPLN : BaseFragment() {
     }
 
     private val spinnerPaymentListener = object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        override fun onItemSelected(
+            adapterView: AdapterView<*>?,
+            view: View?,
+            position: Int,
+            id: Long
+        ) {
             val item = adapterView?.getItemAtPosition(position)
             payment_name = item.toString()
             var i = 0
             while (i < mListBankBiller!!.size) {
                 if (payment_name == mListBankBiller?.get(i)?.productName) {
-                    mTempBank = listBankModel(mListBankBiller?.get(i)?.bankCode,
-                            mListBankBiller?.get(i)?.bankName,
-                            mListBankBiller?.get(i)?.productCode,
-                            mListBankBiller?.get(i)?.productName,
-                            mListBankBiller?.get(i)?.productType,
-                            mListBankBiller?.get(i)?.productH2h)
+                    mTempBank = listBankModel(
+                        mListBankBiller?.get(i)?.bankCode,
+                        mListBankBiller?.get(i)?.bankName,
+                        mListBankBiller?.get(i)?.productCode,
+                        mListBankBiller?.get(i)?.productName,
+                        mListBankBiller?.get(i)?.productType,
+                        mListBankBiller?.get(i)?.productH2h
+                    )
                 }
                 i++
             }
@@ -866,74 +1031,82 @@ class BillerInputPLN : BaseFragment() {
 
     private fun getBillerDenom() {
         extraSignature = biller_type_code
-        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_BILLER_DENOM, extraSignature)
+        val params = RetrofitService.getInstance()
+            .getSignature(MyApiClient.LINK_GET_BILLER_DENOM, extraSignature)
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.COMM_ID] = MyApiClient.COMM_ID
         params[WebParams.BILLER_TYPE] = biller_type_code
 
         Timber.tag(TAG).v("getBillerDenom : $params")
 
-        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_BILLER_DENOM, params, object : ResponseListener {
-            override fun onResponses(jsonObject: JsonObject) {
-                Timber.tag(TAG).v("getBillerDenom : $jsonObject")
+        RetrofitService.getInstance().PostObjectRequest(
+            MyApiClient.LINK_GET_BILLER_DENOM,
+            params,
+            object : ResponseListener {
+                override fun onResponses(jsonObject: JsonObject) {
+                    Timber.tag(TAG).v("getBillerDenom : $jsonObject")
 
-                val gson = Gson()
-                val response = gson.fromJson(jsonObject, BillerDenomResponse::class.java)
+                    val gson = Gson()
+                    val response = gson.fromJson(jsonObject, BillerDenomResponse::class.java)
 
-                if (response.errorCode == WebParams.SUCCESS_CODE) {
-                    billerItemList.addAll(response.biller)
-                    realm?.beginTransaction()
-                    realm?.copyToRealmOrUpdate(response.biller)
-                    realm?.commitTransaction()
-                } else {
-                    Toast.makeText(context, response.errorMessage, Toast.LENGTH_SHORT).show()
+                    if (response.errorCode == WebParams.SUCCESS_CODE) {
+                        billerItemList.addAll(response.biller)
+                        realm?.beginTransaction()
+                        realm?.copyToRealmOrUpdate(response.biller)
+                        realm?.commitTransaction()
+                    } else {
+                        Toast.makeText(context, response.errorMessage, Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
 
-            override fun onError(throwable: Throwable) {
-                Timber.e("getBillerDenom : %s", throwable.message)
-                Toast.makeText(context, throwable.localizedMessage, Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onComplete() {
-                if (_data.isEmpty()) {
-                    initRealm()
+                override fun onError(throwable: Throwable) {
+                    Timber.e("getBillerDenom : %s", throwable.message)
+                    Toast.makeText(context, throwable.localizedMessage, Toast.LENGTH_SHORT).show()
                 }
-            }
-        })
+
+                override fun onComplete() {
+                    if (_data.isEmpty()) {
+                        initRealm()
+                    }
+                }
+            })
     }
 
     private fun getBillerDenom2() {
         extraSignature = "PLN"
-        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_BILLER_DENOM, extraSignature)
+        val params = RetrofitService.getInstance()
+            .getSignature(MyApiClient.LINK_GET_BILLER_DENOM, extraSignature)
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.COMM_ID] = MyApiClient.COMM_ID
         params[WebParams.BILLER_TYPE] = "PLN"
 
         Timber.tag(TAG).v("getBillerDenom : $params")
 
-        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_BILLER_DENOM, params, object : ResponseListener {
-            override fun onResponses(jsonObject: JsonObject) {
-                Timber.tag(TAG).v("getBillerDenom : $jsonObject")
-                val gson = Gson()
-                val response = gson.fromJson(jsonObject, BillerDenomResponse::class.java)
+        RetrofitService.getInstance().PostObjectRequest(
+            MyApiClient.LINK_GET_BILLER_DENOM,
+            params,
+            object : ResponseListener {
+                override fun onResponses(jsonObject: JsonObject) {
+                    Timber.tag(TAG).v("getBillerDenom : $jsonObject")
+                    val gson = Gson()
+                    val response = gson.fromJson(jsonObject, BillerDenomResponse::class.java)
 
-                if (response.errorCode == WebParams.SUCCESS_CODE) {
-                    realm?.beginTransaction()
-                    realm?.copyToRealmOrUpdate(response.biller)
-                    realm?.commitTransaction()
-                } else {
-                    Toast.makeText(context, response.errorMessage, Toast.LENGTH_SHORT).show()
+                    if (response.errorCode == WebParams.SUCCESS_CODE) {
+                        realm?.beginTransaction()
+                        realm?.copyToRealmOrUpdate(response.biller)
+                        realm?.commitTransaction()
+                    } else {
+                        Toast.makeText(context, response.errorMessage, Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
 
-            override fun onError(throwable: Throwable) {
-                Timber.e("getBillerDenom : %s", throwable.message)
-                Toast.makeText(context, throwable.localizedMessage, Toast.LENGTH_SHORT).show()
-            }
+                override fun onError(throwable: Throwable) {
+                    Timber.e("getBillerDenom : %s", throwable.message)
+                    Toast.makeText(context, throwable.localizedMessage, Toast.LENGTH_SHORT).show()
+                }
 
-            override fun onComplete() {
-            }
-        })
+                override fun onComplete() {
+                }
+            })
     }
 }

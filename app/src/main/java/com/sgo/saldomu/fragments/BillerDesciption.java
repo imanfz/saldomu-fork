@@ -39,6 +39,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
+import com.sgo.saldomu.activities.SgoPlusWeb;
 import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -237,7 +238,7 @@ public class BillerDesciption extends BaseFragment {
         layout_total.setVisibility(View.VISIBLE);
         double mAmount = Double.parseDouble(amount) - Double.parseDouble(fee);
         tv_amount_value.setText(ccy_id + ". " + CurrencyFormat.format(mAmount));
-        tv_total_value.setText(ccy_id + ". " + CurrencyFormat.format(mAmount));
+        tv_total_value.setText(ccy_id + ". " + CurrencyFormat.format(amount));
 //            }
 
         paymentData = new ArrayList<>();
@@ -581,6 +582,9 @@ public class BillerDesciption extends BaseFragment {
                                 if (mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)) {
                                     changeToConfirmBiller(sentPaymentBillerModel.getFee(), sentPaymentBillerModel.getMerchant_type(),
                                             bank_code, product_code, -1);
+                                } else if (mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_PAYLATER)) {
+                                    dismissProgressDialog();
+                                    changeToSgoPlus(bank_code, product_code, sentPaymentBillerModel.getCallback_url());
                                 } else {
                                     int attempt = sentPaymentBillerModel.getFailed_attempt();
                                     if (attempt != -1)
@@ -622,6 +626,41 @@ public class BillerDesciption extends BaseFragment {
         } catch (Exception e) {
             Timber.d("httpclient:%s", e.getMessage());
         }
+    }
+
+    private void changeToSgoPlus(String _bank_code, String _product_code, String callback_url) {
+        Intent i = new Intent(getActivity(), SgoPlusWeb.class);
+        i.putExtra(DefineValue.PRODUCT_CODE, _product_code);
+        i.putExtra(DefineValue.BANK_CODE, _bank_code);
+        i.putExtra(DefineValue.FEE, fee.toString());
+        i.putExtra(DefineValue.COMMUNITY_CODE, biller_comm_code);
+        i.putExtra(DefineValue.TX_ID, tx_id);
+        i.putExtra(DefineValue.AMOUNT, amount.toString());
+        i.putExtra(DefineValue.API_KEY, biller_api_key);
+        i.putExtra(DefineValue.COMMUNITY_ID, biller_comm_id);
+        i.putExtra(DefineValue.REPORT_TYPE, DefineValue.BILLER);
+        i.putExtra(DefineValue.SHARE_TYPE, "");
+        i.putExtra(DefineValue.DENOM_DATA, item_name);
+        i.putExtra(DefineValue.BUY_TYPE, buy_type);
+        i.putExtra(DefineValue.PAYMENT_NAME, payment_name);
+        i.putExtra(DefineValue.BILLER_NAME, biller_name);
+        i.putExtra(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription);
+        i.putExtra(DefineValue.DESTINATION_REMARK, cust_id);
+        i.putExtra(DefineValue.TOTAL_AMOUNT, amount);
+        i.putExtra(DefineValue.CALLBACK_URL, callback_url);
+
+        if (buy_type == BillerActivity.PURCHASE_TYPE)
+            i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.BIL_PURCHASE_TYPE);
+        else
+            i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.BIL_PAYMENT_TYPE);
+
+        btn_submit.setEnabled(true);
+
+        if (getActivity() == null)
+            return;
+
+        BillerActivity fca = (BillerActivity) getActivity();
+        fca.switchActivity(i, MainPage.ACTIVITY_RESULT);
     }
 
     private void sentDataReqToken(final String _tx_id, final String _product_code, final String _comm_code, final String fee,

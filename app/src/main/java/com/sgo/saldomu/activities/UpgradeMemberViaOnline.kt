@@ -100,22 +100,6 @@ class UpgradeMemberViaOnline : BaseActivity() {
     val subDistrictNameList: ArrayList<String> = arrayListOf()
     val urbanVillageList: ArrayList<UrbanVillageModel> = arrayListOf()
     val urbanVillageNameList: ArrayList<String> = arrayListOf()
-    var provincesName: String = String()
-    var kabupatenName: String = String()
-    var kecamatanName: String = String()
-    var kelurahanName: String = String()
-    val provincesList: ArrayList<String> = arrayListOf()
-    var provincesObject = JSONObject()
-    var provincesArray = JSONArray()
-    val kabupatenList: ArrayList<String> = arrayListOf()
-    var kabupatenObject = JSONObject()
-    var kabupatenArray = JSONArray()
-    val kecamatanList: ArrayList<String> = arrayListOf()
-    var kecamatanObject = JSONObject()
-    var kecamatanArray = JSONArray()
-    val kelurahanList: ArrayList<String> = arrayListOf()
-    var kelurahanObject = JSONObject()
-    var kelurahanArray = JSONArray()
 
     var ktp: File? = null
     var selfie: File? = null
@@ -204,8 +188,9 @@ class UpgradeMemberViaOnline : BaseActivity() {
                     urban_village_auto_text.setText("")
                 }
             }
-            districtID = ""
-            subDistrictID = ""
+            clearListDistrict()
+            clearListSubDistrict()
+            clearListUrbanVillage()
             getLocationData()
         }
 
@@ -214,11 +199,11 @@ class UpgradeMemberViaOnline : BaseActivity() {
                 if (districtList[i].districtName == district_auto_text.text.toString()) {
                     districtID = districtList[i].districtCode
                     sub_district_auto_text.setText("")
-                    subDistrictID = ""
                     urban_village_auto_text.setText("")
                 }
             }
-            subDistrictID = ""
+            clearListSubDistrict()
+            clearListUrbanVillage()
             getLocationData()
         }
 
@@ -229,6 +214,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
                     urban_village_auto_text.setText("")
                 }
             }
+            clearListUrbanVillage()
             getLocationData()
         }
 
@@ -274,6 +260,23 @@ class UpgradeMemberViaOnline : BaseActivity() {
         }
     }
 
+    private fun clearListDistrict(){
+        districtID = ""
+        districtList.clear()
+        districtNameList.clear()
+    }
+
+    private fun clearListSubDistrict(){
+        subDistrictID = ""
+        subDistrictList.clear()
+        subDistrictNameList.clear()
+    }
+
+    private fun clearListUrbanVillage(){
+        urbanVillageList.clear()
+        urbanVillageNameList.clear()
+    }
+
     private fun getLocationData() {
         showProgressDialog()
         val params = RetrofitService.getInstance()
@@ -296,40 +299,33 @@ class UpgradeMemberViaOnline : BaseActivity() {
                         val jsonObject = JSONObject(jsonArray[i].toString())
                         when {
                             provinceID == "" -> {
-                                provinceList.clear()
                                 provinceList.add(
                                     ProvinceModel(
                                         jsonObject.optString(WebParams.KODE_PROVINSI),
                                         jsonObject.optString(WebParams.NAMA_PROVINSI)
                                     )
                                 )
-                                provincesNameList.clear()
                                 provincesNameList.add(provinceList[i].provinceName)
                             }
                             districtID == "" -> {
-                                districtList.clear()
                                 districtList.add(
                                     DistrictModel(
                                         jsonObject.optString(WebParams.KODE_KOT_KAB),
                                         jsonObject.optString(WebParams.NAMA_KOT_KAB)
                                     )
                                 )
-                                districtNameList.clear()
                                 districtNameList.add(districtList[i].districtName)
                             }
                             subDistrictID == "" -> {
-                                subDistrictList.clear()
                                 subDistrictList.add(
                                     SubDistrictModel(
                                         jsonObject.optString(WebParams.KODE_KECAMATAN),
                                         jsonObject.optString(WebParams.NAMA_KECAMATAN)
                                     )
                                 )
-                                subDistrictNameList.clear()
                                 subDistrictNameList.add(subDistrictList[i].subDistrictName)
                             }
                             else -> {
-                                urbanVillageList.clear()
                                 urbanVillageList.add(
                                     UrbanVillageModel(
                                         jsonObject.optString(
@@ -337,7 +333,6 @@ class UpgradeMemberViaOnline : BaseActivity() {
                                         ), jsonObject.optString(WebParams.NAMA_LUR_DES)
                                     )
                                 )
-                                urbanVillageNameList.clear()
                                 urbanVillageNameList.add(urbanVillageList[i].urbanVillageName)
                             }
                         }
@@ -400,10 +395,10 @@ class UpgradeMemberViaOnline : BaseActivity() {
         params[WebParams.CUST_ADDRESS] = address_edit_text.text.toString()
         params[WebParams.CUST_RT] = rt_edit_text.text.toString()
         params[WebParams.CUST_RW] = rw_edit_text.text.toString()
-        params[WebParams.CUST_KELURAHAN] = kelurahanName
-        params[WebParams.CUST_KECAMATAN] = kecamatanName
-        params[WebParams.CUST_KABUPATEN] = kabupatenName
-        params[WebParams.CUST_PROVINSI] = provincesName
+        params[WebParams.CUST_KELURAHAN] = urban_village_auto_text.text.toString()
+        params[WebParams.CUST_KECAMATAN] = sub_district_auto_text.text.toString()
+        params[WebParams.CUST_KABUPATEN] = district_auto_text.text.toString()
+        params[WebParams.CUST_PROVINSI] = province_auto_text.text.toString()
         params[WebParams.CUST_COUNTRY] = ""
         params[WebParams.CUST_RELIGION] = religion_spinner.selectedItem.toString()
         params[WebParams.CUST_MARRIAGE_STATUS] = status_spinner.selectedItem.toString()

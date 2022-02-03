@@ -255,7 +255,7 @@ public class ListFragmentReport extends ListFragment implements ReportBillerDial
                 setUniAdapter(tempAdap);
             else setUniAdapter(lv_report.getAdapter());
         }
-        if (report_type == REPORT_ESPAY || report_type == REPORT_PENDING || report_type == REPORT_SCASH) {
+        if (report_type == REPORT_ESPAY || report_type == REPORT_SCASH) {
             lv_report.setOnItemClickListener(reportItemListener);
         }
 

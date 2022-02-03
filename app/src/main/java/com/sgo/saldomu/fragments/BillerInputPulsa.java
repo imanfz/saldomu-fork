@@ -896,7 +896,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                     if (code.equals(WebParams.SUCCESS_CODE)) {
                         if (mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)) {
                             submitBiller(bank_code, product_code, -1, sentPaymentBillerModel.getCallback_url());
-                        } else if (mTempBank.getProduct_type().equals("PLR")) {
+                        } else if (mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_PAYLATER)) {
                             dismissProgressDialog();
                             changeToSgoPlus(bank_code, product_code, sentPaymentBillerModel.getCallback_url());
                         } else {
