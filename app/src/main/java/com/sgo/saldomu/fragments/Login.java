@@ -134,7 +134,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             }
         }
 
-        if (sp.contains(DefineValue.SENDER_ID) && sp.getString(DefineValue.IS_POS, DefineValue.STRING_NO).equalsIgnoreCase(DefineValue.STRING_YES)) {
+        if (sp.contains(DefineValue.SENDER_ID)) {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
             userIDValue.setText(userIDfinale);
             userIDValue.setVisibility(View.GONE);
