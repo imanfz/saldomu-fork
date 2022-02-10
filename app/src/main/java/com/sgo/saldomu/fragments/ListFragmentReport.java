@@ -708,7 +708,7 @@ public class ListFragmentReport extends ListFragment implements ReportBillerDial
         } else if (report_type == REPORT_ESPAY || report_type == REPORT_PENDING) {
             if (_object.getBuss_scheme_code().equals(DefineValue.BIL)) {
                 showReportEspayBillerDialog(sp.getString(DefineValue.USER_NAME, ""), response);
-            } else if (_object.getBuss_scheme_code().equals(DefineValue.CTA)) {
+            } else if (_object.getBuss_scheme_code().equals(DefineValue.CTA) || _object.getBuss_scheme_code().equals(DefineValue.CTR)) {
                 if (!sp.getString(DefineValue.USERID_PHONE, "").equals(response.getMember_phone())) {
                     isMemberCTA = true;
                 }
@@ -1041,6 +1041,7 @@ public class ListFragmentReport extends ListFragment implements ReportBillerDial
         args.putString(DefineValue.NAME_BENEF, response.getBenef_acct_name());
         args.putString(DefineValue.PRODUCT_NAME, response.getProduct_name());
         args.putString(DefineValue.MEMBER_SHOP_PHONE, response.getMember_shop_phone());
+        args.putString(DefineValue.MEMBER_SHOP_NAME, response.getMember_shop_name());
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.getBuss_scheme_code());
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.getBuss_scheme_name());
         args.putBoolean(DefineValue.IS_MEMBER_CTA, isMemberCTA);
