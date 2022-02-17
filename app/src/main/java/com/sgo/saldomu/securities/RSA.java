@@ -117,7 +117,11 @@ public class RSA {
         String encryptedValue = "";
         try {
             Cipher cipher = Cipher.getInstance(cypherInstance);
-            SecretKeySpec key = new SecretKeySpec(strKey.getBytes(), "AES");
+            SecretKeySpec key;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                key = new SecretKeySpec(strKey.getBytes(), KeyProperties.KEY_ALGORITHM_AES);
+            else
+                key = new SecretKeySpec(strKey.getBytes(), "AES");
             IvParameterSpec iv = new IvParameterSpec(strIv.getBytes(), 0, cipher.getBlockSize());
 
             // Encrypt
