@@ -310,9 +310,11 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.TX_ID, response.tx_id)
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.admin_fee))
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.tx_amount))
+        args.putString(DefineValue.TIPS_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.tips_amount))
         val dAmount = Objects.requireNonNull(response.tx_amount)!!.toDouble()
         val dFee = Objects.requireNonNull(response.admin_fee)!!.toDouble()
-        val total_amount = dAmount + dFee
+        val dTip = Objects.requireNonNull(response.tips_amount)!!.toDouble()
+        val total_amount = dAmount + dFee + dTip
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount))
         var txStat = false
         val txStatus = response.tx_status
@@ -331,6 +333,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.MERCHANT_PAN, response.merchant_pan)
         args.putString(DefineValue.TERMINAL_ID, response.terminal_id)
         args.putString(DefineValue.TRX_ID_REF, response.trx_id_ref)
+        args.putString(DefineValue.INDICATOR_TYPE, response.indicator_type)
         dialog.arguments = args
         val ft = this.supportFragmentManager.beginTransaction()
         ft.add(dialog, ReportBillerDialog.TAG)

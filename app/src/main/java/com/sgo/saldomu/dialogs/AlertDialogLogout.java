@@ -55,7 +55,7 @@ public class AlertDialogLogout {
     }
 
     public void showDialoginMain(final Activity mContext, String message) {
-        if (mContext != null) {
+        if (mContext != null && !mContext.isFinishing()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setTitle(mContext.getResources().getString(R.string.logout)).setMessage(message)
                     .setCancelable(false)

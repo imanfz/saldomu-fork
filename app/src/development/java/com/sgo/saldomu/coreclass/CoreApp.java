@@ -14,6 +14,7 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.securities.RSA;
 
 import timber.log.Timber;
 
@@ -65,8 +66,12 @@ public class CoreApp extends MultiDexApplication {
         CustomSecurePref.initialize(this);
         CustomEncryptedSharedPreferences.initialize(this);
         CustomEncryptedSharedPreferences preferences = CustomEncryptedSharedPreferences.getInstance();
-        preferences.putString(DefineValue.GOOGLE_MAPS_KEY, getString(R.string.google_maps_key));
-        preferences.putString(DefineValue.GOOGLE_MAPS_KEY_WS, getString(R.string.google_maps_key_ws));
+        try {
+            preferences.putString(DefineValue.GOOGLE_MAPS_KEY, RSA.decrypt2(getString(R.string.google_maps_key)));
+            preferences.putString(DefineValue.GOOGLE_MAPS_KEY_WS, RSA.decrypt2(getString(R.string.google_maps_key_ws)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         MyApiClient myApiClient = MyApiClient.Initialize(this);
         setsDefSystemLanguage();
 

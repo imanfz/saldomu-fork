@@ -16,9 +16,9 @@
     string in this file.
     -->
     <string name="google_maps_key" templateMergeStrategy="preserve"
-        translatable="false">AIzaSyAgFK153M4kbcX64P5g0SAHv3UPEEV3J3Q</string>
-    <!--AIzaSyDI_2Mzt26Vlofb1eShS-Ybv77jxfmw-vQ-->
+        translatable="false">/gbHCucAfPH+4p5NuqJ+elNdLzlXFB6g+8Svoism/FOB0xD8XJ1eBUR6jIRufKxP</string>
+    <!--AIzaSyAgFK153M4kbcX64P5g0SAHv3UPEEV3J3Q-->
     <string name="google_maps_key_ws" templateMergeStrategy="preserve"
-        translatable="false">AIzaSyBLHKLAsRJgQYBKK6qbuqtTayE__6Nfc_4</string>
-<!--        translatable="false">AIzaSyAKzZ6V-T9YAZYCTUZpY5S1MKn1sSpDA3Y</string>-->
+        translatable="false">BM7DE8v745h0rfB/1yWCGGfhHSoJCgRwZhZG9tKw6RTyokTRtyORJkV2tOuZsu1F</string>
+    <!--AIzaSyBLHKLAsRJgQYBKK6qbuqtTayE__6Nfc_4-->
 </resources>
