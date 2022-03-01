@@ -193,7 +193,8 @@
     <string name="menu_item_title_pulsa_agent">Mobile Credit</string>
     <string name="menu_item_title_mutation">Mutation</string>
     <string name="menu_item_title_scadm">B2B</string>
-    <string name="menu_item_title_b2b_eratel">B2B Eratel</string>
+<!--     <string name="menu_item_title_b2b_eratel">B2B Eratel</string>  25 Feb 2022 minta nama eratel dihilangkan -->
+    <string name="menu_item_title_b2b_eratel">B2B</string>
     <string name="menu_item_title_ebd_toko">(Store)</string>
     <string name="menu_item_title_ebd_canvasser">(Canvasser)</string>
     <string name="menu_item_title_report_ebd">B2B Report</string>
