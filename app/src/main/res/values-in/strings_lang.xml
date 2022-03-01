@@ -1791,4 +1791,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="verification_code_not_available">Kode verifikasi belum tersedia, silahkan coba kembali</string>
     <string name="transaction_id_ref">ID Transaksi Ref</string>
     <string name="validation_length_min_15">Minimal 15 karakter!</string>
+
 </resources>
