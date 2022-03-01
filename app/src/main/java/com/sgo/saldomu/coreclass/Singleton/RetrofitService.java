@@ -553,8 +553,12 @@ public class RetrofitService {
 //                            else
 //                                Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
 
+//                            Toast.makeText(CoreApp.getAppContext(),
+//                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast) + "( " +e.getMessage() + " )",
+//                                    Toast.LENGTH_SHORT).show();
+
                             Toast.makeText(CoreApp.getAppContext(),
-                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast) + "( " +e.getMessage() + " )",
+                                    CoreApp.getAppContext().getResources().getString(R.string.maintenance_message),
                                     Toast.LENGTH_SHORT).show();
                         }
                         listener.onError(e);
@@ -595,9 +599,12 @@ public class RetrofitService {
 //                                    Toast.LENGTH_SHORT).show();
 //                        } else {
 ////                            Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
-                            Toast.makeText(CoreApp.getAppContext(),
-                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast) + " (" +e.getMessage() + ")",
-                                    Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(CoreApp.getAppContext(),
+//                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast) + " (" +e.getMessage() + ")",
+//                                    Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CoreApp.getAppContext(),
+                                CoreApp.getAppContext().getResources().getString(R.string.maintenance_message),
+                                Toast.LENGTH_SHORT).show();
 //                        }
                         listener.onError(e);
                     }
@@ -713,8 +720,11 @@ public class RetrofitService {
                     @Override
                     public void onError(Throwable e) {
                         if (MyApiClient.PROD_FAILURE_FLAG) {
+//                            Toast.makeText(CoreApp.getAppContext(),
+//                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
+//                                    Toast.LENGTH_SHORT).show();
                             Toast.makeText(CoreApp.getAppContext(),
-                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
+                                    CoreApp.getAppContext().getResources().getString(R.string.maintenance_message),
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
