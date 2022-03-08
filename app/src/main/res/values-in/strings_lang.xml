@@ -887,7 +887,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="shop_name">Nama Toko</string>
     <string name="merchant_category">Kategori</string>
 
-    <string name="maintenance_message">Aplikasi tidak dapat di akses. Silahkan coba beberapa saat lagi.</string>
+    <string name="maintenance_message">Aplikasi tidak dapat diakses. Silahkan coba beberapa saat lagi.</string>
     <string name="update_msg">Versi aplikasi sudah lama, segera perbaharui aplikasi.</string>
 
     <string name="toolbar_title_merchant_category">Kategori Merchant</string>
