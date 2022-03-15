@@ -1,6 +1,13 @@
 package com.sgo.saldomu.coreclass.Singleton;
 
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.gson.ExclusionStrategy;
@@ -46,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -198,11 +206,11 @@ public class RetrofitService {
             builder.connectTimeout(10, TimeUnit.MINUTES);
         }
 
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             builder.addInterceptor(interceptorLogging);
         }
 
-        if (isSSL){
+        if (isSSL) {
             //
             TrustManager[] trustManagers = new TrustManager[0];
             try {
@@ -261,7 +269,6 @@ public class RetrofitService {
 
             builder.connectionSpecs(specs);
         }
-
 
 
 //        TLSSocket sfnew OkHttpTLSSocketFactory(context), (X509TrustManager) trustManagers[0]ocket();
@@ -541,7 +548,7 @@ public class RetrofitService {
 //                            Timber.d("message" +message);
 //                            AlertDialogLogout test = AlertDialogLogout.getInstance();wewer
 //                        } else
-                            listener.onResponses(obj);
+                        listener.onResponses(obj);
                     }
 
                     @Override
@@ -557,8 +564,9 @@ public class RetrofitService {
 //                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast) + "( " +e.getMessage() + " )",
 //                                    Toast.LENGTH_SHORT).show();
 
-                            Toast.makeText(CoreApp.getAppContext(),
-                                    CoreApp.getAppContext().getResources().getString(R.string.maintenance_message),
+                            updateLocale(context);
+                            Toast.makeText(context,
+                                    context.getResources().getString(R.string.maintenance_message),
                                     Toast.LENGTH_SHORT).show();
                         }
                         listener.onError(e);
@@ -602,10 +610,13 @@ public class RetrofitService {
 //                            Toast.makeText(CoreApp.getAppContext(),
 //                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast) + " (" +e.getMessage() + ")",
 //                                    Toast.LENGTH_SHORT).show();
-                        Toast.makeText(CoreApp.getAppContext(),
-                                CoreApp.getAppContext().getResources().getString(R.string.maintenance_message),
-                                Toast.LENGTH_SHORT).show();
-//                        }
+                        Context context = CoreApp.getAppContext();
+                        if (context != null) {
+                            updateLocale(context);
+                            Toast.makeText(context,
+                                    context.getResources().getString(R.string.maintenance_message),
+                                    Toast.LENGTH_SHORT).show();
+                        }
                         listener.onError(e);
                     }
 
@@ -719,15 +730,16 @@ public class RetrofitService {
 
                     @Override
                     public void onError(Throwable e) {
-                        if (MyApiClient.PROD_FAILURE_FLAG) {
-//                            Toast.makeText(CoreApp.getAppContext(),
-//                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
-//                                    Toast.LENGTH_SHORT).show();
-                            Toast.makeText(CoreApp.getAppContext(),
-                                    CoreApp.getAppContext().getResources().getString(R.string.maintenance_message),
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        Context context = CoreApp.getAppContext();
+                        if (context != null) {
+                            updateLocale(context);
+                            if (MyApiClient.PROD_FAILURE_FLAG) {
+                                Toast.makeText(context,
+                                        context.getResources().getString(R.string.maintenance_message),
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+                            }
                         }
                         listener.onError(e);
                     }
@@ -847,11 +859,15 @@ public class RetrofitService {
                 });
     }
 
-
     public Gson getGson() {
         if (gson == null)
             gson = new Gson();
         return gson;
     }
 
+    private void updateLocale(Context context) {
+        Configuration config = context.getResources().getConfiguration();
+        config.locale = new Locale(Locale.getDefault().getLanguage());
+        context.getResources().updateConfiguration(config, null);
+    }
 }
