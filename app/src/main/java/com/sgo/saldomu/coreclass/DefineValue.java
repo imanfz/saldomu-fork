@@ -382,6 +382,7 @@ public class DefineValue {
     public static String ACCT = "ACCT";
     public static String USER_ID = "userId";
     public static String BBS_CASHOUT = "bbsCashout";
+    public static String BBS_TRANSFER_FUND = "bbsTransferFund";
     public static String SOURCE_PRODUCT_CODE = "sourceProductCode";
     public static String SOURCE_PRODUCT_TYPE = "sourceProductType";
     public static String SOURCE_PRODUCT_H2H = "sourceProductH2h";

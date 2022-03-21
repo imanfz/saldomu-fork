@@ -741,6 +741,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     case "CTA":
                         menuStrings.add(getResources().getString(R.string.cash_in));
                         break;
+                    case "TFD":
+                        menuStrings.add(getResources().getString(R.string.transfer_funds));
+                        break;
                     case "DGI":
                         sp.edit().putBoolean(DefineValue.IS_AGENT_DGI, true).commit();
                         menuStrings.add(getResources().getString(R.string.menu_item_title_tagih_agent));
@@ -1159,6 +1162,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
             return R.drawable.ic_lending;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.more)))
             return R.drawable.ic_more;
+        else if (titleMenu.equalsIgnoreCase(getResources().getString(R.string.transfer_funds))) {
+            return R.drawable.ic_transfer;
+        }
         else
             return R.drawable.ic_home_default;
     }
@@ -1396,6 +1402,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else {
                     posIdx = BBSActivity.BBSONPROGRESSAGENT;
                     trxType = DefineValue.INDEX;
+                }
+            } else if (menuItemName.equalsIgnoreCase(getString(R.string.transfer_funds))) {
+                if (isDormant.equalsIgnoreCase(DefineValue.STRING_YES)) {
+                    dialogDormant();
+                } else {
+                    posIdx = BBSActivity.TRANSACTION;
+                    trxType = DefineValue.BBS_TRANSFER_FUND;
                 }
             }
         } else {

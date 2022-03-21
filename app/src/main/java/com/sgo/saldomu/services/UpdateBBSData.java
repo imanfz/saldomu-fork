@@ -46,6 +46,7 @@ public class UpdateBBSData extends IntentService {
     final String CTA = "CTA";
     final String ATC = "ATC";
     final String CTR = "CTR";
+    final String TFD = "TFD";
 
     SecurePreferences sp;
     SecurePreferences.Editor mEditor;
@@ -56,6 +57,7 @@ public class UpdateBBSData extends IntentService {
     boolean ctaState = false;
     boolean atcState = false;
     boolean ctrState = false;
+    boolean tfdState = false;
 
     public UpdateBBSData() {
         super("UpdateBBSData");
@@ -81,11 +83,12 @@ public class UpdateBBSData extends IntentService {
                 ctaState = true;
                 atcState = true;
                 ctrState = true;
+                tfdState = true;
             }
         } else
             Timber.d("user id atau access key kosong semua");
 
-        if (!ctaState && !atcState && !ctrState) {
+        if (!ctaState && !atcState && !ctrState && !tfdState) {
             sentFailed(null);
             setIsDataUpdated(false);
         } else {
@@ -115,6 +118,10 @@ public class UpdateBBSData extends IntentService {
     }
 
     void setDateDataCTR(String value) {
+        sp.edit().putString(DefineValue.UPDATE_TIME_BBS_CTR_DATA, value).apply();
+    }
+
+    void setDateDataTFD(String value) {
         sp.edit().putString(DefineValue.UPDATE_TIME_BBS_CTR_DATA, value).apply();
     }
 
@@ -178,6 +185,12 @@ public class UpdateBBSData extends IntentService {
                                     insertToRealm(new JSONArray(new Gson().toJson(modelCommunity.getCommunity())), CTR);
                                 }
 
+                                stringComm = response.optString(TFD,"");
+                                if (!stringComm.equals("")) {
+                                    modelCommunity = new Gson().fromJson(stringComm, CommDataModel.class);
+                                    insertToRealm(new JSONArray(new Gson().toJson(modelCommunity.getCommunity())), TFD);
+                                }
+
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -231,8 +244,11 @@ public class UpdateBBSData extends IntentService {
             } else if (scheme_code.equalsIgnoreCase(CTR)) {
                 ctrState = true;
                 setDateDataCTR(curr_date);
-            } else {
+            } else if (scheme_code.equalsIgnoreCase(ATC)){
                 atcState = true;
+                setDateDataATC(curr_date);
+            } else if (scheme_code.equalsIgnoreCase(TFD)){
+                tfdState = true;
                 setDateDataATC(curr_date);
             }
 

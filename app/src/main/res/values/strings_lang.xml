@@ -1002,6 +1002,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="additionalFee_hint">Service Charge (opsional)</string>
     <string name="cash_in">Cash In</string>
     <string name="cash_out">Cash Out</string>
+    <string name="transfer_funds">Transfer Fund</string>
     <string name="title_cash_out_member">Cash Out Confirmation</string>
     <string name="title_bbs_my_orders">My Orders</string>
     <string name="agent_name">Agent Name</string>
