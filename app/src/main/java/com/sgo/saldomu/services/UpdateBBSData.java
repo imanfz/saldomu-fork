@@ -77,7 +77,7 @@ public class UpdateBBSData extends IntentService {
         setUpdatingData(true);
 
         if (!userID.isEmpty() && !accessKey.isEmpty()) {
-            if (BBSDataManager.isDataCTANotValid() && BBSDataManager.isDataATCNotValid() && BBSDataManager.isDataCTRNotValid())
+            if (BBSDataManager.isDataCTANotValid() && BBSDataManager.isDataATCNotValid() && BBSDataManager.isDataCTRNotValid() && BBSDataManager.isDataTFDNotValid())
                 getBBSData();
             else {
                 ctaState = true;
@@ -122,7 +122,7 @@ public class UpdateBBSData extends IntentService {
     }
 
     void setDateDataTFD(String value) {
-        sp.edit().putString(DefineValue.UPDATE_TIME_BBS_CTR_DATA, value).apply();
+        sp.edit().putString(DefineValue.UPDATE_TIME_BBS_TFD_DATA, value).apply();
     }
 
     boolean getMustUpdateBBSData() {
@@ -249,7 +249,7 @@ public class UpdateBBSData extends IntentService {
                 setDateDataATC(curr_date);
             } else if (scheme_code.equalsIgnoreCase(TFD)){
                 tfdState = true;
-                setDateDataATC(curr_date);
+                setDateDataTFD(curr_date);
             }
 
             int i = 0;

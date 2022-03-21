@@ -25,6 +25,7 @@ import com.sgo.saldomu.fragments.BBSCashOut;
 import com.sgo.saldomu.fragments.BBSJoinAgentInput;
 import com.sgo.saldomu.fragments.BBSTransaksiPager;
 import com.sgo.saldomu.fragments.BBSTransaksiPagerItem;
+import com.sgo.saldomu.fragments.BBSTransferFund;
 import com.sgo.saldomu.fragments.CashOutBbsDescribeMember;
 import com.sgo.saldomu.fragments.FragApprovalAgent;
 import com.sgo.saldomu.fragments.FragBbsMyOrders;
@@ -108,8 +109,10 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
 
                     if (type.equalsIgnoreCase(DefineValue.BBS_CASHIN))
                         newFragment = new BBSCashIn();
-                    else
+                    else if (type.equalsIgnoreCase(DefineValue.BBS_CASHOUT))
                         newFragment = new BBSCashOut();
+                    else
+                        newFragment = new BBSTransferFund();
 
                     if (bundle != null) {
                         if (txMandiriLP)
@@ -215,6 +218,8 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             setActionBarTitle(getString(R.string.title_rating_by_member));
         else if (fragment instanceof FragBbsMyOrders)
             setActionBarTitle(getString(R.string.title_bbs_my_orders));
+        else if (fragment instanceof BBSTransferFund)
+            setActionBarTitle(getString(R.string.transfer_funds));
 //        else if( fragment instanceof BBSCashIn )
 //            setActionBarTitle(getString(R.string.cash_in));
 //        else if( fragment instanceof BBSCashOut )

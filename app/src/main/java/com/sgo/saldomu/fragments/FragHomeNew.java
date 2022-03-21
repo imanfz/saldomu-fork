@@ -741,9 +741,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     case "CTA":
                         menuStrings.add(getResources().getString(R.string.cash_in));
                         break;
-                    case "TFD":
-                        menuStrings.add(getResources().getString(R.string.transfer_funds));
-                        break;
                     case "DGI":
                         sp.edit().putBoolean(DefineValue.IS_AGENT_DGI, true).commit();
                         menuStrings.add(getResources().getString(R.string.menu_item_title_tagih_agent));
@@ -782,6 +779,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     case "EBD":
                         checkEBDCodeAgent();
                         menuStrings.add(getResources().getString(R.string.menu_item_title_report_ebd));
+                        break;
+                    case "TFD":
+                        menuStrings.add(getResources().getString(R.string.transfer_funds));
                         break;
                 }
             }

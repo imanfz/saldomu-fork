@@ -461,6 +461,7 @@ public class DefineValue {
     public static String UPDATE_TIME_BBS_CTA_DATA = "updateTimeBBSDataCTA";
     public static String UPDATE_TIME_BBS_ATC_DATA = "updateTimeBBSDataATC";
     public static String UPDATE_TIME_BBS_CTR_DATA = "updateTimeBBSDataCTR";
+    public static String UPDATE_TIME_BBS_TFD_DATA = "updateTimeBBSDataTFD";
     public static String IS_UPDATING_BBS_DATA = "isUpdatingBBSData";
     public static String IS_BBS_DATA_UPDATED = "IsBBSDataUpdated";
     public static String IS_SUCCESS = "isSuccess";
@@ -482,6 +483,7 @@ public class DefineValue {
     public static String SHORT_URL_APP = "shortUrlApp";
     public static String CASH_IN_HISTORY_TEMP = "cashinHistoryTemp";
     public static String CASH_OUT_HISTORY_TEMP = "cashout_history_temp";
+    public static String TRANSFER_FUND_HISTORY_TEMP = "transfer_fund_history_temp";
 
     public static String GMAP_STRING_OK = "OK";
     public static String IS_NEW_BULK = "isNewBulk";

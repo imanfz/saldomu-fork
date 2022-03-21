@@ -142,6 +142,9 @@ public class ListBBS extends Fragment {
                 } else if (menuItemName.equalsIgnoreCase(getString(R.string.cash_out))) {
                     posIdx = BBSActivity.TRANSACTION;
                     trxType = DefineValue.BBS_CASHOUT;
+                } else if (menuItemName.equalsIgnoreCase(getString(R.string.transfer_funds))) {
+                    posIdx = BBSActivity.TRANSACTION;
+                    trxType = DefineValue.BBS_TRANSFER_FUND;
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_onprogress_agent))) {
                     posIdx = BBSActivity.BBSONPROGRESSAGENT;
                     trxType = DefineValue.INDEX;
@@ -273,6 +276,9 @@ public class ListBBS extends Fragment {
                         break;
                     case "CTA":
                         menuItems.add(0, getResources().getString(R.string.cash_in));
+                        break;
+                    case "TFD":
+                        menuItems.add(0, getResources().getString(R.string.transfer_funds));
                         break;
                     case "DGI":
                         menuItems.add(0, getResources().getString(R.string.menu_item_title_tagih_agent));
