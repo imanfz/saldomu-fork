@@ -227,6 +227,8 @@ public class MyApiClient {
     public static String LINK_BBS_LIST_MEMBER_A2C;
     public static String LINK_BBS_OTP_MEMBER_A2C;
     public static String LINK_GLOBAL_BBS_INSERT_C2R;
+    public static String LINK_GLOBAL_BBS_INSERT_TFD;
+    public static String LINK_BBS_CUSTOMER_TFD;
 
     public static String LINK_BBS_LIST_COMMUNITY_AGENT;
     public static String LINK_REG_TOKEN_FCM;
@@ -508,7 +510,8 @@ public class MyApiClient {
         LINK_GET_DENOM_INVOKE_NEW = headaddressfinal + "scadm/ReqDenom/Invoke";
         LINK_BBS_SEND_DATA_LKD = headaddressfinal + "BBSTrxCustomer/Submit";
         LINK_BBS_MANDIRI_LKD = headaddressfinal + "RegAgentLKD/Invoke";
-
+        LINK_GLOBAL_BBS_INSERT_TFD = headaddressfinal + "GlobalBBSInsertTFD/Invoke";
+        LINK_BBS_CUSTOMER_TFD = headaddressfinal + "BBSTrxCustomerTFD/Submit";
 
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 //        LINK_REG_TOKEN_FCM = urlMNotif + "sendnotification/invoke";

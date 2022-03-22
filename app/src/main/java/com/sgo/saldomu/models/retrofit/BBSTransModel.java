@@ -3,7 +3,10 @@ package com.sgo.saldomu.models.retrofit;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class BBSTransModel extends jsonModel{
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class BBSTransModel extends jsonModel implements Serializable {
     @SerializedName("tx_id")
     @Expose
     private
@@ -70,6 +73,26 @@ public class BBSTransModel extends jsonModel{
     @Expose
     private
     String additional_fee;
+
+    @SerializedName("source_of_fund")
+    @Expose
+    public
+    ArrayList< String > source_of_fund = new ArrayList < String > ();
+
+    @SerializedName("purpose_of_trx")
+    @Expose
+    public
+    ArrayList < String > purpose_of_trx = new ArrayList < String > ();
+
+    @SerializedName("cust_id_types")
+    @Expose
+    public
+    ArrayList < String > cust_id_types = new ArrayList < String > ();
+
+    @SerializedName("gender_types")
+    @Expose
+    private
+    Gender_types gender_types;
 
     public String getTx_id() {
         if (tx_id == null)
@@ -165,5 +188,43 @@ public class BBSTransModel extends jsonModel{
         if (additional_fee == null)
             additional_fee = "";
         return additional_fee;
+    }
+
+    public Gender_types getGender_types() {
+        return gender_types;
+    }
+
+    public void setGender_types(Gender_types gender_typesObject) {
+        this.gender_types = gender_typesObject;
+    }
+}
+
+class Gender_types {
+    @SerializedName("L")
+    @Expose
+    private String L;
+    @SerializedName("P")
+    @Expose
+    private String P;
+
+
+    // Getter Methods
+
+    public String getL() {
+        return L;
+    }
+
+    public String getP() {
+        return P;
+    }
+
+    // Setter Methods
+
+    public void setL(String L) {
+        this.L = L;
+    }
+
+    public void setP(String P) {
+        this.P = P;
     }
 }

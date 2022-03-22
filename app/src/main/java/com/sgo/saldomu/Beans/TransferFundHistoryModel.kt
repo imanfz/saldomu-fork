@@ -10,7 +10,8 @@ class TransferFundHistoryModel {
     private var source_product_name: String = ""
     private var source_product_type: String = ""
     private var source_product_h2h: String = ""
-    private var bank_account_destination: String = "" //nomor hp pengirim
+    private var bank_account_destination: String = ""
+    private var bank_account_destination_name: String = ""
     private var pesan: String = ""
 
     fun TransferFundHistoryModel() {}
@@ -21,6 +22,7 @@ class TransferFundHistoryModel {
         benef_product_name: String,
         benef_product_type: String,
         bank_account_destination: String,
+        bank_account_destination_name: String,
         source_product_code: String,
         source_product_name: String,
         source_product_type: String,
@@ -32,6 +34,7 @@ class TransferFundHistoryModel {
         setBenef_product_name(benef_product_name)
         setBenef_product_type(benef_product_type)
         setBank_account_destination(bank_account_destination)
+        setBank_account_destination_name(bank_account_destination_name)
         setSource_product_code(source_product_code)
         setSource_product_name(source_product_name)
         setSource_product_type(source_product_type)
@@ -77,6 +80,14 @@ class TransferFundHistoryModel {
 
     fun getBank_account_destinaiton(): String {
         return bank_account_destination
+    }
+
+    fun setBank_account_destination_name(bank_account_destination_name: String) {
+        this.bank_account_destination_name = bank_account_destination_name
+    }
+
+    fun getBank_account_destinaiton_name(): String {
+        return bank_account_destination_name
     }
 
     fun setBenef_product_name(benef_product_name: String) {

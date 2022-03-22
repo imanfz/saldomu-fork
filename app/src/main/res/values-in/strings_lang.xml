@@ -990,7 +990,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="additionalFee_hint">Biaya Layanan (opsional)</string>
     <string name="cash_in">Setor Tunai</string>
     <string name="cash_out">Tarik Tunai</string>
-    <string name="transfer_funds">Transfer Dana</string>
+    <string name="transfer_funds">Tunai ke Rekening</string>
     <string name="title_cash_out_member">Konfirmasi Tarik Tunai</string>
     <string name="title_bbs_my_orders">My Orders</string>
     <string name="agent_name">Nama Agen</string>
