@@ -44,7 +44,7 @@
                 android:text="Nomor Identitas Pengirim"/>
 
             <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/no_identity"
+                android:id="@+id/et_no_identity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Nomor Identitas Pengirim"
@@ -64,6 +64,8 @@
                 android:layout_height="wrap_content"
                 android:hint="dd/mm/yyyy"
                 android:inputType="date"
+                android:focusable="false"
+                android:ems="15"
                 android:imeOptions="actionNext"/>
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -84,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="Masa Berlaku Identitas"/>
+                android:text="No Handphone Pengirim"/>
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/et_phone"
@@ -100,8 +102,8 @@
                 android:layout_marginTop="12dp"
                 android:text="Tempat Lahir"/>
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/et_birth_city"
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/et_birth_place"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Tempat Lahir"
@@ -120,6 +122,8 @@
                 android:layout_height="wrap_content"
                 android:hint="dd/mm/yyyy"
                 android:inputType="date"
+                android:focusable="false"
+                android:ems="15"
                 android:imeOptions="actionNext"/>
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -129,6 +133,7 @@
                 android:text="Jenis Kelamin"/>
 
             <RadioGroup
+                android:id="@+id/radioGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -136,13 +141,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/male"
-                    android:id="@+id/radioButton1" />
+                    android:id="@+id/rbMale" />
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/female"
-                    android:id="@+id/radioButton2" />
+                    android:id="@+id/rbFemale" />
 
             </RadioGroup>
 
@@ -194,7 +199,7 @@
                 android:text="Kecamatan"/>
 
             <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/et_district"
+                android:id="@+id/et_sub_district"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
@@ -206,8 +211,8 @@
                 android:layout_marginTop="12dp"
                 android:text="Kota/Kabupaten"/>
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/et_city"
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/et_district"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
@@ -233,7 +238,7 @@
                 android:text="Pekerjaan"/>
 
             <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/et_job"
+                android:id="@+id/et_profession"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
@@ -266,6 +271,14 @@
                 android:dropDownVerticalOffset="35dp"
                 style="@style/Widget.AppCompat.Spinner.Underlined"/>
 
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_source"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Sumber Dana"
+                android:maxLength="100"
+                android:visibility="gone" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -273,7 +286,7 @@
                 android:text="Tujuan Transaksi Pengiriman"/>
 
             <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/sp_destination"
+                android:id="@+id/sp_purpose_of_trx"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:spinnerMode="dropdown"
@@ -332,7 +345,6 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/grey_200"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal">
 

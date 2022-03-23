@@ -109,10 +109,10 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
 
                     if (type.equalsIgnoreCase(DefineValue.BBS_CASHIN))
                         newFragment = new BBSCashIn();
-                    else if (type.equalsIgnoreCase(DefineValue.BBS_CASHOUT))
-                        newFragment = new BBSCashOut();
-                    else
+                    else if (type.equalsIgnoreCase(DefineValue.BBS_TRANSFER_FUND))
                         newFragment = new BBSTransferFund();
+                    else
+                        newFragment = new BBSCashOut();
 
                     if (bundle != null) {
                         if (txMandiriLP)
